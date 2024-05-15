@@ -1,0 +1,66 @@
+@use '@web/_css/common.scss' as *;
+
+.card {
+  position: relative;
+  border-top: 1px solid var(--grid-line-dark);
+  border-bottom: 1px solid var(--grid-line-dark);
+  padding: 3rem 1.5rem;
+
+  @include mid-break {
+    padding: 2rem 1rem;
+  }
+
+  & path {
+    opacity: 0.35;
+  }
+
+  &:hover {
+    & path {
+      opacity: 1;
+    }
+  }
+
+  @include data-theme-selector('dark') {
+    border-color: var(--grid-line-dark);
+  }
+
+  @include data-theme-selector('light') {
+    border-color: var(--grid-line-light);
+  }
+}
+
+.leader {
+  @include h6;
+  text-transform: uppercase;
+  color: #51bff6;
+  margin-top: 0;
+  margin-bottom: 1rem;
+  display: block;
+}
+
+.content {
+}
+
+.title,
+.price {
+  @include h2;
+  position: relative;
+  margin: 0;
+  margin-bottom: 1rem;
+}
+
+.description {
+  @include body;
+  margin-bottom: 0;
+  opacity: 0.75;
+}
+
+.arrow {
+  position: absolute;
+  opacity: 1;
+  margin: 2rem;
+  top: 0;
+  right: 0;
+  width: 1rem;
+  height: 1rem;
+}

@@ -1,0 +1,14 @@
+@use '@web/_css/common' as *;
+
+.leadingHeader {
+  margin-bottom: 2rem;
+  max-width: 1400px;
+
+  @include extra-large-break {
+    max-width: 1200px;
+  }
+
+  @include large-break {
+    max-width: 900px;
+  }
+}

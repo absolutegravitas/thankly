@@ -1,0 +1,16 @@
+@use '@web/_css/common' as *;
+
+.mediaWrapper {
+  position: relative;
+}
+
+.position--wide {
+  margin-left: calc(var(--gutter-h) / -2);
+  width: calc(100% + var(--gutter-h));
+}
+
+.caption {
+  display: flex;
+  justify-content: center;
+  padding-top: 1.25rem;
+}

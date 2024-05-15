@@ -1,0 +1,16 @@
+@use '@web/_css/common.scss' as *;
+
+.leftGutter {
+  padding-left: var(--gutter-h);
+}
+
+.rightGutter {
+  padding-right: var(--gutter-h);
+}
+
+.gutter.disableMobile {
+  @include mid-break {
+    padding-left: 0;
+    padding-right: 0;
+  }
+}

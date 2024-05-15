@@ -1,0 +1,105 @@
+@use '@web/_css/common' as *;
+@use '../shared.scss';
+
+.wrap {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+
+  &::before {
+    content: '';
+    width: calc(100% - 2px);
+    position: absolute;
+    height: 100%;
+    left: 1px;
+    top: 0;
+    z-index: -1;
+    background-color: var(--theme-input-bg);
+  }
+
+  .errorAndLabel {
+    position: absolute;
+    top: 1rem;
+    display: flex;
+    align-items: center;
+    transform: translateY(25%);
+    left: 2rem;
+    transition: all 0.3s ease;
+    color: var(--text-dark);
+    pointer-events: none;
+
+    @include mid-break {
+      left: 1rem;
+    }
+  }
+
+  .textareaLabel,
+  .errorLabel {
+    margin: 0;
+    width: fit-content;
+  }
+
+  .textareaLabel {
+    transition: all 0.3s ease;
+    margin-right: 0.75rem;
+    color: var(--text-dark);
+  }
+
+  .textarea {
+    @include shared.formInput;
+    padding: 1.5rem 2rem;
+    resize: vertical;
+    max-width: 100%;
+    min-height: 160px;
+    height: unset;
+    transition: all 0.3s ease;
+
+    &.error {
+      background-color: var(--theme-failure-500);
+    }
+
+    @include mid-break {
+      padding: 3rem 1rem 1.5rem;
+    }
+  }
+
+  .showError {
+    .textarea {
+      border-left: 2px solid var(--theme-error-500);
+    }
+  }
+}
+
+.focused {
+  .errorAndLabel {
+    top: min(15%, 0.75rem);
+    transform: translateY(min(15%, 0.75rem));
+  }
+
+  .textareaLabel,
+  .errorLabel {
+    font-size: 12px;
+  }
+
+  .textareaLabel {
+    margin-right: 0.5rem;
+  }
+
+  .textarea {
+    padding: 2rem 2rem 1rem 2rem;
+    height: calc(var(--intrinsic-height) * 1px);
+    max-height: 24rem;
+
+    &::-webkit-resizer {
+      display: none;
+    }
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+
+    @include mid-break {
+      padding: 3rem 1rem 1rem;
+    }
+  }
+}

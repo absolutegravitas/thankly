@@ -1,0 +1,56 @@
+@use '@web/_css/common.scss' as *;
+
+$curve: cubic-bezier(0.165, 0.84, 0.44, 1);
+
+.message {
+  background-color: var(--highlight-info-bg-color);
+  color: var(--highlight-info-text-color);
+  padding: 0.5rem 1rem;
+  display: flex;
+  position: relative;
+
+  &:before {
+    content: '';
+    position: absolute;
+    width: 1px;
+    height: 100%;
+    left: 0;
+    top: 0;
+    background-color: currentColor;
+    opacity: 0.5;
+  }
+}
+
+.error {
+  background-color: var(--highlight-danger-bg-color);
+  color: var(--highlight-danger-text-color);
+}
+
+.success {
+  background-color: var(--highlight-success-bg-color);
+  color: var(--highlight-success-text-color);
+}
+
+.warning {
+  background-color: var(--highlight-warning-bg-color);
+  color: var(--highlight-warning-text-color);
+}
+
+.icon {
+  margin-right: 0.5rem;
+  padding: 6px;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  color: currentColor;
+}
+
+.label {
+  margin: 0;
+  // position: relative;
+  // top: 1px;
+}

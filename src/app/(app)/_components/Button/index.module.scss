@@ -1,0 +1,389 @@
+@use '@web/_css/common.scss' as *;
+
+$transCurve: cubic-bezier(0.4, 0, 0.2, 1);
+$curve: cubic-bezier(0.165, 0.84, 0.44, 1);
+
+.button {
+  all: unset;
+  cursor: pointer;
+  box-sizing: border-box;
+  display: inline-flex;
+  position: relative;
+  padding: var(--button-padding);
+  text-decoration: none;
+  --button-padding: 0.5rem 1rem;
+  height: 2.5rem; // match input height
+
+  &:focus-visible {
+    @include outline;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+    opacity: 0.25;
+  }
+}
+
+.size--pill {
+  @include small;
+  line-height: 1.25rem;
+  height: unset;
+  border-radius: 3px;
+  padding: 0 6px;
+  font-weight: bold;
+
+  .spacer {
+    width: 0.75rem;
+  }
+
+  &.appearance--default {
+    background-color: var(--theme-elevation-250);
+    color: var(--theme-elevation-1000);
+    min-width: unset;
+    padding: 0 6px;
+
+    &:focus-visible,
+    &:hover {
+      background-color: var(--theme-elevation-200);
+      color: var(--theme-elevation-1000);
+    }
+  }
+}
+
+.full-width {
+  width: 100%;
+}
+
+.mobile-full-width {
+  @include mid-break {
+    width: 100%;
+  }
+}
+
+:global([data-theme='light']) {
+  .appearance {
+    &--primary {
+      &:focus-visible {
+        border-color: var(--theme-elevation-950);
+      }
+    }
+  }
+}
+
+.appearance {
+  &--default {
+    --animation-speed: 450ms;
+    display: inline-flex;
+    border: 1px solid var(--grid-line-dark);
+    position: relative;
+    padding: unset;
+    color: var(--theme-elevation-1000);
+    height: unset;
+    transition: background-position var(--animation-speed) $curve;
+    overflow: hidden;
+    // text-decoration: none !important;
+
+    & .contentWrapper {
+      width: 100%;
+    }
+
+    & .defaultLabel {
+      position: relative;
+      padding: 1.5rem 1rem;
+      width: 100%;
+      transition: transform var(--animation-speed) $curve;
+
+      & .label {
+        transform: rotate(0);
+        transition: transform var(--animation-speed) 150ms $curve;
+        transform-origin: bottom left;
+        color: var(--theme-elevation-1000);
+        font-weight: 500;
+      }
+    }
+
+    &.forceBackground {
+      & .defaultLabel {
+        &::before {
+          content: '';
+          width: calc(100% - 2px);
+          position: absolute;
+          height: 100%;
+          left: 1px;
+          top: 0;
+          z-index: -1;
+          background-color: var(--theme-elevation-0);
+        }
+      }
+    }
+
+    & .hoverLabel {
+      padding: 1.5rem 1rem;
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: calc(100% + 2px);
+      transform: translateX(100%);
+      transition: transform var(--animation-speed) $curve;
+      color: var(--theme-elevation-0);
+      background-color: var(--theme-elevation-1000);
+
+      & .label {
+        transform: rotate(3deg);
+        transition: transform var(--animation-speed) 150ms $curve;
+        transform-origin: bottom left;
+        color: var(--theme-elevation-0);
+        font-weight: 500;
+      }
+    }
+
+    .content {
+      padding: 1.5rem;
+
+      .label {
+        margin: 0;
+      }
+
+      .icon--arrow {
+        transition: background-position 550ms $curve, color 550ms $curve;
+      }
+    }
+
+    .cmsFormSubmitButtonContent {
+      padding: 1.5rem 2rem;
+    }
+
+    &:hover {
+      .defaultLabel {
+        transform: translateY(-100%);
+        transition-duration: calc(var(--animation-speed) * 2);
+
+        .label {
+          transform: rotate(-3deg);
+        }
+      }
+
+      .hoverLabel {
+        transform: translateY(0);
+
+        .label {
+          transform: rotate(0deg);
+        }
+      }
+
+      color: var(--theme-elevation-0);
+    }
+
+    @include mid-break {
+      .content {
+        padding: 1.5rem 1rem;
+      }
+
+      & .defaultLabel,
+      & .hoverLabel {
+        padding: 1.5rem 1rem;
+      }
+
+      .cmsFormSubmitButtonContent {
+        padding: 1.5rem 1rem;
+      }
+    }
+  }
+
+  &--large {
+    font-size: 2rem;
+  }
+
+  &--primary {
+    border: 1px solid var(--theme-elevation-900);
+    color: var(--theme-bg);
+    background-color: var(--theme-elevation-950);
+
+    &:focus-visible,
+    &:hover {
+      color: var(--theme-bg);
+      border-color: currentColor;
+      background-color: var(--theme-elevation-700);
+    }
+  }
+
+  &--secondary {
+    border: 1px solid;
+    border-color: var(--theme-elevation-500);
+
+    &:focus-visible {
+      color: var(--theme-elevation-850);
+      background-color: var(--theme-elevation-150);
+    }
+
+    &.isHovered {
+      border-color: var(--theme-elevation-900);
+
+      @include mid-break {
+        border-color: var(--theme-elevation-500);
+      }
+    }
+  }
+
+  &--danger {
+    background-color: var(--theme-error-500);
+    color: var(--theme-error-50);
+
+    &:focus-visible,
+    &:hover {
+      background-color: var(--theme-error-450);
+    }
+  }
+
+  &--success {
+    color: var(--color-success-500);
+    border: 1px solid;
+    border-color: var(--color-success-500);
+
+    &:focus-visible {
+      color: var(--theme-elevation-850);
+      background-color: var(--color-success-500);
+    }
+
+    &.isHovered {
+      color: var(--color-success-250);
+      border-color: var(--color-success-250);
+
+      @include mid-break {
+        border-color: var(--theme-elevation-500);
+      }
+    }
+  }
+
+  &--warning {
+    color: var(--color-warning-500);
+    border: 1px solid;
+    border-color: var(--color-warning-500);
+
+    &:focus-visible {
+      color: var(--theme-elevation-850);
+      background-color: var(--color-warning-500);
+    }
+
+    &.isHovered {
+      border-color: var(--theme-elevation-900);
+
+      @include mid-break {
+        border-color: var(--theme-elevation-500);
+      }
+    }
+  }
+
+  &--text {
+    display: inline-flex;
+    padding: unset;
+    height: unset;
+    border-radius: 3px;
+    border: 1px solid transparent;
+
+    &:focus-visible {
+      color: var(--theme-elevation-600);
+      background-color: var(--theme-elevation-150);
+    }
+  }
+}
+
+.gradient {
+  opacity: 0;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  transition: opacity #{50}ms $transCurve;
+}
+
+.isHovered {
+  &:local() {
+    .icon--arrow {
+      transform: translate3d(2px, -2px, 0);
+
+      @include mid-break {
+        transform: translate3d(0, 0, 0);
+      }
+    }
+  }
+}
+
+.hideBorders {
+  border: none;
+}
+
+.hideHorizontalBorders {
+  border-right: none;
+  border-left: none;
+}
+
+.hideVerticalBorders {
+  border-top: none;
+  border-bottom: none;
+}
+
+.hideBottomBorderExceptLast {
+  &:not(:last-of-type) {
+    border-bottom: none;
+  }
+}
+
+.content {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  z-index: 1;
+}
+
+.label {
+  width: 100%;
+  flex-grow: 1;
+  flex-shrink: 1;
+  display: flex;
+  align-items: center;
+}
+
+.size--default .label-mono {
+  @include body;
+}
+
+.size--large {
+  @include h4;
+  margin: 0;
+}
+
+.label-centered {
+  justify-content: center;
+  text-align: center;
+}
+
+.spacer {
+  width: 0.75rem;
+  height: 1rem;
+}
+
+.icon {
+  position: relative;
+  transition-duration: 50ms;
+  transition-timing-function: $transCurve;
+  flex-shrink: 0;
+  transform: translate3d(0, 0, 0);
+}
+
+.appearance {
+  @include data-theme-selector('light') {
+    &--default {
+      border-color: var(--grid-line-light);
+    }
+  }
+
+  @include data-theme-selector('dark') {
+    &--default {
+      border-color: var(--grid-line-dark);
+    }
+  }
+}
