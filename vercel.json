@@ -1,0 +1,10 @@
+{
+  "functions": {
+    "src/app/(payload)/api/**/*.{js,ts}": {
+      "maxDuration": 60
+    },
+    "src/app/(app)/**/*.{tsx}": {
+      "maxDuration": 60
+    }
+  }
+}
