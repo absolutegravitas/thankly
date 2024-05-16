@@ -1,6 +1,6 @@
-import { Logos } from '@/components/Logos'
-import { Links } from '@/components/Links'
-import { Background } from '@/components/Background'
+import { Logos } from '@cms/_components/Logos'
+import { Links } from '@/app/(payload)/_components/Links'
+import { Background } from '@/app/(payload)/_components/Background'
 
 export default function Home() {
   return (
