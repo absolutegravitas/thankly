@@ -13,7 +13,6 @@
   },
   "dependencies": {
     "@headlessui/react": "^2.0.3",
-    "@hookform/resolvers": "^3.4.0",
     "@payloadcms/db-postgres": "beta",
     "@payloadcms/graphql": "beta",
     "@payloadcms/live-preview": "beta",
@@ -53,7 +52,6 @@
     "@tailwindcss/typography": "^0.5.13",
     "@types/lodash": "^4.17.1",
     "@types/node": "^20.12.12",
-    "@types/nodemailer": "^6.4.15",
     "@types/react": "^18.3.2",
     "@types/react-dom": "^18.3.0",
     "autoprefixer": "^10.4.19",
