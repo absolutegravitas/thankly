@@ -1,0 +1,63 @@
+@use '@app/_css/common' as *;
+
+.icon {
+  width: 0.6rem;
+  height: 0.6rem;
+  overflow: visible;
+  transition: transform var(--default-trans-time) linear;
+  will-change: transform;
+
+  :global() {
+    path {
+      vector-effect: non-scaling-stroke;
+    }
+  }
+}
+
+.stroke {
+  stroke-width: 1px;
+  fill: none;
+  stroke: currentColor;
+}
+
+.extra-small {
+  width: 0.25rem;
+  height: 0.25rem;
+}
+
+.small {
+  width: 0.5rem;
+  height: 0.5rem;
+}
+
+.medium {
+  height: 0.75rem;
+  width: 0.75rem;
+}
+
+.large {
+  height: 1rem;
+  width: 1rem;
+}
+
+.full {
+  height: 100%;
+  width: 100%;
+}
+
+.fill {
+  fill: currentColor;
+}
+
+.bold {
+  &:local() {
+    .stroke {
+      stroke-width: 2px;
+    }
+  }
+}
+
+.chevronDown {
+  height: 0.5rem;
+  width: 1rem;
+}
