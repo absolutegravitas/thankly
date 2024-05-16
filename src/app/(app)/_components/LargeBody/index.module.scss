@@ -1,0 +1,5 @@
+@import '@app/_css/type.scss';
+
+.largeBody {
+  @include large-body;
+}

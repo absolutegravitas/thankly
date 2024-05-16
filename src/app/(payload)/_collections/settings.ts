@@ -13,7 +13,7 @@ export const Settings: GlobalConfig = {
   //   update: ({ req: { user } }) => checkRole(['admin'], user),
   // },
   hooks: {
-    afterChange: [async () => revalidateTag('globalSettings')],
+    afterChange: [async () => revalidateTag('settings')],
   },
   fields: [
     {

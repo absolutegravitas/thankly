@@ -1,0 +1,76 @@
+@use '@app/_css/common' as *;
+
+.theme-dark {
+  background-color: var(--color-base-1000);
+}
+
+.theme-light {
+  background-color: var(--color-base-0);
+}
+
+.blockWrapper {
+  --wrapper-padding-top: 0;
+  --wrapper-padding-bottom: 0;
+
+  position: relative;
+
+  &.padding-top {
+    &-hero {
+      --wrapper-padding-top: 2rem;
+
+      &.setPadding {
+        padding-top: calc(var(--wrapper-padding-top) + var(--page-padding-top));
+      }
+    }
+
+    &-large {
+      --wrapper-padding-top: 8rem;
+
+      @include mid-break {
+        --wrapper-padding-top: 5rem;
+      }
+
+      &.setPadding {
+        padding-top: var(--wrapper-padding-top);
+      }
+    }
+
+    &-small {
+      --wrapper-padding-top: 4rem;
+
+      @include mid-break {
+        --wrapper-padding-top: 2.5rem;
+      }
+
+      &.setPadding {
+        padding-top: var(--wrapper-padding-top);
+      }
+    }
+  }
+
+  &.padding-bottom {
+    &-large {
+      --wrapper-padding-bottom: 8rem;
+
+      @include mid-break {
+        --wrapper-padding-bottom: 5rem;
+      }
+
+      &.setPadding {
+        padding-bottom: var(--wrapper-padding-bottom);
+      }
+    }
+
+    &-small {
+      --wrapper-padding-bottom: 4rem;
+
+      @include mid-break {
+        --wrapper-padding-bottom: 2.5rem;
+      }
+
+      &.setPadding {
+        padding-bottom: var(--wrapper-padding-bottom);
+      }
+    }
+  }
+}

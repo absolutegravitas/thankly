@@ -1,0 +1,71 @@
+@use '@app/_css/common' as *;
+
+.linkGrid {
+  position: relative;
+}
+
+.links {
+  display: flex;
+  flex-direction: column;
+  border-top: 1px solid var(--grid-line-dark);
+  margin: 0 1px;
+
+  @include data-theme-selector('light') {
+    border-color: var(--grid-line-light);
+  }
+}
+
+.link {
+  position: relative;
+  @include h3;
+  justify-content: space-between;
+  width: 100%;
+  text-decoration: none;
+  display: flex;
+  align-items: flex-start;
+  margin: 0;
+  padding: 3rem 1.5rem;
+  background-color: var(--theme-elevation-0);
+  border-bottom: 1px solid var(--grid-line-dark);
+  transition: padding-left 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+
+  @include data-theme-selector('light') {
+    border-color: var(--grid-line-light);
+  }
+
+  &:focus {
+    text-decoration: none;
+  }
+
+  &::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 0px;
+    height: 2px;
+    background-color: var(--theme-elevation-1000);
+    transition: width 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+  }
+
+  &:hover {
+    padding-left: 2rem;
+    &::before {
+      width: 100%;
+    }
+
+    .arrow {
+      opacity: 1;
+      transform: translate(0);
+    }
+  }
+}
+
+.arrow {
+  transform: translate(-0.5rem, 0.5rem);
+  transition: transform 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+
+  @include mid-break {
+    transform: scale(0.75);
+  }
+}

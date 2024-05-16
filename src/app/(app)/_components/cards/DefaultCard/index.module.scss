@@ -1,0 +1,109 @@
+@use '@app/_css/common' as *;
+
+.defaultCard {
+  background-color: var(--theme-bg);
+  padding-bottom: 0;
+  text-decoration: none;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  &:focus {
+    text-decoration: none;
+  }
+
+  &:hover {
+    @include shadow-lg;
+
+    &:local() {
+      .plusIcon {
+        color: var(--theme-text);
+
+        @include mid-break {
+          color: var(--theme-elevation-200);
+        }
+      }
+    }
+  }
+
+  &:focus {
+    text-decoration: none;
+  }
+
+  @include mid-break {
+    @include shadow-lg;
+  }
+}
+
+[data-theme='dark'] {
+  .defaultCard {
+    &:hover {
+      background-color: var(--color-base-850);
+    }
+  }
+}
+
+.content {
+  padding: 2rem;
+  padding-bottom: 0;
+
+  @include mid-break {
+    padding: 1rem;
+    padding-bottom: 0;
+  }
+}
+
+.description {
+  margin-bottom: 2rem;
+
+  @include mid-break {
+    margin-bottom: 1rem;
+  }
+}
+
+.media {
+  padding-left: 2rem;
+
+  @include mid-break {
+    padding-left: 1rem;
+  }
+}
+
+.leaderWrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.leader {
+  position: relative;
+  @include label;
+
+  @include mid-break {
+    margin-bottom: 0.5rem;
+  }
+}
+
+.pill {
+  @include mid-break {
+    margin-bottom: 0.5rem;
+  }
+}
+
+.plusIcon {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  width: 2.5rem;
+  height: 2.5rem;
+  color: var(--theme-elevation-200);
+  transition: 25ms linear color;
+
+  @include mid-break {
+    top: 0.5rem;
+    right: 0.5rem;
+    width: 2rem;
+    height: 2rem;
+  }
+}

@@ -1,0 +1,14 @@
+@import '@app/_css/type.scss';
+
+.label {
+  @include label;
+}
+
+.label + h1,
+.label + h2,
+.label + h3,
+.label + h4,
+.label + h5,
+.label + h6 {
+  margin-top: 1rem;
+}

@@ -6,6 +6,47 @@
  * and re-run `payload generate:types` to regenerate this file.
  */
 
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CartItems".
+ */
+export type CartItems =
+  | {
+      product: number | Product;
+      itemPrice?: number | null;
+      itemTotalShipping?: number | null;
+      itemTotal?: number | null;
+      receivers?:
+        | {
+            firstName?: string | null;
+            lastName?: string | null;
+            message?: string | null;
+            addressLine1?: string | null;
+            addressLine2?: string | null;
+            city?: string | null;
+            state?: string | null;
+            postcode?: string | null;
+            shippingOption?:
+              | (
+                  | 'free'
+                  | 'standardMail'
+                  | 'registeredMail'
+                  | 'expressMail'
+                  | 'standardParcel'
+                  | 'expressParcel'
+                  | 'courierParcel'
+                )
+              | null;
+            receiverPrice?: number | null;
+            receiverShipping?: number | null;
+            receiverTotal?: number | null;
+            id?: string | null;
+          }[]
+        | null;
+      id?: string | null;
+    }[]
+  | null;
+
 export interface Config {
   collections: {
     users: User;
@@ -34,8 +75,24 @@ export interface Config {
  */
 export interface User {
   id: number;
+  firstName?: string | null;
+  lastName?: string | null;
+  orgName?: string | null;
+  orgId?: string | null;
+  website?: string | null;
+  status?: ('active' | 'inactive') | null;
+  type?: ('staff' | 'guest' | 'retail' | 'business' | 'partner')[] | null;
+  roles: ('admin' | 'public')[];
+  stripeId?: string | null;
+  orders?: (number | Order)[] | null;
+  cart?: {
+    items?: CartItems;
+  };
   updatedAt: string;
   createdAt: string;
+  enableAPIKey?: boolean | null;
+  apiKey?: string | null;
+  apiKeyIndex?: string | null;
   email: string;
   resetPasswordToken?: string | null;
   resetPasswordExpiration?: string | null;
@@ -156,6 +213,22 @@ export interface Product {
 export interface Media {
   id: number;
   alt: string;
+  caption?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  darkModeFallback?: number | Media | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
