@@ -1,12 +1,12 @@
 {
   "functions": {
-    "src/app/(payload)/api/**/*.{js,ts}": {
+    "src/app/(payload)/api/**/*.{js,ts,tsx}": {
       "maxDuration": 60
     },
     "src/app/(payload)/admin/**/*.{js,ts,tsx}": {
       "maxDuration": 60
     },
-    "src/app/(app)/**/*.{tsx}": {
+    "src/app/(app)/**/*.{js,ts,tsx}": {
       "maxDuration": 60
     }
   }
