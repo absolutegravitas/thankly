@@ -59,8 +59,6 @@ export default buildConfig({
     'https://www.thankly.com.au',
     'https://thankly.vercel.app',
     'http://localhost:3000',
-    process.env.NEXT_PUBLIC_SITE_URL || '',
-    process.env.PAYLOAD_PUBLIC_SERVER_URL || '',
   ].filter(Boolean),
   csrf: [
     'https://checkout.stripe.com',
@@ -70,8 +68,6 @@ export default buildConfig({
     'https://www.thankly.com.au',
     'https://thankly.vercel.app',
     'http://localhost:3000',
-    process.env.NEXT_PUBLIC_SITE_URL || '',
-    process.env.PAYLOAD_PUBLIC_SERVER_URL || '',
   ].filter(Boolean),
 
   plugins: [

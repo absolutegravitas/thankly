@@ -1,7 +1,7 @@
-import type { Metadata } from 'next'
-import { mergeOpenGraph } from '@app/_utilities/mergeOpenGraph'
 import { Inter, League_Spartan, Raleway } from 'next/font/google'
-// import '@/web/css/globals.scss'
+import { Metadata } from 'next'
+import { mergeOpenGraph } from '@app/_utilities/mergeOpenGraph'
+
 import '@app/_css/app.scss'
 
 import { GoogleAnalytics } from '@app/_components/Analytics/GoogleAnalytics'
@@ -10,7 +10,7 @@ import { PrivacyBanner } from '@app/_components/PrivacyBanner'
 import { PrivacyProvider } from '@app/_providers/Privacy'
 import { ThemeProvider } from '@app/_providers/ThemeProvider'
 import { Providers } from '@app/_providers'
-import { getGlobals } from '@app/_queries/globals'
+import { fetchSettings } from '@app/_queries/fetchSettings'
 import { TopBar } from './_components/TopBar'
 import { Header } from './_components/Header'
 import { Footer } from './_components/Footer'
@@ -44,8 +44,9 @@ export const metadata: Metadata = {
   openGraph: mergeOpenGraph(),
 }
 
-export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
-  // const settings = await getGlobals()
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const settings: any = await fetchSettings()
+  // console.log('settings found', settings)
 
   return (
     <html
@@ -100,22 +101,12 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
             }}
           />
         </head>
-        <body className={` #font-sans antialiased`}>
+        <body className={[inter.variable, raleway.variable].join(' ')}>
           {/* <GoogleTagManager /> */}
           <Providers>
-            {/* <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          > */}
-            {/* {settings?.topBar && <TopBar {...settings?.topBar} />}
-            {settings?.menu && <Header {...settings?.menu} />} */}
             {children}
-            {/* {settings?.footer && <Footer {...settings?.footer}></Footer>} */}
             <PrivacyBanner />
           </Providers>
-          {/* </ThemeProvider> */}
         </body>
       </PrivacyProvider>
     </html>
