@@ -12,7 +12,6 @@
     "generate:types": "payload generate:types"
   },
   "dependencies": {
-    "@auth/core": "^0.31.0",
     "@headlessui/react": "^2.0.3",
     "@hookform/resolvers": "^3.4.0",
     "@next/bundle-analyzer": "^14.2.3",
@@ -38,7 +37,6 @@
     "lodash": "^4.17.21",
     "lucide-react": "^0.378.0",
     "next": "14.3.0-canary.7",
-    "next-auth": "beta",
     "next-sitemap": "^4.2.3",
     "next-themes": "^0.3.0",
     "nodemailer": "^6.9.13",
