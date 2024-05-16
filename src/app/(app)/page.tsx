@@ -1,13 +1,13 @@
-import { Logos } from '@cms/_components/Logos'
-import { Links } from '@/app/(payload)/_components/Links'
-import { Background } from '@/app/(payload)/_components/Background'
+// import { Logos } from '@app/_components/Logos'
+// import { Links } from '@app/_components/Links'
+// import { Background } from '@app/_components/Background'
 
 export default function Home() {
   return (
     <main>
-      <Logos />
+      {/* <Logos />
       <Links />
-      <Background />
+      <Background /> */}
     </main>
   )
 }
