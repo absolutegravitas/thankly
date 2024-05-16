@@ -21,7 +21,6 @@
     "@faceless-ui/window-info": "^2.1.2",
     "@headlessui/react": "^2.0.3",
     "@payloadcms/db-postgres": "beta",
-    "@payloadcms/graphql": "beta",
     "@payloadcms/live-preview": "beta",
     "@payloadcms/live-preview-react": "beta",
     "@payloadcms/next": "beta",

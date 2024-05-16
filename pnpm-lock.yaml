@@ -35,9 +35,6 @@ importers:
       '@payloadcms/db-postgres':
         specifier: beta
         version: 3.0.0-beta.32(@types/react@18.3.2)(payload@3.0.0-beta.32(@swc/core@1.4.13(@swc/helpers@0.5.11))(@swc/types@0.1.7)(graphql@16.8.1)(typescript@5.4.5))(react@18.3.1)
-      '@payloadcms/graphql':
-        specifier: beta
-        version: 3.0.0-beta.32(graphql@16.8.1)(payload@3.0.0-beta.32(@swc/core@1.4.13(@swc/helpers@0.5.11))(@swc/types@0.1.7)(graphql@16.8.1)(typescript@5.4.5))(typescript@5.4.5)
       '@payloadcms/live-preview':
         specifier: beta
         version: 3.0.0-beta.32
