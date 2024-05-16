@@ -14,11 +14,11 @@ const nextConfig = {
     formats: ['image/webp'],
     dangerouslyAllowSVG: true,
     contentDispositionType: 'attachment',
-    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox; ",
+    contentSecurityPolicy: policies, //"default-src 'self'; script-src 'none'; sandbox; ",
     minimumCacheTTL: 6000,
     remotePatterns: [
       {
-        // protocol: 'https',
+        protocol: 'https',
         hostname: process.env.NEXT_PUBLIC_SITE_URL,
       },
       {

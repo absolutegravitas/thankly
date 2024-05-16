@@ -24,7 +24,7 @@ const policies = {
     'data:',
     'blob:',
     'https://*.stripe.com',
-    'https://thankly.payloadcms.app',
+    'https://thankly.vercel.app',
     'https://thankly.co',
     'https://tailwindui.com',
     'https://images.unsplash.com',

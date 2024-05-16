@@ -14,7 +14,6 @@
   "dependencies": {
     "@headlessui/react": "^2.0.3",
     "@hookform/resolvers": "^3.4.0",
-    "@next/bundle-analyzer": "^14.2.3",
     "@payloadcms/db-postgres": "beta",
     "@payloadcms/email-nodemailer": "beta",
     "@payloadcms/graphql": "beta",
