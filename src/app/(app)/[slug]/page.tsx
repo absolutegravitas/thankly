@@ -1,4 +1,3 @@
-export const dynamic = 'force-dynamic'
 import React from 'react'
 import { Suspense } from 'react'
 import { Metadata } from 'next'
