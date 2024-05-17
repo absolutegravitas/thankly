@@ -88,3 +88,8 @@
 .mobileNavOpen {
   z-index: calc(var(--z-nav) + 11);
 }
+
+/* Additional margin to ensure separation from the Header */
+.headerSpacing {
+  margin-top: var(--top-bar-height);
+}

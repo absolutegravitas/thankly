@@ -10,7 +10,7 @@ import { PrivacyBanner } from '@app/_components/PrivacyBanner'
 import { PrivacyProvider } from '@app/_providers/Privacy'
 import { ThemeProvider } from '@app/_providers/ThemeProvider'
 import { Providers } from '@app/_providers'
-import { fetchSettings } from '@app/_queries/fetchSettings'
+import { fetchSettings } from '@app/_queries'
 import { TopBar } from './_components/TopBar'
 import { Header } from './_components/Header'
 import { Footer } from './_components/Footer'
@@ -36,7 +36,7 @@ const raleway = Raleway({
 })
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SERVER_URL || 'https://www.thankly.co'),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_VERCEL_URL || 'https://www.thankly.co'),
   twitter: {
     card: 'summary_large_image',
     creator: '@thanklyco',
@@ -46,7 +46,7 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const settings: any = await fetchSettings()
-  // console.log('settings found', settings)
+  console.log('settings found', settings)
 
   return (
     <html
@@ -101,10 +101,13 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             }}
           />
         </head>
-        <body className={[inter.variable, raleway.variable].join(' ')}>
+        <body>
           {/* <GoogleTagManager /> */}
           <Providers>
+            {settings?.topBar && <TopBar {...settings?.topBar} />}
+            {settings?.menu && <Header {...settings?.menu} />}
             {children}
+            {settings?.footer && <Footer {...settings?.footer}></Footer>}
             <PrivacyBanner />
           </Providers>
         </body>

@@ -61,7 +61,11 @@ const Blocks = ({ blocks, locale }: any) => {
         switch (block.type) {
           case 'paragraph':
             return (
-              <RichText content={{ root: { ...block } }} className={`${classes.content} py-6`} />
+              <RichText
+                key={ix}
+                content={{ root: { ...block } }}
+                className={`${classes.content} py-6`}
+              />
             )
           case 'block':
             if (block.fields && block.fields.blockType) {

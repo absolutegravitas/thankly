@@ -6,7 +6,9 @@ $curve: cubic-bezier(0.165, 0.84, 0.44, 1);
   position: relative;
   width: 100%;
   height: var(--header-height);
-
+  &.headerSpacing {
+    margin-top: var(--top-bar-height);
+  }
   &:before,
   &:after {
     content: '';

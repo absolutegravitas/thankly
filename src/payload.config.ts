@@ -39,7 +39,7 @@ export default buildConfig({
     user: Users.slug,
     // livePreview: {
     //   url: ({ data, locale }) =>
-    //     `${process.env.NEXT_PUBLIC_SITE_URL}/preview${data.path}${
+    //     `${process.env.NEXT_PUBLIC_VERCEL_URL}/preview${data.path}${
     //       locale ? `?locale=${locale.code}` : ''
     //     }`,
     //   collections: ['pages', 'products'], // The collections to enable Live Preview on (globals are also possible)
