@@ -12,20 +12,21 @@ import { PageTemplate } from './page.client'
 export default async function Page({ params: { slug = 'home' } }) {
   const { isEnabled: isDraftMode } = draftMode()
 
-  const page: any = await fetchPage(slug)
-  console.log('pagedata found //', page)
+  // const page: any = await fetchPage(slug)
+  // console.log('pagedata found //', page)
 
   // if page is null or empty object, return <></>
-  if (!page || (Object.keys(page).length === 0 && page.constructor === Object)) {
-    return <></>
-  } else {
-    return <PageTemplate page={page} />
-  }
+  return <></>
+  // if (!page || (Object.keys(page).length === 0 && page.constructor === Object)) {
+  //   return <></>
+  // } else {
+  //   return <PageTemplate page={page} />
+  // }
 }
 
-export async function generateStaticParams() {
-  const pages: any = await fetchPages()
-  console.log('pagedata found //', pages)
+// export async function generateStaticParams() {
+//   const pages: any = await fetchPages()
+//   console.log('pagedata found //', pages)
 
-  return pages && pages.length > 0 ? pages.map(({ slug }: any) => slug) : []
-}
+//   return pages && pages.length > 0 ? pages.map(({ slug }: any) => slug) : []
+// }

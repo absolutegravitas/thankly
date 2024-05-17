@@ -1,11 +1,16 @@
-'use server'
+// 'use server'
+import 'server-only'
 import configPromise from '@payload-config'
 import { getPayloadHMR } from '@payloadcms/next/utilities'
+import { getPayload } from 'payload'
 import { unstable_cache } from 'next/cache'
 import { Order, Page, Product, Setting } from '@payload-types'
 import { notFound } from 'next/navigation'
 
-const payload = await getPayloadHMR({ config: await configPromise })
+const payload =
+  process.env.NODE_ENV === 'development'
+    ? await getPayloadHMR({ config: await configPromise })
+    : await getPayload({ config: await configPromise })
 
 export const fetchPage = unstable_cache(
   async (slug: string): Promise<Page | null> => {
@@ -20,9 +25,9 @@ export const fetchPage = unstable_cache(
       pagination: false,
     })
 
-    if (docs?.length === 0) {
-      notFound()
-    }
+    // if (docs?.length === 0) {
+    //   notFound()
+    // }
     const page = docs?.at(0)
     return page || null
   },
@@ -47,9 +52,9 @@ export const fetchPages = unstable_cache(
       pagination: false,
     })
 
-    if (docs?.length === 0) {
-      notFound()
-    }
+    // if (docs?.length === 0) {
+    //   notFound()
+    // }
 
     // get slug, id and title prop only from the returned docs
     const pages = docs?.map(({ slug, id, title }) => ({ slug, id, title }))

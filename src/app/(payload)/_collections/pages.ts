@@ -11,7 +11,7 @@ import { slugField } from '@cms/_fields/slug'
 export const COLLECTION_SLUG_PAGE = 'pages'
 
 export const Pages: CollectionConfig = {
-  slug: COLLECTION_SLUG_PAGE,
+  slug: 'pages',
   admin: {
     useAsTitle: 'title',
     // preview: (doc) => formatPreviewURL('pages', doc),
