@@ -19,7 +19,7 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: `**${process.env.NEXT_PUBLIC_VERCEL_URL}**`,
+        hostname: `${process.env.NEXT_PUBLIC_SERVER_URL}`,
       },
       {
         protocol: 'https',

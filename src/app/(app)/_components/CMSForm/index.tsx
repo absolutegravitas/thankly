@@ -80,7 +80,7 @@ const RenderForm = ({
 
         try {
           const hubspotCookie = getCookie('hubspotutk')
-          const pageUri = `${process.env.NEXT_PUBLIC_VERCEL_URL}${pathname}`
+          const pageUri = `${process.env.NEXT_PUBLIC_SERVER_URL}${pathname}`
           const slugParts = pathname?.split('/')
           const pageName = slugParts?.at(-1) === '' ? 'Home' : slugParts?.at(-1)
           const req = await fetch(`${process.env.NEXT_PUBLIC_CMS_URL}/api/form-submissions`, {
@@ -120,12 +120,12 @@ const RenderForm = ({
 
             if (!url) return
 
-            const redirectUrl = new URL(url, process.env.NEXT_PUBLIC_VERCEL_URL)
+            const redirectUrl = new URL(url, process.env.NEXT_PUBLIC_SERVER_URL)
 
             try {
               if (
                 url.startsWith('/') ||
-                redirectUrl.origin === process.env.NEXT_PUBLIC_VERCEL_URL
+                redirectUrl.origin === process.env.NEXT_PUBLIC_SERVER_URL
               ) {
                 router.push(redirectUrl.href)
               } else {

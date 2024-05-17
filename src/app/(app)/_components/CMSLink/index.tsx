@@ -106,8 +106,8 @@ export const CMSLink: React.FC<CMSLinkType> = ({
     if (!hrefIsLocal && href !== '#') {
       try {
         const objectURL = new URL(href)
-        if (objectURL.origin === process.env.NEXT_PUBLIC_VERCEL_URL) {
-          href = objectURL.href.replace(process.env.NEXT_PUBLIC_VERCEL_URL, '')
+        if (objectURL.origin === process.env.NEXT_PUBLIC_SERVER_URL) {
+          href = objectURL.href.replace(process.env.NEXT_PUBLIC_SERVER_URL, '')
         }
       } catch (e) {
         // Do not throw error if URL is invalid

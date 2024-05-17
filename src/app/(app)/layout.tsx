@@ -36,7 +36,7 @@ const raleway = Raleway({
 })
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_VERCEL_URL || 'https://www.thankly.co'),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SERVER_URL || 'https://www.thankly.co'),
   twitter: {
     card: 'summary_large_image',
     creator: '@thanklyco',
