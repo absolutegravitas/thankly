@@ -1,7 +1,8 @@
-import type { Payload } from 'payload'
 // ensure that the home page is revalidated at '/' instead of '/home'
 // Revalidate the page in the background, so the user doesn't have to wait
 // Notice that the function itself is not async and we are not awaiting `revalidate`
+
+import type { Payload } from 'payload'
 
 export const revalidate = async (args: {
   collection: string

@@ -1,6 +1,6 @@
 import type { CollectionConfig } from 'payload/types'
-// import { checkRole } from '@cms/_access/checkRole'
 import { layoutField } from '@cms/_fields/layoutField'
+import { adminsOnly } from '../_utilities/access'
 
 export const Reusable: CollectionConfig = {
   slug: 'reusable',
@@ -8,13 +8,12 @@ export const Reusable: CollectionConfig = {
     useAsTitle: 'title',
     group: 'Globals',
   },
-  // access: {
-  //   create: ({ req: { user } }) => checkRole(['admin'], user),
-  //   read: () => true,
-  //   readVersions: ({ req: { user } }) => checkRole(['admin'], user),
-  //   update: ({ req: { user } }) => checkRole(['admin'], user),
-  //   delete: ({ req: { user } }) => checkRole(['admin'], user),
-  // },
+  access: {
+    create: adminsOnly,
+    read: () => true,
+    update: adminsOnly,
+    delete: adminsOnly,
+  },
   labels: {
     singular: 'Reusable',
     plural: 'Reusables',

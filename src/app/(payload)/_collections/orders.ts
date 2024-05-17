@@ -1,11 +1,8 @@
 import type { CollectionConfig } from 'payload/types'
 import payload from 'payload'
 
-// import { checkRole } from '@cms/_access/checkRole'
-// import { adminsOrOrderedBy } from '@cms/_access/adminsOrOrderedBy'
-// import { anyone } from '@cms/_access/anyone'
-
 import { clearUserCart } from '@cms/_hooks/clearUserCart'
+import { adminsAndUserOnly, adminsOnly } from '../_utilities/access'
 // import { LinkToPaymentIntent } from './ui/LinkToPaymentIntent'
 
 export const Orders: CollectionConfig = {
@@ -18,12 +15,14 @@ export const Orders: CollectionConfig = {
     // beforeChange: [getOrderNumber],
     afterChange: [clearUserCart],
   },
-  // access: {
-  //   read: adminsOrOrderedBy,
-  //   update: ({ req: { user } }) => checkRole(['admin'], user),
-  //   create: anyone,
-  //   delete: ({ req: { user } }) => checkRole(['admin'], user),
-  // },
+
+  access: {
+    create: () => true,
+    read: adminsAndUserOnly,
+    update: adminsAndUserOnly,
+    delete: adminsOnly,
+  },
+
   fields: [
     {
       type: 'row', // required

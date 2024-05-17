@@ -1,8 +1,11 @@
 import type { CollectionConfig } from 'payload/types'
-import { makeFirstUserAdmin } from '@cms/_access/makeFirstUserAdmin'
 import { upsertStripeCustomer } from '@cms/_hooks/upsertStripeCustomer'
-import adminsAndUser from '@cms/_access/adminsAndUser'
-import { checkRole } from '@cms/_access/checkRole'
+import {
+  adminsAndUserOnly,
+  adminsOnly,
+  checkRole,
+  makeFirstUserAdmin,
+} from '@cms/_utilities/access'
 
 export const Users: CollectionConfig = {
   slug: 'users',
@@ -34,15 +37,15 @@ export const Users: CollectionConfig = {
     },
   },
   access: {
+    create: adminsOnly,
+    read: adminsAndUserOnly,
+    update: adminsAndUserOnly,
+    delete: adminsAndUserOnly,
     admin: ({ req: { user } }) => checkRole(['admin'], user),
-    create: ({ req: { user } }) => checkRole(['admin'], user),
-    read: () => true,
-    update: adminsAndUser,
-    delete: () => false, // cant delete, only change status
   },
   hooks: {
     beforeChange: [upsertStripeCustomer],
-    // afterChange: [loginAfterCreate], // seems to work ootb so not including it here
+    // afterChange: [loginAfterCreate], // seems to work ootb
   },
   fields: [
     // Email added by default

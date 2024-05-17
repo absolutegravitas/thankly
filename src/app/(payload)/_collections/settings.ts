@@ -1,17 +1,17 @@
 import type { GlobalConfig } from 'payload/types'
 import linkGroup from '@cms/_fields/linkGroup'
-// import { checkRole } from '@cms/_access/checkRole'
 import { contentField } from '@cms/_fields/contentField'
 import link from '@cms/_fields/link'
 import { revalidateTag } from 'next/cache'
+import { adminsOnly } from '../_utilities/access'
 
 export const Settings: GlobalConfig = {
   slug: 'settings',
   dbName: 'settings',
-  // access: {
-  //   read: () => true,
-  //   update: ({ req: { user } }) => checkRole(['admin'], user),
-  // },
+  access: {
+    read: () => true,
+    update: adminsOnly,
+  },
   hooks: {
     afterChange: [async () => revalidateTag('settings')],
   },

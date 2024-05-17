@@ -1,14 +1,13 @@
 import type { CollectionConfig } from 'payload/types'
 
-// import { checkRole } from '@cms/_access/checkRole'
 import { slugField } from '@cms/_fields/slug'
 // import { populateArchiveBlock } from '@/blocks/ArchiveBlock/populateArchiveBlock'
 import { deleteProductFromCarts } from '@cms/_hooks/deleteProductFromCarts'
 import { revalidateProduct } from '@cms/_hooks/revalidateProduct'
-// import { publishedOnly } from '@cms/_access/publishedOnly'
 import { layoutField } from '@cms/_fields/layoutField'
 import { upsertStripeProduct } from '@cms/_hooks/upsertStripeProduct'
 import { deleteStripeProduct } from '@cms/_hooks/deleteStripeProduct'
+import { adminsOnly, publishedOnly } from '@cms/_utilities/access'
 
 export const Products: CollectionConfig = {
   slug: 'products',
@@ -39,12 +38,12 @@ export const Products: CollectionConfig = {
   versions: {
     drafts: true,
   },
-  // access: {
-  //   read: publishedOnly,
-  //   create: ({ req: { user } }) => checkRole(['admin'], user),
-  //   update: ({ req: { user } }) => checkRole(['admin'], user),
-  //   delete: ({ req: { user } }) => checkRole(['admin'], user),
-  // },
+  access: {
+    create: adminsOnly,
+    read: publishedOnly,
+    update: adminsOnly,
+    delete: adminsOnly,
+  },
   fields: [
     {
       type: 'row', // required

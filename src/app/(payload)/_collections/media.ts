@@ -1,9 +1,9 @@
 import path from 'path'
 import type { CollectionConfig } from 'payload/types'
 
-import { checkRole } from '@cms/_access/checkRole'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import { fileURLToPath } from 'url'
+import { adminsOnly } from '../_utilities/access'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -12,12 +12,14 @@ export const Media: CollectionConfig = {
   slug: 'media',
   admin: { group: 'Globals' },
   upload: { staticDir: path.resolve(dirname, '../../media') },
+
   access: {
-    create: ({ req: { user } }) => checkRole(['admin'], user),
+    create: adminsOnly,
     read: () => true,
-    update: ({ req: { user } }) => checkRole(['admin'], user),
-    delete: ({ req: { user } }) => checkRole(['admin'], user),
+    update: adminsOnly,
+    delete: adminsOnly,
   },
+
   fields: [
     {
       name: 'alt',
