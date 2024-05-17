@@ -12,8 +12,8 @@ import { PageTemplate } from './page.client'
 export default async function Page({ params: { slug = 'home' } }) {
   const { isEnabled: isDraftMode } = draftMode()
 
-  // const page: any = await fetchPage(slug)
-  // console.log('pagedata found //', page)
+  const page: any = await fetchPage(slug)
+  console.log('pagedata found //', page)
 
   // if page is null or empty object, return <></>
   return <></>
