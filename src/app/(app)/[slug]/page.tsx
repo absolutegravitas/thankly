@@ -16,16 +16,21 @@ export default async function Page({ params: { slug = 'home' } }) {
   const page: any = await fetchPage(slug)
   console.log('pagedata found //', page)
 
-  // if page is null or empty object, return <></>
+  if (!page || (Object.keys(page).length === 0 && page.constructor === Object)) {
+    return notFound()
+  }
+
   return (
     <>
-      <Suspense fallback="fetching page"> </Suspense>
+      <Suspense fallback="fetching page">
+        fetching page... <PageTemplate page={page} />
+      </Suspense>
     </>
   )
   // if (!page || (Object.keys(page).length === 0 && page.constructor === Object)) {
   //   return <></>
   // } else {
-  //   return <PageTemplate page={page} />
+  //   return
   // }
 }
 
