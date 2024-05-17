@@ -1,4 +1,6 @@
+export const dynamic = 'force-dynamic'
 import React from 'react'
+import { Suspense } from 'react'
 import { Metadata } from 'next'
 import { draftMode } from 'next/headers'
 import { notFound } from 'next/navigation'
@@ -16,7 +18,11 @@ export default async function Page({ params: { slug = 'home' } }) {
   console.log('pagedata found //', page)
 
   // if page is null or empty object, return <></>
-  return <></>
+  return (
+    <>
+      <Suspense fallback="fetching page"> </Suspense>
+    </>
+  )
   // if (!page || (Object.keys(page).length === 0 && page.constructor === Object)) {
   //   return <></>
   // } else {
