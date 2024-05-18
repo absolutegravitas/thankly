@@ -7,10 +7,7 @@ import { unstable_cache } from 'next/cache'
 import { Order, Page, Product, Setting } from '@payload-types'
 import { notFound } from 'next/navigation'
 
-const payload =
-  process.env.NODE_ENV === 'development'
-    ? await getPayloadHMR({ config: await configPromise })
-    : await getPayload({ config: await configPromise })
+const payload = await getPayloadHMR({ config: await configPromise })
 
 export const fetchPage = unstable_cache(
   async (slug: string): Promise<Page | null> => {
@@ -29,7 +26,7 @@ export const fetchPage = unstable_cache(
     // if (docs?.length === 0) {
     //   notFound()
     // }
-    const page = docs?.at(0)
+    const page = docs[0]
     return page || null
   },
   [`fetchPage`],

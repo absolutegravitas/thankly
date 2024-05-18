@@ -117,7 +117,7 @@ export const Footer: React.FC<FooterType> = (props) => {
         const pageUri = `${process.env.NEXT_PUBLIC_SERVER_URL}${pathname}`
         const slugParts = pathname?.split('/')
         const pageName = slugParts?.at(-1) === '' ? 'Home' : slugParts?.at(-1)
-        const req = await fetch(`${process.env.NEXT_PUBLIC_CMS_URL}/api/form-submissions`, {
+        const req = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/form-submissions`, {
           method: 'POST',
           credentials: 'include',
           headers: {

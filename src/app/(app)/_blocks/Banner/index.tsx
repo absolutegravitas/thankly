@@ -3,53 +3,19 @@ import React from 'react'
 import { Banner, Props as BannerProps } from '@app/_components/Banner'
 import { Gutter } from '@app/_components/Gutter'
 import { Reusable } from '@payload-types'
+import { BlockWrapper, PaddingProps } from '@app/_components/BlockWrapper'
 
-export type BannerBlockProps = {
-  id: string
-  blockName: string
-  blockType: 'banner'
-  bannerFields: {
-    type: string
-    content: {
-      root: {
-        type: string
-        format: string
-        indent: number
-        version: number
-        children: {
-          type: string
-          format: string
-          indent: number
-          version: number
-          children: {
-            mode: string
-            text: string
-            type: string
-            style: string
-            detail: number
-            format: number
-            version: number
-          }[]
-          direction: string
-          textFormat: number
-        }[]
-        direction: string
-      }
-    }
-    settings: Record<string, any>
-    addCheckmark: boolean
-  }
-  format: string
-  version: number
-  marginAdjustment?: boolean
-  disableGutter?: boolean
-}
+// export type BannerBlockProps = Extract<Reusable['layout'][0], { blockType: 'banner' }>
+
+import { ExtractBlockProps } from '@app/_utilities/extractBlockProps'
+export type BannerBlockProps = ExtractBlockProps<'banner'>
 
 export const BannerBlock: React.FC<{
   bannerFields: BannerBlockProps['bannerFields']
   marginAdjustment?: boolean
   disableGutter?: boolean
 }> = ({ bannerFields, disableGutter, marginAdjustment }) => {
+  console.log('banner block', bannerFields)
   const bannerProps: BannerProps = {
     type: bannerFields.type,
     content: bannerFields.content,

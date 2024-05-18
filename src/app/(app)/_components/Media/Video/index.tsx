@@ -6,7 +6,7 @@ import { Props } from '../types'
 
 import classes from './index.module.scss'
 
-export const Video: React.FC<Props> = props => {
+export const Video: React.FC<Props> = (props) => {
   const { videoClassName, resource, onClick } = props
 
   const videoRef = useRef<HTMLVideoElement>(null)
@@ -34,7 +34,7 @@ export const Video: React.FC<Props> = props => {
         onClick={onClick}
         ref={videoRef}
       >
-        <source src={`${process.env.NEXT_PUBLIC_CMS_URL}/media/${resource.filename}`} />
+        <source src={`${process.env.NEXT_PUBLIC_SERVER_URL}/api/media/${resource.filename}`} />
       </video>
     )
   }

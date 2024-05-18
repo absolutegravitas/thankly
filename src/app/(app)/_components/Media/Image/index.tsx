@@ -42,7 +42,7 @@ export const Image: React.FC<Props> = (props) => {
     width = resource.width
     height = resource.height
     alt = resource.alt
-    src = `${process.env.NEXT_PUBLIC_CMS_URL}/media/${resource.filename}`
+    src = `${process.env.NEXT_PUBLIC_SERVER_URL}/api/media/${resource.filename}`
   }
 
   // NOTE: this is used by the browser to determine which image to download at different screen sizes
@@ -63,7 +63,7 @@ export const Image: React.FC<Props> = (props) => {
 
   return (
     <React.Fragment>
-      <NextImage
+      <Image
         className={`${baseClasses} ${classes.themeLight}`}
         src={src || ''}
         alt={alt || ''}
@@ -83,9 +83,9 @@ export const Image: React.FC<Props> = (props) => {
       {hasDarkModeFallback &&
         typeof resource.darkModeFallback === 'object' &&
         resource.darkModeFallback !== null && (
-          <NextImage
+          <Image
             className={`${baseClasses} ${classes.themeDark}`}
-            src={`${process.env.NEXT_PUBLIC_CMS_URL}/media/${resource.darkModeFallback.filename}`}
+            src={`${process.env.NEXT_PUBLIC_SERVER_URL}/media/${resource.darkModeFallback.filename}`}
             alt={alt || ''}
             onClick={onClick}
             onLoad={() => {

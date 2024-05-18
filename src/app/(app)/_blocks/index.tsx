@@ -29,7 +29,7 @@ export type AdditionalBlockProps = {
 
 const blockComponents = {
   banner: Banner,
-  callout: Callout,
+  // callout: Callout, // causes stack error recursion
   cta: CallToAction,
   cardGrid: CardGrid,
   content: Content,

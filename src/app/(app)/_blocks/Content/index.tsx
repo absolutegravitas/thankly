@@ -78,6 +78,7 @@ const Columns: React.FC<Props> = ({ block, padding }) => {
 }
 
 export const ContentBlock: React.FC<Props> = (props) => {
+  console.log('content props', props)
   const {
     block: { useLeadingHeader, leadingHeader, settings, padding },
   } = props
