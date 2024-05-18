@@ -22,6 +22,11 @@ const nextConfig = {
         hostname: `${process.env.NEXT_PUBLIC_SERVER_URL}`,
       },
       {
+        // coz fucking nextjs is shite what is this bullshit syntax
+        protocol: 'http',
+        hostname: `localhost`,
+      },
+      {
         protocol: 'https',
         hostname: '**thankly.co**',
       },
