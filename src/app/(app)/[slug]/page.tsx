@@ -23,7 +23,7 @@ export default async function Page({ params: { slug = 'home' } }) {
   return (
     <>
       <Suspense fallback="fetching page">
-        fetching page... <PageTemplate page={page} />
+        <PageTemplate page={page} />
       </Suspense>
     </>
   )

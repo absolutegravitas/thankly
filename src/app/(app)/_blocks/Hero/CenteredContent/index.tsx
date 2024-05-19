@@ -24,7 +24,7 @@ export const CenteredContent: React.FC<CenteredContentProps> = ({
 
   return (
     <BlockWrapper settings={{ theme }} padding={padding}>
-      <BackgroundGrid zIndex={0} />
+      {/* <BackgroundGrid zIndex={0} /> */}
       <Gutter>
         <div className={[classes.container, 'grid'].filter(Boolean).join(' ')}>
           <div

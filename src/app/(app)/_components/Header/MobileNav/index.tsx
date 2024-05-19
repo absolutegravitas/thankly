@@ -108,7 +108,7 @@ const MobileMenuModal: React.FC<
       <Gutter className={classes.mobileMenuWrap} rightGutter={false} dataTheme={`${theme}`}>
         <MobileNavItems tabs={tabs} setActiveTab={setActiveTab} />
         <BackgroundGrid zIndex={0} />
-        <BackgroundScanline />
+        {/* <BackgroundScanline /> */}
         <div className={classes.modalBlur} />
       </Gutter>
     </Modal>
@@ -226,7 +226,7 @@ const SubMenuModal: React.FC<
             </div>
           )
         })}
-        <BackgroundScanline />
+        {/* <BackgroundScanline /> */}
         <BackgroundGrid zIndex={0} />
         <div className={classes.modalBlur} />
       </Gutter>

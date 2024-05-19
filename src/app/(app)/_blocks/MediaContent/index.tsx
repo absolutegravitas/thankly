@@ -19,7 +19,7 @@ import { ExtractBlockProps } from '@app/_utilities/extractBlockProps'
 export type MediaContentProps = ExtractBlockProps<'mediaContent'> & { padding: PaddingProps }
 
 export const MediaContentBlock: React.FC<MediaContentProps> = ({ mediaContentFields, padding }) => {
-  const { link, images, richText, alignment, enableLink, settings } = mediaContentFields
+  const { link, images, content, alignment, enableLink, settings } = mediaContentFields
 
   return (
     <Gutter>
@@ -39,7 +39,8 @@ export const MediaContentBlock: React.FC<MediaContentProps> = ({ mediaContentFie
                 .filter(Boolean)
                 .join(' ')}
             >
-              <RichText content={richText} />
+              <RichText content={content} />
+
               {enableLink && link && (
                 <div className={classes.button}>
                   <Button
@@ -62,7 +63,7 @@ export const MediaContentBlock: React.FC<MediaContentProps> = ({ mediaContentFie
                 .filter(Boolean)
                 .join(' ')}
             >
-              <RichText content={richText} />
+              <RichText content={content} />
               {enableLink && link && (
                 <div className={classes.button}>
                   <Button

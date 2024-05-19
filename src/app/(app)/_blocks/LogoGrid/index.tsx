@@ -44,7 +44,7 @@ const getRandomPosition = (excludePositions: number[]) => {
 }
 
 export const LogoGrid: React.FC<LogoGridProps> = ({ logoGridFields, padding }) => {
-  console.log('logoGrid', logoGridFields)
+  // console.log('logoGrid', logoGridFields)
   const { richText, enableLink, link, logos, settings } = logoGridFields
 
   const [logoPositions, setLogoPositions] = useState<PositionedLogo[]>([])
@@ -62,46 +62,46 @@ export const LogoGrid: React.FC<LogoGridProps> = ({ logoGridFields, padding }) =
     }
   }, [logos])
 
-  useEffect(() => {
-    if (!logos || logos.length === 0 || logos.length > TOTAL_CELLS) return
+  // useEffect(() => {
+  //   if (!logos || logos.length === 0 || logos.length > TOTAL_CELLS) return
 
-    /* eslint-disable function-paren-newline */
-    const animateLogo = () => {
-      const logoIndex =
-        currentAnimatingIndex !== null ? (currentAnimatingIndex + 1) % logos.length : 0
-      setCurrentAnimatingIndex(logoIndex)
+  //   /* eslint-disable function-paren-newline */
+  //   const animateLogo = () => {
+  //     const logoIndex =
+  //       currentAnimatingIndex !== null ? (currentAnimatingIndex + 1) % logos.length : 0
+  //     setCurrentAnimatingIndex(logoIndex)
 
-      setLogoPositions((prevPositions) =>
-        prevPositions.map((pos, idx) => (idx === logoIndex ? { ...pos, isVisible: false } : pos)),
-      )
+  //     setLogoPositions((prevPositions) =>
+  //       prevPositions.map((pos, idx) => (idx === logoIndex ? { ...pos, isVisible: false } : pos)),
+  //     )
 
-      setTimeout(() => {
-        setLogoPositions((prevPositions) => {
-          const occupiedPositions = prevPositions.map((p) => p.position)
-          let newPosition
-          do {
-            newPosition = getRandomPosition(occupiedPositions)
-          } while (newPosition === prevPositions[logoIndex].position)
+  //     setTimeout(() => {
+  //       setLogoPositions((prevPositions) => {
+  //         const occupiedPositions = prevPositions.map((p) => p.position)
+  //         let newPosition
+  //         do {
+  //           newPosition = getRandomPosition(occupiedPositions)
+  //         } while (newPosition === prevPositions[logoIndex].position)
 
-          return prevPositions.map((pos, idx) =>
-            idx === logoIndex ? { ...pos, position: newPosition, isVisible: false } : pos,
-          )
-        })
+  //         return prevPositions.map((pos, idx) =>
+  //           idx === logoIndex ? { ...pos, position: newPosition, isVisible: false } : pos,
+  //         )
+  //       })
 
-        setTimeout(() => {
-          setLogoPositions((prevPositions) =>
-            prevPositions.map((pos, idx) =>
-              idx === logoIndex ? { ...pos, isVisible: true } : pos,
-            ),
-          )
-        }, 100)
-      }, ANIMATION_DURATION + 500)
-    }
-    /* eslint-enable function-paren-newline */
+  //       setTimeout(() => {
+  //         setLogoPositions((prevPositions) =>
+  //           prevPositions.map((pos, idx) =>
+  //             idx === logoIndex ? { ...pos, isVisible: true } : pos,
+  //           ),
+  //         )
+  //       }, 100)
+  //     }, ANIMATION_DURATION + 500)
+  //   }
+  //   /* eslint-enable function-paren-newline */
 
-    const interval = setInterval(animateLogo, ANIMATION_DELAY + ANIMATION_DURATION)
-    return () => clearInterval(interval)
-  }, [logoPositions, currentAnimatingIndex, logos])
+  //   const interval = setInterval(animateLogo, ANIMATION_DELAY + ANIMATION_DURATION)
+  //   return () => clearInterval(interval)
+  // }, [logoPositions, currentAnimatingIndex, logos])
 
   return (
     <BlockWrapper
@@ -145,7 +145,24 @@ export const LogoGrid: React.FC<LogoGridProps> = ({ logoGridFields, padding }) =
                 )
               })}
               <div className={[classes.horizontalLine, classes.bottomHorizontalLine].join(' ')} />
-              {Array.from({ length: TOTAL_CELLS }).map((_, index) => {
+              {/* boring positioning */}
+              {logos &&
+                logos.map((logo: any, index: any) => (
+                  <div
+                    className={[classes.logoShowcaseItem, classes.logoPresent]
+                      .filter(Boolean)
+                      .join(' ')}
+                    key={index}
+                  >
+                    <div className={classes.contentWrapper}>
+                      {typeof logo.logoMedia === 'object' && logo.logoMedia !== null && (
+                        <Media resource={logo.logoMedia} />
+                      )}
+                    </div>
+                  </div>
+                ))}
+              {/* animation and placement funkiness not nedeed */}
+              {/* {Array.from({ length: TOTAL_CELLS }).map((_, index) => {
                 const hasLogo = logoPositions.some(
                   (item) => item.position === index && item.isVisible,
                 )
@@ -176,7 +193,7 @@ export const LogoGrid: React.FC<LogoGridProps> = ({ logoGridFields, padding }) =
                     </div>
                   </div>
                 )
-              })}
+              })} */}
               <CrosshairIcon className={[classes.crosshair, classes.crosshairLeft].join(' ')} />
               <CrosshairIcon className={[classes.crosshair, classes.crosshairRight].join(' ')} />
             </div>

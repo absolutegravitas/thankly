@@ -24,18 +24,18 @@ export type CalloutProps = ExtractBlockProps<'callout'> & { padding: PaddingProp
 
 export const Callout: React.FC<CalloutProps> = (props) => {
   const {
-    calloutFields: { richText, role, author, logo, images, settings },
+    calloutFields: { content, role, author, logo, images, settings },
     padding,
   } = props
   const hasImages = images?.length && images.length > 0
 
   return (
     <BlockWrapper settings={settings} padding={padding}>
-      <BackgroundGrid className={classes.backgroundGrid} zIndex={0} />
+      {/* <BackgroundGrid className={classes.backgroundGrid} zIndex={0} /> */}
       <div className={classes.wrapper}>
         <Gutter>
           <div className={[classes.container, 'grid'].filter(Boolean).join(' ')}>
-            <BackgroundScanline className={classes.scanline} enableBorders crosshairs={'all'} />
+            {/* <BackgroundScanline className={classes.scanline} enableBorders crosshairs={'all'} /> */}
             <div
               className={[
                 classes.contentWrapper,
@@ -47,10 +47,7 @@ export const Callout: React.FC<CalloutProps> = (props) => {
                 .join(' ')}
             >
               <QuoteIconAlt className={classes.quoteIcon} />
-              <RichText
-                content={richText}
-                className={[classes.content].filter(Boolean).join(' ')}
-              />
+              <RichText content={content} className={[classes.content].filter(Boolean).join(' ')} />
               <div className={[classes.authorWrapper, 'cols-12'].filter(Boolean).join(' ')}>
                 <div className={classes.logo}>
                   {logo && typeof logo !== 'string' && <Media resource={logo} />}

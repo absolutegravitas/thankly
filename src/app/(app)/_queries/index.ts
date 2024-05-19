@@ -21,7 +21,7 @@ export const fetchPage = unstable_cache(
       limit: 1,
       pagination: false,
     })
-    console.log('docs found //', docs)
+    // console.log('docs found //', docs)
 
     // if (docs?.length === 0) {
     //   notFound()

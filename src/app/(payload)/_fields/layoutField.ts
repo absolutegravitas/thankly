@@ -21,7 +21,7 @@ import { CardGrid } from '@cms/_blocks/CardGrid'
 
 import { Content } from '@cms/_blocks/Content'
 import { ContentGrid } from '@cms/_blocks/ContentGrid'
-
+// import { Form } from '@cms/_blocks/Form'
 import { Hero } from '@cms/_blocks/Hero'
 import { HoverCards } from '@cms/_blocks/HoverCards'
 import { HoverHighlights } from '@cms/_blocks/HoverHighlights'
@@ -35,6 +35,7 @@ import { Reuse } from '@cms/_blocks/Reuse'
 import { Slider } from '@cms/_blocks/Slider'
 import { Statement } from '@cms/_blocks/Statement'
 import { StickyHighlights } from '@cms/_blocks/StickyHighlights'
+import { Steps } from '@cms/_blocks/Steps'
 
 // Define the ContentField type
 
@@ -52,7 +53,7 @@ export const layoutField: LayoutField = (
     'CardGrid',
     'Content',
     'ContentGrid',
-
+    // 'Form',
     'Hero',
     'HoverCards',
     'HoverHighlights',
@@ -64,7 +65,8 @@ export const layoutField: LayoutField = (
     // 'Pricing',
     'Reuse',
     'Slider',
-    'Statement',
+    'Steps',
+    // 'Statement',
 
     'StickyHighlights',
   ],
@@ -89,7 +91,8 @@ export const layoutField: LayoutField = (
           return Content
         case 'ContentGrid':
           return ContentGrid
-
+        // case 'Form':
+        //   return Form
         case 'Hero':
           return Hero
         case 'HoverCards':
@@ -112,9 +115,10 @@ export const layoutField: LayoutField = (
           return Reuse
         case 'Slider':
           return Slider
-        case 'Statement':
-          return Statement
-
+        // case 'Statement':
+        //   return Statement
+        case 'Steps':
+          return Steps
         case 'StickyHighlights':
           return StickyHighlights
         default:

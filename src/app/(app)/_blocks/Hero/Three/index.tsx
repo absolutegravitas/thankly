@@ -25,7 +25,7 @@ export const ThreeHero: React.FC<{ fields: HeroFields }> = ({ fields }) => {
         settings={{ theme: fields.theme }}
         className={[classes.blockWrapper, ''].join(' ')}
       >
-        <BackgroundGrid zIndex={1} />
+        {/* <BackgroundGrid zIndex={1} /> */}
         <Gutter>
           <div className={[classes.wrapper, 'grid'].filter(Boolean).join(' ')}>
             <div className={[classes.sidebar, 'cols-4 cols-m-8 start-1'].filter(Boolean).join(' ')}>

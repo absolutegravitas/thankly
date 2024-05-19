@@ -38,7 +38,7 @@ export const SquareCard: React.FC<SquareCardProps> = (props) => {
       >
         <p className={classes.description}>{description}</p>
       </div>
-      <BackgroundScanline className={classes.scanlines} />
+      {/* <BackgroundScanline className={classes.scanlines} /> */}
     </CMSLink>
   ) : (
     <div
@@ -67,7 +67,7 @@ export const SquareCard: React.FC<SquareCardProps> = (props) => {
           <p className={classes.description}>{description}</p>
         </div>
       )}
-      <BackgroundScanline className={classes.scanlines} />
+      {/* <BackgroundScanline className={classes.scanlines} /> */}
     </div>
   )
 }

@@ -120,9 +120,9 @@ export const MobileMediaContentAccordion: React.FC<MediaContentAccordionProps> =
                     )}
                     {item.background === 'scanlines' && (
                       <Fragment>
-                        <BackgroundScanline
+                        {/* <BackgroundScanline
                           className={[classes.scanlineMobile].filter(Boolean).join(' ')}
-                        />
+                        /> */}
                         <CrosshairIcon
                           className={[classes.crosshairTopOne].filter(Boolean).join(' ')}
                         />

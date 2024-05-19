@@ -148,9 +148,9 @@ export const DesktopMediaContentAccordion: React.FC<MediaContentAccordionProps> 
                           .join(' ')}
                         style={{ height: `calc(${containerHeight}px + 8rem)` }}
                       >
-                        <BackgroundScanline
+                        {/* <BackgroundScanline
                           className={[classes.scanlineDesktop].filter(Boolean).join(' ')}
-                        />
+                        /> */}
                         <CrosshairIcon
                           className={[classes.crosshairTopOne].filter(Boolean).join(' ')}
                         />

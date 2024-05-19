@@ -42,7 +42,7 @@ export const GradientHero: React.FC<GradientHeroProps> = ({
           priority
         />
       )}
-      <BackgroundGrid className={classes.backgroundGrid} zIndex={0} />
+      {/* <BackgroundGrid className={classes.backgroundGrid} zIndex={0} /> */}
       <Gutter>
         <div className={[classes.wrapper, 'grid'].filter(Boolean).join(' ')}>
           <div

@@ -2,7 +2,7 @@ import React from 'react'
 import { CenteredContent } from './CenteredContent'
 import { ContentMediaHero } from './ContentMedia'
 import { DefaultHero } from './Default'
-import { FormHero } from './FormHero'
+// import { FormHero } from './FormHero'
 import { GradientHero } from './Gradient'
 import { HomeHero } from './Home'
 import { ThreeHero } from './Three'
@@ -12,7 +12,7 @@ type HeroType =
   | 'default'
   | 'contentMedia'
   | 'home'
-  | 'form'
+  // | 'form'
   | 'centeredContent'
   | 'gradient'
   | 'three'
@@ -23,7 +23,7 @@ const heroes: Record<HeroType, React.FC<any>> = {
   default: DefaultHero,
   contentMedia: ContentMediaHero,
   home: HomeHero,
-  form: FormHero,
+  // form: FormHero,
   centeredContent: CenteredContent,
   gradient: GradientHero,
   three: ThreeHero,

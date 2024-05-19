@@ -7,7 +7,8 @@ const CallToAction = dynamic(() => import('./CallToAction'))
 const CardGrid = dynamic(() => import('./CardGrid'))
 const Content = dynamic(() => import('./Content'))
 const ContentGrid = dynamic(() => import('./ContentGrid'))
-const FormBlock = dynamic(() => import('./FormBlock'))
+// const FormBlock = dynamic(() => import('./FormBlock'))
+const Hero = dynamic(() => import('./Hero'))
 const HoverCards = dynamic(() => import('./HoverCards'))
 const HoverHighlights = dynamic(() => import('./HoverHighlights'))
 const LinkGrid = dynamic(() => import('./LinkGrid'))
@@ -17,11 +18,10 @@ const MediaContent = dynamic(() => import('./MediaContent'))
 const MediaContentAccordion = dynamic(() => import('./MediaContentAccordion'))
 const Pricing = dynamic(() => import('./Pricing'))
 const Reusable = dynamic(() => import('./Reusable'))
+const RichText = dynamic(() => import('./RichText'))
 const Slider = dynamic(() => import('./Slider'))
 const Steps = dynamic(() => import('./Steps'))
 const StickyHighlights = dynamic(() => import('./StickyHighlights'))
-const RichText = dynamic(() => import('./RichText'))
-const Hero = dynamic(() => import('./Hero'))
 
 export type AdditionalBlockProps = {
   blockIndex: number
@@ -29,27 +29,27 @@ export type AdditionalBlockProps = {
 }
 
 const blockComponents = {
+  // pricing: Pricing,
   banner: Banner,
-  // callout: Callout, // causes stack error recursion
-  cta: CallToAction,
-  hero: Hero,
+  callout: Callout,
   cardGrid: CardGrid,
   content: Content,
   contentGrid: ContentGrid,
-  formBlock: FormBlock,
+  cta: CallToAction,
+  // form: FormBlock,
+  hero: Hero,
   hoverCards: HoverCards,
-  // hoverHighlights: HoverHighlights, // breaks page call stack exceeded
+  hoverHighlights: HoverHighlights,
   linkGrid: LinkGrid,
-  // logoGrid: LogoGrid, // images don't load, busy page
-  // mediaBlock: MediaBlock, // call stack exceeded
-  // mediaContent: MediaContent,
-  // mediaContentAccordion: MediaContentAccordion,
-  // pricing: Pricing,
+  logoGrid: LogoGrid,
+  mediaBlock: MediaBlock,
+  mediaContent: MediaContent,
+  mediaContentAccordion: MediaContentAccordion,
   reuse: Reusable,
+  RichText: RichText,
   slider: Slider,
   steps: Steps,
   stickyHighlights: StickyHighlights,
-  RichText: RichText,
 }
 const Blocks = ({ blocks, locale }: any) => {
   // console.log('blocks //', JSON.stringify(blocks))

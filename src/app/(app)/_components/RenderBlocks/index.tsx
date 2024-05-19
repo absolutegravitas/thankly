@@ -8,7 +8,7 @@ import { CallToAction } from '@app/_blocks/CallToAction'
 import { CardGrid } from '@app/_blocks/CardGrid'
 import { ContentBlock } from '@app/_blocks/Content'
 import { ContentGrid } from '@app/_blocks/ContentGrid'
-import { FormBlock } from '@app/_blocks/FormBlock'
+// import { FormBlock } from '@app/_blocks/FormBlock'
 import { HoverCards } from '@app/_blocks/HoverCards'
 import { HoverHighlights } from '@app/_blocks/HoverHighlights'
 import { LinkGrid } from '@app/_blocks/LinkGrid'
@@ -42,7 +42,7 @@ export const blockComponents: any = {
   content: ContentBlock,
   contentGrid: ContentGrid,
   cta: CallToAction,
-  form: FormBlock,
+  // form: FormBlock,
   hoverCards: HoverCards,
   hoverHighlights: HoverHighlights,
   linkGrid: LinkGrid,

@@ -58,7 +58,7 @@ export const Pricing: React.FC<Props> = ({ pricingFields, padding }) => {
     <BlockWrapper settings={settings} padding={padding} className={classes.pricingBlock}>
       <BackgroundGrid zIndex={1} />
       <Gutter className={classes.gutter}>
-        <BackgroundScanline className={classes.scanline} enableBorders />
+        {/* <BackgroundScanline className={classes.scanline} enableBorders /> */}
         {hasPlans && (
           <div className={[classes.wrapper, 'grid'].filter(Boolean).join(' ')}>
             {plans.map((plan, i) => {

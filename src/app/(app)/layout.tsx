@@ -46,7 +46,7 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const settings: any = await fetchSettings()
-  // console.log('settings found', settings)
+  console.log('settings found', settings)
 
   return (
     <html
@@ -104,7 +104,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <body>
           {/* <GoogleTagManager /> */}
           <Providers>
-            {settings?.topBar && <TopBar {...settings?.topBar} />}
+            {settings?.topBar && Object.keys(settings.topBar).length > 0 && (
+              <TopBar {...settings?.topBar} />
+            )}
             {settings?.menu && <Header {...settings?.menu} />}
             {children}
             {settings?.footer && <Footer {...settings?.footer}></Footer>}

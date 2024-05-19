@@ -15,7 +15,7 @@ export const DefaultHero: React.FC<DefaultHeroProps> = ({ description, theme }) 
   return (
     <BlockWrapper settings={{ theme: theme }} padding={{ top: 'small', bottom: 'small' }}>
       <Gutter>
-        <BackgroundGrid zIndex={0} />
+        {/* <BackgroundGrid zIndex={0} /> */}
         <div className={classes.defaultHero}>
           <div className={[classes.container, 'grid'].filter(Boolean).join(' ')}>
             <div className={[`cols-8 start-1`, `cols-m-8`, 'cols-s-8'].filter(Boolean).join(' ')}>

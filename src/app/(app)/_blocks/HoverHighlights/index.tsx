@@ -14,7 +14,7 @@ export type HoverHighlightProps = ExtractBlockProps<'hoverHighlights'>
 
 export const HoverHighlights: React.FC<HoverHighlightProps> = (props) => {
   const {
-    hoverHighlightsFields: { richText, addRowNumbers, highlights },
+    hoverHighlightsFields: { content, addRowNumbers, highlights },
   } = props
   console.log('hoverhighlightfields', props)
   const hasHighlights = highlights && highlights.length > 0
@@ -23,13 +23,13 @@ export const HoverHighlights: React.FC<HoverHighlightProps> = (props) => {
     <Gutter className={classes.hoverHighlights}>
       <div className={[classes.richTextGrid, 'grid'].filter(Boolean).join(' ')}>
         <div className={['cols-12'].filter(Boolean).join(' ')}>
-          <RichText content={richText} />
+          <RichText content={content} />
         </div>
       </div>
       <div className={classes.content}>
-        <div className={classes.pixelBG}>
+        {/* <div className={classes.pixelBG}>
           <PixelBackground />
-        </div>
+        </div> */}
         {hasHighlights &&
           highlights.map((highlight: any, index: any) => {
             return (

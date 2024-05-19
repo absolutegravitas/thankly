@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import NextImage, { StaticImageData } from 'next/image'
+import Image, { StaticImageData } from 'next/image'
 
 import cssVariables from '@app/_css/cssVariables'
 import { Props } from '../types'
@@ -10,7 +10,7 @@ import classes from './index.module.scss'
 
 const { breakpoints } = cssVariables
 
-export const Image: React.FC<Props> = (props) => {
+export const ImageComponent: React.FC<Props> = (props) => {
   const {
     imgClassName,
     onClick,
@@ -42,7 +42,7 @@ export const Image: React.FC<Props> = (props) => {
     width = resource.width
     height = resource.height
     alt = resource.alt
-    src = `${process.env.NEXT_PUBLIC_SERVER_URL}/api/media/${resource.filename}`
+    src = `${process.env.NEXT_PUBLIC_SERVER_URL}${resource.url}`
   }
 
   // NOTE: this is used by the browser to determine which image to download at different screen sizes

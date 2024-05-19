@@ -1,6 +1,6 @@
 import React, { ElementType, forwardRef, Fragment } from 'react'
 
-import { Image } from './Image'
+import { ImageComponent } from './Image'
 import { Props } from './types'
 import { Video } from './Video'
 
@@ -12,13 +12,17 @@ export const Media = forwardRef<HTMLDivElement | HTMLImageElement | HTMLVideoEle
     const Tag = (htmlElement as ElementType) || Fragment
 
     return (
-      <Tag ref={ref} {...(htmlElement !== null ? { className } : {})}>
+      <>
+        {/* Tag breaks visibility for Images */}
+        {/* <Tag ref={ref} {...(htmlElement !== null ? { className } : {})}> */}
         {isVideo ? (
           <Video {...props} />
         ) : (
-          <Image {...props} /> // eslint-disable-line
+          <ImageComponent {...props} /> // eslint-disable-line
         )}
-      </Tag>
+
+        {/* </Tag> */}
+      </>
     )
   },
 )

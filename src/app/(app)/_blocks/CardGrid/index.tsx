@@ -44,7 +44,7 @@ export const CardGrid: React.FC<CardGridProps> = (props) => {
       padding={{ ...padding, top: 'large' }}
       className={[classes.cardGrid].filter(Boolean).join(' ')}
     >
-      <BackgroundGrid zIndex={1} />
+      {/* <BackgroundGrid zIndex={1} /> */}
       <Gutter>
         <div className={[classes.introWrapper, 'grid'].filter(Boolean).join(' ')}>
           {richText && (
@@ -82,8 +82,8 @@ export const CardGrid: React.FC<CardGridProps> = (props) => {
         {hasCards && (
           <div className={classes.cards}>
             <div className={classes.margins}>
-              <BackgroundScanline enableBorders={true} className={classes.marginLeft} />
-              <BackgroundScanline enableBorders={true} className={classes.marginRight} />
+              {/* <BackgroundScanline enableBorders={true} className={classes.marginLeft} /> */}
+              {/* <BackgroundScanline enableBorders={true} className={classes.marginRight} /> */}
             </div>
             <div
               className={['grid', classes.cardsWrapper].filter(Boolean).join(' ')}

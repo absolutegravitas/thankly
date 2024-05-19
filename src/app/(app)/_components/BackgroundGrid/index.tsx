@@ -25,23 +25,23 @@ export const BackgroundGrid: React.FC<Props> = ({
 }: Props) => {
   return (
     <div
-    // aria-hidden="true"
-    // className={[
-    //   classes.backgroundGrid,
-    //   'grid',
-    //   ignoreGutter && classes.ignoreGutter,
-    //   className,
-    //   wideGrid && classes.wideGrid,
-    // ]
-    //   .filter(Boolean)
-    //   .join(' ')}
-    // style={{ ...style, zIndex }}
+      aria-hidden="true"
+      className={[
+        classes.backgroundGrid,
+        'grid',
+        ignoreGutter && classes.ignoreGutter,
+        className,
+        wideGrid && classes.wideGrid,
+      ]
+        .filter(Boolean)
+        .join(' ')}
+      style={{ ...style, zIndex }}
     >
       {[...Array(wideGrid ? 4 : 5)].map((_, index) => (
         <div
           key={index}
-          // className={[classes.column, 'cols-4'].join(' ')}
-          // style={gridLineStyles[index] || {}}
+          className={[classes.column, 'cols-4'].join(' ')}
+          style={gridLineStyles[index] || {}}
         ></div>
       ))}
     </div>

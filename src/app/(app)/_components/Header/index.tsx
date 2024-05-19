@@ -47,7 +47,6 @@ export const Header: React.FC<Menu> = ({ tabs }) => {
           <UniversalTruth />
         </React.Suspense>
       </header>
-      //{' '}
     </div>
   )
 }
