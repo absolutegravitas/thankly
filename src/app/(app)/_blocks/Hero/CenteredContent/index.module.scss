@@ -1,0 +1,39 @@
+@use '@app/_css/common' as *;
+
+.container {
+  position: relative;
+}
+
+.content {
+  /* Provides space for the overflow of content over the grid lines */
+  padding-left: 1px;
+}
+
+.label {
+  margin-left: 0;
+  margin-bottom: 2rem;
+  display: block;
+
+  @include mid-break {
+    margin-bottom: 1rem;
+  }
+
+  & label {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+}
+
+.richText {
+  margin-bottom: 2rem;
+}
+
+.links {
+  display: flex;
+  flex-direction: column;
+  max-width: 50%;
+
+  @include large-break {
+    max-width: none;
+  }
+}

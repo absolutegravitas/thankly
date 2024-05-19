@@ -16,11 +16,12 @@ const MediaBlock = dynamic(() => import('./MediaBlock'))
 const MediaContent = dynamic(() => import('./MediaContent'))
 const MediaContentAccordion = dynamic(() => import('./MediaContentAccordion'))
 const Pricing = dynamic(() => import('./Pricing'))
-const ReusableContent = dynamic(() => import('./ReusableContent'))
+const Reusable = dynamic(() => import('./Reusable'))
 const Slider = dynamic(() => import('./Slider'))
 const Steps = dynamic(() => import('./Steps'))
 const StickyHighlights = dynamic(() => import('./StickyHighlights'))
 const RichText = dynamic(() => import('./RichText'))
+const Hero = dynamic(() => import('./Hero'))
 
 export type AdditionalBlockProps = {
   blockIndex: number
@@ -31,22 +32,23 @@ const blockComponents = {
   banner: Banner,
   // callout: Callout, // causes stack error recursion
   cta: CallToAction,
+  hero: Hero,
   cardGrid: CardGrid,
   content: Content,
   contentGrid: ContentGrid,
-  FormBlock: FormBlock,
-  HoverCards: HoverCards,
-  HoverHighlights: HoverHighlights,
-  LinkGrid: LinkGrid,
-  LogoGrid: LogoGrid,
-  MediaBlock: MediaBlock,
-  MediaContent: MediaContent,
-  MediaContentAccordion: MediaContentAccordion,
-  Pricing: Pricing,
-  ReusableContent: ReusableContent,
-  Slider: Slider,
-  Steps: Steps,
-  StickyHighlights: StickyHighlights,
+  formBlock: FormBlock,
+  hoverCards: HoverCards,
+  // hoverHighlights: HoverHighlights, // breaks page call stack exceeded
+  linkGrid: LinkGrid,
+  // logoGrid: LogoGrid, // images don't load, busy page
+  // mediaBlock: MediaBlock, // call stack exceeded
+  // mediaContent: MediaContent,
+  // mediaContentAccordion: MediaContentAccordion,
+  // pricing: Pricing,
+  reuse: Reusable,
+  slider: Slider,
+  steps: Steps,
+  stickyHighlights: StickyHighlights,
   RichText: RichText,
 }
 const Blocks = ({ blocks, locale }: any) => {
@@ -69,7 +71,6 @@ const Blocks = ({ blocks, locale }: any) => {
             )
           case 'block':
             if (block.fields && block.fields.blockType) {
-              console.log('blockType found //', block.fields.blockType)
               // @ts-ignore
               const BlockComponent = blockComponents[block.fields.blockType] ?? null
               return BlockComponent ? (

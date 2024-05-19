@@ -15,8 +15,8 @@ import classes from './index.module.scss'
 import { ExtractBlockProps } from '@app/_utilities/extractBlockProps'
 export type Props = ExtractBlockProps<'content'> & { padding: PaddingProps }
 
-const Columns: React.FC<Props> = ({ block, padding }) => {
-  const { layout, columnOne, columnTwo, columnThree, settings } = block
+const Columns: React.FC<Props> = ({ contentFields, padding }) => {
+  const { layout, columnOne, columnTwo, columnThree, settings } = contentFields
 
   switch (layout) {
     case 'oneColumn': {
@@ -78,9 +78,10 @@ const Columns: React.FC<Props> = ({ block, padding }) => {
 }
 
 export const ContentBlock: React.FC<Props> = (props) => {
-  console.log('content props', props)
+  // console.log('content props', props)
   const {
-    block: { useLeadingHeader, leadingHeader, settings, padding },
+    contentFields: { useLeadingHeader, leadingHeader, settings },
+    padding,
   } = props
 
   // console.log(props)

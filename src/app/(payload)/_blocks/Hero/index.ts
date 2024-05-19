@@ -89,30 +89,30 @@ export const Hero: Block = {
       },
     },
     themeField,
-    {
-      type: 'collapsible',
-      label: 'Breadcrumbs Bar',
-      fields: [
-        {
-          type: 'checkbox',
-          name: 'enableBreadcrumbsBar',
-          label: 'Enable Breadcrumbs Bar',
-        },
-        linkGroup({
-          overrides: {
-            name: 'breadcrumbsBarLinks',
-            labels: {
-              singular: 'Link',
-              plural: 'Links',
-            },
-            admin: {
-              condition: (_: any, { enableBreadcrumbsBar } = {}) => Boolean(enableBreadcrumbsBar),
-            },
-          },
-          looks: false,
-        }),
-      ],
-    },
+    // {
+    //   type: 'collapsible',
+    //   label: 'Breadcrumbs Bar',
+    //   fields: [
+    //     {
+    //       type: 'checkbox',
+    //       name: 'enableBreadcrumbsBar',
+    //       label: 'Enable Breadcrumbs Bar',
+    //     },
+    //     linkGroup({
+    //       overrides: {
+    //         name: 'breadcrumbsBarLinks',
+    //         labels: {
+    //           singular: 'Link',
+    //           plural: 'Links',
+    //         },
+    //         admin: {
+    //           condition: (_: any, { enableBreadcrumbsBar } = {}) => Boolean(enableBreadcrumbsBar),
+    //         },
+    //       },
+    //       looks: false,
+    //     }),
+    //   ],
+    // },
     // livestreamFields,
     {
       name: 'enableAnnouncement',
@@ -137,7 +137,8 @@ export const Hero: Block = {
       type: 'richText',
       admin: {
         condition: (_: any, { type } = {}) =>
-          type !== 'livestream' && type !== 'centeredContent' && type !== 'three',
+          // type !== 'livestream' &&
+          type !== 'centeredContent' && type !== 'three',
       },
       editor: lexicalEditor({
         features: ({ defaultFeatures }) => [
@@ -190,7 +191,13 @@ export const Hero: Block = {
       overrides: {
         admin: {
           condition: (_: any, { type } = {}) =>
-            ['contentMedia', 'default', 'livestream', 'centeredContent', 'gradient'].includes(type),
+            [
+              'contentMedia',
+              'default',
+              // 'livestream',
+              'centeredContent',
+              'gradient',
+            ].includes(type),
         },
       },
     }),

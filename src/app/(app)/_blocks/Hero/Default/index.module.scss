@@ -1,0 +1,26 @@
+@use '@app/_css/common' as *;
+
+.defaultHero {
+  position: relative;
+}
+
+.label {
+  margin-bottom: 2rem;
+
+  @include mid-break {
+    margin-bottom: 1rem;
+  }
+
+  label {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+}
+
+.container {
+  align-items: center;
+
+  @include mid-break {
+    row-gap: 2rem;
+  }
+}

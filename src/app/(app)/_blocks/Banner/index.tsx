@@ -15,7 +15,7 @@ export const BannerBlock: React.FC<{
   marginAdjustment?: boolean
   disableGutter?: boolean
 }> = ({ bannerFields, disableGutter, marginAdjustment }) => {
-  console.log('banner block', bannerFields)
+  // console.log('banner block', bannerFields)
   const bannerProps: BannerProps = {
     type: bannerFields.type,
     content: bannerFields.content,

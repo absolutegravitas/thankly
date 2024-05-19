@@ -1,0 +1,84 @@
+@use '@app/_css/common' as *;
+
+.formHero {
+  position: relative;
+}
+
+.backgroundGrid {
+  top: 0;
+  height: 100%;
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.richText {
+  margin-bottom: 2rem;
+}
+
+.contentWrapper {
+  max-width: calc(4 / 6 * 100%);
+
+  @include mid-break {
+    max-width: 100%;
+  }
+}
+
+.description {
+  @include mid-break {
+    margin-bottom: 3rem;
+  }
+}
+
+.formWrapper {
+  position: relative;
+  align-items: center;
+
+  :global(.crosshair) {
+    display: block;
+
+    @include mid-break {
+      display: none;
+    }
+  }
+}
+
+.scanlineDesktopWrapper {
+  position: relative;
+
+  @include mid-break {
+    display: none;
+  }
+}
+
+.scanlineMobileWrapper {
+  display: none;
+
+  @include mid-break {
+    display: block;
+  }
+}
+
+.scanline {
+  margin-right: calc(var(--gutter-h) * -1);
+  width: calc(100% + var(--gutter-h));
+  z-index: 0;
+
+  @include mid-break {
+    width: calc(100% + var(--gutter-h) * 2);
+    margin-left: calc(var(--gutter-h) * -1);
+    margin-right: calc(var(--gutter-h) * -2);
+    border-top: 1px solid var(--grid-line-light);
+    border-bottom: 1px solid var(--grid-line-light);
+  }
+}
+
+.cmsForm {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  height: max-content;
+}
