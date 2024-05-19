@@ -13,9 +13,9 @@ export const PageTemplate: React.FC<{ page: Page | null | undefined }> = ({ page
   //   initialData: page,
   // })
 
-  console.log('pagedata // ', JSON.stringify(page))
+  // console.log('pagedata // ', JSON.stringify(page))
   // use pagedata to render basic content or blocks client side
-  console.log('pagedata //', JSON.stringify(page?.layout?.root?.children))
+  // console.log('pagedata //', JSON.stringify(page?.layout?.root?.children))
 
   return (
     <React.Fragment>

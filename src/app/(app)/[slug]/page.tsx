@@ -14,7 +14,7 @@ export default async function Page({ params: { slug = 'home' } }) {
   const { isEnabled: isDraftMode } = draftMode()
 
   const page: any = await fetchPage(slug)
-  console.log('pagedata found //', JSON.stringify(page))
+  // console.log('pagedata found //', JSON.stringify(page))
 
   if (!page || (Object.keys(page).length === 0 && page.constructor === Object)) {
     return notFound()

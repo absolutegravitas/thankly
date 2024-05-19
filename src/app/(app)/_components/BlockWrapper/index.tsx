@@ -31,35 +31,30 @@ type Props = {
 } & React.HTMLAttributes<HTMLDivElement>
 
 export const BlockWrapper: React.FC<Props> = ({
-  // settings,
+  settings,
   className,
   children,
   padding,
   setPadding = true,
   ...rest
 }) => {
-  // const [themeState, setThemeState] = useState<Page['hero']['theme']>(settings?.theme)
+  const [themeState, setThemeState] = useState<Page['theme']>(settings?.theme)
   const { theme: themeFromContext } = useThemePreference()
-  // const theme = settings?.theme
+  const theme = settings?.theme
 
-  // useEffect(() => {
-  //   if (settings?.theme) setThemeState(settings.theme)
-  //   else {
-  //     if (themeFromContext) setThemeState(themeFromContext)
-  //   }
-  // }, [settings, themeFromContext])
+  useEffect(() => {
+    if (settings?.theme) setThemeState(settings.theme)
+    else {
+      if (themeFromContext) setThemeState(themeFromContext)
+    }
+  }, [settings, themeFromContext])
 
   return (
-    <ChangeHeaderTheme
-      theme={
-        // themeState ??
-        'light'
-      }
-    >
+    <ChangeHeaderTheme theme={themeState ?? 'light'}>
       <div
         className={[
           classes.blockWrapper,
-          // theme && classes[`theme-${theme}`],
+          theme && classes[`theme-${theme}`],
           padding?.top && classes[`padding-top-${padding?.top}`],
           padding?.bottom && classes[`padding-bottom-${padding?.bottom}`],
           setPadding && classes.setPadding,
@@ -68,7 +63,7 @@ export const BlockWrapper: React.FC<Props> = ({
           .filter(Boolean)
           .join(' ')}
         {...rest}
-        // {...(theme ? { 'data-theme': theme } : {})}
+        {...(theme ? { 'data-theme': theme } : {})}
       >
         {children}
       </div>

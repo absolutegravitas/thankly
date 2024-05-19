@@ -8,7 +8,7 @@ import { GoogleAnalytics } from '@app/_components/Analytics/GoogleAnalytics'
 import { GoogleTagManager } from '@app/_components/Analytics/GoogleTagManager'
 import { PrivacyBanner } from '@app/_components/PrivacyBanner'
 import { PrivacyProvider } from '@app/_providers/Privacy'
-import { ThemeProvider } from '@app/_providers/ThemeProvider'
+// import { ThemeProvider } from '@app/_providers/ThemeProvider'
 import { Providers } from '@app/_providers'
 import { fetchSettings } from '@app/_queries'
 import { TopBar } from './_components/TopBar'
@@ -46,13 +46,13 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const settings: any = await fetchSettings()
-  console.log('settings found', settings)
+  // console.log('settings found', settings)
 
   return (
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${inter.className} ${leaguespartan.variable}`}
+      className={`${inter.className} ${leaguespartan.variable} ${raleway.variable}`}
     >
       <PrivacyProvider>
         <head>

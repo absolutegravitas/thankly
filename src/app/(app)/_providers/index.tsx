@@ -9,11 +9,11 @@ import { MouseInfoProvider } from '@faceless-ui/mouse-info'
 import { ScrollInfoProvider } from '@faceless-ui/scroll-info'
 import { WindowInfoProvider } from '@faceless-ui/window-info'
 
-// import { ClockIcon } from '@root/graphics/ClockIcon'
-// import { InfoIcon } from '@root/graphics/InfoIcon'
-// import { CheckIcon } from '@app/_icons/CheckIcon'
-// import { CloseIcon } from '@app/_icons/CloseIcon'
-// import { ErrorIcon } from '@app/_icons/ErrorIcon'
+import { ClockIcon } from '@app/_graphics/ClockIcon'
+import { InfoIcon } from '@app/_graphics/InfoIcon'
+import { CheckIcon } from '@app/_icons/CheckIcon'
+import { CloseIcon } from '@app/_icons/CloseIcon'
+import { ErrorIcon } from '@app/_icons/ErrorIcon'
 import { HeaderIntersectionObserver } from '@app/_providers/HeaderIntersectionObserver'
 // import { AuthProvider } from './Auth'
 import { ComputedCSSValuesProvider } from './ComputedCSSValues'
@@ -70,22 +70,22 @@ export const Providers: React.FC<{
                         <ToastContainer
                           position="bottom-center"
                           transition={Slide}
-                          icon={false}
+                          // icon={false}
                           // TODO: Redesign icons
-                          // icon={({ type }: IconProps) => {
-                          //   switch (type) {
-                          //     case 'info':
-                          //       return <InfoIcon />
-                          //     case 'success':
-                          //       return <CheckIcon />
-                          //     case 'warning':
-                          //       return <ErrorIcon />
-                          //     case 'error':
-                          //       return <CloseIcon />
-                          //     default:
-                          //       return null
-                          //   }
-                          // }}
+                          icon={({ type }: IconProps) => {
+                            switch (type) {
+                              case 'info':
+                                return <InfoIcon />
+                              case 'success':
+                                return <CheckIcon />
+                              case 'warning':
+                                return <ErrorIcon />
+                              case 'error':
+                                return <CloseIcon />
+                              default:
+                                return null
+                            }
+                          }}
                         />
                       </HeaderIntersectionObserver>
                     </PageTransition>

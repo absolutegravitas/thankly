@@ -8,6 +8,7 @@ import { layoutField } from '@cms/_fields/layoutField'
 import { upsertStripeProduct } from '@cms/_hooks/upsertStripeProduct'
 import { deleteStripeProduct } from '@cms/_hooks/deleteStripeProduct'
 import { adminsOnly, publishedOnly } from '@cms/_utilities/access'
+import { themeField } from '../_fields/blockFields'
 
 export const Products: CollectionConfig = {
   slug: 'products',
@@ -50,6 +51,7 @@ export const Products: CollectionConfig = {
       fields: [
         { name: 'title', type: 'text', required: true },
         slugField(),
+        themeField,
         {
           name: 'stripeId',
           label: 'Stripe ID',

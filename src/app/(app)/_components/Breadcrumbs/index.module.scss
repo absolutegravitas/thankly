@@ -1,0 +1,35 @@
+@use '@app/_css/common.scss' as *;
+
+.breadcrumbs {
+  display: flex;
+}
+
+.label {
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  line-height: inherit;
+}
+
+.ellipsis {
+  overflow: hidden;
+  width: 100%;
+  max-width: max-content;
+}
+
+.labelContent {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+a.labelContent {
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.divider {
+  margin: 0 0.5rem;
+  color: var(--theme-elevation-300);
+}

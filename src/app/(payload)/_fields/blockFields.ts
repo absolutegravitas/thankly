@@ -10,7 +10,7 @@ interface Args {
 }
 
 export const themeField: Field = {
-  name: 'thm',
+  name: 'theme',
   label: 'Theme',
   type: 'select',
   admin: {

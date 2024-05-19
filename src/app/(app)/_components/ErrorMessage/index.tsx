@@ -3,8 +3,8 @@
 import React from 'react'
 import { CallToAction } from '@app/_blocks/CallToAction'
 
-// import BreadcrumbsBar from '@app/_components/Hero/BreadcrumbsBar'
-// import { DefaultHero } from '@app/_components/Hero/Default'
+// import BreadcrumbsBar from '@app/_blocks/Hero/BreadcrumbsBar'
+// import { DefaultHero } from '@app/_blocks/Hero/Default'
 
 export const ErrorMessage: React.FC<{ error?: string }> = ({ error }) => {
   return (

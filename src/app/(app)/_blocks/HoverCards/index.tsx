@@ -25,6 +25,7 @@ const Card: React.FC<{
   card: NonNullable<HoverCardsProps['hoverCardsFields']['cards']>[number]
   setHover: Dispatch<SetStateAction<number>>
 }> = ({ card, leader, setHover }) => {
+  // console.log('hovercards //', card)
   return (
     <div
       className={classes.cardWrapper}
@@ -48,6 +49,8 @@ export const HoverCards: React.FC<HoverCardsProps> = (props) => {
     hoverCardsFields: { richText, cards, settings },
     padding,
   } = props
+  // console.log('hovercardsfoelds //', props)
+
   const [activeGradient, setActiveGradient] = useState(1)
 
   const gradients = [1, 2, 3, 4]
@@ -61,7 +64,7 @@ export const HoverCards: React.FC<HoverCardsProps> = (props) => {
       className={[classes.wrapper].filter(Boolean).join(' ')}
     >
       <BackgroundGrid zIndex={1} />
-      <div className={classes.noiseWrapper}>
+      {/* <div className={classes.noiseWrapper}>
         {gradients.map((gradient) => {
           return (
             <Image
@@ -76,7 +79,7 @@ export const HoverCards: React.FC<HoverCardsProps> = (props) => {
             />
           )
         })}
-      </div>
+      </div> */}
       <Gutter>
         <div className={[classes.introWrapper, 'grid'].filter(Boolean).join(' ')}>
           {richText && (

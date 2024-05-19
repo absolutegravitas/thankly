@@ -6,6 +6,7 @@ import { revalidatePage } from '@cms/_utilities/revalidatePage'
 import { layoutField } from '@cms/_fields/layoutField'
 
 import { slugField } from '@cms/_fields/slug'
+import { themeField } from '../_fields/blockFields'
 // import pathField from '@cms/_fields/path'
 
 export const COLLECTION_SLUG_PAGE = 'pages'
@@ -46,6 +47,7 @@ export const Pages: CollectionConfig = {
     },
     slugField(),
     // pathField(),
+    themeField,
 
     {
       type: 'tabs',

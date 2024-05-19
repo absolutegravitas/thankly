@@ -16,7 +16,7 @@ export const HoverHighlights: React.FC<HoverHighlightProps> = (props) => {
   const {
     hoverHighlightsFields: { richText, addRowNumbers, highlights },
   } = props
-
+  console.log('hoverhighlightfields', props)
   const hasHighlights = highlights && highlights.length > 0
 
   return (

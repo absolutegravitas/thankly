@@ -162,6 +162,7 @@ export interface Product {
   id: number;
   title: string;
   slug?: string | null;
+  theme?: ('light' | 'dark') | null;
   stripeId?: string | null;
   shortDescription?: string | null;
   defaultImage?: number | Media | null;
@@ -247,6 +248,7 @@ export interface Page {
   id: number;
   title: string;
   slug?: string | null;
+  theme?: ('light' | 'dark') | null;
   layout?: {
     root: {
       type: string;
@@ -745,7 +747,7 @@ export interface Footer {
 export interface CallToAction {
   ctaFields?: {
     settings?: {
-      thm?: ('light' | 'dark') | null;
+      theme?: ('light' | 'dark') | null;
     };
     content?: {
       root: {

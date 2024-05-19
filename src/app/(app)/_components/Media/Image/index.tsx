@@ -85,7 +85,7 @@ export const Image: React.FC<Props> = (props) => {
         resource.darkModeFallback !== null && (
           <Image
             className={`${baseClasses} ${classes.themeDark}`}
-            src={`${process.env.NEXT_PUBLIC_SERVER_URL}/media/${resource.darkModeFallback.filename}`}
+            src={`${process.env.NEXT_PUBLIC_SERVER_URL}/api/media/${resource.darkModeFallback.filename}`}
             alt={alt || ''}
             onClick={onClick}
             onLoad={() => {

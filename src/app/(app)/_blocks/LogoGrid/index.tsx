@@ -44,6 +44,7 @@ const getRandomPosition = (excludePositions: number[]) => {
 }
 
 export const LogoGrid: React.FC<LogoGridProps> = ({ logoGridFields, padding }) => {
+  console.log('logoGrid', logoGridFields)
   const { richText, enableLink, link, logos, settings } = logoGridFields
 
   const [logoPositions, setLogoPositions] = useState<PositionedLogo[]>([])
