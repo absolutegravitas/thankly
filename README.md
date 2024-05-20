@@ -1,17 +1,18 @@
-
 # thankly.co repo
 
-## based on 
+## based on
+
 > One-click deployment template of Payload on Vercel + latest v3.x beta
 > deployments confirmed to be working on vercel
-> 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fpayloadcms%2Fvercel-deploy-payload-postgres&project-name=payload-project&env=PAYLOAD_SECRET&build-command=pnpm%20run%20ci&stores=%5B%7B%22type%22%3A%22postgres%22%7D%2C%7B%22type%22%3A%22blob%22%7D%5D)
+>
+> [![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fpayloadcms%2Fvercel-deploy-payload-postgres&project-name=payload-project&env=PAYLOAD_SECRET&build-command=pnpm%20run%20ci&stores=%5B%7B%22type%22%3A%22postgres%22%7D%2C%7B%22type%22%3A%22blob%22%7D%5D)
 
 - [Payload](https://github.com/payloadcms/payload) already installed into Next.js
 - PostgreSQL adapter configured for Neon
 - Cloud Storage plugin configured for [Vercel Blob Storage](https://vercel.com/docs/storage/vercel-blob)
 
 ## additional modifications
+
 1. bake in current (v2.x) payload-cms and payload-website components & code
 2. some components & ui havent been ported over (e.g. case study / statement)
 3. forms are still borked
@@ -22,25 +23,28 @@
 8. site specific next config (hardcoded csrf / cors configs)
 9. fighting with graphql and cors atm so all data is pulled via payloadHMR / payload.find
 
-
 ## instructions
+
 ### local development
+
 - pull repo
 - define your env vars -- the min required are:
-POSTGRES_URL=
-PAYLOAD_SECRET=
-BLOB_READ_WRITE_TOKEN=
-NEXT_PUBLIC_SERVER_URL=http://localhost:3000
+  POSTGRES_URL=
+  PAYLOAD_SECRET=
+  BLOB_READ_WRITE_TOKEN=
+  NEXT_PUBLIC_SERVER_URL=http://localhost:3000
 - setup your local db, i've used dockerised postgres via the ./start-database.sh script
 - use the bash script to start a postgresql container with the un / password set from the .env file
 - first time startup will be slow (db tables being created, serve
 
 #### pre-conditions
+
 - on local db table changes are pushed immediately so no need to run migrate
 - docker container needs to be started and running (duh)
 - data will be purged if container shuts down (duh)
 
 #### commands
+
 // start docker if not already started
 sudo systemctl start docker
 
@@ -68,8 +72,8 @@ BEGIN
     END LOOP;
 END $$;
 
-
 ### production
+
 have to run pnpm payload migrate:create every time db structure is changed otherwise payload will not build on vercel because of db migration issues and default to dev mode
 
 // other
