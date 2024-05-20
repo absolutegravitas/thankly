@@ -3,12 +3,10 @@
 import React, { useState } from 'react'
 import Image, { StaticImageData } from 'next/image'
 
-import cssVariables from '@app/_css/cssVariables'
+import { breakpoints } from '@app/_css/cssVariables'
 import { Props } from '../types'
 
 import classes from './index.module.scss'
-
-const { breakpoints } = cssVariables
 
 export const ImageComponent: React.FC<Props> = (props) => {
   const {
