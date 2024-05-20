@@ -2,10 +2,8 @@
 import 'server-only'
 import configPromise from '@payload-config'
 import { getPayloadHMR } from '@payloadcms/next/utilities'
-import { getPayload } from 'payload'
 import { unstable_cache } from 'next/cache'
-import { Order, Page, Product, Setting } from '@payload-types'
-import { notFound } from 'next/navigation'
+import { Page, Product, Order, Setting } from '@payload-types'
 
 const payload = await getPayloadHMR({ config: await configPromise })
 
