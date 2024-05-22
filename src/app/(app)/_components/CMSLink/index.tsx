@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { Page, Product } from '@payload-types'
 // eslint-disable-next-line import/no-cycle
 import { Button, ButtonProps } from '../Button'
+import { buttonFormats } from '../../_css/tailwindClasses'
 
 type PageReference = {
   value: string | Page
@@ -21,14 +22,54 @@ export type Reference = PageReference | ProductsReference | null
 export type CMSLinkType = {
   type?: LinkType | null
   newTab?: boolean | null
-  reference?: Reference | null
+  reference?: Reference | null | any
   url?: string | null
   label?: string | null
-  appearance?: 'default' | 'primary' | 'secondary' | 'text' | null
+  appearance?:
+    | 'default'
+    | 'primary'
+    | 'secondary'
+    | 'text'
+    | null
+    | undefined
+    | ''
+    // for frontend driven picks
+    | 'default'
+    | 'contentDark'
+    | 'contentLight'
+    | 'contentTransparentDark'
+    | 'contentTransparentLight'
+    | 'heroDark'
+    | 'heroLight'
+    | 'heroTransparentDark'
+    | 'heroTransparentLight'
+    | 'productDark'
+    | 'productLight'
+    | 'productTransparentDark'
+    | 'productTransparentLight'
+
+    // for backend driven picks
+    | 'links'
+    | 'content'
+    | 'hero'
+    | 'product'
+    | 'cart'
+    | 'checkout'
+    | 'order'
+    | 'account'
+    | 'login'
+    | 'register'
+    | 'reset'
+    | 'pagination'
   children?: React.ReactNode
   fullWidth?: boolean
   mobileFullWidth?: boolean
   className?: string
+  icon?: boolean
+  size?: null | undefined | '' | 'extrasmall' | 'small' | 'medium' | 'large'
+  width?: null | undefined | '' | 'narrow' | 'wide' | 'full'
+  style?: null | undefined | '' | 'dark' | 'light' | 'transparentLight' | 'transparentDark'
+  iconPosition?: 'left' | 'right' | null | undefined
   onClick?: (event: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>) => void
   onMouseEnter?: () => void
   onMouseLeave?: () => void
@@ -42,26 +83,21 @@ type GenerateSlugType = {
 }
 const generateHref = (args: GenerateSlugType): string => {
   const { reference, url, type } = args
-
   if ((type === 'custom' || type === undefined) && url) {
-    return url
+    // if (url.startsWith('http://') || url.startsWith('https://')) {
+    //   return url
+    // }
+    return `//${url}`
   }
 
   if (type === 'reference' && reference?.value && typeof reference.value !== 'string') {
     if (reference.relationTo === 'pages') {
-      const value = reference.value as Page
-      const breadcrumbs = value?.breadcrumbs
-      const hasBreadcrumbs = breadcrumbs && Array.isArray(breadcrumbs) && breadcrumbs.length > 0
-      if (hasBreadcrumbs) {
-        return breadcrumbs[breadcrumbs.length - 1]?.url as string
-      }
+      return `/${reference.value.slug}`
     }
 
     if (reference.relationTo === 'products') {
       return `/products/${reference.value.slug}`
     }
-
-    return `/${reference.relationTo}/${reference.value.slug}`
   }
 
   return ''
@@ -75,16 +111,90 @@ export const CMSLink: React.FC<CMSLinkType> = ({
   label,
   appearance,
   children,
-  className,
+  className: classNameFromProps,
+  icon,
+  iconPosition,
+  size,
+  width,
+  style,
   onClick,
   onMouseEnter,
   onMouseLeave,
   fullWidth = false,
   mobileFullWidth = false,
-  buttonProps: buttonPropsFromProps,
+  // buttonProps: buttonPropsFromProps,
 }) => {
   // console.log('appearance', appearance)
-  let href = generateHref({ type, url, reference })
+  const href = generateHref({ type, url, reference }) || url || ''
+  console.log(href)
+  // const href =
+  //   type === 'reference' && typeof reference?.value === 'object' && reference.value.slug
+  //     ? `${reference?.relationTo !== 'pages' ? `/${reference?.relationTo}` : ''}/${reference.value.slug}`
+  //     : type === 'custom'
+  //       ? url
+  //       : url
+
+  const newTabProps = newTab ? { target: '_blank', rel: 'noopener noreferrer' } : {}
+
+  // merge class names
+  let className = [classNameFromProps].filter(Boolean).join(' ')
+  className = [
+    className, // additional classes passed in
+    buttonFormats.global,
+
+    // size
+    size === 'large' && buttonFormats.large,
+    (size === null || size === undefined || size === 'medium') && buttonFormats.medium,
+    size === 'small' && buttonFormats.small,
+    size === 'extrasmall' && buttonFormats.extrasmall,
+
+    // width
+    width === 'narrow' && buttonFormats.narrow,
+    (width === null || width === undefined || width === 'wide') && buttonFormats.wide,
+    width === 'full' && buttonFormats.full,
+
+    // style
+    style === 'dark' && buttonFormats.dark,
+    style === 'light' && buttonFormats.light,
+    style === 'transparentLight' && buttonFormats.transparentLight,
+    style === 'transparentDark' && buttonFormats.transparentDark,
+
+    // appearance
+    (appearance === null || appearance === undefined) && buttonFormats.default,
+    appearance === 'links' && buttonFormats.links,
+    appearance === 'content' && buttonFormats.content,
+    appearance === 'hero' && buttonFormats.hero,
+    appearance === 'product' && buttonFormats.product,
+    appearance === 'checkout' && buttonFormats.checkout,
+    appearance === 'cart' && buttonFormats.cart,
+    appearance === 'pagination' && buttonFormats.pagination,
+
+    // appearance from front end
+    appearance === 'default' && buttonFormats.links,
+
+    appearance === 'contentDark' && [buttonFormats.content, buttonFormats.dark].join(' '),
+    appearance === 'contentLight' && [buttonFormats.content, buttonFormats.light].join(' '),
+    appearance === 'contentTransparentDark' &&
+      [buttonFormats.content, buttonFormats.transparentDark].join(' '),
+    appearance === 'contentTransparentLight' &&
+      [buttonFormats.content, buttonFormats.transparentLight].join(' '),
+
+    appearance === 'heroDark' && [buttonFormats.hero, buttonFormats.dark].join(' '),
+    appearance === 'heroLight' && [buttonFormats.hero, buttonFormats.light].join(' '),
+    appearance === 'heroTransparentDark' &&
+      [buttonFormats.hero, buttonFormats.transparentDark].join(' '),
+    appearance === 'heroTransparentLight' &&
+      [buttonFormats.hero, buttonFormats.transparentLight].join(' '),
+
+    appearance === 'productDark' && [buttonFormats.product, buttonFormats.dark].join(' '),
+    appearance === 'productLight' && [buttonFormats.product, buttonFormats.dark].join(' '),
+    appearance === 'productTransparentDark' &&
+      [buttonFormats.product, buttonFormats.transparentDark].join(' '),
+    appearance === 'productTransparentLight' &&
+      [buttonFormats.product, buttonFormats.transparentLight].join(' '),
+  ].join(' ')
+
+  // if (!href) return null
 
   if (!href) {
     return (
@@ -100,72 +210,89 @@ export const CMSLink: React.FC<CMSLinkType> = ({
     )
   }
 
-  if (!appearance) {
-    const hrefIsLocal = ['tel:', 'mailto:', '/'].some((prefix) => href.startsWith(prefix))
+  return (
+    <Link
+      href={href}
+      onClick={onClick} // Pass onClick handler
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+      className={className}
+      scroll={true}
+      {...newTabProps}
+    >
+      {label && label} {children && children}
+      {/* {!icon && appearance != 'links' && (
+        <ArrowRightIcon className="h-4 w-4" strokeWidth={1.5} aria-hidden="true" />
+      )} */}
+    </Link>
+  )
 
-    if (!hrefIsLocal && href !== '#') {
-      try {
-        const objectURL = new URL(href)
-        if (objectURL.origin === process.env.NEXT_PUBLIC_SERVER_URL) {
-          href = objectURL.href.replace(process.env.NEXT_PUBLIC_SERVER_URL, '')
-        }
-      } catch (e) {
-        // Do not throw error if URL is invalid
-        // This will prevent the page from building
-        console.log(`Failed to format url: ${href}`, e) // eslint-disable-line no-console
-      }
-    }
+  // if (!appearance) {
+  //   const hrefIsLocal = ['tel:', 'mailto:', '/'].some((prefix) => href.startsWith(prefix))
 
-    const newTabProps = newTab ? { target: '_blank', rel: 'noopener noreferrer' } : {}
+  //   if (!hrefIsLocal && href !== '#') {
+  //     try {
+  //       const objectURL = new URL(href)
+  //       if (objectURL.origin === process.env.NEXT_PUBLIC_SERVER_URL) {
+  //         href = objectURL.href.replace(process.env.NEXT_PUBLIC_SERVER_URL, '')
+  //       }
+  //     } catch (e) {
+  //       // Do not throw error if URL is invalid
+  //       // This will prevent the page from building
+  //       console.log(`Failed to format url: ${href}`, e) // eslint-disable-line no-console
+  //     }
+  //   }
 
-    if (href.indexOf('/') === 0) {
-      return (
-        <Link
-          href={href}
-          {...newTabProps}
-          className={className}
-          onClick={onClick}
-          onMouseEnter={onMouseEnter}
-          onMouseLeave={onMouseLeave}
-          prefetch={false}
-        >
-          {label && label}
-          {children && children}
-        </Link>
-      )
-    }
+  //   const newTabProps = newTab ? { target: '_blank', rel: 'noopener noreferrer' } : {}
 
-    return (
-      <a
-        href={href}
-        {...newTabProps}
-        className={className}
-        onMouseEnter={onMouseEnter}
-        onMouseLeave={onMouseLeave}
-        onClick={onClick}
-      >
-        {label && label}
-        {children && children}
-      </a>
-    )
-  }
+  //   if (href.indexOf('/') === 0) {
+  //     return (
+  //       <Link
+  //         href={href}
+  //         {...newTabProps}
+  //         className={className}
+  //         onClick={onClick}
+  //         onMouseEnter={onMouseEnter}
+  //         onMouseLeave={onMouseLeave}
+  //         prefetch={false}
+  //       >
+  //         {label && label}
+  //         {children && children}
+  //       </Link>
+  //     )
+  //   }
 
-  const buttonProps: ButtonProps = {
-    ...buttonPropsFromProps,
-    newTab,
-    href,
-    appearance,
-    label,
-    onClick,
-    onMouseEnter,
-    onMouseLeave,
-    fullWidth,
-    mobileFullWidth,
-  }
+  //   return (
+  //     <a
+  //       href={href}
+  //       {...newTabProps}
+  //       className={className}
+  //       onMouseEnter={onMouseEnter}
+  //       onMouseLeave={onMouseLeave}
+  //       onClick={onClick}
+  //     >
+  //       {label && label}
+  //       {children && children}
+  //     </a>
+  //   )
+  // }
 
-  if (appearance === 'default') {
-    buttonProps.icon = 'arrow'
-  }
+  // const buttonProps: ButtonProps = {
+  //   ...buttonPropsFromProps,
+  //   newTab,
+  //   href,
+  //   appearance,
+  //   label,
+  //   onClick,
+  //   onMouseEnter,
+  //   onMouseLeave,
+  //   fullWidth,
+  //   mobileFullWidth,
+  // }
 
-  return <Button {...buttonProps} className={`${className} no-underline`} el="link" />
+  // if (appearance === 'default') {
+  //   buttonProps.icon = 'arrow'
+  // }
+
+  // return <Button {...buttonProps} className={`${className} no-underline`} el="link" />
 }

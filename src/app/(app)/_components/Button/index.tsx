@@ -23,6 +23,36 @@ export type ButtonProps = HTMLAttributes<HTMLButtonElement> & {
     | 'success'
     | 'warning'
     | null
+    | undefined
+    | ''
+    // for frontend driven picks
+    | 'default'
+    | 'contentDark'
+    | 'contentLight'
+    | 'contentTransparentDark'
+    | 'contentTransparentLight'
+    | 'heroDark'
+    | 'heroLight'
+    | 'heroTransparentDark'
+    | 'heroTransparentLight'
+    | 'productDark'
+    | 'productLight'
+    | 'productTransparentDark'
+    | 'productTransparentLight'
+
+    // for backend driven picks
+    | 'links'
+    | 'content'
+    | 'hero'
+    | 'product'
+    | 'cart'
+    | 'checkout'
+    | 'order'
+    | 'account'
+    | 'login'
+    | 'register'
+    | 'reset'
+    | 'pagination'
   el?: 'button' | 'link' | 'a' | 'div'
   href?: string | null
   newTab?: boolean | null
