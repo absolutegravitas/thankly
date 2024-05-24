@@ -15,6 +15,7 @@ import { getImplicitPreference, themeLocalStorageKey } from '@app/_providers/The
 import { Theme } from '@app/_providers/Theme/types'
 
 import classes from './classes.module.scss'
+import { blockFormats } from '@/app/(app)/_css/tailwindClasses'
 
 export const SubFooter = () => {
   const { user } = useAuth()
@@ -40,9 +41,24 @@ export const SubFooter = () => {
     <Gutter className={classes.footerWrap}>
       <footer className={['grid', classes.footer].join(' ')}>
         <nav className={['cols-12 cols-m-6', classes.footerLinks].join(' ')}>
-          <Link href={'/terms'}>Terms</Link>
+          <div
+          // className={`border-t border-gray-900 bg-green px-3  py-4 font-body text-white sm:py-3 md:flex md:items-center md:justify-between`}
+          >
+            <div
+            // className={[blockFormats.blockWidth, ` mt-0 align-middle #text-white md:order-1`]
+            //   .filter(Boolean)
+            //   .join(' ')}
+            >
+              <span className="font-logo text-lg font-bold tracking-[-.055em] #text-white">{`thankly `}</span>
+              <span className="text-xs uppercase">
+                {' | ABN 84 662 101 859 | '} &copy; {new Date().getFullYear()}{' '}
+                {` All Rights Reserved`}
+              </span>
+            </div>
+          </div>
+          {/* <Link href={'/terms'}>Terms</Link>
           <Link href={'/privacy'}>Privacy</Link>
-          {user ? <Link href={'/logout'}>Logout</Link> : <Link href={'/login'}>Login</Link>}
+          {user ? <Link href={'/logout'}>Logout</Link> : <Link href={'/login'}>Login</Link>} */}
         </nav>
         <div className={[classes.selectContainer, 'cols-4 cols-m-2'].join(' ')}>
           <label className="visually-hidden" htmlFor={themeId}>

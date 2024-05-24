@@ -74,6 +74,9 @@ $curve: cubic-bezier(0.165, 0.84, 0.44, 1);
   color: var(--color-base-0);
   margin: 0;
   @include small;
+  @include data-theme-selector('light') {
+    color: var(--color-base-1000);
+  }
 }
 
 .inputWrap {
@@ -90,7 +93,7 @@ $curve: cubic-bezier(0.165, 0.84, 0.44, 1);
 .emailInput input {
   @include body;
   padding: 1rem 1.5rem;
-  background: var(--color-base-1000);
+  // background: var(--color-base-1000);
   border-color: var(--grid-line-dark);
   border-left: none;
   border-right: none;
@@ -99,17 +102,17 @@ $curve: cubic-bezier(0.165, 0.84, 0.44, 1);
   height: auto;
 
   @include data-theme-selector('light') {
-    background: var(--color-base-1000);
+    background: var(--color-base-0);
   }
 
   &::placeholder {
-    color: var(--color-base-300);
+    color: var(--color-base-700);
   }
 }
 
 .inputArrow {
   z-index: 1;
-  color: var(--color-base-300);
+  color: var(--color-base-700);
   transform: rotate(45deg);
   transition: transform 350ms $curve;
   height: 0.6rem;
@@ -137,7 +140,7 @@ $curve: cubic-bezier(0.165, 0.84, 0.44, 1);
 .socialIconLink {
   display: inline-flex;
   transition: opacity 350ms $curve;
-
+  color: var(--theme-elevation-500);
   &:hover {
     opacity: 0.75;
   }
@@ -145,6 +148,10 @@ $curve: cubic-bezier(0.165, 0.84, 0.44, 1);
   & svg {
     height: auto;
     width: 1.6rem;
+    &::before {
+      color: var(--color-theme-500);
+      transition: fill 350ms $curve; // Adding transition for color change
+    }
   }
 }
 
