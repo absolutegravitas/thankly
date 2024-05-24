@@ -21,6 +21,7 @@ export const ProductTemplate: React.FC<{ product: Product }> = ({ product }) => 
   return (
     <React.Fragment>
       <Blocks
+        product={product}
         blocks={product?.layout?.root?.children}
         // locale="en"
         // disableTopPadding={!hero || hero?.type === 'none' || hero?.type === 'titleOnly'}
