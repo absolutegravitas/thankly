@@ -1,0 +1,20 @@
+@use "@scss/common" as *;
+
+.message {
+  padding: 1.5rem 2rem;
+
+  &::before {
+    content: '';
+    width: calc(100% - 2px);
+    position: absolute;
+    height:100%;
+    left: 1px;
+    top:0;
+    z-index: -1;
+    background-color: var(--theme-input-bg);
+  }
+
+  @include mid-break {
+    padding: 1.5rem 1rem;
+  }
+}
