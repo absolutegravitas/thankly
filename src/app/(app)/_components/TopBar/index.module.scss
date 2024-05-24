@@ -6,7 +6,8 @@
   height: var(--top-bar-height);
   width: 100%;
   z-index: var(--z-nav);
-  background: var(--color-base-1000);
+  // background: var(--color-base-1000);
+  background: var(--theme-bg);
   color: var(--color-base-100);
 
   .wrap {

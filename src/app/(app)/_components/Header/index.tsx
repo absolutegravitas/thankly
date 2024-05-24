@@ -4,7 +4,7 @@ import * as React from 'react'
 import { useModal } from '@faceless-ui/modal'
 import { useScrollInfo } from '@faceless-ui/scroll-info'
 import { useSearchParams } from 'next/navigation'
-
+import { TopBar } from '@app/_components/TopBar'
 import { UniversalTruth } from '@app/_components/UniversalTruth'
 import { Menu } from '@payload-types'
 import { useHeaderObserver } from '@app/_providers/HeaderIntersectionObserver'
@@ -13,7 +13,8 @@ import { MobileNav, modalSlug as mobileNavModalSlug } from './MobileNav'
 
 import classes from './index.module.scss'
 
-export const Header: React.FC<Menu> = ({ tabs }) => {
+export const Header: React.FC<Menu> = ({ menu, topBar }: any) => {
+  console.log('topbar ', topBar)
   const { isModalOpen } = useModal()
   const isMobileNavOpen = isModalOpen(mobileNavModalSlug)
   const { headerTheme } = useHeaderObserver()
@@ -30,6 +31,7 @@ export const Header: React.FC<Menu> = ({ tabs }) => {
 
   return (
     <div data-theme={headerTheme}>
+      {/* <TopBar /> */}
       <header
         className={[
           classes.header,
@@ -41,8 +43,10 @@ export const Header: React.FC<Menu> = ({ tabs }) => {
           .filter(Boolean)
           .join(' ')}
       >
-        <DesktopNav tabs={tabs} hideBackground={hideBackground} />
-        <MobileNav tabs={tabs} />
+        {topBar && <TopBar {...topBar} />}
+
+        <DesktopNav tabs={menu?.tabs} hideBackground={hideBackground} />
+        <MobileNav tabs={menu?.tabs} />
         <React.Suspense>
           <UniversalTruth />
         </React.Suspense>

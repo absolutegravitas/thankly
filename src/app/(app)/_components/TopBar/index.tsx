@@ -10,23 +10,25 @@ import type { TopBar as TopBarType } from '@payload-types'
 
 import classes from './index.module.scss'
 
-export const TopBar: React.FC<TopBarType> = ({ content }) => {
+export const TopBar: React.FC<TopBarType> = (props) => {
   const { isModalOpen } = useModal()
   const isMobileNavOpen = isModalOpen(modalSlug)
-
+  const { content } = props
   return (
-    <div
-      className={[classes.topBar, isMobileNavOpen && classes.mobileNavOpen]
-        .filter(Boolean)
-        .join(' ')}
-    >
-      <div className={classes.wrap}>
-        {content && (
-          <div>
-            <RichText className={classes.richText} content={content} />
+    <>
+      {content && typeof content === 'object' && Object.keys(content).length > 0 && (
+        <div
+          className={[classes.topBar, isMobileNavOpen && classes.mobileNavOpen]
+            .filter(Boolean)
+            .join(' ')}
+        >
+          <div className={classes.wrap}>
+            <div>
+              <RichText className={classes.richText} content={content} />
+            </div>
           </div>
-        )}
-      </div>
-    </div>
+        </div>
+      )}
+    </>
   )
 }
