@@ -20,9 +20,9 @@ export const CallToAction: Block = {
         // richText(),
         linkGroup({
           looks: false,
-          additions: {
-            npmCta: true,
-          },
+          // additions: {
+          //   npmCta: true,
+          // },
         }),
       ],
     }),

@@ -46,13 +46,14 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const settings: any = await fetchSettings()
-  console.log('settings found', settings)
+  console.log('settings found', settings.footer)
 
   return (
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${inter.className} ${leaguespartan.variable} ${raleway.variable}`}
+      className={`${inter.className}
+      ${leaguespartan.variable}`}
     >
       <PrivacyProvider>
         <head>
@@ -61,6 +62,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <link rel="preconnect" href="https://www.googletagmanager.com" />
           <link rel="preconnect" href="https://www.google-analytics.com" />
           <GoogleAnalytics />
+          {/* <GoogleTagManager /> */}
           <Script
             id="theme-script"
             strategy="beforeInteractive"
@@ -102,12 +104,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           />
         </head>
         <body>
-          {/* <GoogleTagManager /> */}
           <Providers>
-            {settings?.topBar && Object.keys(settings.topBar).length > 0 && (
-              <TopBar {...settings?.topBar} />
-            )}
-            {settings?.menu && <Header {...settings?.menu} />}
+            {settings && <Header {...settings} />}
             {children}
             {settings?.footer && <Footer {...settings?.footer}></Footer>}
             <PrivacyBanner />

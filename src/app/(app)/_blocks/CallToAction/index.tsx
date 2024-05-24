@@ -32,7 +32,7 @@ export const CallToAction: React.FC<CallToActionProps> = (props) => {
 
   const hasLinks = links && links.length > 0
 
-  // console.log('content for richText // ', content.root.children)
+  console.log('content for richText // ', JSON.stringify(content))
   return (
     <BlockWrapper settings={settings} padding={padding}>
       {/* <BackgroundGrid zIndex={0} /> */}
@@ -59,27 +59,18 @@ export const CallToAction: React.FC<CallToActionProps> = (props) => {
               <CrosshairIcon className={[classes.crosshairBottomRight].filter(Boolean).join(' ')} /> */}
 
               {hasLinks && (
-                <div className={[classes.links, 'cols-16 cols-m-8'].filter(Boolean).join(' ')}>
-                  {links.map(({ link, type: ctaType, npmCta }: any, index: any) => {
+                <div className={[, classes.links, 'cols-16 cols-m-8'].filter(Boolean).join(' ')}>
+                  {links.map(({ link, type: ctaType }: any, index: any) => {
                     const type = ctaType ?? 'link'
-
-                    // if (type === 'npmCta') {
-                    //   return (
-                    //     <CreatePayloadApp
-                    //       key={index}
-                    //       style="cta"
-                    //       label={npmCta?.label}
-                    //       className={classes.npmCta}
-                    //       background={false}
-                    //     />
-                    //   )
-                    // }
 
                     return (
                       <CMSLink
                         {...link}
                         key={index}
                         appearance={'default'}
+                        // width={'wide'}
+                        // size={'medium'}
+                        // icon={false}
                         buttonProps={{
                           appearance: 'default',
                           size: 'large',

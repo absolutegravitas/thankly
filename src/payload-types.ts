@@ -239,6 +239,8 @@ export interface Media {
   filesize?: number | null;
   width?: number | null;
   height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -766,11 +768,7 @@ export interface CallToAction {
     } | null;
     links?:
       | {
-          type?: ('link' | 'npmCta') | null;
-          npmCta?: {
-            label: string;
-          };
-          link?: {
+          link: {
             type?: ('reference' | 'custom') | null;
             newTab?: boolean | null;
             reference?:

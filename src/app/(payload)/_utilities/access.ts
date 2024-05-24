@@ -45,6 +45,11 @@ export const adminsOnly: Access = ({ req: { user } }) => {
   return Boolean(user?.roles?.includes('admin'))
 }
 
+// export const isAdminOrCurrentUser: Access = ({ req }) => {
+//   if (req?.user?.role === 'admin') return true
+//   return { user: { equals: req.user?.id } }
+// }
+
 // admins and user only
 export const adminsAndUserOnly: Access = ({ req: { user }, id }) => {
   if (!user || !user.roles) {

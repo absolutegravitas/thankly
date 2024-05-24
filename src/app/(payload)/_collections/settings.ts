@@ -7,7 +7,6 @@ import { adminsOnly } from '../_utilities/access'
 
 export const Settings: GlobalConfig = {
   slug: 'settings',
-  dbName: 'settings',
   access: {
     read: () => true,
     update: adminsOnly,

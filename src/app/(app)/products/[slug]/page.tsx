@@ -4,23 +4,23 @@ import { Metadata } from 'next'
 import { draftMode } from 'next/headers'
 import { notFound } from 'next/navigation'
 
-import type { Page } from '@payload-types'
-import { fetchPage, fetchPages } from '@app/_queries'
+import type { Product } from '@payload-types'
+import { fetchProduct, fetchProducts } from '@app/_queries'
 
 import { generateMeta } from '@app/_utilities/generateMeta'
-import { PageTemplate } from './page.client'
+import { ProductTemplate } from './page.client'
 
-export default async function Page({ params: { slug = 'home' } }: any) {
+export default async function Product({ params: { slug } }: any) {
   const { isEnabled: isDraftMode } = draftMode()
 
-  let page: Page | null = null
-  page = await fetchPage(slug)
+  let product: Product | null = null
+  product = await fetchProduct(slug)
 
   // if there's no page, or page is not an object then also return not found
   if (
-    !page ||
-    typeof page !== 'object' ||
-    (Object.keys(page).length === 0 && page.constructor === Object)
+    !product ||
+    typeof product !== 'object' ||
+    (Object.keys(product).length === 0 && product.constructor === Object)
   ) {
     return notFound()
   }
@@ -28,39 +28,39 @@ export default async function Page({ params: { slug = 'home' } }: any) {
   return (
     <>
       <Suspense fallback="fetching page">
-        <PageTemplate page={page} />
+        <ProductTemplate product={product} />
       </Suspense>
     </>
   )
 }
 
 export async function generateStaticParams() {
-  let pages: Page[] | null = null
+  let products: Product[] | null = null
 
   try {
-    pages = await fetchPages()
+    products = await fetchProducts()
   } catch (error) {
-    console.error('fetchPages error //', error)
+    console.error('fetchProducts error //', error)
     return []
   }
 
-  console.log('pagedata found //', pages)
+  console.log('pagedata found //', products)
 
   // Strip all keys from pages except slug
-  if (pages && pages.length > 0) {
-    return pages.map(({ slug }: any) => ({ slug }))
+  if (products && products.length > 0) {
+    return products.map(({ slug }: any) => ({ slug }))
   }
 
   return []
 }
 
-export async function generateMetadata({ params: { slug = 'home' } }): Promise<Metadata> {
+export async function generateMetadata({ params: { slug } }: any): Promise<Metadata> {
   const { isEnabled: isDraftMode } = draftMode()
 
-  let page: Page | null = null
+  let product: Product | null = null
 
   try {
-    page = await fetchPage(slug)
+    product = await fetchProduct(slug)
   } catch (error) {
     // don't throw an error if the fetch fails
     // this is so that we can render a static home page for the demo
@@ -68,5 +68,5 @@ export async function generateMetadata({ params: { slug = 'home' } }): Promise<M
     // in production you may want to redirect to a 404  page or at least log the error somewhere
   }
 
-  return generateMeta({ doc: page })
+  return generateMeta({ doc: product })
 }

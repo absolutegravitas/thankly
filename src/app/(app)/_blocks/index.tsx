@@ -51,7 +51,7 @@ const blockComponents = {
   steps: Steps,
   stickyHighlights: StickyHighlights,
 }
-const Blocks = ({ blocks, locale }: any) => {
+const Blocks = ({ product, blocks, locale }: any) => {
   // console.log('blocks //', JSON.stringify(blocks))
 
   return (
