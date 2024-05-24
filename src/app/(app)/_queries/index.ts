@@ -1,12 +1,9 @@
 // 'use server'
 import 'server-only'
-import configPromise from '@payload-config'
-import { getPayloadHMR } from '@payloadcms/next/utilities'
 import { unstable_cache } from 'next/cache'
 import { Page, Product, Order, Setting, User } from '@payload-types'
 import { headers as getHeaders } from 'next/headers'
-
-export const payload = await getPayloadHMR({ config: await configPromise })
+import { payload } from '@app/_utilities/getPayload'
 
 export const fetchProduct = (slug: string): Promise<Product | null> => {
   const cachedFetchPage = unstable_cache(
