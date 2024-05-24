@@ -7,7 +7,7 @@ const CallToAction = dynamic(() => import('./CallToAction'))
 const CardGrid = dynamic(() => import('./CardGrid'))
 const Content = dynamic(() => import('./Content'))
 const ContentGrid = dynamic(() => import('./ContentGrid'))
-// const FormBlock = dynamic(() => import('./FormBlock'))
+const FormBlock = dynamic(() => import('./FormBlock'))
 const Hero = dynamic(() => import('./Hero'))
 const HoverCards = dynamic(() => import('./HoverCards'))
 const HoverHighlights = dynamic(() => import('./HoverHighlights'))
@@ -20,6 +20,8 @@ const Pricing = dynamic(() => import('./Pricing'))
 const Reusable = dynamic(() => import('./Reusable'))
 const RichText = dynamic(() => import('./RichText'))
 const Slider = dynamic(() => import('./Slider'))
+const Statement = dynamic(() => import('./Statement'))
+
 const Steps = dynamic(() => import('./Steps'))
 const StickyHighlights = dynamic(() => import('./StickyHighlights'))
 
@@ -36,7 +38,7 @@ const blockComponents = {
   content: Content,
   contentGrid: ContentGrid,
   cta: CallToAction,
-  // form: FormBlock,
+  form: FormBlock,
   hero: Hero,
   hoverCards: HoverCards,
   hoverHighlights: HoverHighlights,
@@ -49,10 +51,24 @@ const blockComponents = {
   RichText: RichText,
   slider: Slider,
   steps: Steps,
+  statement: Statement,
   stickyHighlights: StickyHighlights,
 }
 const Blocks = ({ product, blocks, locale }: any) => {
   // console.log('blocks //', JSON.stringify(blocks))
+  // console.log('product info //', JSON.stringify(product))
+
+  let productInfo = {}
+  if (product) {
+    productInfo = Object.keys(product).reduce((acc: Record<string, any>, key) => {
+      if (key !== 'layout' && key !== 'breadcrumbs' && key !== 'meta') {
+        acc[key] = product[key]
+      }
+      return acc
+    }, {})
+  }
+
+  // console.log('product info //', JSON.stringify(productInfo))
 
   return (
     <>
@@ -74,7 +90,13 @@ const Blocks = ({ product, blocks, locale }: any) => {
               // @ts-ignore
               const BlockComponent = blockComponents[block.fields.blockType] ?? null
               return BlockComponent ? (
-                <BlockComponent key={ix} {...block.fields} blockIndex={ix} locale={locale} />
+                <BlockComponent
+                  key={ix}
+                  {...productInfo}
+                  {...block.fields}
+                  blockIndex={ix}
+                  locale={locale}
+                />
               ) : null
             }
             break

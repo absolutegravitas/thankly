@@ -10,7 +10,7 @@ import { ExtractBlockProps } from '@app/_utilities/extractBlockProps'
 export type Props = ExtractBlockProps<'reuse'>
 
 export const ReusableContentBlock: React.FC<Props> = ({ reuseBlockFields }) => {
-  console.log('reusable ', reuseBlockFields)
+  // console.log('reusable ', reuseBlockFields)
   const { reusable, customId } = reuseBlockFields
 
   if (typeof reusable === 'object' && reusable !== null) {

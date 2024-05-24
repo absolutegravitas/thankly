@@ -11,20 +11,13 @@ import { formBuilderPlugin } from '@payloadcms/plugin-form-builder'
 import { nestedDocsPlugin } from '@payloadcms/plugin-nested-docs'
 
 // collections
-import { Users, sessions } from '@cms/_collections/users'
+import { Users } from '@cms/_collections/users'
 import { Media } from '@cms/_collections/media'
 import { Products } from '@cms/_collections/products'
 import { Pages } from '@cms/_collections/pages'
 import { Reusable } from '@cms/_collections/reusables'
 import { Orders } from '@cms/_collections/orders'
 import { Settings } from '@cms/_collections/settings'
-// import { resendAdapter } from '@payloadcms/email-resend'
-import { stripePlugin } from '@payloadcms/plugin-stripe'
-import {
-  COLLECTION_SLUG_MEDIA,
-  COLLECTION_SLUG_PAGE,
-  COLLECTION_SLUG_PRODUCTS,
-} from '@cms/_collections/config'
 
 import { buildConfig } from 'payload/config'
 import { fileURLToPath } from 'url'
@@ -34,7 +27,7 @@ const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
 export default buildConfig({
-  collections: [Users, Orders, Products, Pages, Reusable, Media, sessions],
+  collections: [Users, Orders, Products, Pages, Reusable, Media],
   globals: [Settings],
   editor: lexicalEditor({}),
   db: postgresAdapter({ pool: { connectionString: process.env.POSTGRES_URL } }),
@@ -42,14 +35,7 @@ export default buildConfig({
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: { outputFile: path.resolve(dirname, 'payload-types.ts') },
   sharp,
-  // email:
-  //   process.env.RESEND_DEFAULT_EMAIL && process.env.AUTH_RESEND_KEY
-  //     ? resendAdapter({
-  //         defaultFromAddress: process.env.RESEND_DEFAULT_EMAIL,
-  //         defaultFromName: 'Thankly Admin',
-  //         apiKey: process.env.AUTH_RESEND_KEY || '',
-  //       })
-  //     : undefined,
+
   admin: {
     user: Users.slug,
     livePreview: {
@@ -86,32 +72,6 @@ export default buildConfig({
   ].filter(Boolean),
 
   plugins: [
-    stripePlugin({
-      isTestKey: Boolean(process.env.NEXT_PUBLIC_STRIPE_IS_TEST_KEY),
-      rest: false,
-      stripeSecretKey: process.env.STRIPE_SECRET_KEY || '',
-      stripeWebhooksEndpointSecret: process.env.STRIPE_WEBHOOKS_SIGNING_SECRET,
-      // webhooks: {
-      //   'price.updated': priceUpsert,
-      //   'price.created': priceUpsert,
-      //   // 'customer.subscription.created': subscriptionUpsert,
-      //   // 'customer.subscription.updated': subscriptionUpsert,
-      //   // 'customer.subscription.deleted': subscriptionDeleted,
-      // },
-      sync: [
-        {
-          collection: COLLECTION_SLUG_PRODUCTS,
-          stripeResourceType: 'products',
-          stripeResourceTypeSingular: 'product',
-          fields: [
-            { fieldPath: 'active', stripeProperty: 'active' },
-            { fieldPath: 'name', stripeProperty: 'name' },
-            { fieldPath: 'description', stripeProperty: 'description' },
-            { fieldPath: 'image', stripeProperty: 'images.0' },
-          ],
-        },
-      ],
-    }),
     seoPlugin({ collections: ['pages', 'products'], uploadsCollection: 'media' }),
     redirectsPlugin({
       collections: ['pages', 'products'],

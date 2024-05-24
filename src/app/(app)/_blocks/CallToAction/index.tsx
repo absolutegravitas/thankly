@@ -32,7 +32,7 @@ export const CallToAction: React.FC<CallToActionProps> = (props) => {
 
   const hasLinks = links && links.length > 0
 
-  console.log('content for richText // ', JSON.stringify(content))
+  // console.log('content for richText // ', JSON.stringify(content))
   return (
     <BlockWrapper settings={settings} padding={padding}>
       {/* <BackgroundGrid zIndex={0} /> */}

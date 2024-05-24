@@ -45,7 +45,7 @@ const getRandomPosition = (excludePositions: number[]) => {
 
 export const LogoGrid: React.FC<LogoGridProps> = ({ logoGridFields, padding }) => {
   // console.log('logoGrid', logoGridFields)
-  const { richText, enableLink, link, logos, settings } = logoGridFields
+  const { content, enableLink, link, logos, settings } = logoGridFields
 
   const [logoPositions, setLogoPositions] = useState<PositionedLogo[]>([])
   const [currentAnimatingIndex, setCurrentAnimatingIndex] = useState<number | null>(null)
@@ -113,7 +113,7 @@ export const LogoGrid: React.FC<LogoGridProps> = ({ logoGridFields, padding }) =
         <BackgroundGrid className={classes.backgroundGrid} zIndex={0} />
         <div className={[classes.logoGridContentWrapper, 'grid'].filter(Boolean).join(' ')}>
           <div className={[classes.richTextWrapper, 'cols-8 start-1'].filter(Boolean).join(' ')}>
-            <RichText className={classes.richText} content={richText} />
+            <RichText className={classes.richText} content={content} />
             {enableLink && link && (
               <div className={classes.link}>
                 <CMSLink

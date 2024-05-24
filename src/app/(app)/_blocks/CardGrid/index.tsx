@@ -22,7 +22,7 @@ export type CardGridProps = ExtractBlockProps<'cardGrid'> & { padding: PaddingPr
 
 export const CardGrid: React.FC<CardGridProps> = (props) => {
   const {
-    cardGridFields: { richText, cards, links, settings, revealDescription },
+    cardGridFields: { content, cards, links, settings, revealDescription },
     padding,
   } = props
 
@@ -47,10 +47,10 @@ export const CardGrid: React.FC<CardGridProps> = (props) => {
       {/* <BackgroundGrid zIndex={1} /> */}
       <Gutter>
         <div className={[classes.introWrapper, 'grid'].filter(Boolean).join(' ')}>
-          {richText && (
+          {content && (
             <div className={[classes.richTextWrapper, 'grid'].filter(Boolean).join(' ')}>
               <div className={[classes.richText, 'cols-10 cols-m-8'].filter(Boolean).join(' ')}>
-                <RichText content={richText} />
+                <RichText content={content} />
               </div>
               {hasLinks && (
                 <div

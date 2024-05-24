@@ -1,0 +1,158 @@
+@use "@scss/common" as *;
+
+.formBlock {
+  position: relative;
+  overflow: hidden;
+  border-top: 1px solid var(--grid-line-dark);
+  border-bottom: 1px solid var(--grid-line-dark);
+  background-color: var(--theme-elevation-0);
+
+  &::before {
+    content: '';
+    width: calc(25% + var(--gutter-h) * 0.5);
+    position: absolute;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    background-color: var(--theme-elevation-0);
+  }
+
+  &::after {
+    content: '';
+    width: 100%;
+    position: absolute;
+    height: 100%;
+    top: 0;
+    left: calc(25% + var(--gutter-h) * 0.5);
+    z-index: -3;
+    background-color: var(--theme-elevation-0);
+  }
+
+  @include mid-break {
+    border-top: unset;
+    border-bottom: unset;
+  }
+}
+
+.gutter {
+  position: relative;
+}
+
+.formBlockGrid {
+  position: relative;
+  align-items: center;
+}
+
+.outerBackgroundSectionWrap {
+  position: absolute;
+  top: 0;
+  left: calc(100% - var(--gutter-h));
+  bottom: 0;
+  width: 100%;
+
+  @include mid-break {
+    display: none;
+  }
+}
+
+.outerBackgroundSection {
+  position: relative;
+  height: 100%;
+}
+
+.backgroundSectionWrap {
+  display: flex;
+  position: absolute;
+  top: 0;
+  left: calc(calc(var(--gutter-h) / 2) + 25%);
+  right: 0;
+  width: calc(75% - calc(var(--gutter-h) * 1.5));
+  height: 100%;
+
+  @include mid-break {
+    display: none;
+  }
+}
+
+.gradientWrap {
+  position: absolute;
+  top: 0;
+  left: calc(calc(var(--gutter-h) / 2) + 25%);
+  width: calc(75% - calc(var(--gutter-h) * 1.5));
+  height: 100%;
+
+  @include mid-break {
+    display: none;
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.leftGradientOverlay, .rightGradientOverlay {
+  border-radius: 100vw;
+  border: 1px solid #FFF;
+  background: radial-gradient(50% 50% at 50% 50%, #0A0A0A 34.5%, rgba(10, 10, 10, 0.00) 100%), conic-gradient(from 180deg at 50% 50%, #007FAE 0deg, #000 90deg, #F4AC4F 180deg, #000 270deg, #007FAE 360deg);
+  filter: blur(240px);
+  position: absolute;
+  width: 100vw;
+  height: 100vw;
+  z-index: -2;
+  animation: spin 10s linear infinite;
+}
+
+.leftGradientOverlay {
+  bottom: 0;
+  left: 0;
+  transform: translate(-50%, 50%);
+  z-index: -2;
+}
+
+.rightGradientOverlay {
+  bottom: 0;
+  right: 0;
+  transform: translate(50%, 50%);
+  z-index: -2;
+}
+
+.section {
+  position: relative;
+  width: 33.3333%;
+  z-index: -1;
+}
+
+.formCell {
+  position: relative;
+
+  &::before {
+    content: '';
+    width: calc(100% - 2px);
+    position: absolute;
+    height: 100%;
+    top: 0;
+    left: 1px;
+    z-index: 0;
+    background-color: #101010;
+  }
+}
+
+.richTextCell {
+  position: relative;
+
+  @include mid-break {
+    margin-bottom: 2rem
+  }
+}
+
+.formCellContent {
+  & label {
+    @include label;
+  }
+}

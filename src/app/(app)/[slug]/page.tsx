@@ -44,7 +44,7 @@ export async function generateStaticParams() {
     return []
   }
 
-  console.log('pagedata found //', pages)
+  // console.log('pagedata found //', pages)
 
   // Strip all keys from pages except slug
   if (pages && pages.length > 0) {

@@ -46,7 +46,7 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const settings: any = await fetchSettings()
-  console.log('settings found', settings.footer)
+  // console.log('settings found', settings.footer)
 
   return (
     <html
