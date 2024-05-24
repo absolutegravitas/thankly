@@ -10,7 +10,7 @@ export const fetchProduct = (slug: string): Promise<Product | null> => {
     async (): Promise<Page | null> => {
       let page = null
       try {
-        console.log('fetchPage slug //', slug) // should be 'home' if it's null
+        // console.log('fetchPage slug //', slug) // should be 'home' if it's null
 
         const { docs } = await payload.find({
           collection: 'products',
@@ -22,7 +22,7 @@ export const fetchProduct = (slug: string): Promise<Product | null> => {
 
         page = docs[0]
       } catch (error) {
-        console.error(`Error fetching page: ${slug}`, error)
+        console.error(`Error fetching product: ${slug}`, error)
       } finally {
         return page || null
       }
@@ -83,7 +83,7 @@ export const fetchPage = (slug: string): Promise<Page | null> => {
     async (): Promise<Page | null> => {
       let page = null
       try {
-        console.log('fetchPage slug //', slug) // should be 'home' if it's null
+        // console.log('fetchPage slug //', slug) // should be 'home' if it's null
 
         const { docs } = await payload.find({
           collection: 'pages',
@@ -159,7 +159,7 @@ export const fetchSettings = unstable_cache(
     } catch (error) {
       console.error('Error fetching settings:', error)
     }
-    console.log('settings -- ', settings)
+    // console.log('settings -- ', settings)
     return settings
   },
   ['settings'],

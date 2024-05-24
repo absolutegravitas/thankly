@@ -21,7 +21,7 @@ type Props = Exclude<Fields['highlights'], undefined | null>[number] & {
 }
 
 export const StickyHighlightComponent: React.FC<Props> = ({
-  richText,
+  content,
   enableLink,
   link,
   type,
@@ -112,7 +112,7 @@ export const StickyHighlightComponent: React.FC<Props> = ({
     >
       <div className={[classes.minHeight, 'grid'].filter(Boolean).join(' ')}>
         <div className={[classes.leftContentWrapper, 'cols-4 cols-m-8'].filter(Boolean).join(' ')}>
-          <RichText content={richText} className={classes.richText} />
+          <RichText content={content} className={classes.richText} />
           {enableLink && (
             <CMSLink
               {...link}

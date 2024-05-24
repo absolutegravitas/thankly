@@ -14,7 +14,7 @@ import { MobileNav, modalSlug as mobileNavModalSlug } from './MobileNav'
 import classes from './index.module.scss'
 
 export const Header: React.FC<Menu> = ({ menu, topBar }: any) => {
-  console.log('topbar ', topBar)
+  // console.log('topbar ', topBar)
   const { isModalOpen } = useModal()
   const isMobileNavOpen = isModalOpen(mobileNavModalSlug)
   const { headerTheme } = useHeaderObserver()

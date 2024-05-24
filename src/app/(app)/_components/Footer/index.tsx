@@ -30,7 +30,7 @@ import { blockFormats, contentFormats } from '../../_css/tailwindClasses'
 import Link from 'next/link'
 
 export const Footer: React.FC<FooterType> = (props) => {
-  console.log('footer props --', props)
+  // console.log('footer props --', props)
   const { columns } = props
   // const [products, developers, company] = columns ?? []
   const { setTheme } = useThemePreference()
@@ -179,7 +179,7 @@ export const Footer: React.FC<FooterType> = (props) => {
         <Gutter className={classes.container}>
           <div className={[classes.grid, 'grid'].filter(Boolean).join(' ')}>
             {columns?.map(({ label: column, items }, i) => {
-              console.log('items -- ', items)
+              // console.log('items -- ', items)
 
               return (
                 <div
