@@ -1,9 +1,9 @@
 'use client'
 
 import React, { forwardRef } from 'react'
-import { useFormProcessing } from '@forms/Form/context'
+import { useFormProcessing } from '@app/_components/forms/Form/context'
 
-import { Button, ButtonProps } from '@components/Button'
+import { Button, ButtonProps } from '@app/_components/Button'
 
 type SubmitProps = ButtonProps & {
   label?: string | null

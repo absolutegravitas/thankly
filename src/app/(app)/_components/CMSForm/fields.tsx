@@ -1,35 +1,36 @@
-import { NumberInput } from '@forms/fields/Number'
+import { NumberInput } from '@app/_components/forms/fields/Number'
 
-import { RichText } from '@components/RichText'
-import { ChevronDownIcon } from '@root/icons/ChevronDownIcon'
+// import { RichText } from '@app/_components/RichText'
+import { ChevronDownIcon } from '@app/_icons/ChevronDownIcon'
 import { Checkbox } from './fields/Checkbox'
 import { Select } from './fields/Select'
 import { Text } from './fields/Text'
 import { Textarea } from './fields/Textarea'
+import { RichText } from '@app/_blocks/RichText'
 
 import classes from './fields.module.scss'
 
 export const fields = {
   text: Text,
   textarea: Textarea,
-  select: props => {
+  select: (props: any) => {
     return <Select components={{ DropdownIndicator: ChevronDownIcon }} {...props} />
   },
   checkbox: Checkbox,
-  email: props => {
+  email: (props: any) => {
     return <Text {...props} />
   },
-  country: props => {
+  country: (props: any) => {
     return (
       <Select components={{ DropdownIndicator: ChevronDownIcon }} selectType="country" {...props} />
     )
   },
-  state: props => {
+  state: (props: any) => {
     return (
       <Select components={{ DropdownIndicator: ChevronDownIcon }} selectType="state" {...props} />
     )
   },
-  message: props => {
+  message: (props: any) => {
     return <RichText className={classes.message} content={props.message} />
   },
   number: NumberInput,

@@ -53,6 +53,7 @@ sudo docker stop payload && sudo docker rm payload && sudo ./start-database.sh
 
 // update payload types exports, build and run local
 pnpm generate:types && pnpm build && pnpm dev
+pnpm generate:types && pnpm payload migrate:create && pnpm build && pnpm dev
 
 // just update types & run local
 pnpm generate:types && pnpm dev

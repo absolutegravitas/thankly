@@ -1,16 +1,15 @@
 'use client'
 import React from 'react'
 
-import BackgroundGradient from '@components/BackgroundGradient'
-import { BackgroundGrid } from '@components/BackgroundGrid'
-import { BlockWrapper, PaddingProps } from '@components/BlockWrapper'
-import { CMSLink } from '@components/CMSLink'
-import Code from '@components/Code'
-import { Gutter } from '@components/Gutter'
-import { Media } from '@components/Media'
-import { RichText } from '@components/RichText'
-import SplitAnimate from '@components/SplitAnimate'
-import { Page } from '@root/payload-types'
+import { BackgroundGrid } from '@app/_components/BackgroundGrid'
+import { BlockWrapper, PaddingProps } from '@app/_components/BlockWrapper'
+import { CMSLink } from '@app/_components/CMSLink'
+// import Code from '@app/_components/Code'
+import { Gutter } from '@app/_components/Gutter'
+import { Media } from '@app/_components/Media'
+import SplitAnimate from '@app/_components/SplitAnimate'
+import { Page } from '@/payload-types'
+import { RichText } from '@app/_blocks/RichText'
 
 import classes from './index.module.scss'
 
@@ -58,7 +57,7 @@ export const Statement: React.FC<StatementProps> = (props) => {
             <RichText content={content} className={classes.content} />
             {hasLinks && (
               <div className={[classes.links].filter(Boolean).join(' ')}>
-                {links.map(({ link }, i) => {
+                {links.map(({ link }: any, i: any) => {
                   return (
                     <CMSLink
                       {...link}
@@ -99,7 +98,7 @@ export const Statement: React.FC<StatementProps> = (props) => {
                     .filter(Boolean)
                     .join(' ')}
                 >
-                  <Code className={classes.codeBlock}>{code}</Code>
+                  {/* <Code className={classes.codeBlock}>{code}</Code> */}
                 </div>
               )}
         </div>
@@ -107,3 +106,5 @@ export const Statement: React.FC<StatementProps> = (props) => {
     </BlockWrapper>
   )
 }
+
+export default Statement

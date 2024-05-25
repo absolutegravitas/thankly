@@ -1,12 +1,12 @@
 'use client'
 
 import React, { useEffect, useRef } from 'react'
-import Error from '@forms/Error'
-import { FieldProps } from '@forms/fields/types'
-import { useField } from '@forms/fields/useField'
+import Error from '@app/_components/forms/Error'
+import { FieldProps } from '@app/_components/forms/fields/types'
+import { useField } from '@app/_components/forms/fields/useField'
 
-import Label from '@components/CMSForm/Label'
-import { CopyToClipboard } from '@components/CopyToClipboard'
+import Label from '@app/_components/CMSForm/Label'
+import { CopyToClipboard } from '@app/_components/CopyToClipboard'
 
 import classes from './index.module.scss'
 
@@ -16,7 +16,7 @@ export const Textarea: React.FC<
     copy?: boolean
     elementAttributes?: React.InputHTMLAttributes<HTMLTextAreaElement>
   }
-> = props => {
+> = (props) => {
   const {
     path,
     required = false,
@@ -44,7 +44,7 @@ export const Textarea: React.FC<
   }
 
   const defaultValidateFunction = React.useCallback(
-    (fieldValue: string): string | true => {
+    (fieldValue: unknown): string | true => {
       if (required && !fieldValue) {
         return 'Please enter a value.'
       }
@@ -110,7 +110,7 @@ export const Textarea: React.FC<
         rows={rows}
         className={[classes.textarea].filter(Boolean).join(' ')}
         value={value || ''}
-        onChange={e => {
+        onChange={(e) => {
           onChange(e.target.value)
         }}
         placeholder={placeholder}

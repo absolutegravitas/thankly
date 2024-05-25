@@ -1,22 +1,22 @@
 'use client'
 
 import * as React from 'react'
-import Form from '@forms/Form'
+import Form from '@app/_components/forms/Form'
 import { usePathname, useRouter } from 'next/navigation'
 
-import { RichText } from '@components/RichText'
-import { CrosshairIcon } from '@root/icons/CrosshairIcon'
-import { Form as FormType } from '@root/payload-types'
-import { getCookie } from '@root/utilities/get-cookie'
+import { RichText } from '@app/_blocks/RichText'
+import { CrosshairIcon } from '@app/_icons/CrosshairIcon'
+import { Form as FormType } from '@/payload-types'
+import { getCookie } from '@app/_utilities/get-cookie'
 import { fields } from './fields'
 import Submit from './Submit'
 
 import classes from './index.module.scss'
 
-const buildInitialState = fields => {
-  const state = {}
+const buildInitialState = (fields: any) => {
+  const state: any = {}
 
-  fields.forEach(field => {
+  fields.forEach((field: any) => {
     state[field.name] = {
       value: '',
       valid: !field.required,
@@ -50,8 +50,8 @@ const RenderForm = ({ form }: { form: FormType }) => {
   const pathname = usePathname()
 
   const onSubmit = React.useCallback(
-    ({ data }) => {
-      let loadingTimerID: NodeJS.Timer
+    ({ data }: any) => {
+      let loadingTimerID: ReturnType<typeof setTimeout>
 
       const submitForm = async () => {
         setError(undefined)
@@ -148,7 +148,12 @@ const RenderForm = ({ form }: { form: FormType }) => {
       {error && <div>{`${error.status || '500'}: ${error.message || ''}`}</div>}
       {!hasSubmitted && (
         <React.Fragment>
-          <Form onSubmit={onSubmit} initialState={initialState} formId={formID}>
+          <Form
+            onSubmit={onSubmit}
+            initialState={initialState}
+            formId={formID.toString()}
+            // formId={formID}
+          >
             <div className={classes.formFieldsWrap}>
               {form.fields?.map((field, index) => {
                 const Field: React.FC<any> = fields?.[field.blockType]
@@ -188,7 +193,7 @@ const RenderForm = ({ form }: { form: FormType }) => {
 
 export const CMSForm: React.FC<{
   form?: string | FormType | null
-}> = props => {
+}> = (props) => {
   const { form } = props
 
   if (!form || typeof form === 'string') return null

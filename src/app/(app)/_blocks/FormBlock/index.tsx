@@ -21,7 +21,10 @@ import { ExtractBlockProps } from '@app/_utilities/extractBlockProps'
 export type FormBlockProps = ExtractBlockProps<'form'> & { padding: PaddingProps }
 
 export const FormBlock: React.FC<FormBlockProps> = (props) => {
-  const { formFields: { content, form, settings } = {}, padding } = props
+  const {
+    formFields: { content, form, settings },
+    padding,
+  } = props
   const [imageLoaded, setImageLoaded] = useState(false)
 
   const sectionRef = useRef<HTMLDivElement | null>(null)
@@ -128,3 +131,5 @@ export const FormBlock: React.FC<FormBlockProps> = (props) => {
     </BlockWrapper>
   )
 }
+
+export default FormBlock

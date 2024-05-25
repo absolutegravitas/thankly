@@ -1,5 +1,5 @@
-@use "../shared.scss";
-@use '@scss/common' as *;
+@use '../shared.scss';
+@use '@app/_css/common' as *;
 
 .component {
   position: relative;
@@ -34,7 +34,8 @@
     }
   }
 
-  .error, .textLabel {
+  .error,
+  .textLabel {
     width: fit-content;
     margin: 0;
   }
@@ -118,7 +119,8 @@
     transform: translateY(-25%);
   }
 
-  .error, .textLabel {
+  .error,
+  .textLabel {
     font-size: 12px;
   }
 

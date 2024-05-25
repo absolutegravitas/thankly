@@ -1,14 +1,14 @@
 'use client'
 
 import React, { Fragment, useEffect } from 'react'
-import Error from '@forms/Error'
-import { FieldProps } from '@forms/fields/types'
-import { useField } from '@forms/fields/useField'
+import Error from '@app/_components/forms/Error'
+import { FieldProps } from '@app/_components/forms/fields/types'
+import { useField } from '@app/_components/forms/fields/useField'
 
-import Label from '@components/CMSForm/Label'
-import { CopyToClipboard } from '@components/CopyToClipboard'
-import { Tooltip } from '@components/Tooltip'
-import { EyeIcon } from '@root/icons/EyeIcon'
+import Label from '@app/_components/CMSForm/Label'
+import { CopyToClipboard } from '@app/_components/CopyToClipboard'
+import { Tooltip } from '@app/_components/Tooltip'
+import { EyeIcon } from '@app/_icons/EyeIcon'
 
 import classes from './index.module.scss'
 
@@ -22,7 +22,7 @@ export const Text: React.FC<
     suffix?: React.ReactNode
     readOnly?: boolean
   }
-> = props => {
+> = (props) => {
   const {
     path,
     required = false,
@@ -61,7 +61,7 @@ export const Text: React.FC<
   }
 
   const defaultValidateFunction = React.useCallback(
-    (fieldValue: boolean): string | true => {
+    (fieldValue: unknown): string | true => {
       if (required && !fieldValue) {
         return 'Please enter a value.'
       }
@@ -132,7 +132,7 @@ export const Text: React.FC<
                 {type === 'password' && (
                   <Tooltip
                     text={isHidden ? 'show' : 'hide'}
-                    onClick={() => setIsHidden(h => !h)}
+                    onClick={() => setIsHidden((h) => !h)}
                     className={classes.tooltipButton}
                   >
                     <EyeIcon closed={isHidden} size="large" />
@@ -158,7 +158,7 @@ export const Text: React.FC<
         onChange={
           customOnChange
             ? customOnChange
-            : e => {
+            : (e) => {
                 onChange(e.target.value)
               }
         }

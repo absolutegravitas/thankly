@@ -1,12 +1,12 @@
 'use client'
 
 import React, { useEffect } from 'react'
-import Error from '@forms/Error'
-import { FieldProps } from '@forms/fields/types'
-import { useField } from '@forms/fields/useField'
+import Error from '@app/_components/forms/Error'
+import { FieldProps } from '@app/_components/forms/fields/types'
+import { useField } from '@app/_components/forms/fields/useField'
 
-import Label from '@components/CMSForm/Label'
-import { CheckIcon } from '@root/icons/CheckIcon'
+import Label from '@app/_components/CMSForm/Label'
+import { CheckIcon } from '@app/_icons/CheckIcon'
 
 import classes from './index.module.scss'
 
@@ -14,7 +14,7 @@ export const Checkbox: React.FC<
   FieldProps<boolean> & {
     checked?: boolean
   }
-> = props => {
+> = (props) => {
   const {
     path,
     required,
@@ -32,7 +32,7 @@ export const Checkbox: React.FC<
   const prevContextValue = React.useRef<boolean | undefined | null>(initialValue)
 
   const defaultValidateFunction = React.useCallback(
-    (fieldValue: boolean): string | true => {
+    (fieldValue: unknown): string | true => {
       if (required && !fieldValue) {
         return 'This field is required.'
       }
