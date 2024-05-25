@@ -8,7 +8,7 @@ import { BlockWrapper, PaddingProps } from '@app/_components/BlockWrapper'
 import { CMSForm } from '@app/_components/CMSForm'
 import { Gutter } from '@app/_components/Gutter'
 // import { RichText } from '@app/_components/RichText'
-import { Page } from '@/payload-types'
+import { Page } from '@payload-types'
 import { RichText } from '@app/_blocks/RichText'
 
 import classes from './index.module.scss'

@@ -1,8 +1,7 @@
 import type { CollectionConfig } from 'payload/types'
 import payload from 'payload'
 
-import { clearUserCart } from '@cms/_hooks/clearUserCart'
-import { adminsAndUserOnly, adminsOnly } from '../../../utilities/access'
+import { adminsAndUserOnly, adminsOnly } from '../../../utilities/payload/access'
 // import { LinkToPaymentIntent } from './ui/LinkToPaymentIntent'
 
 export const Orders: CollectionConfig = {
@@ -13,7 +12,7 @@ export const Orders: CollectionConfig = {
   },
   hooks: {
     // beforeChange: [getOrderNumber],
-    afterChange: [clearUserCart],
+    afterChange: [],
   },
 
   access: {

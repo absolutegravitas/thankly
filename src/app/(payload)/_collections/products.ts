@@ -2,12 +2,11 @@ import type { CollectionConfig } from 'payload/types'
 
 import { slugField } from '@cms/_fields/slug'
 // import { populateArchiveBlock } from '@/blocks/ArchiveBlock/populateArchiveBlock'
-import { deleteProductFromCarts } from '@cms/_hooks/deleteProductFromCarts'
 import { revalidateProduct } from '@cms/_hooks/revalidateProduct'
 import { layoutField } from '@cms/_fields/layoutField'
 import { upsertStripeProduct } from '@cms/_hooks/upsertStripeProduct'
 import { deleteStripeProduct } from '@cms/_hooks/deleteStripeProduct'
-import { adminsOnly, publishedOnly } from '@/utilities/access'
+import { adminsOnly, publishedOnly } from '@/utilities/payload/access'
 import { themeField } from '../_fields/blockFields'
 
 export const Products: CollectionConfig = {
@@ -34,7 +33,7 @@ export const Products: CollectionConfig = {
     beforeChange: [upsertStripeProduct],
     afterChange: [revalidateProduct], // probably dont need this
     // afterRead: [populateArchiveBlock],
-    afterDelete: [deleteProductFromCarts, deleteStripeProduct],
+    afterDelete: [deleteStripeProduct],
   },
   versions: {
     drafts: true,

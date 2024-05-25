@@ -3,7 +3,7 @@ import type { CollectionConfig } from 'payload/types'
 
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import { fileURLToPath } from 'url'
-import { adminsOnly } from '../../../utilities/access'
+import { adminsOnly } from '../../../utilities/payload/access'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)

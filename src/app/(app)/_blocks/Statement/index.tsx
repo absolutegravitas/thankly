@@ -8,7 +8,7 @@ import { CMSLink } from '@app/_components/CMSLink'
 import { Gutter } from '@app/_components/Gutter'
 import { Media } from '@app/_components/Media'
 import SplitAnimate from '@app/_components/SplitAnimate'
-import { Page } from '@/payload-types'
+import { Page } from '@payload-types'
 import { RichText } from '@app/_blocks/RichText'
 
 import classes from './index.module.scss'

@@ -1,12 +1,12 @@
 import type { CollectionConfig } from 'payload/types'
-import { adminsOnly, publishedOnly } from '@/utilities/access'
+import { adminsOnly, publishedOnly } from '@/utilities/payload/access'
 
-// import { formatPreviewURL } from '@cms/_utilities/formatPreviewURL'
+// import { formatPreviewURL } from '@/utilities/formatPreviewURL'
 import { revalidatePage } from '@/utilities/revalidatePage'
 import { layoutField } from '@cms/_fields/layoutField'
 
 import { slugField } from '@cms/_fields/slug'
-import { themeField } from '../_fields/blockFields'
+import { themeField } from '@cms/_fields/blockFields'
 // import pathField from '@cms/_fields/path'
 
 export const COLLECTION_SLUG_PAGE = 'pages'

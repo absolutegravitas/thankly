@@ -6,7 +6,7 @@ import { usePathname, useRouter } from 'next/navigation'
 
 import { RichText } from '@app/_blocks/RichText'
 import { CrosshairIcon } from '@app/_icons/CrosshairIcon'
-import { Form as FormType } from '@/payload-types'
+import { Form as FormType } from '@payload-types'
 import { getCookie } from '@/utilities/get-cookie'
 import { fields } from './fields'
 import Submit from './Submit'

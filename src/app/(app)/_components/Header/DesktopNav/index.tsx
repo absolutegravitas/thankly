@@ -8,7 +8,6 @@ import { ArrowIcon } from '@app/_icons/ArrowIcon'
 import { Menu } from '@payload-types'
 // import { useAuth } from '@app/_providers/Auth'
 import { useHeaderObserver } from '@app/_providers/HeaderIntersectionObserver'
-// import { useStarCount } from '@app/_utilities/use-star-count'
 import { FullLogo } from '@app/_graphics/FullLogo'
 import { CMSLink } from '../../CMSLink'
 
