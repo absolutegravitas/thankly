@@ -6,7 +6,7 @@ import { Reusable } from '@payload-types'
 import { RichText } from '@app/_blocks/RichText'
 import classes from './index.module.scss'
 
-import { ExtractBlockProps } from '@app/_utilities/extractBlockProps'
+import { ExtractBlockProps } from '@/utilities/extractBlockProps'
 
 export type Props = {
   // type?: Extract<Reusable['layout'][0], { blockType: 'banner' }>['bannerFields']['type']

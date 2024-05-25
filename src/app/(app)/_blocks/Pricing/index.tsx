@@ -19,7 +19,7 @@ import classes from './index.module.scss'
 //   padding: PaddingProps
 // }
 
-import { ExtractBlockProps } from '@app/_utilities/extractBlockProps'
+import { ExtractBlockProps } from '@/utilities/extractBlockProps'
 export type Props = ExtractBlockProps<'pricing'> & { padding: PaddingProps }
 
 export const Pricing: React.FC<Props> = ({ pricingFields, padding }) => {

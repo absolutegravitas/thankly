@@ -2,7 +2,7 @@
 
 import React from 'react'
 
-import { isNumber } from '@app/_utilities/isNumber'
+import { isNumber } from '@/utilities/isNumber'
 import Error from '../../Error'
 import Label from '../../Label'
 import { FieldProps } from '../types'

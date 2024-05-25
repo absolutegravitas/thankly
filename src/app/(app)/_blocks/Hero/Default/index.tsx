@@ -8,7 +8,7 @@ import { Gutter } from '@app/_components/Gutter'
 import { RichText } from '@app/_blocks/RichText'
 import classes from './index.module.scss'
 
-import { ExtractBlockProps } from '@app/_utilities/extractBlockProps'
+import { ExtractBlockProps } from '@/utilities/extractBlockProps'
 export type DefaultHeroProps = ExtractBlockProps<'fields'>
 
 export const DefaultHero: React.FC<DefaultHeroProps> = ({ description, theme }) => {

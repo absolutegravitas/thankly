@@ -1,11 +1,6 @@
 import type { CollectionConfig } from 'payload/types'
 import { upsertStripeCustomer } from '@cms/_hooks/upsertStripeCustomer'
-import {
-  adminsAndUserOnly,
-  adminsOnly,
-  checkRole,
-  makeFirstUserAdmin,
-} from '@cms/_utilities/access'
+import { adminsAndUserOnly, adminsOnly, checkRole, makeFirstUserAdmin } from '@/utilities/access'
 
 export const Users: CollectionConfig = {
   slug: 'users',

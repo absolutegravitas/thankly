@@ -26,7 +26,7 @@ import classes from './index.module.scss'
 //   className?: string
 // }
 
-import { ExtractBlockProps } from '@app/_utilities/extractBlockProps'
+import { ExtractBlockProps } from '@/utilities/extractBlockProps'
 export type MediaContentAccordionProps = ExtractBlockProps<'form'> & { className?: string }
 
 export const MobileMediaContentAccordion: React.FC<MediaContentAccordionProps> = ({

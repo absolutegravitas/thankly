@@ -10,7 +10,7 @@ import { Page } from '@payload-types'
 import classes from './index.module.scss'
 // export type ContentGridProps = Extract<Page['layout'][0], { blockType: 'contentGrid' }> & {
 
-import { ExtractBlockProps } from '@app/_utilities/extractBlockProps'
+import { ExtractBlockProps } from '@/utilities/extractBlockProps'
 export type ContentGridProps = ExtractBlockProps<'contentGrid'> & { padding: PaddingProps }
 
 type CellsProps = ContentGridProps['contentGridFields'] & {

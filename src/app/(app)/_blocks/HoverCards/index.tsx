@@ -17,7 +17,7 @@ import classes from './index.module.scss'
 //   padding: PaddingProps
 // }
 
-import { ExtractBlockProps } from '@app/_utilities/extractBlockProps'
+import { ExtractBlockProps } from '@/utilities/extractBlockProps'
 export type HoverCardsProps = ExtractBlockProps<'hoverCards'> & { padding: PaddingProps }
 
 const Card: React.FC<{

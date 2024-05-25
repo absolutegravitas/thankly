@@ -16,7 +16,7 @@ import classes from './index.module.scss'
 //   padding: PaddingProps
 // }
 
-import { ExtractBlockProps } from '@app/_utilities/extractBlockProps'
+import { ExtractBlockProps } from '@/utilities/extractBlockProps'
 export type MediaContentAccordionProps = ExtractBlockProps<'mediaContentAccordion'> & {
   padding: PaddingProps
 }

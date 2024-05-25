@@ -12,7 +12,7 @@ import MediaParallax from '@app/_components/MediaParallax'
 import { RichText } from '@app/_blocks/RichText'
 import classes from './index.module.scss'
 
-import { ExtractBlockProps } from '@app/_utilities/extractBlockProps'
+import { ExtractBlockProps } from '@/utilities/extractBlockProps'
 export type GradientHeroProps = ExtractBlockProps<'fields'>
 
 export const GradientHero: React.FC<GradientHeroProps> = ({

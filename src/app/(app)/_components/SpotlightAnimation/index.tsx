@@ -2,7 +2,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react'
 
 import { AllowedElements } from '@app/_components/SpotlightAnimation/types'
-import { useResize } from '@app/_utilities/use-resize'
+import { useResize } from '@/utilities/use-resize'
 
 import classes from './index.module.scss'
 

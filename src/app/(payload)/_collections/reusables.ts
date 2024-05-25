@@ -1,6 +1,6 @@
 import type { CollectionConfig } from 'payload/types'
 import { layoutField } from '@cms/_fields/layoutField'
-import { adminsOnly } from '../_utilities/access'
+import { adminsOnly } from '../../../utilities/access'
 
 export const Reusable: CollectionConfig = {
   slug: 'reusable',

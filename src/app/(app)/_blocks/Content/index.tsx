@@ -12,7 +12,7 @@ import classes from './index.module.scss'
 //   padding: PaddingProps
 // }
 
-import { ExtractBlockProps } from '@app/_utilities/extractBlockProps'
+import { ExtractBlockProps } from '@/utilities/extractBlockProps'
 export type Props = ExtractBlockProps<'content'> & { padding: PaddingProps }
 
 const Columns: React.FC<Props> = ({ contentFields, padding }) => {

@@ -6,7 +6,7 @@ import { DefaultHero } from './Default'
 import { GradientHero } from './Gradient'
 import { HomeHero } from './Home'
 import { ThreeHero } from './Three'
-import { ExtractBlockProps } from '@app/_utilities/extractBlockProps'
+import { ExtractBlockProps } from '@/utilities/extractBlockProps'
 
 type HeroType =
   | 'default'

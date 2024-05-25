@@ -7,14 +7,14 @@ import { revalidateProduct } from '@cms/_hooks/revalidateProduct'
 import { layoutField } from '@cms/_fields/layoutField'
 import { upsertStripeProduct } from '@cms/_hooks/upsertStripeProduct'
 import { deleteStripeProduct } from '@cms/_hooks/deleteStripeProduct'
-import { adminsOnly, publishedOnly } from '@cms/_utilities/access'
+import { adminsOnly, publishedOnly } from '@/utilities/access'
 import { themeField } from '../_fields/blockFields'
 
 export const Products: CollectionConfig = {
   slug: 'products',
   admin: {
     useAsTitle: 'title',
-    defaultColumns: ['title', 'stripeId', 'availability'],
+    defaultColumns: ['title', 'productType', 'stripeId', 'availability'],
     // livePreview: {
     //   url: ({ data }) =>
     //     `${process.env.PAYLOAD_PUBLIC_SERVER_URL}/api/preview?url=${encodeURIComponent(
@@ -51,11 +51,20 @@ export const Products: CollectionConfig = {
       fields: [
         { name: 'title', type: 'text', required: true },
         slugField(),
-        themeField,
         {
-          name: 'stripeId',
-          label: 'Stripe ID',
-          type: 'text',
+          name: 'productType',
+          type: 'select',
+          defaultValue: 'gift',
+          options: [
+            {
+              label: 'Card',
+              value: 'card',
+            },
+            {
+              label: 'Gift',
+              value: 'gift',
+            },
+          ],
         },
       ],
     },
@@ -67,8 +76,34 @@ export const Products: CollectionConfig = {
           label: 'Basics', // required
           description: 'Basic Product Info',
           fields: [
-            { name: 'shortDescription', type: 'textarea', maxLength: 150, required: false },
-            { name: 'defaultImage', type: 'upload', relationTo: 'media', required: false },
+            // grab from meta
+            // { name: 'shortDescription', type: 'textarea', maxLength: 150, required: false },
+            // grab from media Slider & default from meta
+            // { name: 'defaultImage', type: 'upload', relationTo: 'media', required: false },
+            {
+              type: 'row', // required
+              fields: [
+                {
+                  name: 'stripeId',
+                  label: 'Stripe ID',
+                  type: 'text',
+                },
+                themeField,
+                {
+                  name: 'availability',
+                  type: 'select',
+                  defaultValue: 'available',
+                  hasMany: false,
+                  required: false,
+                  admin: { isClearable: false },
+                  options: [
+                    { label: 'Available', value: 'available' },
+                    { label: 'Unavailable', value: 'unavailable' },
+                  ],
+                },
+              ],
+            },
+
             {
               type: 'row', // required
               fields: [
@@ -94,18 +129,6 @@ export const Products: CollectionConfig = {
             {
               type: 'row', // required
               fields: [
-                {
-                  name: 'availability',
-                  type: 'select',
-                  defaultValue: 'available',
-                  hasMany: false,
-                  required: false,
-                  admin: { isClearable: false },
-                  options: [
-                    { label: 'Available', value: 'available' },
-                    { label: 'Unavailable', value: 'unavailable' },
-                  ],
-                },
                 { name: 'stockOnHand', type: 'number', required: false },
                 {
                   name: 'lowStockThreshold',
@@ -114,23 +137,32 @@ export const Products: CollectionConfig = {
                   defaultValue: 5,
                   min: 1,
                 },
-                {
-                  name: 'type',
-                  type: 'select',
-                  defaultValue: 'gift',
-                  options: [
-                    {
-                      label: 'Card',
-                      value: 'card',
-                    },
-                    {
-                      label: 'Gift',
-                      value: 'gift',
-                    },
-                  ],
-                },
               ],
             },
+            // don't need brands (just create a reusable logo grid and drop into layout)
+            // {
+            //   type: 'row', // required
+            //   fields: [
+            //     {
+            //       name: 'brands',
+            //       type: 'array',
+            //       fields: [
+            //         { name: 'brandLogo', type: 'upload', relationTo: 'media' },
+            //         { name: 'brandName', label: 'Brand Name', type: 'text' },
+            //         { name: 'productName', label: 'Product Name', type: 'text' },
+            //       ],
+            //     },
+            //     // {
+            //     //   name: 'reviews',
+            //     //   type: 'array',
+            //     //   fields: [
+            //     //     { name: '', type: 'upload', relationTo: 'media' },
+            //     //     { name: 'brandName', label: 'Brand Name', type: 'text' },
+            //     //     { name: 'productName', label: 'Product Name', type: 'text' },
+            //     //   ],
+            //     // },
+            //   ],
+            // },
           ],
         },
         {

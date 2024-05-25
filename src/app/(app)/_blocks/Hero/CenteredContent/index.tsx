@@ -10,7 +10,7 @@ import { useGetHeroPadding } from '@app/_blocks/Hero/useGetHeroPadding'
 import { RichText } from '@app/_blocks/RichText'
 import classes from './index.module.scss'
 
-import { ExtractBlockProps } from '@app/_utilities/extractBlockProps'
+import { ExtractBlockProps } from '@/utilities/extractBlockProps'
 export type CenteredContentProps = ExtractBlockProps<'fields'>
 
 export const CenteredContent: React.FC<CenteredContentProps> = ({

@@ -1,5 +1,5 @@
 import cn from 'clsx'
-import { applyPropsToChildrenOfType } from '@app/_utilities/manipulateReactComponents'
+import { applyPropsToChildrenOfType } from '@/utilities/manipulateReactComponents'
 import React, { useId } from 'react'
 // import { HiChevronRight } from 'react-icons/hi2'
 import { ChevronRightIcon } from 'lucide-react'

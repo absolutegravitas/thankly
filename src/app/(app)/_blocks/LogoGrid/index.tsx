@@ -28,7 +28,7 @@ type PositionedLogo = {
 //   padding?: PaddingProps
 // }
 
-import { ExtractBlockProps } from '@app/_utilities/extractBlockProps'
+import { ExtractBlockProps } from '@/utilities/extractBlockProps'
 export type LogoGridProps = ExtractBlockProps<'logoGrid'> & { padding: PaddingProps }
 
 const TOTAL_CELLS = 8

@@ -3,7 +3,7 @@ import 'server-only'
 import { unstable_cache } from 'next/cache'
 import { Page, Product, Order, Setting, User } from '@payload-types'
 import { headers as getHeaders } from 'next/headers'
-import { payload } from '@app/_utilities/getPayload'
+import { payload } from '@/utilities/getPayload'
 
 export const fetchProduct = (slug: string): Promise<Product | null> => {
   const cachedFetchPage = unstable_cache(

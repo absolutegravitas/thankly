@@ -1,6 +1,6 @@
 import * as React from 'react'
 
-import { uuid } from '@app/_utilities/uuid'
+import { uuid } from '@/utilities/uuid'
 
 const ArrayContext = React.createContext<{
   addRow: () => void

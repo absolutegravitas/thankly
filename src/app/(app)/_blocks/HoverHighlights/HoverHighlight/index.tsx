@@ -12,7 +12,7 @@ import classes from './index.module.scss'
 
 // type HoverHighlightProps = Extract<Page['layout'][0], { blockType: 'hoverHighlights' }>
 
-import { ExtractBlockProps } from '@app/_utilities/extractBlockProps'
+import { ExtractBlockProps } from '@/utilities/extractBlockProps'
 export type HoverHighlightProps = ExtractBlockProps<'hoverHighlights'>
 
 type Highlight = Exclude<

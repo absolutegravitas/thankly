@@ -1,8 +1,8 @@
 import type { Block } from 'payload/types'
 
-import { blockFields } from '../../_fields/blockFields'
-import link from '../../_fields/link'
-import linkGroup from '../../_fields/linkGroup'
+import { blockFields } from '@cms/_fields/blockFields'
+import link from '@cms/_fields/link'
+import linkGroup from '@cms/_fields/linkGroup'
 import { contentField } from '@/app/(payload)/_fields/contentField'
 // import richText from '../../fields/richText'
 

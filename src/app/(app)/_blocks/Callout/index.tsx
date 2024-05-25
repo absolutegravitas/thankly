@@ -19,7 +19,7 @@ import classes from './index.module.scss'
 //   padding: PaddingProps
 // }
 
-import { ExtractBlockProps } from '@app/_utilities/extractBlockProps'
+import { ExtractBlockProps } from '@/utilities/extractBlockProps'
 export type CalloutProps = ExtractBlockProps<'callout'> & { padding: PaddingProps }
 
 export const Callout: React.FC<CalloutProps> = (props) => {

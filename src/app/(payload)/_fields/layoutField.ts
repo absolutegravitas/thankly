@@ -1,4 +1,4 @@
-import deepMerge from '@cms/_utilities/deepMerge'
+import deepMerge from '@/utilities/deepMerge'
 
 import {
   lexicalEditor,
@@ -18,7 +18,6 @@ import { Banner } from '@cms/_blocks/Banner'
 import { Callout } from '@cms/_blocks/Callout'
 import { CallToAction } from '@cms/_blocks/CallToAction'
 import { CardGrid } from '@cms/_blocks/CardGrid'
-
 import { Content } from '@cms/_blocks/Content'
 import { ContentGrid } from '@cms/_blocks/ContentGrid'
 import { Form } from '@cms/_blocks/Form'
@@ -30,12 +29,14 @@ import { LogoGrid } from '@cms/_blocks/LogoGrid'
 import { MediaBlock } from '@cms/_blocks/Media'
 import { MediaContent } from '@cms/_blocks/MediaContent'
 import { MediaContentAccordion } from '@cms/_blocks/MediaContentAccordion'
-import { Pricing } from '@cms/_blocks/Pricing'
+// import { Pricing } from '@cms/_blocks/Pricing'
+import { MediaSlider } from '@cms/_blocks/MediaSlider'
+
 import { Reuse } from '@cms/_blocks/Reuse'
 import { Slider } from '@cms/_blocks/Slider'
 import { Statement } from '@cms/_blocks/Statement'
-import { StickyHighlights } from '@cms/_blocks/StickyHighlights'
 import { Steps } from '@cms/_blocks/Steps'
+import { StickyHighlights } from '@cms/_blocks/StickyHighlights'
 
 // Define the ContentField type
 
@@ -62,12 +63,11 @@ export const layoutField: LayoutField = (
     'MediaBlock',
     'MediaContent',
     'MediaContentAccordion',
-    // 'Pricing',
+    'MediaSlider',
     'Reuse',
     'Slider',
-    'Steps',
     'Statement',
-
+    'Steps',
     'StickyHighlights',
   ],
 ) => {
@@ -111,6 +111,8 @@ export const layoutField: LayoutField = (
           return MediaContentAccordion
         // case 'Pricing':
         //   return Pricing
+        case 'MediaSlider':
+          return MediaSlider
         case 'Reuse':
           return Reuse
         case 'Slider':

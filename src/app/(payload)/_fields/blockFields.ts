@@ -1,6 +1,6 @@
 import type { Field, GroupField } from 'payload/types'
 
-import deepMerge from '@cms/_utilities/deepMerge'
+import deepMerge from '@/utilities/deepMerge'
 
 interface Args {
   name: string
@@ -13,6 +13,7 @@ export const themeField: Field = {
   name: 'theme',
   label: 'Theme',
   type: 'select',
+  defaultValue: 'light',
   admin: {
     description: 'Leave blank for system default',
   },

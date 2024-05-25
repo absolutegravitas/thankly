@@ -22,7 +22,7 @@ import { useHeaderObserver } from '@app/_providers/HeaderIntersectionObserver'
 import { useThemePreference } from '@app/_providers/Theme'
 import { getImplicitPreference, themeLocalStorageKey } from '@app/_providers/Theme/shared'
 import { Theme } from '@app/_providers/Theme/types'
-import { getCookie } from '@app/_utilities/get-cookie'
+import { getCookie } from '@/utilities/get-cookie'
 
 import classes from './index.module.scss'
 import { SubFooter } from './SubFooter'

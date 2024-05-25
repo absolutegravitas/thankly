@@ -1,6 +1,6 @@
 // import { slateEditor } from '@payloadcms/richtext-slate'
 import type { Block } from 'payload/types'
-import { blockFields } from '../../_fields/blockFields'
+import { blockFields } from '@cms/_fields/blockFields'
 import { HTMLConverterFeature, lexicalEditor, TreeViewFeature } from '@payloadcms/richtext-lexical'
 
 export const MediaBlock: Block = {

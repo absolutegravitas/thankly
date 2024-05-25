@@ -1,6 +1,6 @@
 import type { Field } from 'payload/types'
 
-import deepMerge from '@cms/_utilities/deepMerge'
+import deepMerge from '@/utilities/deepMerge'
 
 export const lookOptions = {
   default: {

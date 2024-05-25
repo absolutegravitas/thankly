@@ -21,7 +21,7 @@ import { Settings } from '@cms/_collections/settings'
 
 import { buildConfig } from 'payload/config'
 import { fileURLToPath } from 'url'
-import generateBreadcrumbsUrl from '@cms/_utilities/generateBreadcrumbsUrl'
+import generateBreadcrumbsUrl from '@/utilities/generateBreadcrumbsUrl'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -78,7 +78,7 @@ export default buildConfig({
       overrides: { admin: { group: 'Globals' } },
     }),
     formBuilderPlugin({ redirectRelationships: ['pages'], fields: { state: false } }),
-    nestedDocsPlugin({ collections: ['pages', 'products'], generateURL: generateBreadcrumbsUrl }),
+    nestedDocsPlugin({ collections: ['pages'], generateURL: generateBreadcrumbsUrl }),
     vercelBlobStorage({
       collections: {
         [Media.slug]: true,

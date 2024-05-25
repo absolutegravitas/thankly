@@ -2,7 +2,7 @@ import type { CollectionConfig } from 'payload/types'
 import payload from 'payload'
 
 import { clearUserCart } from '@cms/_hooks/clearUserCart'
-import { adminsAndUserOnly, adminsOnly } from '../_utilities/access'
+import { adminsAndUserOnly, adminsOnly } from '../../../utilities/access'
 // import { LinkToPaymentIntent } from './ui/LinkToPaymentIntent'
 
 export const Orders: CollectionConfig = {

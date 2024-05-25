@@ -1,6 +1,6 @@
 import { Inter, League_Spartan, Raleway } from 'next/font/google'
 import { Metadata } from 'next'
-import { mergeOpenGraph } from '@app/_utilities/mergeOpenGraph'
+import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
 
 import '@app/_css/app.scss'
 

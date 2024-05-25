@@ -17,7 +17,7 @@ import classes from './index.module.scss'
 //   padding: PaddingProps
 // }
 
-import { ExtractBlockProps } from '@app/_utilities/extractBlockProps'
+import { ExtractBlockProps } from '@/utilities/extractBlockProps'
 export type CardGridProps = ExtractBlockProps<'cardGrid'> & { padding: PaddingProps }
 
 export const CardGrid: React.FC<CardGridProps> = (props) => {

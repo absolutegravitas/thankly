@@ -7,7 +7,7 @@ import { notFound } from 'next/navigation'
 import type { Page } from '@payload-types'
 import { fetchPage, fetchPages } from '@app/_queries'
 
-import { generateMeta } from '@app/_utilities/generateMeta'
+import { generateMeta } from '@/utilities/generateMeta'
 import { PageTemplate } from './page.client'
 
 export default async function Page({ params: { slug = 'home' } }: any) {

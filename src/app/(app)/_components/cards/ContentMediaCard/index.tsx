@@ -2,7 +2,7 @@ import * as React from 'react'
 import Link from 'next/link'
 
 import { Media } from '@app/_components/Media'
-import { formatDate } from '@app/_utilities/format-date-time'
+import { formatDate } from '@/utilities/format-date-time'
 import { ContentMediaCardProps } from '../types'
 
 import classes from './index.module.scss'

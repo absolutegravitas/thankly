@@ -9,7 +9,7 @@ import { HoverHighlight } from './HoverHighlight'
 import classes from './index.module.scss'
 
 // export type HoverHighlightProps = Extract<Page['layout'][0], { blockType: 'hoverHighlights' }>
-import { ExtractBlockProps } from '@app/_utilities/extractBlockProps'
+import { ExtractBlockProps } from '@/utilities/extractBlockProps'
 export type HoverHighlightProps = ExtractBlockProps<'hoverHighlights'>
 
 export const HoverHighlights: React.FC<HoverHighlightProps> = (props) => {

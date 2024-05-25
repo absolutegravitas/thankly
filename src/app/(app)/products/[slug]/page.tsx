@@ -7,7 +7,7 @@ import { notFound } from 'next/navigation'
 import type { Product } from '@payload-types'
 import { fetchProduct, fetchProducts } from '@app/_queries'
 
-import { generateMeta } from '@app/_utilities/generateMeta'
+import { generateMeta } from '@/utilities/generateMeta'
 import { ProductTemplate } from './page.client'
 
 export default async function Product({ params: { slug } }: any) {
@@ -44,7 +44,7 @@ export async function generateStaticParams() {
     return []
   }
 
-  console.log('pagedata found //', products)
+  console.log('products found //', products)
 
   // Strip all keys from pages except slug
   if (products && products.length > 0) {

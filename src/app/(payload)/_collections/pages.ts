@@ -1,8 +1,8 @@
 import type { CollectionConfig } from 'payload/types'
-import { adminsOnly, publishedOnly } from '@cms/_utilities/access'
+import { adminsOnly, publishedOnly } from '@/utilities/access'
 
 // import { formatPreviewURL } from '@cms/_utilities/formatPreviewURL'
-import { revalidatePage } from '@cms/_utilities/revalidatePage'
+import { revalidatePage } from '@/utilities/revalidatePage'
 import { layoutField } from '@cms/_fields/layoutField'
 
 import { slugField } from '@cms/_fields/slug'

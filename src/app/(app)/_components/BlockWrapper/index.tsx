@@ -9,7 +9,7 @@ import classes from './index.module.scss'
 
 // export type Settings = Extract<Page['layout'],{ blockType: 'cardGrid' }>['cardGridFields']['settings']
 
-import { ExtractBlockProps } from '@app/_utilities/extractBlockProps'
+import { ExtractBlockProps } from '@/utilities/extractBlockProps'
 export type Settings = ExtractBlockProps<'cardGrid'>['cardGridFields']['settings']
 
 export type PaddingProps = {

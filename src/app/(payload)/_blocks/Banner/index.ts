@@ -2,7 +2,7 @@
 import type { Block } from 'payload/types'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 
-import { blockFields } from '../../_fields/blockFields'
+import { blockFields } from '@cms/_fields/blockFields'
 import { contentField } from '@/app/(payload)/_fields/contentField'
 
 export const Banner: Block = {

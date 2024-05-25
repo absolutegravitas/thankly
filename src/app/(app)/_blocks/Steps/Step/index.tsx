@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import useIntersection from '@app/_utilities/useIntersection'
+import useIntersection from '@/utilities/useIntersection'
 
 import { Gutter } from '@app/_components/Gutter'
 import { Label } from '@app/_components/Label'
@@ -7,7 +7,7 @@ import { RenderBlocks } from '@app/_components/RenderBlocks'
 import { Page } from '@payload-types'
 
 import classes from './index.module.scss'
-import { ExtractBlockProps } from '@app/_utilities/extractBlockProps'
+import { ExtractBlockProps } from '@/utilities/extractBlockProps'
 
 // type Props = Extract<Page['layout'][0], { blockType: 'steps' }>['stepsFields']['steps'][0] & {
 //   i: number

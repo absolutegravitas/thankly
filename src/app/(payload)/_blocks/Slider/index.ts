@@ -1,6 +1,6 @@
 import type { Block } from 'payload/types'
 
-import { blockFields } from '../../_fields/blockFields'
+import { blockFields } from '@cms/_fields/blockFields'
 // import richText from '../../fields/richText'
 
 export const Slider: Block = {

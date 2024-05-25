@@ -1,6 +1,6 @@
 import type { Block } from 'payload/types'
 
-import { blockFields } from '../../_fields/blockFields'
+import { blockFields } from '@cms/_fields/blockFields'
 import { Content } from '../Content'
 import { HoverHighlights } from '../HoverHighlights'
 import { StickyHighlights } from '../StickyHighlights'

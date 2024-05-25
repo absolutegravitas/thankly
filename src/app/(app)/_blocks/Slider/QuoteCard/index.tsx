@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { QuoteIcon } from '@app/_icons/QuoteIcon'
-import { formatDate } from '@app/_utilities/format-date-time'
+import { formatDate } from '@/utilities/format-date-time'
 
 import { BackgroundGrid } from '@app/_components/BackgroundGrid'
 import { RichText } from '@app/_blocks/RichText'
@@ -14,7 +14,7 @@ import classes from './index.module.scss'
 //   isActive: boolean
 // }
 
-import { ExtractBlockProps } from '@app/_utilities/extractBlockProps'
+import { ExtractBlockProps } from '@/utilities/extractBlockProps'
 export type Props = ExtractBlockProps<'slider'>['sliderFields']['quoteSlides'] & {
   isActive: boolean
 }

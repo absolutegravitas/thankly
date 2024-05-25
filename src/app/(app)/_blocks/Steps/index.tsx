@@ -7,7 +7,7 @@ import classes from './index.module.scss'
 
 // type Props = Extract<Page['layout'][0], { blockType: 'steps' }>
 
-import { ExtractBlockProps } from '@app/_utilities/extractBlockProps'
+import { ExtractBlockProps } from '@/utilities/extractBlockProps'
 export type Props = ExtractBlockProps<'steps'>
 
 export const Steps: React.FC<Props> = ({ stepsFields }) => {

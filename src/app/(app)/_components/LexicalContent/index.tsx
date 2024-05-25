@@ -1,5 +1,5 @@
 /* eslint-disable react/no-children-prop */
-import ensurePath from '@app/_utilities/ensurePath'
+import ensurePath from '@/utilities/ensurePath'
 import clsx from 'clsx'
 import Link from 'next/link'
 import React, { CSSProperties, type FC, type ReactElement } from 'react'

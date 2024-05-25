@@ -15,7 +15,7 @@ import classes from './index.module.scss'
 //   padding: PaddingProps
 // }
 
-import { ExtractBlockProps } from '@app/_utilities/extractBlockProps'
+import { ExtractBlockProps } from '@/utilities/extractBlockProps'
 export type MediaContentProps = ExtractBlockProps<'mediaContent'> & { padding: PaddingProps }
 
 export const MediaContentBlock: React.FC<MediaContentProps> = ({ mediaContentFields, padding }) => {

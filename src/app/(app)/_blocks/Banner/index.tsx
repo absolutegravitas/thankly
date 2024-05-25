@@ -7,7 +7,7 @@ import { BlockWrapper, PaddingProps } from '@app/_components/BlockWrapper'
 
 // export type BannerBlockProps = Extract<Reusable['layout'][0], { blockType: 'banner' }>
 
-import { ExtractBlockProps } from '@app/_utilities/extractBlockProps'
+import { ExtractBlockProps } from '@/utilities/extractBlockProps'
 export type BannerBlockProps = ExtractBlockProps<'banner'>
 
 export const BannerBlock: React.FC<{

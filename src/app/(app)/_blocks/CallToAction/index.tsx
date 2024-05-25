@@ -20,7 +20,7 @@ import classes from './index.module.scss'
 //   padding?: PaddingProps
 // }
 
-import { ExtractBlockProps } from '@app/_utilities/extractBlockProps'
+import { ExtractBlockProps } from '@/utilities/extractBlockProps'
 export type CallToActionProps = ExtractBlockProps<'cta'> & { padding: PaddingProps }
 
 export const CallToAction: React.FC<CallToActionProps> = (props) => {

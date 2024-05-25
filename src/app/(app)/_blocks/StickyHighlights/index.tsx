@@ -15,7 +15,7 @@ import classes from './index.module.scss'
 //   padding: PaddingProps
 // }
 
-import { ExtractBlockProps } from '@app/_utilities/extractBlockProps'
+import { ExtractBlockProps } from '@/utilities/extractBlockProps'
 export type Props = ExtractBlockProps<'stickyHighlights'> & {
   className?: string
   padding: PaddingProps

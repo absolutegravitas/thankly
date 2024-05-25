@@ -6,7 +6,7 @@ import { Page } from '@payload-types'
 
 // export type Props = Extract<Page['layout'][0], { blockType: 'reusableContentBlock' }>
 
-import { ExtractBlockProps } from '@app/_utilities/extractBlockProps'
+import { ExtractBlockProps } from '@/utilities/extractBlockProps'
 export type Props = ExtractBlockProps<'reuse'>
 
 export const ReusableContentBlock: React.FC<Props> = ({ reuseBlockFields }) => {

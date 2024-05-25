@@ -22,7 +22,7 @@ import { Slider } from '@app/_blocks/Slider'
 import { Steps } from '@app/_blocks/Steps'
 import { StickyHighlights } from '@app/_blocks/StickyHighlights'
 
-import { toKebabCase } from '@app/_utilities/to-kebab-case'
+import { toKebabCase } from '@/utilities/to-kebab-case'
 
 import { PaddingProps, Settings } from '@app/_components/BlockWrapper'
 import { getFieldsKeyFromBlock } from '@app/_components/RenderBlocks/utilities'
@@ -32,7 +32,7 @@ import { Theme } from '@app/_providers/Theme/types'
 
 // type ReusableContentBlockType = Extract<Page['layout'][0], { blockType: 'reusableContentBlock' }>
 
-import { ExtractBlockProps } from '@app/_utilities/extractBlockProps'
+import { ExtractBlockProps } from '@/utilities/extractBlockProps'
 type ReusableContentBlockType = ExtractBlockProps<'reusableContentBlock'>
 
 export const blockComponents: any = {

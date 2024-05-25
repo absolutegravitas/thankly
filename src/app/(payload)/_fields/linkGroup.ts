@@ -1,6 +1,6 @@
 import type { Field, ArrayField } from 'payload/types'
 
-import deepMerge from '@cms/_utilities/deepMerge'
+import deepMerge from '@/utilities/deepMerge'
 import type { LinkLooks } from './link'
 import link from './link'
 

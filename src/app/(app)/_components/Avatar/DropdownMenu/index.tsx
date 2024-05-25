@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
 // import { useAuth } from '@root/providers/Auth'
-import useClickAway from '@app/_utilities/use-click-away'
+import useClickAway from '@/utilities/use-click-away'
 
 import classes from './index.module.scss'
 
