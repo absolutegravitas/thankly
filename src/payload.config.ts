@@ -11,13 +11,18 @@ import { formBuilderPlugin } from '@payloadcms/plugin-form-builder'
 import { nestedDocsPlugin } from '@payloadcms/plugin-nested-docs'
 
 // collections
-import { Users } from '@cms/_collections/users'
+import { users, sessions } from '@cms/_collections/users'
 import { Media } from '@cms/_collections/media'
 import { Products } from '@cms/_collections/products'
 import { Pages } from '@cms/_collections/pages'
 import { Reusable } from '@cms/_collections/reusables'
 import { Orders } from '@cms/_collections/orders'
 import { Settings } from '@cms/_collections/settings'
+import {
+  COLLECTION_SLUG_MEDIA,
+  COLLECTION_SLUG_PAGE,
+  COLLECTION_SLUG_PRODUCTS,
+} from '@cms/_collections/config'
 
 import { buildConfig } from 'payload/config'
 import { fileURLToPath } from 'url'
@@ -27,7 +32,7 @@ const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
 export default buildConfig({
-  collections: [Users, Orders, Products, Pages, Reusable, Media],
+  collections: [users, sessions, Orders, Products, Pages, Reusable, Media],
   globals: [Settings],
   editor: lexicalEditor({}),
   db: postgresAdapter({ pool: { connectionString: process.env.POSTGRES_URL } }),
@@ -37,13 +42,13 @@ export default buildConfig({
   sharp,
 
   admin: {
-    user: Users.slug,
+    user: users.slug,
     livePreview: {
       url: ({ data, locale }) =>
         `${process.env.NEXT_PUBLIC_SERVER_URL}/preview${data.path}${
           locale ? `?locale=${locale.code}` : ''
         }`,
-      collections: ['pages', 'products'], // The collections to enable Live Preview on (globals are also possible)
+      collections: [COLLECTION_SLUG_PAGE],
       breakpoints: [
         { label: 'Mobile', name: 'mobile', width: 375, height: 667 },
         { label: 'Tablet', name: 'tablet', width: 768, height: 1024 },

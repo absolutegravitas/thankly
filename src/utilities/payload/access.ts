@@ -2,6 +2,27 @@ import type { FieldHook } from 'payload/types'
 import type { User } from '@payload-types'
 import { Access } from 'payload/config'
 
+export const isAdmin: Access = ({ req }) => {
+  return req?.user?.role === 'admin'
+}
+
+export const isAdminOrCurrentUser: Access = ({ req }) => {
+  if (req?.user?.role === 'admin') return true
+  return { user: { equals: req.user?.id } }
+}
+
+// export const isAdminOrCurrentUser: Access = ({ req }) => {
+//   if (!req.user || !req.user.roles) {
+//     return false
+//   }
+
+//   if (req.user?.roles && req.user.roles.some((role) => role === 'admin')) {
+//     return true
+//   }
+
+//   return { user: { equals: req.user?.id } }
+// }
+
 // ensure the first user created is an admin
 // 1. lookup a single user on create as succinctly as possible
 // 2. if there are no users found, append `admin` to the roles array
@@ -45,18 +66,6 @@ export const adminsOnly: Access = ({ req: { user } }) => {
   return Boolean(user?.roles?.includes('admin'))
 }
 
-export const isAdminOrCurrentUser: Access = ({ req }) => {
-  if (!req.user || !req.user.roles) {
-    return false
-  }
-
-  if (req.user?.roles && req.user.roles.some((role) => role === 'admin')) {
-    return true
-  }
-
-  return { user: { equals: req.user?.id } }
-}
-
 // admins and user only
 export const adminsAndUserOnly: Access = ({ req: { user }, id }) => {
   if (!user || !user.roles) {
@@ -64,7 +73,7 @@ export const adminsAndUserOnly: Access = ({ req: { user }, id }) => {
   }
 
   // allow users with a role of 'admin'
-  if (user?.roles && user.roles.some((role) => role === 'admin')) {
+  if (user?.roles && user.roles.some((role: any) => role === 'admin')) {
     return true
   }
   // allow any other users to update only oneself
@@ -74,8 +83,8 @@ export const adminsAndUserOnly: Access = ({ req: { user }, id }) => {
 export const checkRole = (allRoles: User['roles'] = [], user?: User | null): boolean => {
   if (user) {
     if (
-      allRoles.some((role) => {
-        return user?.roles?.some((individualRole) => {
+      allRoles.some((role: any) => {
+        return user?.roles?.some((individualRole: any) => {
           return individualRole === role
         })
       })

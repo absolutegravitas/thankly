@@ -1,12 +1,16 @@
-// import configPromise from '@payload-config'
-// import { getPayloadHMR as getPayloadInstance } from '@payloadcms/next/utilities'
-import { headers as getHeaders } from 'next/headers'
-import type { User } from '@/payload-types'
-import { payload } from '@cms/_utilities/getPayload'
+import 'server-only'
+import configPromise from '@payload-config'
+import { getPayloadHMR } from '@payloadcms/next/utilities'
+import { getPayloadHMR as getPayloadInstance } from '@payloadcms/next/utilities'
 
-// export async function getPayload(): ReturnType<typeof getPayloadInstance> {
-//   return getPayloadInstance({ config: await configPromise })
-// }
+import { headers as getHeaders } from 'next/headers'
+import type { User } from '@payload-types'
+
+export const payload = await getPayloadHMR({ config: await configPromise })
+
+export async function getPayload(): ReturnType<typeof getPayloadInstance> {
+  return getPayloadInstance({ config: await configPromise })
+}
 
 /**
  * Get the current user with out needing to import the payload instance & headers.
@@ -17,6 +21,5 @@ import { payload } from '@cms/_utilities/getPayload'
  */
 export async function getCurrentUser(): Promise<User | null> {
   const headers = getHeaders()
-  // const payload = await getPayload()
   return (await payload.auth({ headers })).user
 }

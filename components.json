@@ -12,6 +12,6 @@
   },
   "aliases": {
     "components": "@app/_components",
-    "utils": "@app/_utilities"
+    "utils": "@/utilities"
   }
 }

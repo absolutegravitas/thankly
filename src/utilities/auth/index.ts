@@ -1,7 +1,7 @@
 import 'server-only'
-import { payload } from '@/utilities/getPayload'
-import { users } from '@cms/_collections/users'
-// import { COLLECTION_SLUG_USER } from '@/payload/collections/config'
+import { getPayload } from '@/utilities/payload'
+import { users } from '@cms/_collections'
+import { COLLECTION_SLUG_USER } from '@cms/_collections/config'
 import NextAuth from 'next-auth'
 import { getFieldsToSign as getFieldsToSignPayload } from 'payload/auth'
 import { PayloadAdapter } from './adapter'
@@ -10,15 +10,16 @@ import { revalidateUser } from '../payload/actions'
 import { User } from '@/payload-types'
 
 export const { auth, handlers, signIn, signOut, unstable_update } = NextAuth(() => {
+  const payload = getPayload()
   return {
     adapter: PayloadAdapter(payload, PAYLOAD_ADAPTER_CONFIG),
     callbacks: {
-      async jwt({ token, user }: any) {
+      async jwt({ token, user }) {
         const userId = (token?.id || token?.sub || user?.id) as string | number
         const dbUser = await (
           await payload
         ).findByID({
-          collection: 'users',
+          collection: COLLECTION_SLUG_USER,
           id: userId,
         })
         const fieldsToSign = getFieldsToSignPayload({
@@ -33,7 +34,7 @@ export const { auth, handlers, signIn, signOut, unstable_update } = NextAuth(() 
         }
         return token
       },
-      async session({ session, token }: any) {
+      async session({ session, token }) {
         session.user = session.user || {}
         if (!token) return session
         const fieldsToSign = getFieldsToSignPayload({
@@ -47,13 +48,13 @@ export const { auth, handlers, signIn, signOut, unstable_update } = NextAuth(() 
           ...fieldsToSign,
           ...session.user,
           // @ts-ignore
-          collection: 'users',
+          collection: COLLECTION_SLUG_USER,
         }
 
         return session
       },
-      async signIn({ user }: any) {
-        revalidateUser(user as User, payload as any)
+      async signIn({ user }) {
+        revalidateUser(user as unknown as User, payload as any)
         return true
       },
     },
