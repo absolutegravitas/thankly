@@ -3,7 +3,7 @@ import 'server-only'
 import { unstable_cache } from 'next/cache'
 import { Page, Product, Order, Setting, User } from '@payload-types'
 import { headers as getHeaders } from 'next/headers'
-import { payload } from '@/utilities/getPayload'
+import { payload } from '@/utilities/payload'
 
 export const fetchProduct = (slug: string): Promise<Product | null> => {
   const cachedFetchPage = unstable_cache(
@@ -58,7 +58,7 @@ export const fetchProducts = unstable_cache(
       }
 
       // get slug, id and title prop only from the returned docs
-      pages = docs?.map(({ slug, id, title }) => ({ slug, id, title }))
+      pages = docs?.map(({ slug, id, title }: any) => ({ slug, id, title }))
     } catch (error) {
       console.error('Error fetching pages:', error)
     } finally {
@@ -131,7 +131,7 @@ export const fetchPages = unstable_cache(
       }
 
       // get slug, id and title prop only from the returned docs
-      pages = docs?.map(({ slug, id, title }) => ({ slug, id, title }))
+      pages = docs?.map(({ slug, id, title }: any) => ({ slug, id, title }))
     } catch (error) {
       console.error('Error fetching pages:', error)
     } finally {
