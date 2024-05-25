@@ -42,7 +42,7 @@ export default buildConfig({
   sharp,
 
   admin: {
-    user: users.slug,
+    // user: users.slug,
     livePreview: {
       url: ({ data, locale }) =>
         `${process.env.NEXT_PUBLIC_SERVER_URL}/preview${data.path}${
