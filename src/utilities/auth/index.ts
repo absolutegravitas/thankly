@@ -1,5 +1,5 @@
 import 'server-only'
-import { getPayload } from '@/utilities/payload'
+import { payload } from '@/utilities/payload'
 import { users } from '@cms/_collections'
 import { COLLECTION_SLUG_USER } from '@cms/_collections/config'
 import NextAuth from 'next-auth'
@@ -7,10 +7,10 @@ import { getFieldsToSign as getFieldsToSignPayload } from 'payload/auth'
 import { PayloadAdapter } from './adapter'
 import authConfig, { PAYLOAD_ADAPTER_CONFIG } from './config'
 import { revalidateUser } from '../payload/actions'
-import { User } from '@/payload-types'
+import { User } from '@payload-types'
 
 export const { auth, handlers, signIn, signOut, unstable_update } = NextAuth(() => {
-  const payload = getPayload()
+  // const payload = getPayload()
   return {
     adapter: PayloadAdapter(payload, PAYLOAD_ADAPTER_CONFIG),
     callbacks: {

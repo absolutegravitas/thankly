@@ -10,6 +10,8 @@ import { fetchProduct, fetchProducts } from '@app/_queries'
 import { generateMeta } from '@/utilities/generateMeta'
 import { ProductTemplate } from './page.client'
 
+// export const revalidate = 7200 // 2 hours
+
 export default async function Product({ params: { slug } }: any) {
   const { isEnabled: isDraftMode } = draftMode()
 

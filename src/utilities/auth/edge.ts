@@ -6,7 +6,7 @@ import type { ReadonlyRequestCookies } from 'next/dist/server/web/spec-extension
 import { SESSION_STRATEGY } from './config'
 import { unstable_cache } from 'next/cache'
 import { COLLECTION_SLUG_SESSIONS, COLLECTION_SLUG_USER } from '@cms/_collections/config'
-import type { User } from '@/payload-types'
+import type { User } from '@payload-types'
 import type { Payload } from 'payload'
 import { parseCookies } from 'payload/auth'
 

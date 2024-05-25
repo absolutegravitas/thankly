@@ -4,7 +4,7 @@ import { isWithinExpirationDate } from '@/utilities/isWithinExperationDate'
 import type { AdapterUser } from '@auth/core/adapters'
 import type { Adapter, AdapterUser as BaseAdapterUser } from 'next-auth/adapters'
 import type { BasePayload, GeneratedTypes } from 'payload'
-import type { User } from '@/payload-types'
+import type { User } from '@payload-types'
 import { PAYLOAD_ADAPTER_CONFIG } from './config'
 
 declare module '@auth/core/adapters' {

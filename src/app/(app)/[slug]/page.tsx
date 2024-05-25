@@ -10,6 +10,8 @@ import { fetchPage, fetchPages } from '@app/_queries'
 import { generateMeta } from '@/utilities/generateMeta'
 import { PageTemplate } from './page.client'
 
+// export const revalidate = 7200 // 2 hours
+
 export default async function Page({ params: { slug = 'home' } }: any) {
   const { isEnabled: isDraftMode } = draftMode()
 

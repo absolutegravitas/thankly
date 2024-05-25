@@ -8,7 +8,7 @@ import { ThemeAutoIcon } from '@app/_graphics/ThemeAutoIcon'
 import { ThemeDarkIcon } from '@app/_graphics/ThemeDarkIcon'
 import { ThemeLightIcon } from '@app/_graphics/ThemeLightIcon'
 import { ChevronUpDownIcon } from '@app/_icons/ChevronUpDownIcon'
-import { useAuth } from '@app/_providers/Auth'
+// import { useAuth } from '@app/_providers/Auth'
 import { useHeaderObserver } from '@app/_providers/HeaderIntersectionObserver'
 import { useThemePreference } from '@app/_providers/Theme'
 import { getImplicitPreference, themeLocalStorageKey } from '@app/_providers/Theme/shared'
@@ -18,7 +18,7 @@ import classes from './classes.module.scss'
 import { blockFormats } from '@/app/(app)/_css/tailwindClasses'
 
 export const SubFooter = () => {
-  const { user } = useAuth()
+  // const { user } = useAuth()
 
   const selectRef = React.useRef<HTMLSelectElement>(null)
   const themeId = useId()
