@@ -40,13 +40,19 @@ EXCEPTION
 END $$;
 
 DO $$ BEGIN
- CREATE TYPE "enum_products_availability" AS ENUM('available', 'unavailable');
+ CREATE TYPE "enum_products_product_type" AS ENUM('card', 'gift');
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
 
 DO $$ BEGIN
- CREATE TYPE "enum_products_type" AS ENUM('card', 'gift');
+ CREATE TYPE "enum_products_theme" AS ENUM('light', 'dark');
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+
+DO $$ BEGIN
+ CREATE TYPE "enum_products_availability" AS ENUM('available', 'unavailable');
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -58,13 +64,19 @@ EXCEPTION
 END $$;
 
 DO $$ BEGIN
- CREATE TYPE "enum__products_v_version_availability" AS ENUM('available', 'unavailable');
+ CREATE TYPE "enum__products_v_version_product_type" AS ENUM('card', 'gift');
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
 
 DO $$ BEGIN
- CREATE TYPE "enum__products_v_version_type" AS ENUM('card', 'gift');
+ CREATE TYPE "enum__products_v_version_theme" AS ENUM('light', 'dark');
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+
+DO $$ BEGIN
+ CREATE TYPE "enum__products_v_version_availability" AS ENUM('available', 'unavailable');
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -76,7 +88,19 @@ EXCEPTION
 END $$;
 
 DO $$ BEGIN
+ CREATE TYPE "enum_pages_theme" AS ENUM('light', 'dark');
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+
+DO $$ BEGIN
  CREATE TYPE "enum_pages_status" AS ENUM('draft', 'published');
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+
+DO $$ BEGIN
+ CREATE TYPE "enum__pages_v_version_theme" AS ENUM('light', 'dark');
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -245,28 +269,20 @@ CREATE TABLE IF NOT EXISTS "orders_rels" (
 	"products_id" integer
 );
 
-CREATE TABLE IF NOT EXISTS "products_breadcrumbs" (
-	"_order" integer NOT NULL,
-	"_parent_id" integer NOT NULL,
-	"id" varchar PRIMARY KEY NOT NULL,
-	"url" varchar,
-	"label" varchar
-);
-
 CREATE TABLE IF NOT EXISTS "products" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"title" varchar,
 	"slug" varchar,
+	"productType" "enum_products_product_type",
 	"stripe_id" varchar,
-	"short_description" varchar,
+	"theme" "enum_products_theme",
+	"availability" "enum_products_availability",
 	"price" numeric,
 	"stripe_price_id" varchar,
 	"promo_price" numeric,
 	"stripe_promo_price_id" varchar,
-	"availability" "enum_products_availability",
 	"stock_on_hand" numeric,
 	"low_stock_threshold" numeric,
-	"type" "enum_products_type",
 	"layout" jsonb,
 	"meta_title" varchar,
 	"meta_description" varchar,
@@ -280,33 +296,23 @@ CREATE TABLE IF NOT EXISTS "products_rels" (
 	"order" integer,
 	"parent_id" integer NOT NULL,
 	"path" varchar NOT NULL,
-	"media_id" integer,
-	"products_id" integer
-);
-
-CREATE TABLE IF NOT EXISTS "_products_v_version_breadcrumbs" (
-	"_order" integer NOT NULL,
-	"_parent_id" integer NOT NULL,
-	"id" serial PRIMARY KEY NOT NULL,
-	"url" varchar,
-	"label" varchar,
-	"_uuid" varchar
+	"media_id" integer
 );
 
 CREATE TABLE IF NOT EXISTS "_products_v" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"version_title" varchar,
 	"version_slug" varchar,
+	"version_productType" "enum__products_v_version_product_type",
 	"version_stripe_id" varchar,
-	"version_short_description" varchar,
+	"version_theme" "enum__products_v_version_theme",
+	"version_availability" "enum__products_v_version_availability",
 	"version_price" numeric,
 	"version_stripe_price_id" varchar,
 	"version_promo_price" numeric,
 	"version_stripe_promo_price_id" varchar,
-	"version_availability" "enum__products_v_version_availability",
 	"version_stock_on_hand" numeric,
 	"version_low_stock_threshold" numeric,
-	"version_type" "enum__products_v_version_type",
 	"version_layout" jsonb,
 	"version_meta_title" varchar,
 	"version_meta_description" varchar,
@@ -339,6 +345,7 @@ CREATE TABLE IF NOT EXISTS "pages" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"title" varchar,
 	"slug" varchar,
+	"theme" "enum_pages_theme",
 	"layout" jsonb,
 	"meta_title" varchar,
 	"meta_description" varchar,
@@ -369,6 +376,7 @@ CREATE TABLE IF NOT EXISTS "_pages_v" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"version_title" varchar,
 	"version_slug" varchar,
+	"version_theme" "enum__pages_v_version_theme",
 	"version_layout" jsonb,
 	"version_meta_title" varchar,
 	"version_meta_description" varchar,
@@ -395,6 +403,23 @@ CREATE TABLE IF NOT EXISTS "reusable" (
 	"layout" jsonb,
 	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
 	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS "media" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"alt" varchar NOT NULL,
+	"caption" jsonb,
+	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
+	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
+	"url" varchar,
+	"thumbnail_u_r_l" varchar,
+	"filename" varchar,
+	"mime_type" varchar,
+	"filesize" numeric,
+	"width" numeric,
+	"height" numeric,
+	"focal_x" numeric,
+	"focal_y" numeric
 );
 
 CREATE TABLE IF NOT EXISTS "media_rels" (
@@ -689,7 +714,6 @@ ALTER TABLE "users" ADD COLUMN "stripe_id" varchar;
 ALTER TABLE "users" ADD COLUMN "enable_a_p_i_key" boolean;
 ALTER TABLE "users" ADD COLUMN "api_key" varchar;
 ALTER TABLE "users" ADD COLUMN "api_key_index" varchar;
-ALTER TABLE "media" ADD COLUMN "caption" jsonb;
 CREATE INDEX IF NOT EXISTS "users_type_order_idx" ON "users_type" ("order");
 CREATE INDEX IF NOT EXISTS "users_type_parent_idx" ON "users_type" ("parent_id");
 CREATE INDEX IF NOT EXISTS "users_roles_order_idx" ON "users_roles" ("order");
@@ -710,15 +734,11 @@ CREATE INDEX IF NOT EXISTS "orders_created_at_idx" ON "orders" ("created_at");
 CREATE INDEX IF NOT EXISTS "orders_rels_order_idx" ON "orders_rels" ("order");
 CREATE INDEX IF NOT EXISTS "orders_rels_parent_idx" ON "orders_rels" ("parent_id");
 CREATE INDEX IF NOT EXISTS "orders_rels_path_idx" ON "orders_rels" ("path");
-CREATE INDEX IF NOT EXISTS "products_breadcrumbs_order_idx" ON "products_breadcrumbs" ("_order");
-CREATE INDEX IF NOT EXISTS "products_breadcrumbs_parent_id_idx" ON "products_breadcrumbs" ("_parent_id");
 CREATE INDEX IF NOT EXISTS "products_slug_idx" ON "products" ("slug");
 CREATE INDEX IF NOT EXISTS "products_created_at_idx" ON "products" ("created_at");
 CREATE INDEX IF NOT EXISTS "products_rels_order_idx" ON "products_rels" ("order");
 CREATE INDEX IF NOT EXISTS "products_rels_parent_idx" ON "products_rels" ("parent_id");
 CREATE INDEX IF NOT EXISTS "products_rels_path_idx" ON "products_rels" ("path");
-CREATE INDEX IF NOT EXISTS "_products_v_version_breadcrumbs_order_idx" ON "_products_v_version_breadcrumbs" ("_order");
-CREATE INDEX IF NOT EXISTS "_products_v_version_breadcrumbs_parent_id_idx" ON "_products_v_version_breadcrumbs" ("_parent_id");
 CREATE INDEX IF NOT EXISTS "_products_v_version_version_slug_idx" ON "_products_v" ("version_slug");
 CREATE INDEX IF NOT EXISTS "_products_v_version_version_created_at_idx" ON "_products_v" ("version_created_at");
 CREATE INDEX IF NOT EXISTS "_products_v_created_at_idx" ON "_products_v" ("created_at");
@@ -745,6 +765,8 @@ CREATE INDEX IF NOT EXISTS "_pages_v_rels_order_idx" ON "_pages_v_rels" ("order"
 CREATE INDEX IF NOT EXISTS "_pages_v_rels_parent_idx" ON "_pages_v_rels" ("parent_id");
 CREATE INDEX IF NOT EXISTS "_pages_v_rels_path_idx" ON "_pages_v_rels" ("path");
 CREATE INDEX IF NOT EXISTS "reusable_created_at_idx" ON "reusable" ("created_at");
+CREATE INDEX IF NOT EXISTS "media_created_at_idx" ON "media" ("created_at");
+CREATE UNIQUE INDEX IF NOT EXISTS "media_filename_idx" ON "media" ("filename");
 CREATE INDEX IF NOT EXISTS "media_rels_order_idx" ON "media_rels" ("order");
 CREATE INDEX IF NOT EXISTS "media_rels_parent_idx" ON "media_rels" ("parent_id");
 CREATE INDEX IF NOT EXISTS "media_rels_path_idx" ON "media_rels" ("path");
@@ -893,12 +915,6 @@ EXCEPTION
 END $$;
 
 DO $$ BEGIN
- ALTER TABLE "products_breadcrumbs" ADD CONSTRAINT "products_breadcrumbs_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "products"("id") ON DELETE cascade ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
-
-DO $$ BEGIN
  ALTER TABLE "products_rels" ADD CONSTRAINT "products_rels_parent_fk" FOREIGN KEY ("parent_id") REFERENCES "products"("id") ON DELETE cascade ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
@@ -906,18 +922,6 @@ END $$;
 
 DO $$ BEGIN
  ALTER TABLE "products_rels" ADD CONSTRAINT "products_rels_media_fk" FOREIGN KEY ("media_id") REFERENCES "media"("id") ON DELETE cascade ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
-
-DO $$ BEGIN
- ALTER TABLE "products_rels" ADD CONSTRAINT "products_rels_products_fk" FOREIGN KEY ("products_id") REFERENCES "products"("id") ON DELETE cascade ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
-
-DO $$ BEGIN
- ALTER TABLE "_products_v_version_breadcrumbs" ADD CONSTRAINT "_products_v_version_breadcrumbs_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "_products_v"("id") ON DELETE cascade ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -1183,10 +1187,8 @@ DROP TABLE "orders_items_receivers";
 DROP TABLE "orders_items";
 DROP TABLE "orders";
 DROP TABLE "orders_rels";
-DROP TABLE "products_breadcrumbs";
 DROP TABLE "products";
 DROP TABLE "products_rels";
-DROP TABLE "_products_v_version_breadcrumbs";
 DROP TABLE "_products_v";
 DROP TABLE "_products_v_rels";
 DROP TABLE "pages_breadcrumbs";
@@ -1196,6 +1198,7 @@ DROP TABLE "_pages_v_version_breadcrumbs";
 DROP TABLE "_pages_v";
 DROP TABLE "_pages_v_rels";
 DROP TABLE "reusable";
+DROP TABLE "media";
 DROP TABLE "media_rels";
 DROP TABLE "redirects";
 DROP TABLE "redirects_rels";
@@ -1248,7 +1251,6 @@ ALTER TABLE "users" DROP COLUMN IF EXISTS "status";
 ALTER TABLE "users" DROP COLUMN IF EXISTS "stripe_id";
 ALTER TABLE "users" DROP COLUMN IF EXISTS "enable_a_p_i_key";
 ALTER TABLE "users" DROP COLUMN IF EXISTS "api_key";
-ALTER TABLE "users" DROP COLUMN IF EXISTS "api_key_index";
-ALTER TABLE "media" DROP COLUMN IF EXISTS "caption";`);
+ALTER TABLE "users" DROP COLUMN IF EXISTS "api_key_index";`);
 
 };

@@ -1,5 +1,5 @@
 {
-  "id": "a468c629-1583-4c40-95cd-edccb0574a01",
+  "id": "b41ff504-6e2c-4cb2-be95-a72b45acf156",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "5",
   "dialect": "pg",
@@ -982,75 +982,6 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "products_breadcrumbs": {
-      "name": "products_breadcrumbs",
-      "schema": "",
-      "columns": {
-        "_order": {
-          "name": "_order",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "_parent_id": {
-          "name": "_parent_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "id": {
-          "name": "id",
-          "type": "varchar",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "url": {
-          "name": "url",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "label": {
-          "name": "label",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {
-        "products_breadcrumbs_order_idx": {
-          "name": "products_breadcrumbs_order_idx",
-          "columns": [
-            "_order"
-          ],
-          "isUnique": false
-        },
-        "products_breadcrumbs_parent_id_idx": {
-          "name": "products_breadcrumbs_parent_id_idx",
-          "columns": [
-            "_parent_id"
-          ],
-          "isUnique": false
-        }
-      },
-      "foreignKeys": {
-        "products_breadcrumbs_parent_id_fk": {
-          "name": "products_breadcrumbs_parent_id_fk",
-          "tableFrom": "products_breadcrumbs",
-          "tableTo": "products",
-          "columnsFrom": [
-            "_parent_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
-    },
     "products": {
       "name": "products",
       "schema": "",
@@ -1073,9 +1004,9 @@
           "primaryKey": false,
           "notNull": false
         },
-        "theme": {
-          "name": "theme",
-          "type": "enum_products_theme",
+        "productType": {
+          "name": "productType",
+          "type": "enum_products_product_type",
           "primaryKey": false,
           "notNull": false
         },
@@ -1085,9 +1016,15 @@
           "primaryKey": false,
           "notNull": false
         },
-        "short_description": {
-          "name": "short_description",
-          "type": "varchar",
+        "theme": {
+          "name": "theme",
+          "type": "enum_products_theme",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "availability": {
+          "name": "availability",
+          "type": "enum_products_availability",
           "primaryKey": false,
           "notNull": false
         },
@@ -1115,12 +1052,6 @@
           "primaryKey": false,
           "notNull": false
         },
-        "availability": {
-          "name": "availability",
-          "type": "enum_products_availability",
-          "primaryKey": false,
-          "notNull": false
-        },
         "stock_on_hand": {
           "name": "stock_on_hand",
           "type": "numeric",
@@ -1130,12 +1061,6 @@
         "low_stock_threshold": {
           "name": "low_stock_threshold",
           "type": "numeric",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "type": {
-          "name": "type",
-          "type": "enum_products_type",
           "primaryKey": false,
           "notNull": false
         },
@@ -1231,12 +1156,6 @@
           "type": "integer",
           "primaryKey": false,
           "notNull": false
-        },
-        "products_id": {
-          "name": "products_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
         }
       },
       "indexes": {
@@ -1288,94 +1207,6 @@
           ],
           "onDelete": "cascade",
           "onUpdate": "no action"
-        },
-        "products_rels_products_fk": {
-          "name": "products_rels_products_fk",
-          "tableFrom": "products_rels",
-          "tableTo": "products",
-          "columnsFrom": [
-            "products_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
-    },
-    "_products_v_version_breadcrumbs": {
-      "name": "_products_v_version_breadcrumbs",
-      "schema": "",
-      "columns": {
-        "_order": {
-          "name": "_order",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "_parent_id": {
-          "name": "_parent_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "id": {
-          "name": "id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "url": {
-          "name": "url",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "label": {
-          "name": "label",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "_uuid": {
-          "name": "_uuid",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {
-        "_products_v_version_breadcrumbs_order_idx": {
-          "name": "_products_v_version_breadcrumbs_order_idx",
-          "columns": [
-            "_order"
-          ],
-          "isUnique": false
-        },
-        "_products_v_version_breadcrumbs_parent_id_idx": {
-          "name": "_products_v_version_breadcrumbs_parent_id_idx",
-          "columns": [
-            "_parent_id"
-          ],
-          "isUnique": false
-        }
-      },
-      "foreignKeys": {
-        "_products_v_version_breadcrumbs_parent_id_fk": {
-          "name": "_products_v_version_breadcrumbs_parent_id_fk",
-          "tableFrom": "_products_v_version_breadcrumbs",
-          "tableTo": "_products_v",
-          "columnsFrom": [
-            "_parent_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -1403,9 +1234,9 @@
           "primaryKey": false,
           "notNull": false
         },
-        "version_theme": {
-          "name": "version_theme",
-          "type": "enum__products_v_version_theme",
+        "version_productType": {
+          "name": "version_productType",
+          "type": "enum__products_v_version_product_type",
           "primaryKey": false,
           "notNull": false
         },
@@ -1415,9 +1246,15 @@
           "primaryKey": false,
           "notNull": false
         },
-        "version_short_description": {
-          "name": "version_short_description",
-          "type": "varchar",
+        "version_theme": {
+          "name": "version_theme",
+          "type": "enum__products_v_version_theme",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "version_availability": {
+          "name": "version_availability",
+          "type": "enum__products_v_version_availability",
           "primaryKey": false,
           "notNull": false
         },
@@ -1445,12 +1282,6 @@
           "primaryKey": false,
           "notNull": false
         },
-        "version_availability": {
-          "name": "version_availability",
-          "type": "enum__products_v_version_availability",
-          "primaryKey": false,
-          "notNull": false
-        },
         "version_stock_on_hand": {
           "name": "version_stock_on_hand",
           "type": "numeric",
@@ -1460,12 +1291,6 @@
         "version_low_stock_threshold": {
           "name": "version_low_stock_threshold",
           "type": "numeric",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "version_type": {
-          "name": "version_type",
-          "type": "enum__products_v_version_type",
           "primaryKey": false,
           "notNull": false
         },
@@ -5003,6 +4828,13 @@
         "courierParcel": "courierParcel"
       }
     },
+    "enum_products_product_type": {
+      "name": "enum_products_product_type",
+      "values": {
+        "card": "card",
+        "gift": "gift"
+      }
+    },
     "enum_products_theme": {
       "name": "enum_products_theme",
       "values": {
@@ -5017,18 +4849,18 @@
         "unavailable": "unavailable"
       }
     },
-    "enum_products_type": {
-      "name": "enum_products_type",
-      "values": {
-        "card": "card",
-        "gift": "gift"
-      }
-    },
     "enum_products_status": {
       "name": "enum_products_status",
       "values": {
         "draft": "draft",
         "published": "published"
+      }
+    },
+    "enum__products_v_version_product_type": {
+      "name": "enum__products_v_version_product_type",
+      "values": {
+        "card": "card",
+        "gift": "gift"
       }
     },
     "enum__products_v_version_theme": {
@@ -5043,13 +4875,6 @@
       "values": {
         "available": "available",
         "unavailable": "unavailable"
-      }
-    },
-    "enum__products_v_version_type": {
-      "name": "enum__products_v_version_type",
-      "values": {
-        "card": "card",
-        "gift": "gift"
       }
     },
     "enum__products_v_version_status": {

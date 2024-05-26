@@ -56,8 +56,6 @@ export const Users: CollectionConfig = {
             {
               type: 'row', // required
               fields: [
-                { name: 'name', type: 'text', saveToJWT: true },
-
                 {
                   name: 'firstName',
                   label: 'First Name',
