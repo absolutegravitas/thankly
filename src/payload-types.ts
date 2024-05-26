@@ -6,10 +6,50 @@
  * and re-run `payload generate:types` to regenerate this file.
  */
 
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CartItems".
+ */
+export type CartItems =
+  | {
+      product: number | Product;
+      itemPrice?: number | null;
+      itemTotalShipping?: number | null;
+      itemTotal?: number | null;
+      receivers?:
+        | {
+            firstName?: string | null;
+            lastName?: string | null;
+            message?: string | null;
+            addressLine1?: string | null;
+            addressLine2?: string | null;
+            city?: string | null;
+            state?: string | null;
+            postcode?: string | null;
+            shippingOption?:
+              | (
+                  | 'free'
+                  | 'standardMail'
+                  | 'registeredMail'
+                  | 'expressMail'
+                  | 'standardParcel'
+                  | 'expressParcel'
+                  | 'courierParcel'
+                )
+              | null;
+            receiverPrice?: number | null;
+            receiverShipping?: number | null;
+            receiverTotal?: number | null;
+            id?: string | null;
+          }[]
+        | null;
+      id?: string | null;
+    }[]
+  | null;
+
 export interface Config {
   collections: {
     users: User;
-    sessions: Session;
     orders: Order;
     products: Product;
     pages: Page;
@@ -36,28 +76,24 @@ export interface Config {
 export interface User {
   id: number;
   name?: string | null;
-  imageUrl?: string | null;
-  role?: ('admin' | 'user') | null;
-  emailVerified?: string | null;
-  stripeCustomerId?: string | null;
-  accounts?:
-    | {
-        provider?: string | null;
-        providerAccountId?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  verificationTokens?:
-    | {
-        identifier?: string | null;
-        token?: string | null;
-        expires?: string | null;
-        id?: string | null;
-      }[]
-    | null;
+  firstName?: string | null;
+  lastName?: string | null;
+  orgName?: string | null;
+  orgId?: string | null;
+  website?: string | null;
+  status?: ('active' | 'inactive') | null;
+  type?: ('staff' | 'guest' | 'retail' | 'business' | 'partner')[] | null;
   roles: ('admin' | 'public')[];
+  stripeId?: string | null;
+  orders?: (number | Order)[] | null;
+  cart?: {
+    items?: CartItems;
+  };
   updatedAt: string;
   createdAt: string;
+  enableAPIKey?: boolean | null;
+  apiKey?: string | null;
+  apiKeyIndex?: string | null;
   email: string;
   resetPasswordToken?: string | null;
   resetPasswordExpiration?: string | null;
@@ -66,18 +102,6 @@ export interface User {
   loginAttempts?: number | null;
   lockUntil?: string | null;
   password?: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "sessions".
- */
-export interface Session {
-  id: number;
-  user: number | User;
-  sessionToken: string;
-  expires?: string | null;
-  updatedAt: string;
-  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

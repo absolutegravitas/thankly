@@ -11,13 +11,15 @@ import { formBuilderPlugin } from '@payloadcms/plugin-form-builder'
 import { nestedDocsPlugin } from '@payloadcms/plugin-nested-docs'
 
 // collections
-import { users, sessions } from '@cms/_collections/users'
+// import { Accounts, Sessions } from '@cms/_collections/accounts'
 import { Media } from '@cms/_collections/media'
 import { Products } from '@cms/_collections/products'
 import { Pages } from '@cms/_collections/pages'
 import { Reusable } from '@cms/_collections/reusables'
 import { Orders } from '@cms/_collections/orders'
 import { Settings } from '@cms/_collections/settings'
+import { Users } from '@cms/_collections/users'
+
 import {
   COLLECTION_SLUG_MEDIA,
   COLLECTION_SLUG_PAGE,
@@ -32,7 +34,7 @@ const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
 export default buildConfig({
-  collections: [users, sessions, Orders, Products, Pages, Reusable, Media],
+  collections: [Users, Orders, Products, Pages, Reusable, Media],
   globals: [Settings],
   editor: lexicalEditor({}),
   db: postgresAdapter({ pool: { connectionString: process.env.POSTGRES_URL } }),
@@ -42,7 +44,7 @@ export default buildConfig({
   sharp,
 
   admin: {
-    // user: users.slug,
+    user: Users.slug,
     livePreview: {
       url: ({ data, locale }) =>
         `${process.env.NEXT_PUBLIC_SERVER_URL}/preview${data.path}${

@@ -2,26 +2,26 @@ import type { FieldHook } from 'payload/types'
 import type { User } from '@payload-types'
 import { Access } from 'payload/config'
 
-export const isAdmin: Access = ({ req }) => {
-  return req?.user?.role === 'admin'
-}
-
-export const isAdminOrCurrentUser: Access = ({ req }) => {
-  if (req?.user?.role === 'admin') return true
-  return { user: { equals: req.user?.id } }
-}
+// export const isAdmin: Access = ({ req }) => {
+//   return req?.user?.role === 'admin'
+// }
 
 // export const isAdminOrCurrentUser: Access = ({ req }) => {
-//   if (!req.user || !req.user.roles) {
-//     return false
-//   }
-
-//   if (req.user?.roles && req.user.roles.some((role) => role === 'admin')) {
-//     return true
-//   }
-
+//   if (req?.user?.role === 'admin') return true
 //   return { user: { equals: req.user?.id } }
 // }
+
+export const isAdminOrCurrentUser: Access = ({ req }) => {
+  if (!req.user || !req.user.roles) {
+    return false
+  }
+
+  if (req.user?.roles && req.user.roles.some((role) => role === 'admin')) {
+    return true
+  }
+
+  return { user: { equals: req.user?.id } }
+}
 
 // ensure the first user created is an admin
 // 1. lookup a single user on create as succinctly as possible
