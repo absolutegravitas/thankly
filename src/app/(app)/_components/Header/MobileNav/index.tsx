@@ -4,8 +4,8 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
 import { Avatar } from '@app/_components/Avatar'
-import { BackgroundGrid } from '@app/_components/BackgroundGrid'
-import { BackgroundScanline } from '@app/_components/BackgroundScanline'
+// import { BackgroundGrid } from '@app/_components/BackgroundGrid'
+// import { BackgroundScanline } from '@app/_components/BackgroundScanline'
 import { Gutter } from '@app/_components/Gutter'
 import { RichText } from '@app/_blocks/RichText'
 import { ArrowIcon } from '@app/_icons/ArrowIcon'
@@ -107,7 +107,7 @@ const MobileMenuModal: React.FC<
     <Modal slug={modalSlug} className={classes.mobileMenuModal} trapFocus={false}>
       <Gutter className={classes.mobileMenuWrap} rightGutter={false} dataTheme={`${theme}`}>
         <MobileNavItems tabs={tabs} setActiveTab={setActiveTab} />
-        <BackgroundGrid zIndex={0} />
+        {/* <BackgroundGrid zIndex={0} /> */}
         {/* <BackgroundScanline /> */}
         <div className={classes.modalBlur} />
       </Gutter>
@@ -227,7 +227,7 @@ const SubMenuModal: React.FC<
           )
         })}
         {/* <BackgroundScanline /> */}
-        <BackgroundGrid zIndex={0} />
+        {/* <BackgroundGrid zIndex={0} /> */}
         <div className={classes.modalBlur} />
       </Gutter>
     </Modal>
@@ -265,7 +265,7 @@ export const MobileNav: React.FC<NavItems> = (props) => {
             >
               <Link
                 href="/"
-                className={classes.logo}
+                className={[classes.logo, 'no-underline'].join(' ')}
                 prefetch={false}
                 aria-label="Full Payload Logo"
               >

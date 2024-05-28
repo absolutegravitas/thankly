@@ -115,10 +115,8 @@ $curve: cubic-bezier(0.165, 0.84, 0.44, 1);
 .logo {
   display: flex;
   height: 100%;
-
-  svg {
-    height: auto;
-  }
+  align-items: center; // Add this line to vertically center the content
+  height: auto;
 }
 
 .tabs {
@@ -285,7 +283,7 @@ $curve: cubic-bezier(0.165, 0.84, 0.44, 1);
 
 .tab,
 .secondaryNavItems {
-  font-size: var(--font-body-size);
+  font-size: var(--font-inter-size);
 }
 
 .linkList,

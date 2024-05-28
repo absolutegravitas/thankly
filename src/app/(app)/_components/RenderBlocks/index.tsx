@@ -95,9 +95,9 @@ export const RenderBlocks: React.FC<Props> = (props) => {
   const paddingExceptions = useMemo(
     () => [
       'banner',
-      'blogContent',
-      'blogMarkdown',
-      'code',
+      // 'blogContent',
+      // 'blogMarkdown',
+      // 'code',
       'reusableContentBlock',
       'caseStudyParallax',
     ],

@@ -1,4 +1,4 @@
-import cn from 'clsx'
+import cn from '@/utilities/cn'
 import type { ComponentPropsWithoutRef } from 'react'
 
 const Container = ({ children, className }: ComponentPropsWithoutRef<'div'>) => {

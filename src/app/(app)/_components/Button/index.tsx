@@ -122,7 +122,7 @@ const generateHref = (args: GenerateSlugType): string => {
     }
 
     if (reference.relationTo === 'products') {
-      return `/products/${reference.value.slug}`
+      return `/shop/${reference.value.slug}`
     }
 
     return `/${reference.relationTo}/${reference.value.slug}`

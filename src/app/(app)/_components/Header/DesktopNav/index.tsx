@@ -161,6 +161,8 @@ export const DesktopNav: React.FC<DesktopNavType> = ({ tabs, hideBackground }) =
                             if (containsFeatured) {
                               columnSpan = item.style === 'featured' ? 6 : 3
                             }
+
+                            // console.log('item //', JSON.stringify(item))
                             return (
                               <div
                                 className={[

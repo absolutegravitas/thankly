@@ -1,24 +1,26 @@
-import React from 'react'
-import { Suspense } from 'react'
+import React, { Suspense } from 'react'
 import { Metadata } from 'next'
 import { draftMode } from 'next/headers'
 import { notFound } from 'next/navigation'
 
 import type { Page } from '@payload-types'
+// import { staticHome } from '../../../payload/seed/home-static'
 import { fetchPage, fetchPages } from '@app/_queries'
 
 import { generateMeta } from '@/utilities/generateMeta'
 import { PageTemplate } from './page.client'
 
-// export const revalidate = 7200 // 2 hours
-
-export default async function Page({ params: { slug = 'home' } }: any) {
+export default async function Page({ params: { slug = 'home' } }) {
   const { isEnabled: isDraftMode } = draftMode()
-
   let page: Page | null = null
-  page = await fetchPage(slug)
 
-  // if there's no page, or page is not an object then also return not found
+  try {
+    page = await fetchPage(slug)
+  } catch (error) {
+    console.error('Failed to fetch page:', error)
+    return notFound()
+  }
+
   if (
     !page ||
     typeof page !== 'object' ||
@@ -28,32 +30,21 @@ export default async function Page({ params: { slug = 'home' } }: any) {
   }
 
   return (
-    <>
-      <Suspense fallback="fetching page">
-        <PageTemplate page={page} />
-      </Suspense>
-    </>
+    <Suspense fallback="Loading...">
+      <PageTemplate page={page} />
+    </Suspense>
   )
 }
 
 export async function generateStaticParams() {
-  let pages: Page[] | null = null
-
   try {
-    pages = await fetchPages()
+    const pagesData = await fetchPages()
+    const pages = pagesData?.pages || [] // Extract pages from the data or default to an empty array
+    return pages.map(({ slug }) => slug)
   } catch (error) {
-    console.error('fetchPages error //', error)
+    console.error('Error generating static params:', error)
     return []
   }
-
-  // console.log('pagedata found //', pages)
-
-  // Strip all keys from pages except slug
-  if (pages && pages.length > 0) {
-    return pages.map(({ slug }: any) => ({ slug }))
-  }
-
-  return []
 }
 
 export async function generateMetadata({ params: { slug = 'home' } }): Promise<Metadata> {
@@ -64,11 +55,13 @@ export async function generateMetadata({ params: { slug = 'home' } }): Promise<M
   try {
     page = await fetchPage(slug)
   } catch (error) {
-    // don't throw an error if the fetch fails
-    // this is so that we can render a static home page for the demo
-    // when deploying this template on Payload Cloud, this page needs to build before the APIs are live
-    // in production you may want to redirect to a 404  page or at least log the error somewhere
+    console.error('Failed to fetch page:', error)
+    return {}
   }
+
+  // if (!page && slug === 'home') {
+  //   page = staticHome
+  // }
 
   return generateMeta({ doc: page })
 }

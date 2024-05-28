@@ -1,7 +1,7 @@
 type FormWrapperProps = React.ComponentPropsWithoutRef<'div'> & {
   outerContent?: React.ReactNode
 }
-import cn from 'clsx'
+import cn from '@/utilities/cn'
 
 export default function FormWrapper({
   children,

@@ -6,14 +6,18 @@ import React from 'react'
 import { Page } from '@payload-types'
 import Blocks from '@app/_blocks'
 
-export const PageTemplate: React.FC<{ page: Page | null | undefined }> = ({ page }) => {
+type PageTemplateProps = {
+  page: Page
+}
+
+export const PageTemplate: React.FC<PageTemplateProps> = ({ page }) => {
   // const { data } = useLivePreview({
   //   serverURL: process.env.NEXT_PUBLIC_SERVER_URL || '',
   //   depth: 2,
   //   initialData: page,
   // })
 
-  console.log('pagedata // ', JSON.stringify(page))
+  // console.log('pagedata // ', JSON.stringify(page))
   // use pagedata to render basic content or blocks client side
   // console.log('pagedata //', JSON.stringify(page?.layout?.root?.children))
 
