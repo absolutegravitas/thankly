@@ -332,7 +332,7 @@ const config: Config = {
       logo: ['var(--font-leaguespartan)', 'League Spartan', 'Inter', 'sans'],
       // for hero etc.
       heading: [
-        'var(--font-raleway)',
+        'var(--font-inter)',
         'Raleway',
         'ui-sans-serif',
         'system-ui',
@@ -370,7 +370,7 @@ const config: Config = {
       ],
       // for section subtitles
       subtitle: [
-        'var(--font-raleway)',
+        'var(--font-inter)',
         'Raleway',
         'ui-sans-serif',
         'system-ui',

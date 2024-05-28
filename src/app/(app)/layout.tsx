@@ -1,4 +1,3 @@
-import { Inter, League_Spartan, Raleway } from 'next/font/google'
 import { Metadata } from 'next'
 import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
 
@@ -15,24 +14,7 @@ import { Header } from './_components/Header'
 import { Footer } from './_components/Footer'
 import Script from 'next/script'
 import { defaultTheme, themeLocalStorageKey } from '@app/_providers/Theme/shared'
-
-const inter = Inter({
-  subsets: ['latin'],
-  display: 'swap',
-  variable: '--font-inter',
-})
-
-const leaguespartan = League_Spartan({
-  subsets: ['latin'],
-  display: 'swap',
-  variable: '--font-leaguespartan',
-})
-
-const raleway = Raleway({
-  subsets: ['latin'],
-  display: 'swap',
-  variable: '--font-raleway',
-})
+import { inter, leaguespartan, raleway } from '@/utilities/fonts'
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SERVER_URL || 'https://www.thankly.co'),
@@ -51,8 +33,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     <html
       lang="en"
       suppressHydrationWarning
-      className={`${inter.className}
-      ${leaguespartan.variable}`}
+      // className={`${interTight.className}
+      // ${leaguespartan.variable}`}
     >
       <PrivacyProvider>
         <head>
@@ -102,7 +84,14 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             }}
           />
         </head>
-        <body>
+        <body
+          className={[
+            leaguespartan.variable,
+            inter.variable,
+            raleway.variable,
+            // untitledSans.variable,
+          ].join(' ')}
+        >
           <Providers>
             {settings && <Header {...settings} />}
             {children}
