@@ -88,3 +88,6 @@ sudo docker system prune -a --volumes
 
 PRODUCTION
 pnpm payload migrate:create && pnpm generate:types && pnpm build
+
+https://loops.so/
+https://app.useplunk.com/events
