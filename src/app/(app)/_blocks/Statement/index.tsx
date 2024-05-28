@@ -18,6 +18,7 @@ import classes from './index.module.scss'
 // }
 
 import { ExtractBlockProps } from '@/utilities/extractBlockProps'
+import { useGetHeroPadding } from '../Hero/useGetHeroPadding'
 export type StatementProps = ExtractBlockProps<'statement'> & { padding: PaddingProps }
 
 export const Statement: React.FC<StatementProps> = (props) => {
@@ -32,8 +33,9 @@ export const Statement: React.FC<StatementProps> = (props) => {
       backgroundGlow,
       settings,
     },
-    padding,
+    // padding,
   } = props
+  const padding = useGetHeroPadding(settings.theme, props)
 
   const hasLinks = links && links.length > 0
 

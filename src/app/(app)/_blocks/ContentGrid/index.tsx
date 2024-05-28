@@ -11,6 +11,7 @@ import classes from './index.module.scss'
 // export type ContentGridProps = Extract<Page['layout'][0], { blockType: 'contentGrid' }> & {
 
 import { ExtractBlockProps } from '@/utilities/extractBlockProps'
+import { useGetHeroPadding } from '../Hero/useGetHeroPadding'
 export type ContentGridProps = ExtractBlockProps<'contentGrid'> & { padding: PaddingProps }
 
 type CellsProps = ContentGridProps['contentGridFields'] & {
@@ -43,8 +44,12 @@ const Cells: React.FC<CellsProps> = ({ cells, className, showNumbers, style: sty
   )
 }
 
-export const ContentGrid: React.FC<ContentGridProps> = ({ contentGridFields, padding }) => {
-  const { settings, style: styleFromProps, content, links } = contentGridFields || {}
+export const ContentGrid: React.FC<ContentGridProps> = (props) => {
+  const {
+    contentGridFields: { settings, style: styleFromProps, content, links },
+  } = props || {}
+
+  const padding = useGetHeroPadding(settings.theme, props)
 
   const hasLinks = Array.isArray(links) && links.length > 0
   const style = styleFromProps ?? 'gridBelow'
@@ -99,7 +104,7 @@ export const ContentGrid: React.FC<ContentGridProps> = ({ contentGridFields, pad
           )}
         </div>
 
-        <Cells {...contentGridFields} />
+        <Cells {...props.contentGridFields} />
       </Gutter>
     </BlockWrapper>
   )

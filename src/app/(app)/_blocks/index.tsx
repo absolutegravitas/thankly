@@ -54,26 +54,13 @@ const blockComponents = {
   statement: Statement,
   stickyHighlights: StickyHighlights,
 }
-const Blocks = ({ product, blocks, locale }: any) => {
+const Blocks = ({ blocks, locale }: any) => {
   // console.log('blocks //', JSON.stringify(blocks))
-  // console.log('product info //', JSON.stringify(product))
-
-  let productInfo = {}
-  if (product) {
-    productInfo = Object.keys(product).reduce((acc: Record<string, any>, key) => {
-      if (key !== 'layout' && key !== 'breadcrumbs' && key !== 'meta') {
-        acc[key] = product[key]
-      }
-      return acc
-    }, {})
-  }
-
-  // console.log('product info //', JSON.stringify(productInfo))
 
   return (
     <>
       {blocks?.map((block: any, ix: number) => {
-        // console.log('type //', block.type)
+        console.log('type //', block.type)
 
         //create switch statement for block.type
         switch (block.type) {
@@ -90,13 +77,7 @@ const Blocks = ({ product, blocks, locale }: any) => {
               // @ts-ignore
               const BlockComponent = blockComponents[block.fields.blockType] ?? null
               return BlockComponent ? (
-                <BlockComponent
-                  key={ix}
-                  {...productInfo}
-                  {...block.fields}
-                  blockIndex={ix}
-                  locale={locale}
-                />
+                <BlockComponent key={ix} {...block.fields} blockIndex={ix} locale={locale} />
               ) : null
             }
             break

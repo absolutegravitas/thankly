@@ -18,6 +18,7 @@ import classes from './index.module.scss'
 // }
 
 import { ExtractBlockProps } from '@/utilities/extractBlockProps'
+import { useGetHeroPadding } from '../Hero/useGetHeroPadding'
 export type HoverCardsProps = ExtractBlockProps<'hoverCards'> & { padding: PaddingProps }
 
 const Card: React.FC<{
@@ -26,6 +27,7 @@ const Card: React.FC<{
   setHover: Dispatch<SetStateAction<number>>
 }> = ({ card, leader, setHover }) => {
   // console.log('hovercards //', card)
+
   return (
     <div
       className={classes.cardWrapper}
@@ -47,9 +49,9 @@ const Card: React.FC<{
 export const HoverCards: React.FC<HoverCardsProps> = (props) => {
   const {
     hoverCardsFields: { richText, cards, settings },
-    padding,
   } = props
   // console.log('hovercardsfoelds //', props)
+  const padding = useGetHeroPadding(settings.theme, props)
 
   const [activeGradient, setActiveGradient] = useState(1)
 

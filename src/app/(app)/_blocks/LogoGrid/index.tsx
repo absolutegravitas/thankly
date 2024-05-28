@@ -29,6 +29,7 @@ type PositionedLogo = {
 // }
 
 import { ExtractBlockProps } from '@/utilities/extractBlockProps'
+import { useGetHeroPadding } from '../Hero/useGetHeroPadding'
 export type LogoGridProps = ExtractBlockProps<'logoGrid'> & { padding: PaddingProps }
 
 const TOTAL_CELLS = 8
@@ -43,9 +44,12 @@ const getRandomPosition = (excludePositions: number[]) => {
   return newPos
 }
 
-export const LogoGrid: React.FC<LogoGridProps> = ({ logoGridFields, padding }) => {
+export const LogoGrid: React.FC<LogoGridProps> = (props) => {
   // console.log('logoGrid', logoGridFields)
-  const { content, enableLink, link, logos, settings } = logoGridFields
+  const {
+    logoGridFields: { content, enableLink, link, logos, settings },
+  } = props
+  const padding = useGetHeroPadding(settings.theme, props)
 
   const [logoPositions, setLogoPositions] = useState<PositionedLogo[]>([])
   const [currentAnimatingIndex, setCurrentAnimatingIndex] = useState<number | null>(null)

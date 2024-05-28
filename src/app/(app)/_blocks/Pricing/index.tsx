@@ -20,10 +20,13 @@ import classes from './index.module.scss'
 // }
 
 import { ExtractBlockProps } from '@/utilities/extractBlockProps'
+import { useGetHeroPadding } from '../Hero/useGetHeroPadding'
 export type Props = ExtractBlockProps<'pricing'> & { padding: PaddingProps }
 
-export const Pricing: React.FC<Props> = ({ pricingFields, padding }) => {
+export const Pricing: React.FC<Props> = (props) => {
+  const { pricingFields } = props
   const { plans, disclaimer, settings } = pricingFields || {}
+  const padding = useGetHeroPadding(settings.theme, props)
 
   const [toggledPlan, setToggledPlan] = React.useState('')
   const hasPlans = Array.isArray(plans) && plans.length > 0

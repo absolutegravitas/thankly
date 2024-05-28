@@ -30,7 +30,7 @@ const heroes: Record<HeroType, React.FC<any>> = {
 }
 
 export const Hero: React.FC<HeroProps> = (props) => {
-  console.log('hero block', props)
+  // console.log('hero block', props)
 
   // Type assertion to ensure fields.type is HeroType
   const HeroToRender = heroes[props.type as HeroType]

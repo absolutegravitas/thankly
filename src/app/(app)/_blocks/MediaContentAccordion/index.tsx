@@ -17,15 +17,15 @@ import classes from './index.module.scss'
 // }
 
 import { ExtractBlockProps } from '@/utilities/extractBlockProps'
+import { useGetHeroPadding } from '../Hero/useGetHeroPadding'
 export type MediaContentAccordionProps = ExtractBlockProps<'mediaContentAccordion'> & {
   padding: PaddingProps
 }
 
-export const MediaContentAccordion: React.FC<MediaContentAccordionProps> = ({
-  mediaContentAccordionFields,
-  padding,
-}) => {
+export const MediaContentAccordion: React.FC<MediaContentAccordionProps> = (props) => {
+  const { mediaContentAccordionFields } = props
   const { settings } = mediaContentAccordionFields || {}
+  const padding = useGetHeroPadding(settings.theme, props)
 
   return (
     <BlockWrapper

@@ -16,10 +16,14 @@ import classes from './index.module.scss'
 // }
 
 import { ExtractBlockProps } from '@/utilities/extractBlockProps'
+import { useGetHeroPadding } from '../Hero/useGetHeroPadding'
 export type MediaContentProps = ExtractBlockProps<'mediaContent'> & { padding: PaddingProps }
 
-export const MediaContentBlock: React.FC<MediaContentProps> = ({ mediaContentFields, padding }) => {
-  const { link, images, content, alignment, enableLink, settings } = mediaContentFields
+export const MediaContentBlock: React.FC<MediaContentProps> = (props) => {
+  const {
+    mediaContentFields: { link, images, content, alignment, enableLink, settings },
+  } = props
+  const padding = useGetHeroPadding(settings.theme, props)
 
   return (
     <Gutter>

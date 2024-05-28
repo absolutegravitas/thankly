@@ -8,20 +8,19 @@ import { RichText } from '@app/_blocks/RichText'
 import { Reusable } from '@payload-types'
 
 import classes from './index.module.scss'
+import { useGetHeroPadding } from '../Hero/useGetHeroPadding'
 
 // type Props = Extract<Reusable['layout'][0], { blockType: 'mediaBlock' }> & {
 //   padding: PaddingProps
 //   disableGrid?: boolean
 // }
 
-export const MediaBlock: React.FC<any & { disableGutter?: boolean; marginAdjustment?: any }> = ({
-  mediaBlockFields,
-  disableGutter,
-  marginAdjustment = {},
-  padding,
-  disableGrid = false,
-}) => {
+export const MediaBlock: React.FC<any & { disableGutter?: boolean; marginAdjustment?: any }> = (
+  props,
+) => {
+  const { mediaBlockFields, disableGutter, marginAdjustment = {}, disableGrid = false } = props
   const { media, caption, position, settings } = mediaBlockFields
+  const padding = useGetHeroPadding(settings.theme, props)
 
   if (typeof media === 'string') return null
 

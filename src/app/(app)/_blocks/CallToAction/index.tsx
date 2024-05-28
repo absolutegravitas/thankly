@@ -21,14 +21,15 @@ import classes from './index.module.scss'
 // }
 
 import { ExtractBlockProps } from '@/utilities/extractBlockProps'
+import { useGetHeroPadding } from '../Hero/useGetHeroPadding'
 export type CallToActionProps = ExtractBlockProps<'cta'> & { padding: PaddingProps }
 
 export const CallToAction: React.FC<CallToActionProps> = (props) => {
   // console.log('cta block data //', JSON.stringify(props))
   const {
     ctaFields: { content, links, settings },
-    padding,
   } = props
+  const padding = useGetHeroPadding(settings.theme, props)
 
   const hasLinks = links && links.length > 0
 

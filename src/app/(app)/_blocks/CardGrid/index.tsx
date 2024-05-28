@@ -18,13 +18,15 @@ import classes from './index.module.scss'
 // }
 
 import { ExtractBlockProps } from '@/utilities/extractBlockProps'
+import { useGetHeroPadding } from '../Hero/useGetHeroPadding'
 export type CardGridProps = ExtractBlockProps<'cardGrid'> & { padding: PaddingProps }
 
 export const CardGrid: React.FC<CardGridProps> = (props) => {
   const {
     cardGridFields: { content, cards, links, settings, revealDescription },
-    padding,
   } = props
+
+  const padding = useGetHeroPadding(settings.theme, props)
 
   const [index, setIndex] = useState(0)
 

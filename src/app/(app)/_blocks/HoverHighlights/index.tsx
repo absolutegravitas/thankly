@@ -10,14 +10,16 @@ import classes from './index.module.scss'
 
 // export type HoverHighlightProps = Extract<Page['layout'][0], { blockType: 'hoverHighlights' }>
 import { ExtractBlockProps } from '@/utilities/extractBlockProps'
+import { useGetHeroPadding } from '../Hero/useGetHeroPadding'
 export type HoverHighlightProps = ExtractBlockProps<'hoverHighlights'>
 
 export const HoverHighlights: React.FC<HoverHighlightProps> = (props) => {
   const {
-    hoverHighlightsFields: { content, addRowNumbers, highlights },
+    hoverHighlightsFields: { content, addRowNumbers, highlights, settings },
   } = props
   // console.log('hoverhighlightfields', props)
   const hasHighlights = highlights && highlights.length > 0
+  const padding = useGetHeroPadding(settings.theme, props)
 
   return (
     <Gutter className={classes.hoverHighlights}>

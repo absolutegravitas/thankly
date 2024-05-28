@@ -58,19 +58,15 @@
   bottom: 0;
   left: 0;
   overflow: hidden;
-  min-height: 600px; /* Add this line to set a minimum height for mobile */
 
   img {
     object-fit: cover;
     width: 100%;
-    @include mid-break {
-      height: 50vh;
-    }
   }
 
-  // @include mid-break {
-  //   display: none;
-  // }
+  @include mid-break {
+    display: none;
+  }
 }
 
 .imagesContainerWrapper {
@@ -306,6 +302,7 @@
   position: relative;
   padding: 1px;
   margin-bottom: 2rem;
+  border-radius: 0.5rem;
   overflow: hidden;
   transition: box-shadow 0.2s ease-out;
   box-shadow: 0 0.25rem 1rem -0.75rem var(--theme-success-250);
@@ -360,6 +357,7 @@
     color: var(--theme-elevation-750);
     padding: 0.375rem 0.75rem;
     background-color: var(--theme-success-50);
+    border-radius: calc(0.5rem - 1px);
     z-index: 1;
 
     &:hover {
@@ -440,8 +438,7 @@
   margin: 0;
   padding: 0;
   max-width: 50%;
-  background-color: var(--theme-success-50);
-  border-color: var(--theme-success-50);
+
   @include mid-break {
     max-width: 100%;
   }
@@ -451,8 +448,6 @@
   @include mid-break {
     margin-bottom: 2rem;
   }
-  border-color: var(--theme-success-50);
-  background-color: var(--theme-success-50);
 }
 
 .mobileMediaWrapper {
@@ -465,14 +460,13 @@
     width: calc(100% + (var(--gutter-h) * 2));
     left: calc(var(--gutter-h) * -1);
 
-    img {
-      height: 600px;
-    }
+    img,
     video {
       height: 100%;
     }
   }
 }
+
 .mobilePedestalBackgroundGrid {
   @include mid-break {
     left: calc(10rem + var(--gutter-h));

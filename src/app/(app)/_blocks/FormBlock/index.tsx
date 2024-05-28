@@ -18,14 +18,15 @@ import classes from './index.module.scss'
 // }
 
 import { ExtractBlockProps } from '@/utilities/extractBlockProps'
+import { useGetHeroPadding } from '../Hero/useGetHeroPadding'
 export type FormBlockProps = ExtractBlockProps<'form'> & { padding: PaddingProps }
 
 export const FormBlock: React.FC<FormBlockProps> = (props) => {
   const {
     formFields: { content, form, settings },
-    padding,
   } = props
   const [imageLoaded, setImageLoaded] = useState(false)
+  const padding = useGetHeroPadding(settings.theme, props)
 
   const sectionRef = useRef<HTMLDivElement | null>(null)
   const [outerBackgroundStyle, setOuterBackgroundStyle] = useState({})
