@@ -38,7 +38,7 @@ export type CMSLinkType = {
 type GenerateSlugType = {
   type?: LinkType | null
   url?: string | null
-  reference?: Reference | null
+  reference?: Reference | null | undefined
 }
 
 const generateHref = (args: GenerateSlugType): string => {
@@ -67,7 +67,8 @@ const generateHref = (args: GenerateSlugType): string => {
       return `http://${url}`
 
     case 'reference':
-      if (reference.relationTo === 'products') return `/products/${reference.value.slug}`
+      if (!reference) return ''
+      if (reference.relationTo === 'products') return `/shop/${reference.value.slug}`
       else return `/${reference.value.slug}`
   }
   return ''
@@ -89,6 +90,8 @@ export const CMSLink: React.FC<CMSLinkType> = ({
   mobileFullWidth = false,
   buttonProps: buttonPropsFromProps,
 }) => {
+  // console.log('reference', reference)
+
   let href = generateHref({ type, url, reference })
 
   if (!href) {
