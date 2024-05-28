@@ -7,7 +7,7 @@ import {
   // isAdminOrCurrentUser,
   checkRole,
   makeFirstUserAdmin,
-} from '@/utilities/payload/access'
+} from '@/utilities/access'
 
 export const Users: CollectionConfig = {
   slug: 'users',

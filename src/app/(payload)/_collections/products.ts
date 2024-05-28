@@ -6,7 +6,7 @@ import { revalidateProduct } from '@cms/_hooks/revalidateProduct'
 import { layoutField } from '@cms/_fields/layoutField'
 import { upsertStripeProduct } from '@cms/_hooks/upsertStripeProduct'
 import { deleteStripeProduct } from '@cms/_hooks/deleteStripeProduct'
-import { adminsOnly, publishedOnly } from '@/utilities/payload/access'
+import { adminsOnly, publishedOnly } from '@/utilities/access'
 import { themeField } from '../_fields/blockFields'
 
 export const Products: CollectionConfig = {
@@ -151,17 +151,19 @@ export const Products: CollectionConfig = {
             //         { name: 'productName', label: 'Product Name', type: 'text' },
             //       ],
             //     },
-            //     // {
-            //     //   name: 'reviews',
-            //     //   type: 'array',
-            //     //   fields: [
-            //     //     { name: '', type: 'upload', relationTo: 'media' },
-            //     //     { name: 'brandName', label: 'Brand Name', type: 'text' },
-            //     //     { name: 'productName', label: 'Product Name', type: 'text' },
-            //     //   ],
-            //     // },
             //   ],
             // },
+          ],
+        },
+        {
+          label: 'Media', // required
+          description: 'Product Media',
+          fields: [
+            {
+              name: 'media',
+              type: 'array',
+              fields: [{ name: 'mediaItem', type: 'upload', relationTo: 'media' }],
+            },
           ],
         },
         {

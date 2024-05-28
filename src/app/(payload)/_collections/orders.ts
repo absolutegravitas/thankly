@@ -1,7 +1,7 @@
 import type { CollectionConfig } from 'payload/types'
 import payload from 'payload'
 
-import { adminsAndUserOnly, adminsOnly } from '../../../utilities/payload/access'
+import { adminsAndUserOnly, adminsOnly } from '../../../utilities/access'
 // import { LinkToPaymentIntent } from './ui/LinkToPaymentIntent'
 
 export const Orders: CollectionConfig = {

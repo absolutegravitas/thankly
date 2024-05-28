@@ -1,5 +1,5 @@
 import type { CollectionConfig } from 'payload/types'
-import { adminsOnly, publishedOnly } from '@/utilities/payload/access'
+import { adminsOnly, publishedOnly } from '@/utilities/access'
 
 // import { formatPreviewURL } from '@/utilities/formatPreviewURL'
 import { revalidatePage } from '@/utilities/revalidatePage'

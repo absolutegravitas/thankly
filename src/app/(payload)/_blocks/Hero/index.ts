@@ -9,6 +9,8 @@ import { themeField } from '@/app/(payload)/_fields/blockFields'
 export const Hero: Block = {
   slug: 'hero',
   fields: [
+    // common
+
     // {
     //   type: 'select',
     //   name: 'type',
@@ -40,6 +42,7 @@ export const Hero: Block = {
     //   ],
     // },
 
+    themeField,
     {
       type: 'select',
       name: 'type',
@@ -81,6 +84,120 @@ export const Hero: Block = {
         },
       ],
     },
+
+    // home specific
+    {
+      name: 'enableAnnouncement',
+      type: 'checkbox',
+      admin: {
+        condition: (_: any, { type }) => type === 'home',
+      },
+      label: 'Enable Announcement?',
+    },
+    link({
+      looks: false,
+      overrides: {
+        name: 'announcementLink',
+        admin: {
+          condition: (_: any, { enableAnnouncement }: any) => enableAnnouncement,
+        },
+      },
+    }),
+    linkGroup({
+      looks: false,
+      overrides: {
+        name: 'primaryButtons',
+        label: 'Primary Buttons',
+        admin: {
+          condition: (_: any, { type }) => type === 'home',
+        },
+      },
+    }),
+    // linkGroup({
+    //   looks: false,
+    //   overrides: {
+    //     name: 'secondaryButtons',
+    //     label: 'Secondary Buttons',
+    //     admin: {
+    //       condition: (_: any, { type }) => type === 'home',
+    //     },
+    //   },
+    // }),
+    // {
+    //   name: 'secondaryHeading',
+    //   type: 'richText',
+    //   admin: {
+    //     condition: (_: any, { type }) => type === 'home',
+    //   },
+    //   editor: lexicalEditor({
+    //     features: ({ defaultFeatures }) => [
+    //       ...defaultFeatures,
+    //       HTMLConverterFeature({}),
+    //       //TreeViewFeature(),
+    //     ],
+    //   }),
+    // },
+    // {
+    //   name: 'secondaryDescription',
+    //   type: 'richText',
+    //   admin: {
+    //     condition: (_: any, { type }) => type === 'home',
+    //   },
+    //   editor: lexicalEditor({
+    //     features: ({ defaultFeatures }) => [
+    //       ...defaultFeatures,
+    //       HTMLConverterFeature({}),
+    //       //TreeViewFeature(),
+    //     ],
+    //   }),
+    // },
+    // {
+    //   name: 'secondaryMedia',
+    //   type: 'upload',
+    //   relationTo: 'media',
+    //   required: false,
+    //   admin: {
+    //     condition: (_: any, { type }) => type === 'home',
+    //   },
+    // },
+    // {
+    //   name: 'featureVideo',
+    //   type: 'upload',
+    //   relationTo: 'media',
+    //   required: false,
+    //   admin: {
+    //     condition: (_: any, { type }) => type === 'home',
+    //   },
+    // },
+    // {
+    //   name: 'logos',
+    //   type: 'array',
+    //   fields: [
+    //     {
+    //       name: 'logoMedia',
+    //       label: 'Media',
+    //       type: 'upload',
+    //       relationTo: 'media',
+    //       required: true,
+    //     },
+    //   ],
+    //   admin: {
+    //     condition: (_: any, { type }) => type === 'home',
+    //   },
+    // },
+    {
+      name: 'media',
+      type: 'upload',
+      relationTo: 'media',
+      required: true,
+      admin: {
+        condition: (_: any, { type } = {}) => ['contentMedia', 'home'].includes(type),
+      },
+    },
+
+    // //
+    //gradient specific
+
     {
       type: 'checkbox',
       name: 'fullBackground',
@@ -88,7 +205,6 @@ export const Hero: Block = {
         condition: (_: any, { type } = {}) => type === 'gradient',
       },
     },
-    themeField,
     // {
     //   type: 'collapsible',
     //   label: 'Breadcrumbs Bar',
@@ -114,23 +230,6 @@ export const Hero: Block = {
     //   ],
     // },
     // livestreamFields,
-    {
-      name: 'enableAnnouncement',
-      type: 'checkbox',
-      admin: {
-        condition: (_: any, { type }) => type === 'home',
-      },
-      label: 'Enable Announcement?',
-    },
-    link({
-      looks: false,
-      overrides: {
-        name: 'announcementLink',
-        admin: {
-          condition: (_: any, { enableAnnouncement }: any) => enableAnnouncement,
-        },
-      },
-    }),
 
     {
       name: 'description',
@@ -148,59 +247,6 @@ export const Hero: Block = {
         ],
       }),
     },
-
-    linkGroup({
-      looks: false,
-      overrides: {
-        name: 'primaryButtons',
-        label: 'Primary Buttons',
-        admin: {
-          condition: (_: any, { type }) => type === 'home',
-        },
-      },
-    }),
-    {
-      name: 'secondaryHeading',
-      type: 'richText',
-      admin: {
-        condition: (_: any, { type }) => type === 'home',
-      },
-      editor: lexicalEditor({
-        features: ({ defaultFeatures }) => [
-          ...defaultFeatures,
-          HTMLConverterFeature({}),
-          //TreeViewFeature(),
-        ],
-      }),
-    },
-    {
-      name: 'secondaryDescription',
-      type: 'richText',
-      admin: {
-        condition: (_: any, { type }) => type === 'home',
-      },
-      editor: lexicalEditor({
-        features: ({ defaultFeatures }) => [
-          ...defaultFeatures,
-          HTMLConverterFeature({}),
-          //TreeViewFeature(),
-        ],
-      }),
-    },
-    linkGroup({
-      overrides: {
-        admin: {
-          condition: (_: any, { type } = {}) =>
-            [
-              'contentMedia',
-              'default',
-              // 'livestream',
-              'centeredContent',
-              'gradient',
-            ].includes(type),
-        },
-      },
-    }),
     {
       name: 'buttons',
       type: 'blocks',
@@ -236,16 +282,22 @@ export const Hero: Block = {
         },
       ],
     },
+
     linkGroup({
-      looks: false,
       overrides: {
-        name: 'secondaryButtons',
-        label: 'Secondary Buttons',
         admin: {
-          condition: (_: any, { type }) => type === 'home',
+          condition: (_: any, { type } = {}) =>
+            [
+              'contentMedia',
+              'default',
+              // 'livestream',
+              'centeredContent',
+              'gradient',
+            ].includes(type),
         },
       },
     }),
+
     {
       name: 'images',
       type: 'array',
@@ -262,33 +314,7 @@ export const Hero: Block = {
         },
       ],
     },
-    {
-      name: 'media',
-      type: 'upload',
-      relationTo: 'media',
-      required: true,
-      admin: {
-        condition: (_: any, { type } = {}) => ['contentMedia', 'home'].includes(type),
-      },
-    },
-    {
-      name: 'secondaryMedia',
-      type: 'upload',
-      relationTo: 'media',
-      required: true,
-      admin: {
-        condition: (_: any, { type }) => type === 'home',
-      },
-    },
-    {
-      name: 'featureVideo',
-      type: 'upload',
-      relationTo: 'media',
-      required: true,
-      admin: {
-        condition: (_: any, { type }) => type === 'home',
-      },
-    },
+
     // {
     //   name: 'form',
     //   type: 'relationship',
@@ -297,21 +323,5 @@ export const Hero: Block = {
     //     condition: (_:any, { type }) => type === 'form',
     //   },
     // },
-    {
-      name: 'logos',
-      type: 'array',
-      fields: [
-        {
-          name: 'logoMedia',
-          label: 'Media',
-          type: 'upload',
-          relationTo: 'media',
-          required: true,
-        },
-      ],
-      admin: {
-        condition: (_: any, { type }) => type === 'home',
-      },
-    },
   ],
 }
