@@ -30,7 +30,7 @@
   --header-height: 90px;
   --top-bar-height: 46px;
 
-  --font-body-size: 18px;
+  --font-inter-size: 18px;
 
   --z-popup: 10;
   --z-status: 30;
@@ -50,7 +50,7 @@
   --trans-default: 150ms;
 
   @include extra-large-break {
-    --font-body-size: 16px;
+    --font-inter-size: 16px;
     --gutter-h: 8rem;
   }
 
@@ -95,7 +95,7 @@
 
 html {
   @include body;
-  font-family: var(--font-body);
+  font-family: var(--font-inter);
   background: var(--theme-bg);
   -webkit-font-smoothing: antialiased;
   opacity: 0;
@@ -115,8 +115,8 @@ html {
 body {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
-  font-family: var(--font-body);
-  font-size: var(--font-body-size);
+  font-family: var(--font-inter);
+  font-size: var(--font-inter-size);
   color: var(--theme-text);
   margin: 0;
 }
@@ -218,17 +218,17 @@ svg {
 }
 
 strong {
-  font-family: var(--font-body);
+  font-family: var(--font-inter);
   font-weight: 600;
 }
 
 b {
-  font-family: var(--font-body);
+  font-family: var(--font-inter);
   font-weight: 600;
 }
 
 em {
-  font-family: var(--font-body);
+  font-family: var(--font-inter);
   font-style: italic;
 }
 
@@ -295,7 +295,9 @@ dialog {
   background-image: url('/images/scanline-dark.png');
   background-repeat: repeat;
   opacity: 0.08;
-  transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+  transition:
+    transform 0.3s ease-in-out,
+    opacity 0.3s ease-in-out;
 
   [data-theme='dark'] & {
     background-image: url('/images/scanline-light.png');

@@ -25,19 +25,27 @@ $breakpoint-l-height: 1000px;
 //////////////////////////////
 
 @mixin shadow-sm {
-  box-shadow: 0 2px 3px 0 rgba(0, 2, 4, 0.05), 0 10px 4px -8px rgba(0, 2, 4, 0.02);
+  box-shadow:
+    0 2px 3px 0 rgba(0, 2, 4, 0.05),
+    0 10px 4px -8px rgba(0, 2, 4, 0.02);
 }
 
 @mixin shadow-m {
-  box-shadow: 0 0 30px 0 rgb(0 2 4 / 12%), 0 30px 25px -8px rgb(0 2 4 / 10%);
+  box-shadow:
+    0 0 30px 0 rgb(0 2 4 / 12%),
+    0 30px 25px -8px rgb(0 2 4 / 10%);
 }
 
 @mixin shadow-lg {
-  box-shadow: 0 20px 35px -10px rgba(0, 2, 4, 0.2), 0 6px 4px -4px rgba(0, 2, 4, 0.02);
+  box-shadow:
+    0 20px 35px -10px rgba(0, 2, 4, 0.2),
+    0 6px 4px -4px rgba(0, 2, 4, 0.02);
 }
 
 @mixin shadow-lg-top {
-  box-shadow: 0 -2px 20px 7px rgba(0, 2, 4, 0.1), 0 6px 4px -4px rgba(0, 2, 4, 0.02);
+  box-shadow:
+    0 -2px 20px 7px rgba(0, 2, 4, 0.1),
+    0 6px 4px -4px rgba(0, 2, 4, 0.02);
 }
 
 @mixin shadow {
@@ -49,7 +57,9 @@ $breakpoint-l-height: 1000px;
 }
 
 @mixin inputShadowActive {
-  box-shadow: 0 2px 3px 0 rgba(0, 2, 4, 0.16), 0 6px 4px -4px rgba(0, 2, 4, 0.13);
+  box-shadow:
+    0 2px 3px 0 rgba(0, 2, 4, 0.16),
+    0 6px 4px -4px rgba(0, 2, 4, 0.13);
 }
 
 @mixin inputShadow {
@@ -57,7 +67,9 @@ $breakpoint-l-height: 1000px;
 
   &:not(:disabled) {
     &:hover {
-      box-shadow: 0 2px 3px 0 rgba(0, 2, 4, 0.13), 0 6px 4px -4px rgba(0, 2, 4, 0.1);
+      box-shadow:
+        0 2px 3px 0 rgba(0, 2, 4, 0.13),
+        0 6px 4px -4px rgba(0, 2, 4, 0.1);
     }
 
     &:active,
@@ -96,9 +108,9 @@ $breakpoint-l-height: 1000px;
   }
 }
 
-@mixin formInput () {
+@mixin formInput() {
   @include inputShadow;
-  font-family: var(--font-body);
+  font-family: var(--font-inter);
   width: 100%;
   border: 1px solid var(--theme-border-color);
   background: var(--theme-input-bg);
@@ -149,8 +161,8 @@ $breakpoint-l-height: 1000px;
   border-radius: 0;
   padding: 0;
   color: currentColor;
-  font-size: var(--font-body-size);
-  font-family: var(--font-body);
+  font-size: var(--font-inter-size);
+  font-family: var(--font-inter);
 }
 
 @mixin mouseHover {
@@ -177,7 +189,6 @@ $breakpoint-l-height: 1000px;
     @include mouseHover {
       color: var(--color-blue-400);
     }
-
 
     &:visited {
       color: var(--color-purple-600);
@@ -234,22 +245,24 @@ $breakpoint-l-height: 1000px;
 @mixin data-theme-selector($theme, $exclusive: false) {
   @if $exclusive == true {
     @if $theme == 'light' {
-      [data-theme="light"]:not(:has([data-theme="dark"])) & {
-        @content
+      [data-theme='light']:not(:has([data-theme='dark'])) & {
+        @content;
       }
     } @else if $theme == 'dark' {
-      [data-theme="dark"]:not(:has([data-theme="light"])) & {
-        @content
+      [data-theme='dark']:not(:has([data-theme='light'])) & {
+        @content;
       }
     }
   } @else {
     @if $theme == 'light' {
-      [data-theme="light"] &, [data-theme="light"]:not(:has([data-theme="dark"])) & {
-        @content
+      [data-theme='light'] &,
+      [data-theme='light']:not(:has([data-theme='dark'])) & {
+        @content;
       }
     } @else if $theme == 'dark' {
-      [data-theme="dark"] &, [data-theme="dark"]:not(:has([data-theme="light"])) & {
-        @content
+      [data-theme='dark'] &,
+      [data-theme='dark']:not(:has([data-theme='light'])) & {
+        @content;
       }
     }
   }

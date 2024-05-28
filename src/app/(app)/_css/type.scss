@@ -115,7 +115,7 @@
 /////////////////////////////
 
 @mixin body {
-  font-size: var(--font-body-size);
+  font-size: var(--font-inter-size);
   line-height: 1.4;
 }
 
@@ -142,7 +142,7 @@
 
 @mixin code {
   font-family: var(--font-mono);
-  font-size: calc(var(--font-body-size) * 0.825);
+  font-size: calc(var(--font-inter-size) * 0.825);
 }
 
 @mixin label {
@@ -160,7 +160,6 @@
     font-size: 1rem;
   }
 }
-
 
 @mixin uppercaseLabel {
   color: var(--theme-elevation-900);
