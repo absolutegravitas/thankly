@@ -3,7 +3,7 @@ import * as React from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
-// import { useAuth } from '@root/providers/Auth'
+// import { useAuth } from '@app/_providers/Auth'
 import useClickAway from '@/utilities/use-click-away'
 
 import classes from './index.module.scss'

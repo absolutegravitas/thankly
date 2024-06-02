@@ -67,7 +67,7 @@ export const ForgotPassword: React.FC = () => {
 
   if (user) {
     redirect(
-      `/cloud/settings?error=${encodeURIComponent(
+      `/account/settings?error=${encodeURIComponent(
         'Cannot reset password while logged in. To change your password, you may use your account settings below or log out and try again.',
       )}`,
     )

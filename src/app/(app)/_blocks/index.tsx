@@ -60,7 +60,7 @@ const Blocks = ({ blocks, locale }: any) => {
   return (
     <>
       {blocks?.map((block: any, ix: number) => {
-        console.log('type //', block.type)
+        // console.log('type //', block.type)
 
         //create switch statement for block.type
         switch (block.type) {

@@ -1,8 +1,9 @@
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 
-import type { User } from '@payload-types'
-export const payloadCloudToken = 'payload-cloud-token'
+import type { User } from '@/payload-types'
+import { ME_QUERY } from './_graphql/me'
+import { payloadToken } from './token'
 
 export const fetchMe = async (args?: {
   nullUserRedirect?: string
@@ -13,7 +14,7 @@ export const fetchMe = async (args?: {
 }> => {
   const { nullUserRedirect, userRedirect } = args || {}
   const cookieStore = cookies()
-  const token = cookieStore.get(payloadCloudToken)?.value
+  const token = cookieStore.get(payloadToken)?.value
 
   const meUserReq = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/graphql`, {
     method: 'POST',
@@ -44,28 +45,3 @@ export const fetchMe = async (args?: {
     token,
   }
 }
-
-export const USER = `
-  id
-  name
-  email
-  roles
-  teams {
-    team {
-      id
-      name
-      slug
-      stripeCustomerID
-    }
-    roles
-  }
-`
-
-export const ME_QUERY = `query {
-  meUser {
-    user {
-      ${USER}
-    }
-    exp
-  }
-}`

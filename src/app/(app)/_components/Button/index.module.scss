@@ -146,7 +146,9 @@ $curve: cubic-bezier(0.165, 0.84, 0.44, 1);
       }
 
       .icon--arrow {
-        transition: background-position 550ms $curve, color 550ms $curve;
+        transition:
+          background-position 550ms $curve,
+          color 550ms $curve;
       }
     }
 
@@ -227,12 +229,12 @@ $curve: cubic-bezier(0.165, 0.84, 0.44, 1);
   }
 
   &--danger {
-    background-color: var(--theme-error-500);
+    background-color: var(--theme-error-700);
     color: var(--theme-error-50);
 
     &:focus-visible,
     &:hover {
-      background-color: var(--theme-error-450);
+      background-color: var(--theme-error-350);
     }
   }
 

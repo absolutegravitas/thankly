@@ -15,7 +15,7 @@ import { getImplicitPreference, themeLocalStorageKey } from '@app/_providers/The
 import { Theme } from '@app/_providers/Theme/types'
 
 import classes from './classes.module.scss'
-import { blockFormats } from '@/app/(app)/_css/tailwindClasses'
+import { blockFormats } from '@app/_css/tailwindClasses'
 
 export const SubFooter = () => {
   // const { user } = useAuth()

@@ -3,7 +3,6 @@
 import React, { forwardRef, HTMLAttributes, useEffect, useState } from 'react'
 import Link from 'next/link'
 
-import { GitHubIcon } from '@app/_graphics/GitHub'
 import { ArrowIcon } from '@app/_icons/ArrowIcon'
 import { PlusIcon } from '@app/_icons/PlusIcon'
 import { SearchIcon } from '@app/_icons/SearchIcon'
@@ -12,6 +11,10 @@ import { Page } from '@payload-types'
 import { LinkType, Reference } from '../CMSLink'
 
 import classes from './index.module.scss'
+import { ArrowRightIcon } from '../../_icons/ArrowRightIcon'
+import { ChevronIcon } from '../../_icons/ChevronIcon'
+import { CartIcon } from '../../_icons/CartIcon'
+import { TrashIcon } from '../../_icons/TrashIcon'
 
 export type ButtonProps = HTMLAttributes<HTMLButtonElement> & {
   appearance?:
@@ -59,7 +62,7 @@ export type ButtonProps = HTMLAttributes<HTMLButtonElement> & {
   label?: string | null
   labelStyle?: 'mono' | 'regular'
   labelClassName?: string
-  icon?: false | 'arrow' | 'search' | 'plus'
+  icon?: false | 'arrow' | 'search' | 'plus' | 'chevron' | 'arrowRight' | 'cart' | 'trash'
   fullWidth?: boolean
   mobileFullWidth?: boolean
   type?: LinkType
@@ -97,6 +100,10 @@ const icons = {
   arrow: ArrowIcon,
   search: SearchIcon,
   plus: PlusIcon,
+  arrowRight: ArrowRightIcon,
+  chevron: ChevronIcon,
+  cart: CartIcon,
+  trash: TrashIcon,
 }
 
 type GenerateSlugType = {

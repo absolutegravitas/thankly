@@ -9,7 +9,7 @@ export default async () => {
   const { user } = await fetchMe()
 
   if (user) {
-    redirect(`/cloud?warning=${encodeURIComponent('You are already logged in')}`)
+    redirect(`/account?warning=${encodeURIComponent('You are already logged in')}`)
   }
 
   return <Login />

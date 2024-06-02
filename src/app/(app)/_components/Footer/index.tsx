@@ -208,19 +208,6 @@ export const Footer: React.FC<FooterType> = (props) => {
                       </li>
                     ))}
                   </ul>
-                  {/* <div className={`mt-4 list-none space-y-4 pl-0 leading-none`}>
-                    {items?.map(({ link }, index) => {
-                      console.log('link -- ', JSON.stringify(link))
-                      return (
-                        <CMSLink
-                          key={index}
-                          {...link}
-                          // appearance={'links'}
-                          // className={blockFormats.footerMenu}
-                        />
-                      )
-                    })}
-                  </div> */}
                 </div>
               )
             })}
