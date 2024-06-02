@@ -72,6 +72,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@tailwindcss/aspect-ratio": "^0.4.2",
     "@tailwindcss/typography": "^0.5.13",
     "@types/lodash": "^4.17.4",
     "@types/node": "^20.12.12",
