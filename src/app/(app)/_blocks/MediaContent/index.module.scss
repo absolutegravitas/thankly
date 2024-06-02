@@ -1,5 +1,9 @@
 @use '@app/_css/common' as *;
 
+.wrapper {
+  position: relative;
+}
+
 .media {
   img,
   video {
