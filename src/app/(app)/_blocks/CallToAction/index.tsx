@@ -75,7 +75,7 @@ export const CallToAction: React.FC<CallToActionProps> = (props) => {
                         buttonProps={{
                           appearance: 'default',
                           size: 'large',
-                          hideHorizontalBorders: true,
+                          hideHorizontalBorders: false,
                           hideBottomBorderExceptLast: true,
                           forceBackground: true,
                         }}

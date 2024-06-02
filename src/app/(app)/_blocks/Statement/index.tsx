@@ -68,7 +68,7 @@ export const Statement: React.FC<StatementProps> = (props) => {
                       fullWidth
                       buttonProps={{
                         icon: 'arrow',
-                        hideHorizontalBorders: true,
+                        hideHorizontalBorders: false,
                         hideBottomBorderExceptLast: true,
                       }}
                     />

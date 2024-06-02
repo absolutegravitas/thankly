@@ -23,7 +23,6 @@ export const MediaContentBlock: React.FC<MediaContentProps> = (props) => {
   const {
     mediaContentFields: { link, images, content, alignment, enableLink, settings },
   } = props
-  const padding = useGetHeroPadding(settings.theme, props)
 
   return (
     <Gutter>
@@ -97,12 +96,15 @@ export const MediaContentBlock: React.FC<MediaContentProps> = (props) => {
 
 export const MediaContent: React.FC<MediaContentProps> = (props) => {
   const { settings } = props.mediaContentFields
+  const padding = useGetHeroPadding(settings.theme, props)
 
   return (
-    <BlockWrapper padding={props.padding} settings={settings}>
-      <BackgroundGrid zIndex={0} />
-      <MediaContentBlock {...props} />
-      <div className={classes.background} />
+    <BlockWrapper padding={{ top: 'small', bottom: 'small' }} settings={settings}>
+      {/* <BackgroundGrid zIndex={0} /> */}
+      <div className={classes.wrapper}>
+        <MediaContentBlock {...props} />
+      </div>
+      {/* <div className={classes.background} /> */}
     </BlockWrapper>
   )
 }

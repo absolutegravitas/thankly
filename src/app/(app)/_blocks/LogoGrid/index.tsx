@@ -126,7 +126,7 @@ export const LogoGrid: React.FC<LogoGridProps> = (props) => {
                   fullWidth
                   buttonProps={{
                     icon: 'arrow',
-                    hideHorizontalBorders: true,
+                    hideHorizontalBorders: false,
                   }}
                 />
               </div>

@@ -94,7 +94,7 @@ export const ContentGrid: React.FC<ContentGridProps> = (props) => {
                     fullWidth
                     buttonProps={{
                       icon: 'arrow',
-                      hideHorizontalBorders: true,
+                      hideHorizontalBorders: false,
                       hideBottomBorderExceptLast: true,
                     }}
                   />

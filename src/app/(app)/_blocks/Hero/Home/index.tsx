@@ -198,7 +198,7 @@ export const HomeHero: React.FC<
                                 fullWidth
                                 buttonProps={{
                                   icon: 'arrow',
-                                  hideHorizontalBorders: true,
+                                  hideHorizontalBorders: false,
                                 }}
                               />
                             </li>

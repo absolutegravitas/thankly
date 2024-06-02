@@ -9,6 +9,7 @@ import { Product } from '@payload-types'
 
 import classes from './index.module.scss'
 import { ProductCard } from '../../_components/cards/ProductCard'
+import { useGetHeroPadding } from '../Hero/useGetHeroPadding'
 
 // ported from squaregrid block
 
@@ -33,7 +34,7 @@ export const ProductGrid: React.FC<ProductGridProps> = ({ products }) => {
   return (
     <BlockWrapper
       settings={{ settings: { theme: 'light' } }}
-      // padding={{ ...padding, top: 'large' }}
+      padding={{ top: 'large', bottom: 'large' }}
       className={[classes.ProductGrid].filter(Boolean).join(' ')}
     >
       {/* <BackgroundGrid zIndex={1} /> */}

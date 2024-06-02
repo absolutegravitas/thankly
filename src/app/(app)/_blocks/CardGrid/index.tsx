@@ -69,7 +69,7 @@ export const CardGrid: React.FC<CardGridProps> = (props) => {
                         fullWidth
                         buttonProps={{
                           icon: 'arrow',
-                          hideHorizontalBorders: true,
+                          hideHorizontalBorders: false,
                           hideBottomBorderExceptLast: true,
                         }}
                       />

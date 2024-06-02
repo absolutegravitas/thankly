@@ -120,7 +120,7 @@ export const StickyHighlightComponent: React.FC<Props> = ({
               fullWidth
               buttonProps={{
                 icon: 'arrow',
-                hideHorizontalBorders: true,
+                hideHorizontalBorders: false,
               }}
             />
           )}

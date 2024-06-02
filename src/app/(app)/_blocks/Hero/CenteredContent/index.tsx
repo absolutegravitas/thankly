@@ -44,7 +44,7 @@ export const CenteredContent: React.FC<CenteredContentProps> = ({
                       key={i}
                       {...link}
                       buttonProps={{
-                        hideHorizontalBorders: true,
+                        hideHorizontalBorders: false,
                         hideBottomBorderExceptLast: true,
                       }}
                     />

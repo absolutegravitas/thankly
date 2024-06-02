@@ -47,7 +47,7 @@ export const ContentMediaHero: React.FC<ContentMediaHeroProps> = ({
                       key={i}
                       {...link}
                       buttonProps={{
-                        hideHorizontalBorders: true,
+                        hideHorizontalBorders: false,
                       }}
                       className={[classes.link, 'cols-12 start-1'].filter(Boolean).join(' ')}
                     />
