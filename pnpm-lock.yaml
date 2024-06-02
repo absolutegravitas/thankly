@@ -86,6 +86,9 @@ importers:
       '@vercel/blob':
         specifier: ^0.23.3
         version: 0.23.3
+      '@vercel/speed-insights':
+        specifier: ^1.0.11
+        version: 1.0.11(next@14.3.0-canary.37(@babel/core@7.24.5)(react-dom@19.0.0-beta-26f2496093-20240514(react@19.0.0-beta-26f2496093-20240514))(react@19.0.0-beta-26f2496093-20240514)(sass@1.77.2))(react@19.0.0-beta-26f2496093-20240514)
       class-variance-authority:
         specifier: ^0.7.0
         version: 0.7.0
@@ -2674,6 +2677,29 @@ packages:
   '@vercel/blob@0.23.3':
     resolution: {integrity: sha512-6Zr/9twzWpMJp4ap1fwLIcKkehju6UR8D1BK2+QUfGPxlXQBusxwBJzf3TqATCSceeShaJsALHaSDwuKDFpoTw==}
     engines: {node: '>=16.14'}
+
+  '@vercel/speed-insights@1.0.11':
+    resolution: {integrity: sha512-l9hzSNmJvb2Yqpgd/BzpiT0J0aQDdtqxOf3Xm+iW4PICxVvhY1ef7Otdx4GXI+88dVkws57qMzXiShz19gXzSQ==}
+    peerDependencies:
+      '@sveltejs/kit': ^1 || ^2
+      next: '>= 13'
+      react: ^18 || ^19
+      svelte: ^4
+      vue: ^3
+      vue-router: ^4
+    peerDependenciesMeta:
+      '@sveltejs/kit':
+        optional: true
+      next:
+        optional: true
+      react:
+        optional: true
+      svelte:
+        optional: true
+      vue:
+        optional: true
+      vue-router:
+        optional: true
 
   '@webassemblyjs/ast@1.12.1':
     resolution: {integrity: sha512-EKfMUOPRRUTy5UII4qJDGPpqfwjOmZ5jeGFwid9mnoqIFK+e0vqoi1qH56JpmZSzEL53jKnNzScdmftJyG5xWg==}
@@ -8391,6 +8417,11 @@ snapshots:
       bytes: 3.1.2
       is-buffer: 2.0.5
       undici: 5.28.4
+
+  '@vercel/speed-insights@1.0.11(next@14.3.0-canary.37(@babel/core@7.24.5)(react-dom@19.0.0-beta-26f2496093-20240514(react@19.0.0-beta-26f2496093-20240514))(react@19.0.0-beta-26f2496093-20240514)(sass@1.77.2))(react@19.0.0-beta-26f2496093-20240514)':
+    optionalDependencies:
+      next: 14.3.0-canary.37(@babel/core@7.24.5)(react-dom@19.0.0-beta-26f2496093-20240514(react@19.0.0-beta-26f2496093-20240514))(react@19.0.0-beta-26f2496093-20240514)(sass@1.77.2)
+      react: 19.0.0-beta-26f2496093-20240514
 
   '@webassemblyjs/ast@1.12.1':
     dependencies:

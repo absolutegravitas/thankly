@@ -15,6 +15,7 @@ import { Footer } from './_components/Footer'
 import Script from 'next/script'
 import { defaultTheme, themeLocalStorageKey } from '@app/_providers/Theme/shared'
 import { inter, leaguespartan, raleway } from '@/utilities/fonts'
+import { SpeedInsights } from '@vercel/speed-insights/next'
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SERVER_URL || 'https://www.thankly.co'),
@@ -97,6 +98,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             {children}
             {settings?.footer && <Footer {...settings?.footer}></Footer>}
             <PrivacyBanner />
+            <SpeedInsights />
           </Providers>
         </body>
       </PrivacyProvider>
