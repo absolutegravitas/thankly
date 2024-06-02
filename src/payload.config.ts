@@ -29,12 +29,13 @@ import {
 import { buildConfig } from 'payload/config'
 import { fileURLToPath } from 'url'
 import generateBreadcrumbsUrl from '@/utilities/generateBreadcrumbsUrl'
+import { Carts } from './app/(payload)/_collections/carts'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
 export default buildConfig({
-  collections: [Users, Orders, Products, Pages, Reusable, Media],
+  collections: [Users, Orders, Products, Pages, Reusable, Media, Carts],
   globals: [Settings],
   editor: lexicalEditor({}),
   db: postgresAdapter({ pool: { connectionString: process.env.POSTGRES_URL } }),

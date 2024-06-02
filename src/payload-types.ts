@@ -6,47 +6,6 @@
  * and re-run `payload generate:types` to regenerate this file.
  */
 
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "CartItems".
- */
-export type CartItems =
-  | {
-      product: number | Product;
-      itemPrice?: number | null;
-      itemTotalShipping?: number | null;
-      itemTotal?: number | null;
-      receivers?:
-        | {
-            firstName?: string | null;
-            lastName?: string | null;
-            message?: string | null;
-            addressLine1?: string | null;
-            addressLine2?: string | null;
-            city?: string | null;
-            state?: string | null;
-            postcode?: string | null;
-            shippingOption?:
-              | (
-                  | 'free'
-                  | 'standardMail'
-                  | 'registeredMail'
-                  | 'expressMail'
-                  | 'standardParcel'
-                  | 'expressParcel'
-                  | 'courierParcel'
-                )
-              | null;
-            receiverPrice?: number | null;
-            receiverShipping?: number | null;
-            receiverTotal?: number | null;
-            id?: string | null;
-          }[]
-        | null;
-      id?: string | null;
-    }[]
-  | null;
-
 export interface Config {
   collections: {
     users: User;
@@ -55,6 +14,7 @@ export interface Config {
     pages: Page;
     reusable: Reusable;
     media: Media;
+    carts: Cart;
     redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -85,9 +45,6 @@ export interface User {
   roles: ('admin' | 'public')[];
   stripeId?: string | null;
   orders?: (number | Order)[] | null;
-  cart?: {
-    items?: CartItems;
-  };
   updatedAt: string;
   createdAt: string;
   enableAPIKey?: boolean | null;
@@ -172,6 +129,12 @@ export interface Product {
   stripePromoPriceId?: string | null;
   stockOnHand?: number | null;
   lowStockThreshold?: number | null;
+  media?:
+    | {
+        mediaItem?: number | Media | null;
+        id?: string | null;
+      }[]
+    | null;
   layout?: {
     root: {
       type: string;
@@ -295,6 +258,52 @@ export interface Reusable {
     };
     [k: string]: unknown;
   } | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "carts".
+ */
+export interface Cart {
+  id: number;
+  customer?: (number | null) | User;
+  items?:
+    | {
+        product: number | Product;
+        price?: number | null;
+        shipping?: number | null;
+        total?: number | null;
+        receivers?:
+          | {
+              firstName?: string | null;
+              lastName?: string | null;
+              message?: string | null;
+              addressLine1?: string | null;
+              addressLine2?: string | null;
+              city?: string | null;
+              state?: string | null;
+              postcode?: string | null;
+              shippingOption?:
+                | (
+                    | 'free'
+                    | 'standardMail'
+                    | 'registeredMail'
+                    | 'expressMail'
+                    | 'standardParcel'
+                    | 'expressParcel'
+                    | 'courierParcel'
+                  )
+                | null;
+              receiverPrice?: number | null;
+              receiverShipping?: number | null;
+              receiverTotal?: number | null;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
   updatedAt: string;
   createdAt: string;
 }
