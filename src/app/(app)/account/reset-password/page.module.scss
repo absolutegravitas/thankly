@@ -9,19 +9,6 @@
   }
 }
 
-.links {
-  margin-bottom: 2rem;
-
-  & > * {
-    margin: 0;
-  }
-
-  & a {
-    color: var(--theme-blue-500);
-    text-decoration: underline;
-  }
-}
-
 .form {
   display: flex;
   flex-direction: column;
@@ -30,11 +17,4 @@
   @include mid-break {
     gap: 1rem;
   }
-}
-
-.buttonWrap {
-  margin-top: 2rem;
-  display: flex;
-  align-items: center;
-  gap: 1rem;
 }

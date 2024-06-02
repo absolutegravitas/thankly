@@ -1,5 +1,5 @@
-@use '@scss/common' as *;
-@use "../../../forms/fields/shared.scss";
+@use '@app/_css/common' as *;
+@use '@app/_components/forms/fields/shared.scss';
 
 .heading {
   padding-block: 2rem;
