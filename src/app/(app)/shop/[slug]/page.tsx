@@ -9,11 +9,11 @@ import { fetchProduct } from '@app/_queries'
 import { generateMeta } from '@/utilities/generateMeta'
 import { ProductTemplate } from './page.client'
 
-export default async function ProductPage({ params: { slug } }) {
+export default async function ProductPage({ params: { slug } }: any) {
   const { isEnabled: isDraftMode } = draftMode()
   let product: Product | null = null
 
-  console.log('product page', slug)
+  // console.log('product page', slug)
   try {
     product = await fetchProduct(slug)
   } catch (error) {
@@ -36,7 +36,7 @@ export default async function ProductPage({ params: { slug } }) {
   )
 }
 
-export async function generateMetadata({ params: { slug } }): Promise<Metadata> {
+export async function generateMetadata({ params: { slug } }: any): Promise<Metadata> {
   const { isEnabled: isDraftMode } = draftMode()
 
   let product: Product | null = null

@@ -1188,7 +1188,7 @@ const config: Config = {
     //   })
     // }),
     // require('@tailwindcss/forms'), // cleaner forms - https://github.com/tailwindlabs/tailwindcss-forms
-    // require('@tailwindcss/aspect-ratio'),
+    require('@tailwindcss/aspect-ratio'),
     require('@tailwindcss/typography'), // adds prose class for niceness on std elements without effort
     // require('tailwindcss-children'), // Repeat elements without repeating styles *.child, .sibling, and .descendant* variants for TailwindCSS v3+ https://github.com/SamGoody/tailwind-children
   ],

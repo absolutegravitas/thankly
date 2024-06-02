@@ -22,12 +22,12 @@ export const useGetHeroPadding = (theme: any, block?: BlocksProp): PaddingProps 
     let blockSettings: Settings
 
     if (!block) {
-      console.log('no block')
+      // console.log('no block')
       return { top: topPadding, bottom: bottomPadding }
     } else {
       blockKey = getFieldsKeyFromBlock(block)
       blockSettings = block[blockKey]?.settings
-      console.log('blockSettings', blockSettings)
+      // console.log('blockSettings', blockSettings)
     }
 
     if (theme) {
@@ -44,7 +44,7 @@ export const useGetHeroPadding = (theme: any, block?: BlocksProp): PaddingProps 
         bottomPadding = themeState === blockSettings?.theme ? 'small' : 'large'
       }
     }
-    console.log(topPadding, bottomPadding)
+    // console.log(topPadding, bottomPadding)
     return {
       top: topPadding,
       bottom: bottomPadding,
