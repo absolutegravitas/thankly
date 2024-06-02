@@ -15,7 +15,7 @@ import { CheckIcon } from '@app/_icons/CheckIcon'
 import { CloseIcon } from '@app/_icons/CloseIcon'
 import { ErrorIcon } from '@app/_icons/ErrorIcon'
 import { HeaderIntersectionObserver } from '@app/_providers/HeaderIntersectionObserver'
-// import { AuthProvider } from './Auth'
+import { AuthProvider } from './Auth'
 import { ComputedCSSValuesProvider } from './ComputedCSSValues'
 import { PageTransition } from './PageTransition'
 import { ThemePreferenceProvider } from './Theme'
@@ -25,78 +25,78 @@ export const Providers: React.FC<{
 }> = ({ children }) => {
   return (
     <CookiesProvider>
-      {/* <AuthProvider> */}
-      <ScrollInfoProvider>
-        <MouseInfoProvider>
-          <WindowInfoProvider
-            breakpoints={{
-              s: '(max-width: 768px)',
-              m: '(max-width: 1100px)',
-              l: '(max-width: 1600px)',
-            }}
-          >
-            <ThemePreferenceProvider>
-              <GridProvider
-                breakpoints={{
-                  s: 768,
-                  m: 1024,
-                  l: 1680,
-                }}
-                rowGap={{
-                  s: '1rem',
-                  m: '1rem',
-                  l: '2rem',
-                  xl: '4rem',
-                }}
-                colGap={{
-                  s: '1rem',
-                  m: '2rem',
-                  l: '2rem',
-                  xl: '3rem',
-                }}
-                cols={{
-                  s: 8,
-                  m: 8,
-                  l: 12,
-                  xl: 12,
-                }}
-              >
-                <ComputedCSSValuesProvider>
-                  <ModalProvider transTime={0} zIndex="var(--z-modal)">
-                    <PageTransition>
-                      <HeaderIntersectionObserver>
-                        {children}
-                        <ModalContainer />
-                        <ToastContainer
-                          position="bottom-center"
-                          transition={Slide}
-                          // icon={false}
-                          // TODO: Redesign icons
-                          icon={({ type }: IconProps) => {
-                            switch (type) {
-                              case 'info':
-                                return <InfoIcon />
-                              case 'success':
-                                return <CheckIcon />
-                              case 'warning':
-                                return <ErrorIcon />
-                              case 'error':
-                                return <CloseIcon />
-                              default:
-                                return null
-                            }
-                          }}
-                        />
-                      </HeaderIntersectionObserver>
-                    </PageTransition>
-                  </ModalProvider>
-                </ComputedCSSValuesProvider>
-              </GridProvider>
-            </ThemePreferenceProvider>
-          </WindowInfoProvider>
-        </MouseInfoProvider>
-      </ScrollInfoProvider>
-      {/* </AuthProvider> */}
+      <AuthProvider>
+        <ScrollInfoProvider>
+          <MouseInfoProvider>
+            <WindowInfoProvider
+              breakpoints={{
+                s: '(max-width: 768px)',
+                m: '(max-width: 1100px)',
+                l: '(max-width: 1600px)',
+              }}
+            >
+              <ThemePreferenceProvider>
+                <GridProvider
+                  breakpoints={{
+                    s: 768,
+                    m: 1024,
+                    l: 1680,
+                  }}
+                  rowGap={{
+                    s: '1rem',
+                    m: '1rem',
+                    l: '2rem',
+                    xl: '4rem',
+                  }}
+                  colGap={{
+                    s: '1rem',
+                    m: '2rem',
+                    l: '2rem',
+                    xl: '3rem',
+                  }}
+                  cols={{
+                    s: 8,
+                    m: 8,
+                    l: 12,
+                    xl: 12,
+                  }}
+                >
+                  <ComputedCSSValuesProvider>
+                    <ModalProvider transTime={0} zIndex="var(--z-modal)">
+                      <PageTransition>
+                        <HeaderIntersectionObserver>
+                          {children}
+                          <ModalContainer />
+                          <ToastContainer
+                            position="bottom-center"
+                            transition={Slide}
+                            // icon={false}
+                            // TODO: Redesign icons
+                            icon={({ type }: IconProps) => {
+                              switch (type) {
+                                case 'info':
+                                  return <InfoIcon />
+                                case 'success':
+                                  return <CheckIcon />
+                                case 'warning':
+                                  return <ErrorIcon />
+                                case 'error':
+                                  return <CloseIcon />
+                                default:
+                                  return null
+                              }
+                            }}
+                          />
+                        </HeaderIntersectionObserver>
+                      </PageTransition>
+                    </ModalProvider>
+                  </ComputedCSSValuesProvider>
+                </GridProvider>
+              </ThemePreferenceProvider>
+            </WindowInfoProvider>
+          </MouseInfoProvider>
+        </ScrollInfoProvider>
+      </AuthProvider>
     </CookiesProvider>
   )
 }
