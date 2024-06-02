@@ -1,11 +1,11 @@
 // import { slateEditor } from '@payloadcms/richtext-slate'
 import type { Block } from 'payload/types'
 
-import { blockFields } from '@/app/(payload)/_fields/blockFields'
+import { blockFields } from '@cms/_fields/blockFields'
 // import richText from '@cms/_fields/richText'
 // import label from '@cms/_fields/richText/label'
-import linkGroup from '@/app/(payload)/_fields/linkGroup'
-import { contentField } from '@/app/(payload)/_fields/contentField'
+import linkGroup from '@cms/_fields/linkGroup'
+import { contentField } from '@cms/_fields/contentField'
 
 export const ContentGrid: Block = {
   slug: 'contentGrid',

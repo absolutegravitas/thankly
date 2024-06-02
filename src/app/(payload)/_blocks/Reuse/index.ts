@@ -1,5 +1,5 @@
 import type { Block } from 'payload/types'
-import { blockFields } from '@/app/(payload)/_fields/blockFields'
+import { blockFields } from '@cms/_fields/blockFields'
 
 export const Reuse: Block = {
   slug: 'reuse',

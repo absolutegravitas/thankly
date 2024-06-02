@@ -1,10 +1,10 @@
 import type { Block } from 'payload/types'
 import { HTMLConverterFeature, lexicalEditor, TreeViewFeature } from '@payloadcms/richtext-lexical'
 
-import link from '@/app/(payload)/_fields/link'
-import linkGroup from '@/app/(payload)/_fields/linkGroup'
-import { contentField } from '@/app/(payload)/_fields/contentField'
-import { themeField } from '@/app/(payload)/_fields/blockFields'
+import link from '@cms/_fields/link'
+import linkGroup from '@cms/_fields/linkGroup'
+import { contentField } from '@cms/_fields/contentField'
+import { themeField } from '@cms/_fields/blockFields'
 
 export const Hero: Block = {
   slug: 'hero',

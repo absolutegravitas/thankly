@@ -3,7 +3,7 @@ import type { Block } from 'payload/types'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 
 import { blockFields } from '@cms/_fields/blockFields'
-import { contentField } from '@/app/(payload)/_fields/contentField'
+import { contentField } from '@cms/_fields/contentField'
 
 export const Banner: Block = {
   slug: 'banner',

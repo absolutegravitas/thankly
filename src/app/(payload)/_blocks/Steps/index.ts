@@ -4,7 +4,7 @@ import { blockFields } from '@cms/_fields/blockFields'
 import { Content } from '../Content'
 import { HoverHighlights } from '../HoverHighlights'
 import { StickyHighlights } from '../StickyHighlights'
-import { layoutField } from '@/app/(payload)/_fields/layoutField'
+import { layoutField } from '@cms/_fields/layoutField'
 
 export const Steps: Block = {
   slug: 'steps',

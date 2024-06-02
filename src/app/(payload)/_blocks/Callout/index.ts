@@ -3,7 +3,7 @@ import type { Block } from 'payload/types'
 import { blockFields } from '@cms/_fields/blockFields'
 import linkGroup from '@cms/_fields/linkGroup'
 // import richText from '../../fields/richText'
-import { contentField } from '@/app/(payload)/_fields/contentField'
+import { contentField } from '@cms/_fields/contentField'
 
 export const Callout: Block = {
   slug: 'callout',

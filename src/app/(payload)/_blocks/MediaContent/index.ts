@@ -2,7 +2,7 @@ import type { Block } from 'payload/types'
 
 import { blockFields } from '@cms/_fields/blockFields'
 import link from '@cms/_fields/link'
-import { contentField } from '@/app/(payload)/_fields/contentField'
+import { contentField } from '@cms/_fields/contentField'
 // import richText from '../../fields/richText'
 
 export const MediaContent: Block = {

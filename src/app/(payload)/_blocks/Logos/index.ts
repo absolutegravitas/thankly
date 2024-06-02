@@ -1,10 +1,10 @@
 import type { Block } from 'payload/types'
 // import { ColourTextField } from '@nouance/payload-better-fields-plugin'
 
-import link from '@/app/(payload)/_fields/link'
+import link from '@cms/_fields/link'
 // import richText from '@/fields/richText'
 // import colorField from '@/fields/colorPicker/config'
-import linkGroup from '@/app/(payload)/_fields/linkGroup'
+import linkGroup from '@cms/_fields/linkGroup'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 
 export const Logos: Block = {
