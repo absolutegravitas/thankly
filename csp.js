@@ -4,6 +4,7 @@ const policies = {
     "'self'",
     "'unsafe-inline'",
     "'unsafe-eval'",
+    'https://va.vercel-scripts.com',
     'https://checkout.stripe.com',
     'https://js.stripe.com',
     'https://maps.googleapis.com',
