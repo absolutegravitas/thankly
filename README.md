@@ -15,13 +15,15 @@
 
 1. bake in current (v2.x) payload-cms and payload-website components & code
 2. some components & ui havent been ported over (e.g. case study / statement)
-3. forms are still borked
+3. forms (but not form submissions or email)
 4. blocks editor baked into lexical so now pages have a layoutfield
 5. serializer updated to render richtext basic or blocks inside lexical so this may be useful for people struggling to render blocks
 6. hero has been merged into just another layout block
 7. personal mods to collections, folder structure
 8. site specific next config (hardcoded csrf / cors configs)
 9. fighting with graphql and cors atm so all data is pulled via payloadHMR / payload.find
+10. ecommerce (pending)
+11. vercel crons https://github.com/vercel/examples/blob/main/solutions/cron/vercel.json
 
 ## instructions
 
