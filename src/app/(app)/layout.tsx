@@ -40,7 +40,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <PrivacyProvider>
         <head>
           <link rel="icon" href="/favicon.ico" sizes="32x32" />
-          {/* <link rel="icon" href="/favicon.svg" type="image/svg+xml" /> */}
           <link rel="preconnect" href="https://www.googletagmanager.com" />
           <link rel="preconnect" href="https://www.google-analytics.com" />
           <GoogleAnalytics />
