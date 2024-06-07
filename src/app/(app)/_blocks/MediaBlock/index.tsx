@@ -33,7 +33,6 @@ export const MediaBlock: React.FC<any & { disableGutter?: boolean; marginAdjustm
           marginLeft: marginAdjustment.marginLeft,
         }}
       >
-        {!disableGrid && <BackgroundGrid zIndex={0} />}
         {disableGutter ? (
           <Media
             resource={media}

@@ -45,7 +45,7 @@ export const SliderBlock: React.FC<Props> = (props) => {
       padding={padding}
       className={[classes.slider].filter(Boolean).join(' ')}
     >
-      <BackgroundGrid zIndex={0} />
+      {/* <BackgroundGrid zIndex={0} /> */}
 
       <div className={classes.trackWrap}>
         <BackgroundGrid

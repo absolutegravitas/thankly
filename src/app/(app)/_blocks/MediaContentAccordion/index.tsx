@@ -34,7 +34,7 @@ export const MediaContentAccordion: React.FC<MediaContentAccordionProps> = (prop
       className={[classes.mediaContentAccordion].filter(Boolean).join(' ')}
     >
       <Gutter>
-        <BackgroundGrid zIndex={0} />
+        {/* <BackgroundGrid zIndex={0} /> */}
         <DesktopMediaContentAccordion
           className={classes.desktop}
           blockType="mediaContentAccordion"

@@ -42,7 +42,7 @@ export const StickyHighlights: React.FC<Props> = ({
       id={id}
     >
       <Gutter>
-        <BackgroundGrid zIndex={0} />
+        {/* <BackgroundGrid zIndex={0} /> */}
         {highlights?.map((highlight: any, i: any) => {
           return <StickyHighlight yDirection={yDirection} midBreak={m} key={i} {...highlight} />
         })}
