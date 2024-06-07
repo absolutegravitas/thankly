@@ -101,12 +101,12 @@ export const DesktopMediaContentAccordion: React.FC<MediaContentAccordionProps> 
         .join(' ')}
     >
       {alignment === 'mediaContent' ? (
-        <Fragment>
+        <React.Fragment>
           {hasAccordion &&
             accordion.map((item: any, index: any) => (
-              <Fragment key={item.id || index}>
+              <React.Fragment key={item.id || index}>
                 {index === activeAccordion && (
-                  <>
+                  <React.Fragment>
                     {item.background === 'gradient' && (
                       <div
                         className={[
@@ -178,7 +178,7 @@ export const DesktopMediaContentAccordion: React.FC<MediaContentAccordionProps> 
                         <div className={classes.transparentBg} />
                       </div>
                     )}
-                  </>
+                  </React.Fragment>
                 )}
                 <div
                   ref={mediaRefs.current[index]}
@@ -198,7 +198,7 @@ export const DesktopMediaContentAccordion: React.FC<MediaContentAccordionProps> 
                     <Media resource={item.media} />
                   )}
                 </div>
-              </Fragment>
+              </React.Fragment>
             ))}
           <div ref={contentRef} className={['cols-4 start-13 cols-m-8'].filter(Boolean).join(' ')}>
             <div className={[classes.introWrapper].filter(Boolean).join(' ')}>
@@ -264,9 +264,9 @@ export const DesktopMediaContentAccordion: React.FC<MediaContentAccordionProps> 
               </CollapsibleGroup>
             </div>
           </div>
-        </Fragment>
+        </React.Fragment>
       ) : (
-        <Fragment>
+        <React.Fragment>
           <div ref={contentRef} className={['cols-4 start-1 cols-m-8'].filter(Boolean).join(' ')}>
             <div className={[classes.introWrapper].filter(Boolean).join(' ')}>
               {leader && <div className={classes.leader}>{leader}</div>}
@@ -332,103 +332,107 @@ export const DesktopMediaContentAccordion: React.FC<MediaContentAccordionProps> 
             </div>
           </div>
           {hasAccordion &&
-            accordion.map((item: any, index: any) => (
-              <Fragment key={item.id || index}>
-                {index === activeAccordion && (
-                  <>
-                    {item.background === 'gradient' && (
-                      <div
-                        className={[
-                          classes.gradientDesktopWrapper,
-                          'start-9 cols-8 start-m-1 cols-m-8',
-                        ]
-                          .filter(Boolean)
-                          .join(' ')}
-                        style={{ height: `calc(${containerHeight}px + 8rem)` }}
-                      >
-                        <Image
-                          alt=""
-                          className={classes.gradientBg}
-                          width={1920}
-                          height={946}
-                          src={`/images/gradients/1.jpg`}
-                        />
-                        <CrosshairIcon
-                          className={[classes.crosshairTopOne].filter(Boolean).join(' ')}
-                        />
-                        <CrosshairIcon
-                          className={[classes.crosshairTopTwo].filter(Boolean).join(' ')}
-                        />
-                        <CrosshairIcon
-                          className={[classes.crosshairBottomOne].filter(Boolean).join(' ')}
-                        />
-                        <CrosshairIcon
-                          className={[classes.crosshairBottomTwo].filter(Boolean).join(' ')}
-                        />
-                      </div>
-                    )}
-                    {item.background === 'scanlines' && (
-                      <div
-                        className={[
-                          classes.scanlineDesktopWrapper,
-                          'start-9 cols-8 start-m-1 cols-m-8',
-                        ]
-                          .filter(Boolean)
-                          .join(' ')}
-                        style={{ height: `calc(${containerHeight}px + 8rem)` }}
-                      >
-                        <BackgroundScanline
-                          className={[classes.scanlineDesktop].filter(Boolean).join(' ')}
-                        />
-                        <CrosshairIcon
-                          className={[classes.crosshairTopOne].filter(Boolean).join(' ')}
-                        />
-                        <CrosshairIcon
-                          className={[classes.crosshairTopTwo].filter(Boolean).join(' ')}
-                        />
-                        <CrosshairIcon
-                          className={[classes.crosshairBottomOne].filter(Boolean).join(' ')}
-                        />
-                        <CrosshairIcon
-                          className={[classes.crosshairBottomTwo].filter(Boolean).join(' ')}
-                        />
-                      </div>
-                    )}
-                    {item.background === 'none' && (
-                      <div
-                        className={[
-                          classes.transparentDesktopWrapper,
-                          'start-9 cols-8 start-m-1 cols-m-8',
-                        ]
-                          .filter(Boolean)
-                          .join(' ')}
-                        style={{ height: `calc(${containerHeight}px + 8rem)` }}
-                      >
-                        <div className={classes.transparentBg} />
-                      </div>
-                    )}
-                  </>
-                )}
-                <div
-                  ref={mediaRefs.current[index]}
-                  className={[
-                    classes.mediaDesktopContainer,
-                    rightPositionClassMap[item.position as keyof typeof rightPositionClassMap],
-                  ]
-                    .filter(Boolean)
-                    .join(' ')}
-                  style={{
-                    opacity: index === activeAccordion ? 1 : 0,
-                    width: item.position === 'wide' ? `calc(100% + ${contentWidth}px / 2)` : '100%',
-                  }}
-                >
-                  {typeof item.media === 'object' && item.media !== null && (
-                    <Media resource={item.media} />
+            accordion.map((item: any, index: any) => {
+              // console.log('accordion --', accordion)
+              return (
+                <React.Fragment key={item.id || index}>
+                  {index === activeAccordion && (
+                    <React.Fragment>
+                      {item.background === 'gradient' && (
+                        <div
+                          className={[
+                            classes.gradientDesktopWrapper,
+                            'start-9 cols-8 start-m-1 cols-m-8',
+                          ]
+                            .filter(Boolean)
+                            .join(' ')}
+                          style={{ height: `calc(${containerHeight}px + 8rem)` }}
+                        >
+                          <Image
+                            alt=""
+                            className={classes.gradientBg}
+                            width={1920}
+                            height={946}
+                            src={`/images/gradients/1.jpg`}
+                          />
+                          <CrosshairIcon
+                            className={[classes.crosshairTopOne].filter(Boolean).join(' ')}
+                          />
+                          <CrosshairIcon
+                            className={[classes.crosshairTopTwo].filter(Boolean).join(' ')}
+                          />
+                          <CrosshairIcon
+                            className={[classes.crosshairBottomOne].filter(Boolean).join(' ')}
+                          />
+                          <CrosshairIcon
+                            className={[classes.crosshairBottomTwo].filter(Boolean).join(' ')}
+                          />
+                        </div>
+                      )}
+                      {item.background === 'scanlines' && (
+                        <div
+                          className={[
+                            classes.scanlineDesktopWrapper,
+                            'start-9 cols-8 start-m-1 cols-m-8',
+                          ]
+                            .filter(Boolean)
+                            .join(' ')}
+                          style={{ height: `calc(${containerHeight}px + 8rem)` }}
+                        >
+                          <BackgroundScanline
+                            className={[classes.scanlineDesktop].filter(Boolean).join(' ')}
+                          />
+                          <CrosshairIcon
+                            className={[classes.crosshairTopOne].filter(Boolean).join(' ')}
+                          />
+                          <CrosshairIcon
+                            className={[classes.crosshairTopTwo].filter(Boolean).join(' ')}
+                          />
+                          <CrosshairIcon
+                            className={[classes.crosshairBottomOne].filter(Boolean).join(' ')}
+                          />
+                          <CrosshairIcon
+                            className={[classes.crosshairBottomTwo].filter(Boolean).join(' ')}
+                          />
+                        </div>
+                      )}
+                      {item.background === 'none' && (
+                        <div
+                          className={[
+                            classes.transparentDesktopWrapper,
+                            'start-9 cols-8 start-m-1 cols-m-8',
+                          ]
+                            .filter(Boolean)
+                            .join(' ')}
+                          style={{ height: `calc(${containerHeight}px + 8rem)` }}
+                        >
+                          <div className={classes.transparentBg} />
+                        </div>
+                      )}
+                    </React.Fragment>
                   )}
-                </div>
-              </Fragment>
-            ))}
-        </Fragment>
+                  <div
+                    ref={mediaRefs.current[index]}
+                    className={[
+                      classes.mediaDesktopContainer,
+                      rightPositionClassMap[item.position as keyof typeof rightPositionClassMap],
+                    ]
+                      .filter(Boolean)
+                      .join(' ')}
+                    style={{
+                      opacity: index === activeAccordion ? 1 : 0,
+                      width:
+                        item.position === 'wide' ? `calc(100% + ${contentWidth}px / 2)` : '100%',
+                    }}
+                  >
+                    {typeof item.media === 'object' && item.media !== null && (
+                      <Media resource={item.media} />
+                    )}
+                  </div>
+                </React.Fragment>
+              )
+            })}
+        </React.Fragment>
       )}
     </div>
   )

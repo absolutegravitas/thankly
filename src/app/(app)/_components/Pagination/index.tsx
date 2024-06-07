@@ -35,7 +35,7 @@ export const Pagination: React.FC<{
   return (
     <div className={[classes.pagination, className].filter(Boolean).join(' ')}>
       {showFirstPage && (
-        <>
+        <React.Fragment>
           <button
             type="button"
             className={classes.paginationButton}
@@ -47,7 +47,7 @@ export const Pagination: React.FC<{
             1
           </button>
           <div className={classes.dash}>&mdash;</div>
-        </>
+        </React.Fragment>
       )}
       {[...Array(totalPages)].map((_, index) => {
         const currentPage = index + 1
@@ -76,7 +76,7 @@ export const Pagination: React.FC<{
           )
       })}
       {showLastPage && (
-        <>
+        <React.Fragment>
           <div className={classes.dash}>&mdash;</div>
           <button
             type="button"
@@ -90,7 +90,7 @@ export const Pagination: React.FC<{
           >
             {totalPages}
           </button>
-        </>
+        </React.Fragment>
       )}
       <button
         disabled={page - 1 < 1}

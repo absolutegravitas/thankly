@@ -44,7 +44,7 @@ export const HoverHighlight: React.FC<
   }
 
   return (
-    <Fragment>
+    <React.Fragment>
       <CMSLink
         {...link}
         className={classes.highlightLink}
@@ -95,6 +95,6 @@ export const HoverHighlight: React.FC<
           </div>
         </div>
       )}
-    </Fragment>
+    </React.Fragment>
   )
 }

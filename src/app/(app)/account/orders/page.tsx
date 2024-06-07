@@ -27,9 +27,9 @@ export default async function Product({ params: { slug } }: any) {
   }
 
   return (
-    <>
+    <React.Fragment>
       <Suspense fallback="fetching page"></Suspense>
-    </>
+    </React.Fragment>
   )
 }
 

@@ -15,7 +15,7 @@ export const TopBar: React.FC<TopBarType> = (props) => {
   const isMobileNavOpen = isModalOpen(modalSlug)
   const { content } = props
   return (
-    <>
+    <React.Fragment>
       {content && typeof content === 'object' && Object.keys(content).length > 0 && (
         <div
           className={[classes.topBar, isMobileNavOpen && classes.mobileNavOpen]
@@ -29,6 +29,6 @@ export const TopBar: React.FC<TopBarType> = (props) => {
           </div>
         </div>
       )}
-    </>
+    </React.Fragment>
   )
 }

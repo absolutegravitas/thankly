@@ -115,7 +115,7 @@ export const DesktopNav: React.FC<DesktopNavType> = ({ tabs, hideBackground }) =
                           )}
                         </CMSLink>
                       ) : (
-                        <>{tab.label}</>
+                        <React.Fragment>{tab.label}</React.Fragment>
                       )}
                     </button>
 

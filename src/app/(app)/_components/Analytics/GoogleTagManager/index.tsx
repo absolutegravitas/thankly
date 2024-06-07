@@ -13,7 +13,7 @@ export const GoogleTagManager: React.FC = () => {
   if (!cookieConsent || !gtmMeasurementID) return null
 
   return (
-    <Fragment>
+    <React.Fragment>
       <Script
         id="google-tag-manager"
         defer
@@ -37,6 +37,6 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           }}
         ></iframe>
       </noscript>
-    </Fragment>
+    </React.Fragment>
   )
 }

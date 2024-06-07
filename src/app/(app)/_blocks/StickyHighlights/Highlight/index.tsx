@@ -129,7 +129,7 @@ export const StickyHighlightComponent: React.FC<Props> = ({
       {/* <CSSTransition in={visible} timeout={750} classNames="animate"> */}
       <Gutter className={[classes.codeMediaPosition, 'grid'].filter(Boolean).join(' ')}>
         {/* {type === 'code' && (
-            <Fragment>
+            <React.Fragment>
               <div
                 className={[classes.scanlineWrapper, 'start-9 cols-8'].filter(Boolean).join(' ')}
               >
@@ -167,7 +167,7 @@ export const StickyHighlightComponent: React.FC<Props> = ({
                   </div>
                 </div>
               </div>
-            </Fragment>
+            </React.Fragment>
           )} */}
         {type === 'media' && typeof media === 'object' && media !== null && (
           <div className={'cols-10 start-7 cols-m-8 start-m-1'}>

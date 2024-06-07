@@ -20,7 +20,7 @@ export const ThreeHero: React.FC<{ fields: HeroFields }> = ({ fields }) => {
   const { description, primaryButtons, buttons } = fields
 
   return (
-    <>
+    <React.Fragment>
       <BlockWrapper
         settings={{ theme: fields.theme }}
         className={[classes.blockWrapper, ''].join(' ')}
@@ -70,7 +70,7 @@ export const ThreeHero: React.FC<{ fields: HeroFields }> = ({ fields }) => {
         </Gutter>
       </BlockWrapper>
       {/* <BackgroundGradient className={classes.backgroundGradient} /> */}
-    </>
+    </React.Fragment>
   )
 }
 
@@ -95,7 +95,7 @@ export const ThreeHero: React.FC<{ fields: HeroFields }> = ({ fields }) => {
 // > = ({ richText, buttons, theme, breadcrumbs }) => {
 //   const hasBreadcrumbs = Array.isArray(breadcrumbs) && breadcrumbs.length > 0
 //   return (
-//     <>
+//     <React.Fragment>
 //       <BlockWrapper
 //         settings={{ theme }}
 //         className={[classes.blockWrapper, hasBreadcrumbs ? classes.hasBreadcrumbs : ''].join(' ')}
@@ -145,6 +145,6 @@ export const ThreeHero: React.FC<{ fields: HeroFields }> = ({ fields }) => {
 //         </Gutter>
 //       </BlockWrapper>
 //       {/* <BackgroundGradient className={classes.backgroundGradient} /> */}
-//     </>
+//     </React.Fragment>
 //   )
 // }

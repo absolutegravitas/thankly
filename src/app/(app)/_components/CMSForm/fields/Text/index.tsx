@@ -127,7 +127,7 @@ export const Text: React.FC<
             required={required}
             margin={false}
             actionsSlot={
-              <Fragment>
+              <React.Fragment>
                 {copy && <CopyToClipboard value={value} />}
                 {type === 'password' && (
                   <Tooltip
@@ -138,7 +138,7 @@ export const Text: React.FC<
                     <EyeIcon closed={isHidden} size="large" />
                   </Tooltip>
                 )}
-              </Fragment>
+              </React.Fragment>
             }
           />
           <Error

@@ -1,5 +1,6 @@
 import dynamic from 'next/dynamic'
 import classes from '@app/_blocks/RichText/index.module.scss'
+import React from 'react'
 
 const Banner = dynamic(() => import('./Banner'))
 const Callout = dynamic(() => import('./Callout'))
@@ -58,7 +59,7 @@ const Blocks = ({ blocks, locale }: any) => {
   // console.log('blocks //', JSON.stringify(blocks))
 
   return (
-    <>
+    <React.Fragment>
       {blocks?.map((block: any, ix: number) => {
         // console.log('type //', block.type)
 
@@ -85,7 +86,7 @@ const Blocks = ({ blocks, locale }: any) => {
             break
         }
       })}
-    </>
+    </React.Fragment>
   )
 }
 

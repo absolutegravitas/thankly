@@ -8,7 +8,7 @@ import { CallToAction } from '@app/_blocks/CallToAction'
 
 export const ErrorMessage: React.FC<{ error?: string }> = ({ error }) => {
   return (
-    <>
+    <React.Fragment>
       {/* <BreadcrumbsBar breadcrumbs={undefined} links={undefined} /> */}
       <CallToAction
         blockType="cta"
@@ -191,6 +191,6 @@ export const ErrorMessage: React.FC<{ error?: string }> = ({ error }) => {
           },
         }}
       />
-    </>
+    </React.Fragment>
   )
 }

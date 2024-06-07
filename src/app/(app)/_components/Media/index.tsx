@@ -12,7 +12,7 @@ export const Media = forwardRef<HTMLDivElement | HTMLImageElement | HTMLVideoEle
     const Tag = (htmlElement as ElementType) || Fragment
 
     return (
-      <>
+      <React.Fragment>
         {/* Tag breaks visibility for Images */}
         {/* <Tag ref={ref} {...(htmlElement !== null ? { className } : {})}> */}
         {isVideo ? (
@@ -22,7 +22,7 @@ export const Media = forwardRef<HTMLDivElement | HTMLImageElement | HTMLVideoEle
         )}
 
         {/* </Tag> */}
-      </>
+      </React.Fragment>
     )
   },
 )

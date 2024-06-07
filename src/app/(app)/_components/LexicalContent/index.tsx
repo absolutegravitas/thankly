@@ -68,7 +68,7 @@ const TextComponent: FC<TextComponentProps> = ({ children, format }) => {
     children,
   )
 
-  return <>{formattedText}</>
+  return <React.Fragment>{formattedText}</React.Fragment>
 }
 
 const SerializedLink: React.FC<{
@@ -124,10 +124,10 @@ const LexicalContent: React.FC<{
     if (node.type === 'text') {
       return (
         <TextComponent key={ix} format={node.format}>
-          <>
+          <React.Fragment>
             {Object.keys(attributes).length > 0 && <span {...attributes}>{node?.text || ''}</span>}
             {(Object.keys(attributes).length === 0 && node?.text) || ''}
-          </>
+          </React.Fragment>
         </TextComponent>
       )
     }
@@ -207,7 +207,7 @@ const LexicalContent: React.FC<{
     }
   })
 
-  return <>{renderedChildren.filter((node) => node !== null)}</>
+  return <React.Fragment>{renderedChildren.filter((node) => node !== null)}</React.Fragment>
 }
 
 export default LexicalContent

@@ -168,7 +168,7 @@ export const Footer: React.FC<FooterType> = (props) => {
   }, [pathname, formData, router])
 
   return (
-    <>
+    <React.Fragment>
       <footer ref={wrapperRef} className={classes.footer}>
         {/* <BackgroundGrid
         zIndex={2}
@@ -335,6 +335,6 @@ export const Footer: React.FC<FooterType> = (props) => {
         </Gutter>
       </footer>
       <SubFooter />
-    </>
+    </React.Fragment>
   )
 }

@@ -31,7 +31,7 @@ export const BackgroundScanline: React.FC<Props> = ({
     >
       {/* <div className={[classes.backgroundScanline].filter(Boolean).join(' ')}></div>
       {crosshairs && (
-        <>
+        <React.Fragment>
           {(crosshairs === 'all' || crosshairs.includes('top-left')) && (
             <CrosshairIcon
               className={[classes.crosshair, classes.crosshairTopLeft, 'crosshair']
@@ -63,7 +63,7 @@ export const BackgroundScanline: React.FC<Props> = ({
                 .join(' ')}
             />
           )}
-        </>
+        </React.Fragment>
       )} */}
     </div>
   )

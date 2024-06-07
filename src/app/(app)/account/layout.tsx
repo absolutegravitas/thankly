@@ -1,5 +1,6 @@
 import { Fragment } from 'react'
 import { Metadata } from 'next'
+import React from 'react'
 
 import { Gutter } from '@app/_components/Gutter'
 import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
@@ -31,11 +32,11 @@ export default async (props: any) => {
   })
 
   return (
-    <Fragment>
+    <React.Fragment>
       <Gutter>
         <RenderParams />
       </Gutter>
       {children}
-    </Fragment>
+    </React.Fragment>
   )
 }

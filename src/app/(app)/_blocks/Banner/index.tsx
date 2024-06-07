@@ -24,7 +24,7 @@ export const BannerBlock: React.FC<{
   }
 
   return (
-    <>
+    <React.Fragment>
       {disableGutter ? (
         <Banner {...bannerProps} />
       ) : (
@@ -36,7 +36,7 @@ export const BannerBlock: React.FC<{
           </div>
         </Gutter>
       )}
-    </>
+    </React.Fragment>
   )
 }
 

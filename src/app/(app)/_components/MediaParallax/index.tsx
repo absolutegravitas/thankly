@@ -57,9 +57,9 @@ const MediaParallax: React.FC<ParallaxProps> = ({ media, className, ...mediaProp
             }}
           >
             {typeof image.image !== 'string' && (
-              <>
+              <React.Fragment>
                 <Media resource={image.image} {...mediaProps} />
-              </>
+              </React.Fragment>
             )}
           </motion.div>
         )

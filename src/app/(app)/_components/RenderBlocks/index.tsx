@@ -188,7 +188,7 @@ export const RenderBlocks: React.FC<Props> = (props) => {
 
   if (hasBlocks) {
     return (
-      <Fragment>
+      <React.Fragment>
         <div ref={docRef} id={customId ?? undefined}>
           {blocks.map((block, index) => {
             const { blockName, blockType } = block
@@ -216,7 +216,7 @@ export const RenderBlocks: React.FC<Props> = (props) => {
             return null
           })}
         </div>
-      </Fragment>
+      </React.Fragment>
     )
   }
 

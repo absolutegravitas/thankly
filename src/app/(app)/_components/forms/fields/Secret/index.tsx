@@ -115,7 +115,7 @@ export const Secret: React.FC<SecretProps> = (props) => {
         required={required}
         className={largeLabel ? classes.largeLabel : ''}
         actionsSlot={
-          <Fragment>
+          <React.Fragment>
             <Tooltip
               text={isHidden ? 'show' : 'hide'}
               onClick={toggleVisibility}
@@ -124,7 +124,7 @@ export const Secret: React.FC<SecretProps> = (props) => {
               <EyeIcon closed={isHidden} size="large" />
             </Tooltip>
             <CopyToClipboard value={isValueLoaded ? value : loadExternalValue} />
-          </Fragment>
+          </React.Fragment>
         }
       />
     </div>

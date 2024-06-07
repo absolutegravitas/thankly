@@ -140,7 +140,7 @@ export const Text: React.FC<
         )}
       </div>
       {type !== 'hidden' && (
-        <>
+        <React.Fragment>
           <Error
             showError={Boolean((showError || showErrorFromProps) && errorMessage)}
             message={errorMessage}
@@ -151,7 +151,7 @@ export const Text: React.FC<
             required={required}
             margin={false}
             actionsSlot={
-              <Fragment>
+              <React.Fragment>
                 {copy && <CopyToClipboard value={value} />}
                 {type === 'password' && (
                   <Tooltip
@@ -162,10 +162,10 @@ export const Text: React.FC<
                     <EyeIcon closed={isHidden} size="large" />
                   </Tooltip>
                 )}
-              </Fragment>
+              </React.Fragment>
             }
           />
-        </>
+        </React.Fragment>
       )}
     </div>
   )

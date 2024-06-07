@@ -12,12 +12,12 @@ export default async function NewProjectPage({ searchParams }: any) {
   // const templates = await fetchTemplates()
 
   return (
-    <Fragment>
+    <React.Fragment>
       <Gutter>
         <RenderParams />
       </Gutter>
       {/* <NewProjectBlock templates={templates} teamSlug={teamSlug} /> */}
-    </Fragment>
+    </React.Fragment>
   )
 }
 

@@ -88,7 +88,7 @@ export const ContentBlock: React.FC<Props> = (props) => {
   } = props
 
   // console.log(props)
-  // return <></>
+  // return <React.Fragment></React.Fragment>
   return (
     <BlockWrapper padding={padding} settings={settings}>
       {/* <BackgroundGrid zIndex={0} /> */}

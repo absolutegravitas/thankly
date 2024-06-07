@@ -32,9 +32,9 @@ export const ProductTemplate: React.FC<{ product: Product }> = ({ product }) => 
 
   // generate product info and then any layout blocks added to the page
   return (
-    <>
+    <React.Fragment>
       <ProductBlock {...product} />
       <Blocks blocks={product?.layout?.root?.children} />
-    </>
+    </React.Fragment>
   )
 }

@@ -110,10 +110,10 @@ export const HeaderIntersectionObserver: React.FC<HeaderIntersectionObserverProp
         setHeaderTheme,
       }}
     >
-      <>
+      <React.Fragment>
         {debug && <div className={classes.intersectionObserverDebugger} />}
         {children}
-      </>
+      </React.Fragment>
     </Context.Provider>
   )
 }

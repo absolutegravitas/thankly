@@ -92,11 +92,11 @@ export const MobileMediaContentAccordion: React.FC<MediaContentAccordionProps> =
         >
           {hasAccordion &&
             accordion.map((item: any, index: any) => (
-              <Fragment key={item.id || index}>
+              <React.Fragment key={item.id || index}>
                 {index === activeAccordion && (
-                  <>
+                  <React.Fragment>
                     {item.background === 'gradient' && (
-                      <Fragment>
+                      <React.Fragment>
                         <Image
                           alt=""
                           className={classes.gradientBg}
@@ -116,10 +116,10 @@ export const MobileMediaContentAccordion: React.FC<MediaContentAccordionProps> =
                         <CrosshairIcon
                           className={[classes.crosshairBottomTwo].filter(Boolean).join(' ')}
                         />
-                      </Fragment>
+                      </React.Fragment>
                     )}
                     {item.background === 'scanlines' && (
-                      <Fragment>
+                      <React.Fragment>
                         {/* <BackgroundScanline
                           className={[classes.scanlineMobile].filter(Boolean).join(' ')}
                         /> */}
@@ -135,12 +135,12 @@ export const MobileMediaContentAccordion: React.FC<MediaContentAccordionProps> =
                         <CrosshairIcon
                           className={[classes.crosshairBottomTwo].filter(Boolean).join(' ')}
                         />
-                      </Fragment>
+                      </React.Fragment>
                     )}
                     {item.background === 'none' && <div className={classes.transparentBg} />}
-                  </>
+                  </React.Fragment>
                 )}
-              </Fragment>
+              </React.Fragment>
             ))}
           <div className={classes.mediaMobileContainer}>
             {hasAccordion &&

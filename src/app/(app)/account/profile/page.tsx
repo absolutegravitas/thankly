@@ -27,9 +27,9 @@ export default async function Profile({ params: { slug } }: any) {
   }
 
   return (
-    <>
+    <React.Fragment>
       <Suspense fallback="fetching page"></Suspense>
-    </>
+    </React.Fragment>
   )
 }
 

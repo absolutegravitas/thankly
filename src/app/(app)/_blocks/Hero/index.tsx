@@ -35,7 +35,7 @@ export const Hero: React.FC<HeroProps> = (props) => {
   // Type assertion to ensure fields.type is HeroType
   const HeroToRender = heroes[props.type as HeroType]
 
-  return <>{HeroToRender && <HeroToRender {...props} />}</>
+  return <React.Fragment>{HeroToRender && <HeroToRender {...props} />}</React.Fragment>
 }
 
 export default Hero
@@ -58,7 +58,7 @@ export default Hero
 
 //   if (HeroToRender) {
 //     return (
-//       <>
+//       <React.Fragment>
 //         {/* <BreadcrumbsBar hero={hero} breadcrumbs={breadcrumbs} /> */}
 
 //         <HeroToRender
@@ -66,7 +66,7 @@ export default Hero
 //           firstContentBlock={firstContentBlock}
 //           // breadcrumbs={breadcrumbs}
 //         />
-//       </>
+//       </React.Fragment>
 //     )
 //   }
 

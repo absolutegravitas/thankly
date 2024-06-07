@@ -65,10 +65,10 @@ export const Highlight: React.FC<{
                     </span>
                   )}
                   {!isLastWord && (
-                    <Fragment>
+                    <React.Fragment>
                       {word}
                       &nbsp;
-                    </Fragment>
+                    </React.Fragment>
                   )}
                   {isLastWord && (!InlineIcon || reverseIcon) && word}
                   {isLastWord &&
