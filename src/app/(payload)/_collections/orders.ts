@@ -24,7 +24,7 @@ export const Orders: CollectionConfig = {
 
   fields: [
     {
-      type: 'row', // required
+      type: 'row',
       fields: [
         {
           name: 'orderNumber',
@@ -80,7 +80,7 @@ export const Orders: CollectionConfig = {
       ],
     },
     {
-      type: 'row', // required
+      type: 'row',
       fields: [
         { name: 'orderSubtotal', type: 'number', min: 0, admin: { width: '25%' } },
         // { name: 'orderTax', type: 'number', min: 0, admin: { width: '25%' } },
@@ -96,7 +96,7 @@ export const Orders: CollectionConfig = {
       fields: [
         { name: 'product', type: 'relationship', relationTo: 'products', required: true },
         {
-          type: 'row', // required
+          type: 'row',
           fields: [
             { name: 'itemPrice', type: 'number', min: 0, admin: { width: '25%' } },
             // {
@@ -116,18 +116,18 @@ export const Orders: CollectionConfig = {
           type: 'array',
           fields: [
             {
-              type: 'row', // required
+              type: 'row',
               fields: [
                 { name: 'firstName', type: 'text' },
                 { name: 'lastName', type: 'text' },
               ],
             },
             {
-              type: 'row', // required
+              type: 'row',
               fields: [{ name: 'message', type: 'textarea', admin: { width: '100%' } }],
             },
             {
-              type: 'row', // required
+              type: 'row',
               fields: [
                 { name: 'addressLine1', type: 'text', admin: { width: '50%' } },
                 { name: 'addressLine2', type: 'text', admin: { width: '50%' } },
@@ -137,7 +137,7 @@ export const Orders: CollectionConfig = {
               ],
             },
             {
-              type: 'row', // required
+              type: 'row',
               fields: [
                 {
                   name: 'shippingOption',
@@ -159,7 +159,7 @@ export const Orders: CollectionConfig = {
               ],
             },
             {
-              type: 'row', // required
+              type: 'row',
               fields: [
                 { name: 'receiverPrice', type: 'number', min: 0, admin: { width: '25%' } },
                 // {

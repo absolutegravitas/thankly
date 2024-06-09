@@ -54,7 +54,7 @@ export const Users: CollectionConfig = {
           label: 'Profile',
           fields: [
             {
-              type: 'row', // required
+              type: 'row',
               fields: [
                 {
                   name: 'firstName',
@@ -75,9 +75,8 @@ export const Users: CollectionConfig = {
               ],
             },
             {
-              type: 'row', // required
+              type: 'row',
               fields: [
-                // required
                 {
                   name: 'orgName',
                   label: 'Organization',
@@ -105,9 +104,8 @@ export const Users: CollectionConfig = {
               ],
             },
             {
-              type: 'row', // required
+              type: 'row',
               fields: [
-                // required
                 {
                   name: 'status',
                   type: 'select',

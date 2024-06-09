@@ -46,7 +46,7 @@ export const Products: CollectionConfig = {
   },
   fields: [
     {
-      type: 'row', // required
+      type: 'row',
       fields: [
         { name: 'title', type: 'text', required: true },
         slugField(),
@@ -69,10 +69,10 @@ export const Products: CollectionConfig = {
     },
 
     {
-      type: 'tabs', // required
+      type: 'tabs',
       tabs: [
         {
-          label: 'Basics', // required
+          label: 'Basics',
           description: 'Basic Product Info',
           fields: [
             // grab from meta
@@ -80,7 +80,7 @@ export const Products: CollectionConfig = {
             // grab from media Slider & default from meta
             // { name: 'defaultImage', type: 'upload', relationTo: 'media', required: false },
             {
-              type: 'row', // required
+              type: 'row',
               fields: [
                 {
                   name: 'stripeId',
@@ -104,7 +104,7 @@ export const Products: CollectionConfig = {
             },
 
             {
-              type: 'row', // required
+              type: 'row',
               fields: [
                 {
                   name: 'price',
@@ -126,7 +126,7 @@ export const Products: CollectionConfig = {
               ],
             },
             {
-              type: 'row', // required
+              type: 'row',
               fields: [
                 { name: 'stockOnHand', type: 'number', required: false },
                 {
@@ -140,7 +140,7 @@ export const Products: CollectionConfig = {
             },
             // don't need brands (just create a reusable logo grid and drop into layout)
             // {
-            //   type: 'row', // required
+            //   type: 'row',
             //   fields: [
             //     {
             //       name: 'brands',
@@ -156,7 +156,7 @@ export const Products: CollectionConfig = {
           ],
         },
         {
-          label: 'Media', // required
+          label: 'Media',
           description: 'Product Media',
           fields: [
             {
@@ -167,7 +167,7 @@ export const Products: CollectionConfig = {
           ],
         },
         {
-          label: 'Layout', // required
+          label: 'Layout',
           description: 'Product Page Layout',
           fields: [layoutField()],
         },

@@ -53,7 +53,7 @@ export const Pages: CollectionConfig = {
       type: 'tabs',
       tabs: [
         {
-          label: 'Layout', // required
+          label: 'Layout',
           description: 'Product Page Layout',
           fields: [layoutField()],
         },

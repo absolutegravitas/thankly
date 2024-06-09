@@ -22,12 +22,39 @@ export const Carts: CollectionConfig = {
       relationTo: 'users',
       required: false,
     },
+
+    {
+      name: 'totals',
+      type: 'group',
+      fields: [
+        {
+          name: 'orderValue',
+          type: 'number',
+          required: false,
+        },
+        {
+          name: 'thanklys',
+          type: 'number',
+          required: false,
+        },
+        {
+          name: 'shipping',
+          type: 'number',
+          required: false,
+        },
+      ],
+    },
+    // value, // Typed as `string` as shown above
+    // data, // Typed as a Partial of your ExampleDocumentType
+    // siblingData, // Typed as a Partial of SiblingDataType
+    // originalDoc, // Typed as ExampleDocumentType
+    // operation,
+    // req,
     {
       name: 'items',
       label: 'Items',
       type: 'array',
-      // interfaceName: 'CartItems',
-      // required: true, // doesn't export types as a proper array unless this is specified
+      // required: true, // doesn't export types as a proper array unless this is specified, but also fucks up cart creation in frontend
       // minRows: 1,
       fields: [
         {
@@ -55,7 +82,7 @@ export const Carts: CollectionConfig = {
           type: 'array',
           fields: [
             {
-              type: 'row', // required
+              type: 'row',
               fields: [
                 { name: 'firstName', type: 'text' },
                 { name: 'lastName', type: 'text' },
@@ -74,6 +101,7 @@ export const Carts: CollectionConfig = {
                 { name: 'state', type: 'text', admin: { width: '40%' } },
                 { name: 'postcode', type: 'text', admin: { width: '10%' } },
               ],
+              // call api to calculate postage here in future
             },
             {
               type: 'row',
@@ -117,6 +145,19 @@ export const Carts: CollectionConfig = {
                   type: 'number',
                   min: 0,
                   admin: { width: '25%' },
+                  // hooks: {
+                  //   afterChange: [
+                  //     ({ value, previousValue, req }) => {
+                  //       if (value !== previousValue) {
+                  //         // Log or perform an action when the membership status changes
+                  //         // console.log(
+                  //         //   `User ID ${req.user.id} changed their membership status from ${previousValue} to ${value}.`,
+                  //         // )
+                  //         // Here, you can implement actions that could track conversions from one tier to another
+                  //       }
+                  //     },
+                  //   ],
+                  // },
                 },
               ],
             },

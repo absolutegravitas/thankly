@@ -16,15 +16,15 @@ export const Settings: GlobalConfig = {
   },
   fields: [
     {
-      name: 'topBar', // required
+      name: 'topBar',
       interfaceName: 'topBar', // optional
-      type: 'group', // required
+      type: 'group',
       fields: [contentField()],
     },
     {
-      name: 'menu', // required
+      name: 'menu',
       interfaceName: 'menu', // optional
-      type: 'group', // required
+      type: 'group',
       fields: [
         {
           name: 'tabs',
@@ -202,9 +202,9 @@ export const Settings: GlobalConfig = {
       ],
     },
     {
-      name: 'footer', // required
+      name: 'footer',
       interfaceName: 'footer', // optional
-      type: 'group', // required
+      type: 'group',
       fields: [
         {
           name: 'columns',
