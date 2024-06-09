@@ -2,7 +2,7 @@ import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 
 import type { User } from '@/payload-types'
-import { ME_QUERY } from './_graphql/me'
+import { ME_QUERY } from './graphql/me'
 import { payloadToken } from './token'
 
 export const fetchMe = async (args?: {

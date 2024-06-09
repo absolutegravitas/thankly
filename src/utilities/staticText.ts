@@ -7,3 +7,24 @@ export const messages = {
   removeProductWarning: `Removing this thankly will also remove all receivers. To change receivers and still send this thankly, go to the Cart.`,
   shippingFreeMessage: `FREE Delivery for orders over $100.`,
 }
+
+export const cartStaticText = {
+  leader: `Checkout`,
+  heading: `Your Cart`,
+  receiverMessage: `Send this thankly to 1 or more people. Click / tap on the fields to edit. Your changes are saved automatically as you go.`,
+  shippingMessage: `Allow VIC (5 business days), Interstate (6-8 business days) due to AusPost letter delivery changes. `,
+  // sendTo: `Sending this thankly to:`,
+}
+
+export const deliveryMethods = [
+  { id: 'free', title: 'Free', turnaround: '4–10 business days', price: 0, checked: false },
+
+  {
+    id: 'standard',
+    title: 'Standard',
+    turnaround: '4–10 business days',
+    price: 5,
+    checked: true,
+  },
+  { id: 'express', title: 'Express', turnaround: '2–5 business days', price: 16, checked: false },
+]

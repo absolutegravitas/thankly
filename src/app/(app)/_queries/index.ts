@@ -1,15 +1,15 @@
 // 'use server'
 import 'server-only'
-import { unstable_cache } from 'next/cache'
-import { Page, Product, Order, Setting, User } from '@payload-types'
-import { headers as getHeaders } from 'next/headers'
+import { revalidatePath, unstable_cache } from 'next/cache'
+import { Page, Product, Order, Setting, User, Cart } from '@payload-types'
+import { cookies, headers as getHeaders } from 'next/headers'
 import { getPayloadHMR } from '@payloadcms/next/utilities'
 import configPromise from '@payload-config'
-
+import { areProductsInCart, createCart } from '../_components/ProductActions/actions'
 // https://payloadcms.com/docs/queries/pagination#pagination
 
 export const fetchProduct = (slug: string): Promise<Product | null> => {
-  const cachedFetchPage = unstable_cache(
+  const cachedFetchProduct = unstable_cache(
     async (): Promise<Page | null> => {
       const config = await configPromise
       let payload: any = await getPayloadHMR({ config })
@@ -46,98 +46,38 @@ export const fetchProduct = (slug: string): Promise<Product | null> => {
     },
   )
 
-  return cachedFetchPage()
+  return cachedFetchProduct()
 }
 
 export const fetchProducts = unstable_cache(
-  async (
-    page: number,
-    pageSize: number,
-    filters: Record<string, any> = {},
-    sort: string = '',
-    search: string = '',
-  ): Promise<{
-    products: any[]
-    totalDocs: number
-    totalPages: number
-    page: number
-    hasNextPage: boolean
-    hasPrevPage: boolean
-  } | null> => {
+  async (): Promise<{ products: any[] } | null> => {
     const config = await configPromise
     let payload: any = await getPayloadHMR({ config })
     let result = null
+
     try {
-      const query: any = {
+      const { docs } = await payload.find({
         collection: 'products',
-        depth: 3,
-        pagination: true,
-        limit: pageSize,
-        page,
-        where: { ...filters },
-        sort,
-      }
+        depth: 0,
+        pagination: false,
+      })
 
-      if (search) {
-        query.where = {
-          ...query.where,
-          or: [{ title: { contains: search } }, { description: { contains: search } }],
-        }
-      }
-
-      const response = await payload.find(query)
-
-      if (response.docs?.length === 0) {
+      if (docs?.length === 0) {
         console.log('not found')
-        return {
-          products: [],
-          totalDocs: 0,
-          totalPages: 0,
-          page: 1,
-          hasNextPage: false,
-          hasPrevPage: false,
-        }
+        return { products: [] }
       }
 
-      const products = response.docs?.map((product: any) => ({
-        id: product.id,
-        title: product.title,
-        slug: product.slug,
-        productType: product.productType,
-        stripeId: product.stripeId,
-        theme: product.theme,
-        availability: product.availability,
-        price: product.price,
-        stripePriceId: product.stripePriceId,
-        promoPrice: product.promoPrice,
-        stripePromoPriceId: product.stripePromoPriceId,
-        stockOnHand: product.stockOnHand,
-        lowStockThreshold: product.lowStockThreshold,
-        //  layout: product.layout,
-        meta: product.meta,
-        updatedAt: product.updatedAt,
-        createdAt: product.createdAt,
-        _status: product._status,
+      // get slug, id, and title prop only from the returned docs
+      const products = docs?.map(({ slug, id, title }: any) => ({
+        slug,
+        id,
+        title,
       }))
 
-      result = {
-        products,
-        totalDocs: response.totalDocs,
-        totalPages: response.totalPages,
-        page: response.page,
-        hasNextPage: response.hasNextPage,
-        hasPrevPage: response.hasPrevPage,
-      }
+      result = { products }
     } catch (error) {
-      console.error('Error fetching products:', error)
-      result = {
-        products: [],
-        totalDocs: 0,
-        totalPages: 0,
-        page: 1,
-        hasNextPage: false,
-        hasPrevPage: false,
-      } // Return empty products and pagination info on error
+      console.error('Error fetching pages:', error)
+      result = { products: [] } // Return empty pages and total 0 on error
     }
     return result
   },

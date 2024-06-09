@@ -24,8 +24,8 @@ export const Logos: Block = {
     //   required: false,
     // }),
     {
-      name: 'fewerItems', // required
-      type: 'checkbox', // required
+      name: 'fewerItems',
+      type: 'checkbox',
       label: 'Show fewer logos on smaller screens',
       defaultValue: false,
     },

@@ -268,6 +268,11 @@ export interface Reusable {
 export interface Cart {
   id: number;
   customer?: (number | null) | User;
+  totals?: {
+    orderValue?: number | null;
+    thanklys?: number | null;
+    shipping?: number | null;
+  };
   items?:
     | {
         product: number | Product;
