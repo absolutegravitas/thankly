@@ -93,3 +93,19 @@ pnpm payload migrate:create && pnpm generate:types && pnpm build
 
 https://loops.so/
 https://app.useplunk.com/events
+
+For WiNDOWS
+
+PS C:\Users\prasit> psql -U postgres -c "CREATE DATABASE payload;"
+Password for user postgres:
+
+CREATE DATABASE
+PS C:\Users\prasit> psql -U postgres -c "CREATE USER postgres WITH PASSWORD 'password';"
+Password for user postgres:
+
+ERROR: role "postgres" already exists
+PS C:\Users\prasit> psql -U postgres -c "GRANT ALL PRIVILEGES ON DATABASE payload TO postgres;"
+Password for user postgres:
+
+GRANT
+PS C:\Users\prasit>

@@ -7,19 +7,9 @@ import ProductGrid from '../_blocks/ProductGrid'
 
 type ShopClientProps = {
   products: Product[]
-  totalPages: number
-  currentPage: number
-  hasNextPage: boolean
-  hasPrevPage: boolean
 }
 
-const ShopClient: React.FC<ShopClientProps> = ({
-  products,
-  totalPages,
-  currentPage,
-  hasNextPage,
-  hasPrevPage,
-}) => {
+const ShopClient: React.FC<ShopClientProps> = ({ products }) => {
   return <ProductGrid products={products} />
 }
 

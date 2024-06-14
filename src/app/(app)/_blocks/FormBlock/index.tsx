@@ -63,7 +63,7 @@ export const FormBlock: React.FC<FormBlockProps> = (props) => {
       padding={{ top: 'large', bottom: 'large' }}
       className={classes.formBlock}
     >
-      <BackgroundGrid zIndex={0} />
+      {/* <BackgroundGrid zIndex={0} /> */}
       <div
         className={classes.gradientWrap}
         style={{ visibility: imageLoaded ? 'visible' : 'hidden' }}

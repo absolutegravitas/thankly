@@ -1,37 +1,17 @@
 import React from 'react'
 import { draftMode } from 'next/headers'
 import { notFound } from 'next/navigation'
-import type { Product } from '@payload-types'
-import { fetchProducts } from '@app/_queries'
 import ShopClient from './page.client'
+import { fetchShopList } from '../_queries/products'
+import { revalidateCache } from '@/utilities/revalidateCache'
 
-type ShopProps = {
-  params: { slug: string }
-  searchParams: { page?: string; filters?: string; sort?: string }
-}
-
-export default async function Shop({ params: { slug }, searchParams }: ShopProps) {
+export default async function Shop() {
   const { isEnabled: isDraftMode } = draftMode()
-  const page = searchParams.page ? parseInt(searchParams.page) : 1
-  const pageSize = 10
-  const filters = searchParams.filters ? JSON.parse(searchParams.filters) : {}
-  const sort = searchParams.sort || ''
-
-  let products: Product[] = []
-  let totalDocs: number = 0
-  let totalPages: number = 0
-  let hasNextPage: boolean = false
-  let hasPrevPage: boolean = false
+  let products: any | null = null
 
   try {
-    const result = await fetchProducts(page, pageSize, filters, sort)
-    if (result) {
-      products = result.products
-      totalDocs = result.totalDocs
-      totalPages = result.totalPages
-      hasNextPage = result.hasNextPage
-      hasPrevPage = result.hasPrevPage
-    }
+    revalidateCache({ path: '/shop' })
+    products = await fetchShopList()
   } catch (error) {
     console.error('Failed to fetch products:', error)
     return notFound()
@@ -46,13 +26,7 @@ export default async function Shop({ params: { slug }, searchParams }: ShopProps
     )
   }
 
-  return (
-    <ShopClient
-      products={products}
-      totalPages={totalPages}
-      currentPage={page}
-      hasNextPage={hasNextPage}
-      hasPrevPage={hasPrevPage}
-    />
-  )
+  // console.log('/shop products found ', products)
+
+  return <ShopClient products={products} />
 }

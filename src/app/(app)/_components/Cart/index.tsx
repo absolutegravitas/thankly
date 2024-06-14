@@ -9,10 +9,11 @@ import {
   SendHorizonalIcon,
 } from 'lucide-react'
 import Link from 'next/link'
-import { addProduct, isProductInCart, removeProduct } from './actions'
+import { addProduct, isProductInCart, areProductsInCart, removeProduct } from './actions'
 import { Button } from '@app/_components/Button'
 import { useRouter } from 'next/navigation'
 import { CMSLink } from '../CMSLink'
+
 export function ProductActions({ product, hidePerks }: any) {
   const {
     id,
@@ -69,11 +70,7 @@ export function ProductActions({ product, hidePerks }: any) {
             strokeWidth={1.25}
             ria-hidden="true"
           />
-          <div className="ml-2 text-sm text-gray-500">
-            {`Adding to cart...please wait`}
-            {/* <br className="sm:block hidden" />
-                <Link href="/cart">View Cart &#8594;</Link> */}
-          </div>
+          <div className="ml-2 text-sm text-gray-500">{`Loading...please wait`}</div>
         </div>
       </div>
     )
@@ -88,11 +85,7 @@ export function ProductActions({ product, hidePerks }: any) {
             strokeWidth={1.25}
             ria-hidden="true"
           />
-          <div className="ml-2 text-sm text-gray-500">
-            {`Checking availability...please wait`}
-            {/* <br className="sm:block hidden" />
-                <Link href="/cart">View Cart &#8594;</Link> */}
-          </div>
+          <div className="ml-2 text-sm text-gray-500">{`Loading...please wait`}</div>
         </div>
       </div>
     ) // Show a loading indicator while the transition is in progress
@@ -119,7 +112,7 @@ export function ProductActions({ product, hidePerks }: any) {
     if (stockOnHand != 0) {
       if (productAdded) {
         return (
-          <>
+          <React.Fragment>
             <div className="sm:flex pt-2 items-center justify-center space-x-2">
               <div className="py-4 sm:py-4 flex items-center">
                 <CheckIcon
@@ -129,8 +122,6 @@ export function ProductActions({ product, hidePerks }: any) {
                 />
                 <div className="ml-2 text-sm text-gray-500">
                   {`This thankly is already in your cart. Go to the Cart to add your messages and send to as many people as you'd like easily.`}
-                  {/* <br className="sm:block hidden" />
-                <Link href="/cart">View Cart &#8594;</Link> */}
                 </div>
               </div>
             </div>
@@ -163,17 +154,17 @@ export function ProductActions({ product, hidePerks }: any) {
                 }}
               />
             </div>
+
             <Button
               // url="/shop"
               label={'Remove from Cart'}
-              // label={isInCart ? 'View in Cart' : 'Add to Cart'}
               appearance={'links'}
               fullWidth
               data-theme={'light'}
               // icon="trash"
               onClick={handleRemoveProduct}
             />
-            <div className="#hidden sm:flex pt-2 items-center justify-center space-x-2">
+            <div className="sm:flex pt-2 items-center justify-center space-x-2">
               <div className="py-1 sm:py-2 flex items-center">
                 <MessageCircleWarningIcon
                   className="h-8 w-8 flex-shrink-0 text-green"
@@ -185,15 +176,14 @@ export function ProductActions({ product, hidePerks }: any) {
                 </div>
               </div>
             </div>
-          </>
+          </React.Fragment>
         )
       } else {
         return (
-          <>
+          <React.Fragment>
             <Button
               url="/shop/cart"
               label={'Add to Cart'}
-              // label={isInCart ? 'View in Cart' : 'Add to Cart'}
               appearance={'default'}
               fullWidth
               data-theme={'light'}
@@ -217,7 +207,7 @@ export function ProductActions({ product, hidePerks }: any) {
                 </div>
               </div>
             )}
-          </>
+          </React.Fragment>
         )
       }
     }

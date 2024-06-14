@@ -11,7 +11,7 @@ export const messages = {
 export const cartStaticText = {
   leader: `Checkout`,
   heading: `Your Cart`,
-  receiverMessage: `Send this thankly to 1 or more people. Click / tap on the fields to edit. Your changes are saved automatically as you go.`,
+  receiverMessage: `Send thanklys to as many people as you like. Click / tap on the fields to edit your message, delivery address and other details.`,
   shippingMessage: `Allow VIC (5 business days), Interstate (6-8 business days) due to AusPost letter delivery changes. `,
   // sendTo: `Sending this thankly to:`,
 }

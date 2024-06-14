@@ -19,14 +19,25 @@ export const Header: React.FC<Menu> = ({ menu, topBar }: any) => {
   const { headerTheme } = useHeaderObserver()
   const { y } = useScrollInfo()
   const [hideBackground, setHideBackground] = React.useState(true)
+  const [isHydrated, setIsHydrated] = React.useState(false)
 
   React.useEffect(() => {
-    if (isMobileNavOpen) {
-      setHideBackground(false)
-    } else {
-      setHideBackground(y < 30)
+    setIsHydrated(true)
+  }, [])
+
+  React.useEffect(() => {
+    if (isHydrated) {
+      if (isMobileNavOpen) {
+        setHideBackground(false)
+      } else {
+        setHideBackground(y < 30)
+      }
     }
-  }, [y, isMobileNavOpen])
+  }, [y, isMobileNavOpen, isHydrated])
+
+  if (!isHydrated) {
+    return null
+  }
 
   return (
     <div data-theme={headerTheme}>

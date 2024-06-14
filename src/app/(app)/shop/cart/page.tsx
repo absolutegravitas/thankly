@@ -1,44 +1,67 @@
-// page.tsx
-import React from 'react'
-import { draftMode } from 'next/headers'
-import { notFound } from 'next/navigation'
+import React, { Suspense } from 'react'
+import { Cart } from '@/payload-types'
+import { BlockWrapper } from '@app/_components/BlockWrapper'
+import { Gutter } from '@app/_components/Gutter'
+import { CartEmpty } from '@app/_blocks/CartCheckout/CartEmpty'
+import { getCart } from '@app/_components/ProductActions/actions'
+import { cartStaticText } from '@/utilities/staticText'
+import { contentFormats } from '@app/_css/tailwindClasses'
+import { CartButtons } from '../../_blocks/CartCheckout/CartButtons'
 // import CartClient from './page.client'
-
-// Dummy function to simulate fetching the cart
-const fetchCart = async (): Promise<{ items: any[] }> => {
-  // Simulate an API call
-  return {
-    items: [
-      // Sample item structure
-      { id: '1', name: 'Product 1', price: 100 },
-      { id: '2', name: 'Product 2', price: 200 },
-    ],
-  }
-}
+import Loading from './loading'
+const CartClient = React.lazy(() => import('./page.client'))
 
 export default async function CartPage() {
-  const { isEnabled: isDraftMode } = draftMode()
+  let cart: Cart | null = null
+  cart = await getCart()
 
-  // let items: any[] = []
+  if (!cart) {
+    console.log('Cart not found or is empty...')
+    return (
+      <BlockWrapper
+        // settings={{ settings: { theme: 'light' } }}
+        padding={{ top: 'large', bottom: 'large' }}
+      >
+        <Gutter>
+          <CartEmpty />
+        </Gutter>
+      </BlockWrapper>
+    )
+  }
 
-  // try {
-  //   const result = await fetchCart()
-  //   if (result) {
-  //     items = result.items
-  //   }
-  // } catch (error) {
-  //   console.error('Failed to fetch cart:', error)
-  //   return notFound()
-  // }
+  // console.log('/cart cart found ', JSON.stringify(cart))
+  const { leader, heading } = cartStaticText
 
-  // if (!items || items.length === 0) {
-  //   return (
-  //     <div>
-  //       <h1>Cart Page</h1>
-  //       <p>There are no items in the cart.</p>
-  //     </div>
-  //   )
-  // }
+  return (
+    <BlockWrapper
+      // settings={{ settings: { theme: 'light' } }}
+      padding={{ top: 'large', bottom: 'small' }}
+    >
+      <Gutter>
+        <div className="grid grid-cols-6 gap-6">
+          <div className="col-span-1">
+            {leader && (
+              <div className={[contentFormats.global, `uppercase`].join(' ')}>{leader}</div>
+            )}
+            {heading && (
+              <h3 className={['flex justify-between space-x-5 #pb-6 !my-0'].join(' ')}>
+                {heading}
+              </h3>
+            )}
+          </div>
+          <div className="col-start-5 col-span-3">
+            <div className="flex flex-row gap-4">
+              <CartButtons />
+            </div>
+          </div>
+        </div>
 
-  return <></>
+        <div className="pt-6 grid grid-cols-5 gap-6">
+          <Suspense fallback={<Loading />}>
+            <CartClient cart={cart} />
+          </Suspense>
+        </div>
+      </Gutter>
+    </BlockWrapper>
+  )
 }

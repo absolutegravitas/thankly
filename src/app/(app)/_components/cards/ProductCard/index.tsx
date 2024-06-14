@@ -1,8 +1,8 @@
-import React, { Fragment, useEffect, useState } from 'react'
+import React, { Fragment, useEffect } from 'react'
 import Link from 'next/link'
+import Image from 'next/image'
 
 import classes from './index.module.scss'
-import { Product } from '@/payload-types'
 import {
   ArrowRightIcon,
   ArrowUpRightIcon,
@@ -12,12 +12,11 @@ import {
   XIcon,
 } from 'lucide-react'
 import cn from '@/utilities/cn'
-import { Dialog, RadioGroup, Transition } from '@headlessui/react'
 import { blockFormats, buttonFormats, contentFormats } from '@app/_css/tailwindClasses'
 
 import { Media } from '@app/_components/Media'
-import { CMSLink } from '../../CMSLink'
-import { AddProduct } from '@app/_components/Cart/AddProduct'
+import { ProductActions } from '../../ProductActions'
+import { messages } from '@/utilities/staticText'
 
 export const ProductCard: React.FC<any> = (product) => {
   const {
@@ -32,53 +31,35 @@ export const ProductCard: React.FC<any> = (product) => {
     lowStockThreshold,
     className,
   } = product
-
+  // console.log('product', product)
   return (
     <div className={[`relative`, className].filter(Boolean).join(' ')}>
       <Link href={`/shop/${slug}`} className="relative no-underline hover:no-underline">
-        <div className={classes.mediaWrapper + ` !aspect-[4/5] `}>
+        <div className={classes.mediaWrapper + ` aspect-square `}>
           {(stockOnHand === 0 || stockOnHand === null || stockOnHand === undefined) && (
             <div className="relative left-0 top-0 z-10 flex w-full items-center justify-center bg-gray-900/50 p-2 font-body font-semibold uppercase tracking-wider text-white !no-underline">
-              <span className="text-base">{`SORRY WE'RE SOLD OUT!`}</span>
+              <span className="text-base uppercase">{messages.outOfStock}</span>
             </div>
           )}
 
           {stockOnHand <= lowStockThreshold && stockOnHand > 0 && (
             <div className="relative left-0 top-0 z-10 flex w-full items-center justify-center bg-gray-900/50 p-2 font-body font-semibold uppercase tracking-wider text-white !no-underline">
-              <span className="text-base">{`Hurry! Low Stock`}</span>
+              <span className="text-base">{messages.lowStock}</span>
             </div>
           )}
 
           {!metaImage && <div className={classes.placeholder}>No image</div>}
           {metaImage && typeof metaImage !== 'string' && (
-            <>
-              <Media imgClassName={classes.image} resource={metaImage} fill />
-              {/* <div
-              className="absolute bottom-0 left-0 z-10 mb-6 ml-6 cursor-pointer text-white"
-              // onClick={() => setOpen(true)}
-            >
-              <div
-                className={cn(
-                  `grid-cols2 grid`,
-                  // (stockOnHand === 0 || stockOnHand === null || stockOnHand === undefined) &&
-                  //   `hidden`,
-                )}
-              >
-                <EyeIcon className="h-8 w-auto duration-300 hover:animate-pulse" strokeWidth={1} />
-                <span className="font-title text-base">{`Quick View`}</span>
-              </div>
-            </div> */}
-
-              <div className="flex justify-center items-end absolute bottom-0 left-0 right-0 z-10 mb-6">
-                <div className="flex items-center text-white no-underline">
-                  <span className="font-title text-base mr-2">{`Details`}</span>
-                  <ChevronRightIcon
-                    className="h-4 w-auto duration-300 hover:animate-pulse"
-                    strokeWidth={1.25}
-                  />
-                </div>
-              </div>
-            </>
+            <div className="relative w-full h-full">
+              <Image
+                src={metaImage.url}
+                alt={metaImage.alt || ''}
+                priority={false}
+                fill
+                // objectFit="cover"
+                className="aspect-square object-cover rounded-md shadow-md hover:scale-105 hover:delay-75 duration-150"
+              />
+            </div>
           )}
         </div>
 
@@ -112,33 +93,25 @@ export const ProductCard: React.FC<any> = (product) => {
             </div>
           </div>
         )}
-
-        {description && (
+      </Link>
+      {description && (
+        <React.Fragment>
           <div className={cn(`flex`, contentFormats.global, contentFormats.text, `pb-3 pt-2`)}>
             {description.replace(/\s/g, ' ')}
           </div>
-        )}
-      </Link>
+          <Link href={`/shop/${slug}`} className="relative no-underline hover:no-underline">
+            <div className="pb-5 flex justify-end items-center cursor-pointer hover:underline no-underline">
+              <span className="justify-end font-title text-base mr-2">{`Details`}</span>
+              <ChevronRightIcon
+                className="hover:underline h-5 w-auto duration-300 hover:animate-pulse"
+                strokeWidth={1.25}
+              />
+            </div>
+          </Link>
+        </React.Fragment>
+      )}
 
-      <AddProduct product={product} hidePerks={true} />
-
-      {/* 
-      {+product.stockOnHand > 0 ? (
-        <>
-          <AddProduct product={product} />
-        </>
-      ) : (
-        <div
-          className={cn(
-            buttonFormats.product,
-            buttonFormats.transparentDark,
-            buttonFormats.full,
-            buttonFormats.large,
-          )}
-        >
-          Out of Stock
-        </div>
-      )} */}
+      <ProductActions product={product} hidePerks={true} hideRemove={true} />
     </div>
   )
 }

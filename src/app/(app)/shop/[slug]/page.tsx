@@ -4,21 +4,24 @@ import { draftMode } from 'next/headers'
 import { notFound } from 'next/navigation'
 
 import type { Product } from '@payload-types'
-import { fetchProduct, fetchProducts } from '@app/_queries'
-import { fetchProductsList } from '../../_queries/products'
+import { fetchProduct, fetchProductsList } from '@app/_queries/products'
 import { generateMeta } from '@/utilities/generateMeta'
 import { ProductTemplate } from './page.client'
-import { fetchDocs } from '../../_queries/graphql/fetchDocs'
+import { revalidate } from '@/utilities/revalidate'
+import { revalidateCache } from '@/utilities/revalidateCache'
+import { revalidatePage } from '@/utilities/revalidatePage'
 
 export default async function ProductPage({ params: { slug } }: any) {
   const { isEnabled: isDraftMode } = draftMode()
   let product: Product | null = null
 
-  // console.log('product page', slug)
   try {
+    // revalidateCache({ tag: `fetchProduct-${slug}` })
+    revalidateCache({ path: `/shop/${slug}` })
     product = await fetchProduct(slug)
+    console.log('product slug ', product)
   } catch (error) {
-    console.error('Failed to fetch page:', error)
+    console.error('Failed to fetch product:', error)
     return notFound()
   }
 

@@ -1,35 +1,14 @@
 // copied from Media Content Block
-import * as React from 'react'
+import React from 'react'
 
-import { BackgroundGrid } from '@app/_components/BackgroundGrid'
 import { BlockWrapper, PaddingProps } from '@app/_components/BlockWrapper'
-import { Button } from '@app/_components/Button'
 import { Gutter } from '@app/_components/Gutter'
-import { Media } from '@app/_components/Media'
-import MediaParallax from '@app/_components/MediaParallax'
-import { RichText } from '@app/_blocks/RichText'
-import { Page } from '@payload-types'
 import cn from '@/utilities/cn'
 import classes from './index.module.scss'
-import {
-  Disclosure,
-  DisclosureButton,
-  DisclosurePanel,
-  Radio,
-  RadioGroup,
-  Tab,
-  TabGroup,
-  TabList,
-  TabPanel,
-  TabPanels,
-} from '@headlessui/react'
-import { getCart, isProductInCart } from '@app/_components/Cart/actions'
-import { CheckIcon, ChevronDownIcon, SendHorizonalIcon, StarIcon } from 'lucide-react'
-import { buttonFormats, contentFormats } from '../../_css/tailwindClasses'
-import { CMSLink } from '../../_components/CMSLink'
+import { Tab, TabGroup, TabList, TabPanel, TabPanels } from '@headlessui/react'
+import { contentFormats } from '@app/_css/tailwindClasses'
 import Image from 'next/image'
-import { AddProduct } from '@app/_components/Cart/AddProduct'
-import { ProductActions } from '../../_components/Cart'
+import { ProductActions } from '@/app/(app)/_components/ProductActions'
 
 export const ProductBlockContent: React.FC<any> = (props) => {
   const {
@@ -43,14 +22,16 @@ export const ProductBlockContent: React.FC<any> = (props) => {
     media,
     meta,
     image,
+    inCart,
   } = props
 
+  console.log('product block', props)
   return (
     <Gutter>
       <div className="mx-auto max-w-2xl px-4 pt-8  sm:px-6 sm:py-16 lg:grid lg:max-w-7xl lg:grid-cols-2 lg:gap-x-8 lg:px-8">
         {/* Product details */}
-        <div className="lg:max-w-lg lg:self-end">
-          <div className="mt-3 sm:flex items-center justify-between">
+        <div className="lg:max-w-lg lg:self-start align-top">
+          <div className="mt-3 sm:flex items-start justify-between align-top">
             <h1
               className={cn(
                 contentFormats.global,
@@ -134,8 +115,8 @@ export const ProductBlockContent: React.FC<any> = (props) => {
                       className="relative flex h-24 w-24 cursor-pointer items-center justify-center rounded-xs bg-white  hover:bg-gray-50  focus:border-solid focus:border focus:border-green border-0"
                     >
                       {({ selected }) => (
-                        <>
-                          <span className="fill absolute inset-0 overflow-hidden rounded-xs">
+                        <React.Fragment>
+                          <span className="fill absolute inset-0 overflow-hidden #rounded-xs rounded-md shadow-md hover:scale-105 hover:delay-75 duration-150">
                             <Image
                               src={image.mediaItem.url}
                               alt={image.mediaItem.alt || ''}
@@ -143,7 +124,7 @@ export const ProductBlockContent: React.FC<any> = (props) => {
                               fill
                               // layout="fill"
                               // objectFit="cover"
-                              className="object-cover object-center"
+                              className="object-cover object-center aspect-square"
                             />
                           </span>
                           <span
@@ -153,7 +134,7 @@ export const ProductBlockContent: React.FC<any> = (props) => {
                             )}
                             aria-hidden="true"
                           />
-                        </>
+                        </React.Fragment>
                       )}
                     </Tab>
                   ))}
@@ -169,7 +150,7 @@ export const ProductBlockContent: React.FC<any> = (props) => {
                       alt={image.mediaItem.alt}
                       height={800}
                       width={800}
-                      className="fill object-cover object-center"
+                      className="fill object-cover object-center rounded-md aspect-square"
                     />
                   </TabPanel>
                 ))}
@@ -180,20 +161,10 @@ export const ProductBlockContent: React.FC<any> = (props) => {
 
         <div className="mt-10 lg:col-start-1 lg:row-start-2 lg:max-w-lg lg:self-start">
           <section aria-labelledby="options-heading">
-            {/* <AddProduct product={props} /> */}
-            <ProductActions product={props} hidePerks={false} />
+            <ProductActions product={props} hidePerks={false} hideRemove={false} />
           </section>
         </div>
       </div>
-      {/* <div className="sm:hidden pt-5 flex items-center justify-center">
-        <div className="flex items-center">
-          <ChevronDownIcon
-            className="h-8 w-8 text-gray-700"
-            strokeWidth={1.25}
-            aria-hidden="true"
-          />
-        </div>
-      </div> */}
     </Gutter>
   )
 }
@@ -205,7 +176,6 @@ export const ProductBlock: React.FC<any> = (props) => {
       <div className={classes.wrapper}>
         <ProductBlockContent {...props} />
       </div>
-      {/* <div className={classes.background} /> */}
     </BlockWrapper>
   )
 }

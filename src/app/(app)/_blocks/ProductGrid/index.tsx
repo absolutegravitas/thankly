@@ -1,6 +1,4 @@
-'use client'
-
-import React, { CSSProperties, useState } from 'react'
+import React, { CSSProperties } from 'react'
 
 import { BlockWrapper, PaddingProps } from '@app/_components/BlockWrapper'
 import { CMSLink } from '@app/_components/CMSLink'
@@ -9,9 +7,6 @@ import { Product } from '@payload-types'
 
 import classes from './index.module.scss'
 import { ProductCard } from '../../_components/cards/ProductCard'
-import { useGetHeroPadding } from '../Hero/useGetHeroPadding'
-
-// ported from squaregrid block
 
 export type ProductGridProps = {
   products: Product[] // Array of products
@@ -19,8 +14,7 @@ export type ProductGridProps = {
 }
 
 export const ProductGrid: React.FC<ProductGridProps> = ({ products }) => {
-  const [index, setIndex] = useState(0)
-  // console.log('products for grid --', products)
+  // console.log('productGrid', products)
 
   const productLength = products?.length ?? 0
   const hasProducts = Array.isArray(products) && productLength > 0
@@ -37,7 +31,6 @@ export const ProductGrid: React.FC<ProductGridProps> = ({ products }) => {
       padding={{ top: 'large', bottom: 'large' }}
       className={[classes.ProductGrid].filter(Boolean).join(' ')}
     >
-      {/* <BackgroundGrid zIndex={1} /> */}
       <Gutter>
         {hasProducts && (
           <div className={classes.cards}>
@@ -47,12 +40,7 @@ export const ProductGrid: React.FC<ProductGridProps> = ({ products }) => {
             >
               {products?.map((product, index) => {
                 return (
-                  <div
-                    key={index}
-                    className={'cols-4 cols-s-8'}
-                    onMouseEnter={() => setIndex(index + 1)}
-                    onMouseLeave={() => setIndex(0)}
-                  >
+                  <div key={index} className={'cols-4 cols-s-8'}>
                     <ProductCard className={classes.card} {...product} />
                   </div>
                 )

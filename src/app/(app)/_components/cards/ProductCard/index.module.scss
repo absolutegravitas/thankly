@@ -93,11 +93,13 @@
   text-decoration: none;
   display: block;
   position: relative;
-  aspect-ratio: 16 / 9;
+  // aspect-ratio: 16 / 9;
 }
 
 .image {
   object-fit: cover;
+  width: 400px;
+  height: 400px;
 }
 
 .placeholder {

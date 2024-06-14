@@ -1,15 +1,22 @@
+// import 'server-only'
+
 import { revalidatePath, unstable_cache } from 'next/cache'
 import { getPayloadHMR } from '@payloadcms/next/utilities'
 import configPromise from '@payload-config'
-import { Product } from '@payload-types'
+import { Cart, Product } from '@payload-types'
+import { getCart } from '@app/_components/ProductActions/actions'
+import { headers, cookies } from 'next/headers'
 
-export const fetchProduct = (slug: string): Promise<Product | null> => {
+export const fetchProduct = async (slug: string): Promise<any | null> => {
+  let cart: any | null = null
+  cart = await getCart()
+
   const cachedFetchProduct = unstable_cache(
-    async (): Promise<Product | null> => {
+    async (): Promise<any | null> => {
       const config = await configPromise
       let payload: any = await getPayloadHMR({ config })
+      let product: any | null = null
 
-      let page = null
       try {
         // console.log('fetchPage slug //', slug) // should be 'home' if it's null
 
@@ -21,11 +28,19 @@ export const fetchProduct = (slug: string): Promise<Product | null> => {
           pagination: false,
         })
 
-        page = docs[0]
+        product = docs[0]
+        const inCart: boolean = false
+        product = { ...product, inCart }
+
+        if (cart && product) {
+          product.inCart = cart?.items?.some((p: any) => p.product.id === product?.id)
+          // product = { ...product, inCart }
+          console.log('fetchProduct', product)
+        }
       } catch (error) {
         console.error(`Error fetching product: ${slug}`, error)
       } finally {
-        return page || null
+        return product || null
       }
     },
     [`fetchProduct-${slug}`], // Include the slug in the cache key
@@ -44,71 +59,98 @@ export const fetchProduct = (slug: string): Promise<Product | null> => {
   return cachedFetchProduct()
 }
 
-export const fetchShopList = unstable_cache(
-  async (): Promise<{ products: any[] } | null> => {
-    const config = await configPromise
-    let payload: any = await getPayloadHMR({ config })
-    let result: any = null
+export const fetchShopList = async (): Promise<any[] | null> => {
+  let cart: any | null = null
+  cart = await getCart()
 
-    try {
-      const { docs } = await payload.find({
-        collection: 'products',
-        depth: 1, // 1 needed to get media info
-        pagination: false,
-      })
+  const shopList = unstable_cache(
+    async (): Promise<any[] | null> => {
+      const config = await configPromise
+      let payload: any = await getPayloadHMR({ config })
+      let result: any[] | null = null
 
-      if (docs?.length === 0) {
-        console.log('not found')
-        return null
+      try {
+        const { docs } = await payload.find({
+          collection: 'products',
+          depth: 1, // 1 needed to get media info
+          pagination: false,
+        })
+
+        if (docs?.length === 0) {
+          console.log('not found')
+          return null
+        }
+
+        result = docs
+
+        // console.log('fetchShopList result --', JSON.stringify(result))
+
+        if (cart) {
+          result?.map((shopItem: any) => {
+            // console.log('shopItem', shopItem)
+            shopItem.inCart = cart?.items?.some((p: any) => p.product.id === shopItem.id)
+            // console.log('shopItem', shopItem)
+
+            return shopItem
+          })
+
+          //  result = result?.map((product: any) => ({
+          //    ...product,
+          //    inCart: cart?.items?.some((p) => p.product === product.id),
+          //  }))
+        }
+
+        // for each result, check if the cart already has this product added
+      } catch (error) {
+        console.error('Error fetching products:', error)
       }
+      return result
+    },
+    ['fetchShopList'],
+    {
+      revalidate: 60, // 10 seconds
+      // revalidate: 300, // 5 min
+      // revalidate: 3600, // 1 hour
+      // revalidate: 86400, // 1 day
+      // revalidate: 604800, // 1 week
+      // revalidate: 2592000, // 1 month
+      // revalidate: 31536000, // 1 year
+      tags: ['fetchShopList'],
+    },
+  )
 
-      result = docs
-    } catch (error) {
-      console.error('Error fetching products:', error)
-    }
-    return result
-  },
-  ['fetchShopList'],
-  {
-    revalidate: 60, // 10 seconds
-    // revalidate: 300, // 5 min
-    // revalidate: 3600, // 1 hour
-    // revalidate: 86400, // 1 day
-    // revalidate: 604800, // 1 week
-    // revalidate: 2592000, // 1 month
-    // revalidate: 31536000, // 1 year
-    tags: ['fetchShopList'],
-  },
-)
+  return shopList()
+}
 
 export const fetchProductsList = unstable_cache(
-  async (): Promise<{ products: any[] } | null> => {
+  async (): Promise<{ slug: string }[]> => {
     const config = await configPromise
     let payload: any = await getPayloadHMR({ config })
-    let result: any
+    let result: { slug: string }[] = []
 
     try {
       const { docs } = await payload.find({
         collection: 'products',
         depth: 0,
-        // depth: 1, // to include image/page refs details, not needed for generateStaticParams?
         pagination: false,
       })
 
-      console.log('docs', docs)
+      // console.log('products docs', docs)
 
-      if (docs?.length === 0) {
+      if (!docs || docs.length === 0) {
         console.log('not found')
-        return null
+        return [] // Return an empty array instead of null
       }
-      console.log('found products list')
+
+      // console.log('found products list')
       result = docs.map((product: Product) => ({
         slug: product.slug,
       }))
     } catch (error) {
       console.error('Error fetching products:', error)
     }
-    return result || null
+
+    return result // Always return an array
   },
   ['fetchProductsList'],
   {
