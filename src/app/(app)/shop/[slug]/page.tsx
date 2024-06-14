@@ -4,10 +4,11 @@ import { draftMode } from 'next/headers'
 import { notFound } from 'next/navigation'
 
 import type { Product } from '@payload-types'
-import { fetchProduct } from '@app/_queries'
-
+import { fetchProduct, fetchProducts } from '@app/_queries'
+import { fetchProductsList } from '../../_queries/products'
 import { generateMeta } from '@/utilities/generateMeta'
 import { ProductTemplate } from './page.client'
+import { fetchDocs } from '../../_queries/graphql/fetchDocs'
 
 export default async function ProductPage({ params: { slug } }: any) {
   const { isEnabled: isDraftMode } = draftMode()
@@ -34,6 +35,10 @@ export default async function ProductPage({ params: { slug } }: any) {
       <ProductTemplate product={product} />
     </Suspense>
   )
+}
+
+export async function generateStaticParams() {
+  return await fetchProductsList()
 }
 
 export async function generateMetadata({ params: { slug } }: any): Promise<Metadata> {
