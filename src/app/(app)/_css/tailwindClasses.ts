@@ -1,3 +1,5 @@
+import cn from '@/utilities/cn'
+
 export const blockFormats = {
   headerMenu: `antialiased font-title font-medium no-underline tracking-tight`,
   footerMenu: `antialiased font-title font-normal no-underline tracking-tight text-sm leading-snug ml-0 pl-0`,
@@ -58,43 +60,38 @@ export const contentFormats = {
   lineItemReturned: `text-gray-600 bg-gray-50 ring-gray-500/10`,
 }
 
-export const buttonFormats = {
-  global: `cursor-pointer antialiased font-body font-light tracking-tight rounded-xs items-center animate-fade-in transition justify-between `,
+export const buttonLook = {
+  base: `cursor-pointer antialiased font-body font-light tracking-tight items-center animate-fade-in transition justify-between`,
 
-  // appearance
-  default: ``, // style if no set class
+  sizes: {
+    extrasmall: `text-xs px-2 py-2`,
+    small: `text-sm px-3 py-2`,
+    medium: `text-sm px-4 py-4`,
+    large: `text-lg px-5 py-5 `,
+  },
 
-  links: `underline underline-offset-2 decoration-gray-800 text-gray-800 hover:font-medium`,
-  content: `no-underline  inline-flex`,
-  hero: `no-underline inline-flex`,
-  product: `no-underline  inline-flex`,
-  checkout: `no-underline  inline-flex`,
-  cart: `no-underline  inline-flex`,
-  pagination: `text-sm p-1 inline-flex items-center border border-gray-400 border-solid text-gray-900 hover:bg-gray-800 `,
+  widths: {
+    narrow: ``,
+    normal: `w-1/2`, // half container width, make sure there's a container
+    wide: `w-full md:w-3/4`,
+    full: `w-full`, // full width of containing element
+  },
 
-  // style
-  dark: `bg-gray-900 text-gray-50 border border-solid border-gray-900 hover:bg-gray-100 hover:text-gray-900 hover:border-gray-500`,
-  light: `bg-white text-gray-900 border border-solid border-gray-500 hover:bg-gray-900 hover:text-gray-100 hover:border-gray-500`,
-  transparentLight: `bg-transparent text-gray-100 border border-solid border-gray-100 hover:bg-lightkhaki`,
-  transparentDark: `bg-transparent text-gray-900 border border-solid border-gray-600 hover:bg-lightkhaki`,
+  variants: {
+    base: `border border-solid border-gray-500 rounded-sm transition hover:border-green hover:shadow-md #hover:font-semibold duration-150 shadow-sm dark:hover:border-green #hover:bg-neutral-300 hover:bg-khaki #hover:bg-green/70 focus:bg-khaki`, // for buttons only
+    links: `underline underline-offset-2 decoration-gray-800 text-gray-800 hover:font-medium`,
 
-  // button sizes
-  // className={cn(`!mb-0 w-full justify-between px-6 text-sm sm:mb-0 `)}
-  large: `text-lg px-5 py-4 `,
-  medium: `text-sm px-4 py-3`,
-  small: `text-sm px-3 py-2`,
-  extrasmall: `text-xs px-2 py-2`,
+    default: ``, // default look button
+    blocks: `bg-transparent no-underline inline-flex`,
+  },
 
-  // button widths
-  narrow: ``,
-  wide: `min-w-[250px]`, // some arbitrary wide option
-  full: `w-full`, // full width of containing element
-
-  // actions
-  submit: `cursor-pointer`,
-  processing: `cursor-wait`,
-  disabled: `cursor-not-allowed opacity-75`,
-}
+  actions: {
+    submit: `cursor-pointer`,
+    submitting: `cursor-wait`,
+    submitted: `cursor-auto`,
+    disabled: `cursor-not-allowed opacity-75`,
+  },
+} as const
 
 export const tailwindColorMatch = {
   '#ffffff': 'bg-white', // white

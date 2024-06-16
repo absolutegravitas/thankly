@@ -46,13 +46,27 @@ export const HoverHighlight: React.FC<
   return (
     <React.Fragment>
       <CMSLink
-        {...link}
+        data={{ ...link }}
+        // {...link}
         className={classes.highlightLink}
-        onMouseEnter={() => {
-          setIsHovered(true)
+        actions={{
+          onMouseEnter: () => {
+            setIsHovered(true)
+          },
+          onMouseLeave: () => {
+            setIsHovered(false)
+          },
         }}
-        onMouseLeave={() => {
-          setIsHovered(false)
+        look={{
+          theme: 'light',
+          type: 'button',
+          // size: 'medium',
+          // width: 'normal',
+          // variant: 'blocks',
+          // icon: {
+          //   content: <ChevronRightIcon strokeWidth={1.25} />,
+          //   iconPosition: 'right',
+          // },
         }}
       >
         <div className={['grid'].filter(Boolean).join(' ')}>

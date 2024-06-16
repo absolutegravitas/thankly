@@ -8,7 +8,6 @@ import { RichText } from '@app/_blocks/RichText'
 import { Page } from '@payload-types'
 
 import classes from './index.module.scss'
-// export type ContentGridProps = Extract<Page['layout'][0], { blockType: 'contentGrid' }> & {
 
 import { ExtractBlockProps } from '@/utilities/extractBlockProps'
 import { useGetHeroPadding } from '../Hero/useGetHeroPadding'
@@ -63,24 +62,30 @@ export const ContentGrid: React.FC<ContentGridProps> = (props) => {
             classes.topContent,
             classes[style],
             'grid',
-            style === 'gridBelow' ? 'cols-16 cols-m-8' : 'cols-8',
+            style === 'sideBySide' ? 'cols-8 ' : 'cols-16 cols-m-8',
           ]
             .filter(Boolean)
             .join(' ')}
         >
           {content && (
             <RichText
-              className={[classes.richText, style === 'sideBySide' ? 'cols-12' : 'cols-8']
+              className={[
+                classes.richText,
+                style === 'sideBySide' ? 'cols-12 flex flex-col' : 'cols-8',
+              ]
                 .filter(Boolean)
                 .join(' ')}
               content={content}
             />
           )}
+
           {hasLinks && (
             <div
               className={[
                 classes.linksWrapper,
-                style === 'sideBySide' ? 'cols-8' : 'cols-4 start-13 cols-l-4 cols-m-8 start-m-1',
+                style === 'sideBySide'
+                  ? 'flex flex-row gap-3 cols-8'
+                  : 'flex flex-row gap-3 px-4 md:px-8 #cols-4 items-end justify-end justify-items-end md:col-span-7 #start-12 #cols-l-4 cols-m-8 #start-m-1',
               ]
                 .filter(Boolean)
                 .join(' ')}
@@ -88,14 +93,14 @@ export const ContentGrid: React.FC<ContentGridProps> = (props) => {
               {links.map(({ link }, index) => {
                 return (
                   <CMSLink
-                    {...link}
                     key={index}
-                    appearance="default"
-                    fullWidth
-                    buttonProps={{
-                      icon: 'arrow',
-                      hideHorizontalBorders: false,
-                      hideBottomBorderExceptLast: true,
+                    data={{ ...link }}
+                    look={{
+                      theme: 'light',
+                      type: 'button',
+                      size: 'medium',
+                      width: 'normal',
+                      variant: 'blocks',
                     }}
                   />
                 )

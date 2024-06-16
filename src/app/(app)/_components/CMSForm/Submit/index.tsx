@@ -26,20 +26,22 @@ const Submit = forwardRef<HTMLButtonElement, SubmitProps>((props, ref) => {
   const isProcessing = processing || processingFromProps
 
   return (
-    <Button
-      ref={ref}
-      htmlButtonType="submit"
-      appearance={appearance}
-      size={size}
-      icon={icon && !isProcessing ? icon : undefined}
-      iconRotation={iconRotation}
-      label={isProcessing ? 'Processing...' : label || 'Submit'}
-      className={className}
-      disabled={isProcessing || disabled}
-      fullWidth
-      hideHorizontalBorders
-      isCMSFormSubmitButton
-    />
+    <React.Fragment>
+      {/* <Button
+        ref={ref}
+        htmlButtonType="submit"
+        appearance={appearance}
+        size={size}
+        icon={icon && !isProcessing ? icon : undefined}
+        iconRotation={iconRotation}
+        label={isProcessing ? 'Processing...' : label || 'Submit'}
+        className={className}
+        disabled={isProcessing || disabled}
+        fullWidth
+        hideHorizontalBorders
+        isCMSFormSubmitButton
+      /> */}
+    </React.Fragment>
   )
 })
 

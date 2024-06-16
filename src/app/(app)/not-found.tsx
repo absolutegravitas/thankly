@@ -2,11 +2,12 @@
 
 import { useTransition } from 'react'
 import { BlockWrapper } from './_components/BlockWrapper'
-import { Button } from './_components/Button'
 import { CMSLink } from './_components/CMSLink'
 import { Gutter } from './_components/Gutter'
 import { contentFormats } from './_css/tailwindClasses'
 import { useRouter } from 'next/navigation'
+import { ArrowRightIcon, HomeIcon, ShoppingCartIcon } from 'lucide-react'
+import { ShoppingBagIcon } from '@app/_icons/ShoppingBagIcon'
 
 export default function NotFound() {
   const router = useRouter()
@@ -31,32 +32,56 @@ export default function NotFound() {
               Page not found
             </h2>
           </div>
-          <div className="align-middle justify-center text-center">
-            <Button
-              url="/shop"
-              label={'Thankly Shop'}
-              appearance={'default'}
-              fullWidth
-              data-theme={'light'}
-              icon="chevron"
-              onClick={async () => {
-                startTransition(async () => {
-                  router.push('/shop')
-                })
+          <div className="space-y-6 flex flex-col items-end justify-end justify-items-end flex-auto px-4 md:px-0 ">
+            <CMSLink
+              data={{
+                label: 'Thankly Shop',
+                type: 'custom',
+                url: '/shop',
+              }}
+              look={{
+                theme: 'light',
+                type: 'button',
+                size: 'medium',
+                width: 'wide',
+                variant: 'blocks',
+                icon: {
+                  content: <ShoppingCartIcon strokeWidth={1.25} />,
+                  iconPosition: 'right',
+                },
+              }}
+              actions={{
+                onClick: async () => {
+                  startTransition(async () => {
+                    router.push('/shop')
+                  })
+                },
               }}
             />
 
-            <Button
-              url="/"
-              label={'Home'}
-              appearance={'default'}
-              fullWidth
-              data-theme={'light'}
-              icon="chevron"
-              onClick={() => {
-                startTransition(async () => {
-                  router.push('/')
-                })
+            <CMSLink
+              data={{
+                label: 'Thankly Home',
+                type: 'custom',
+                url: '/',
+              }}
+              look={{
+                theme: 'light',
+                type: 'button',
+                size: 'medium',
+                width: 'wide',
+                variant: 'blocks',
+                icon: {
+                  content: <HomeIcon strokeWidth={1.25} />,
+                  iconPosition: 'right',
+                },
+              }}
+              actions={{
+                onClick: async () => {
+                  startTransition(async () => {
+                    router.push('/')
+                  })
+                },
               }}
             />
           </div>

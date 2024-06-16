@@ -115,14 +115,24 @@ export const StickyHighlightComponent: React.FC<Props> = ({
           <RichText content={content} className={classes.richText} />
           {enableLink && (
             <CMSLink
-              {...link}
-              appearance="default"
-              fullWidth
-              buttonProps={{
-                icon: 'arrow',
-                hideHorizontalBorders: false,
+              data={{ ...link }}
+              look={{
+                theme: 'light',
+                type: 'button',
+                size: 'medium',
+                width: 'wide',
+                variant: 'blocks',
               }}
             />
+            //           <CMSLink
+            //   {...link}
+            //   appearance="default"
+            //   fullWidth
+            //   buttonProps={{
+            //     icon: 'arrow',
+            //     hideHorizontalBorders: false,
+            //   }}
+            // />
           )}
         </div>
       </div>

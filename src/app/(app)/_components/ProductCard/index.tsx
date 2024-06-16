@@ -3,19 +3,11 @@ import Link from 'next/link'
 import Image from 'next/image'
 
 import classes from './index.module.scss'
-import {
-  ArrowRightIcon,
-  ArrowUpRightIcon,
-  ChevronRightIcon,
-  CircleIcon,
-  EyeIcon,
-  XIcon,
-} from 'lucide-react'
+import { ChevronRightIcon } from 'lucide-react'
 import cn from '@/utilities/cn'
-import { blockFormats, buttonFormats, contentFormats } from '@app/_css/tailwindClasses'
+import { blockFormats, buttonLook, contentFormats } from '@app/_css/tailwindClasses'
 
-import { Media } from '@app/_components/Media'
-import { ProductActions } from '../../ProductActions'
+import { ProductActions } from '@app/_components/ProductActions'
 import { messages } from '@/utilities/staticText'
 
 export const ProductCard: React.FC<any> = (product) => {
@@ -31,7 +23,7 @@ export const ProductCard: React.FC<any> = (product) => {
     lowStockThreshold,
     className,
   } = product
-  // console.log('product', product)
+  console.log('product', product)
   return (
     <div className={[`relative`, className].filter(Boolean).join(' ')}>
       <Link href={`/shop/${slug}`} className="relative no-underline hover:no-underline">
@@ -50,15 +42,31 @@ export const ProductCard: React.FC<any> = (product) => {
 
           {!metaImage && <div className={classes.placeholder}>No image</div>}
           {metaImage && typeof metaImage !== 'string' && (
-            <div className="relative w-full h-full">
+            <div className="relative w-full h-full group">
               <Image
                 src={metaImage.url}
                 alt={metaImage.alt || ''}
                 priority={false}
                 fill
                 // objectFit="cover"
-                className="aspect-square object-cover rounded-md shadow-md hover:scale-105 hover:delay-75 duration-150"
+                className="aspect-square object-cover rounded-md shadow-md hover:scale-105 hover:delay-75 duration-150 transition-transform"
               />
+              <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-150">
+                <svg
+                  className="w-16 h-16 text-white"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M9 5l7 7-7 7"
+                  />
+                </svg>
+              </div>
             </div>
           )}
         </div>
@@ -96,11 +104,18 @@ export const ProductCard: React.FC<any> = (product) => {
       </Link>
       {description && (
         <React.Fragment>
-          <div className={cn(`flex`, contentFormats.global, contentFormats.text, `pb-3 pt-2`)}>
+          <div
+            className={cn(
+              `flex`,
+              contentFormats.global,
+              contentFormats.text,
+              `pb-5 pt-2 line-clamp-4`,
+            )}
+          >
             {description.replace(/\s/g, ' ')}
           </div>
-          <Link href={`/shop/${slug}`} className="relative no-underline hover:no-underline">
-            <div className="pb-5 flex justify-end items-center cursor-pointer hover:underline no-underline">
+          <Link href={`/shop/${slug}`} className="relative #no-underline #hover:no-underline">
+            <div className="pt-3 pb-5 flex justify-end items-center cursor-pointer #hover:underline #no-underline">
               <span className="justify-end font-title text-base mr-2">{`Details`}</span>
               <ChevronRightIcon
                 className="hover:underline h-5 w-auto duration-300 hover:animate-pulse"

@@ -1,16 +1,20 @@
 import React, { useTransition } from 'react'
 import {
   CheckIcon,
+  ChevronsRightIcon,
+  CrossIcon,
   FrownIcon,
   LoaderCircleIcon,
   MessageCircleWarningIcon,
+  PlusIcon,
   SendHorizonalIcon,
+  XIcon,
 } from 'lucide-react'
 import Link from 'next/link'
-import { addProduct, removeProduct } from './actions'
-import { Button } from '@app/_components/Button'
+import { addProduct, removeProduct } from '@app/_providers/Cart'
+// import { Button } from '@app/_components/Button'
 import { useRouter } from 'next/navigation'
-import { CMSLink } from '../CMSLink'
+import { CMSLink } from '@app/_components/CMSLink'
 import { messages } from '@/utilities/staticText'
 
 export function ProductActions({ product, hidePerks, hideRemove }: any) {
@@ -92,37 +96,61 @@ export function ProductActions({ product, hidePerks, hideRemove }: any) {
             )}
 
             <React.Fragment>
-              <div className="py-4 sm:py-4 grid grid-cols-6 gap-1">
-                <div className="col-span-4">
-                  <Button
-                    url="/shop/cart"
-                    label={'View in Cart'}
-                    appearance={'default'}
-                    fullWidth
-                    data-theme={'light'}
-                    icon="chevron"
-                    onClick={() => {
-                      startRouting(async () => {
-                        router.push('/shop/cart')
-                      })
+              <div className="py-4 sm:py-4 flex gap-1">
+                <div className="flex-auto w-full">
+                  <CMSLink
+                    data={{
+                      label: 'View in Cart',
+                      type: 'custom',
+                      url: '/shop/cart',
+                    }}
+                    look={{
+                      theme: 'light',
+                      type: 'button',
+                      size: 'medium',
+                      width: 'full',
+                      variant: 'blocks',
+                      icon: {
+                        content: <ChevronsRightIcon strokeWidth={1.25} />,
+                        iconPosition: 'right',
+                      },
+                    }}
+                    actions={{
+                      onClick: async () => {
+                        startTransition(async () => {
+                          router.push('/shop/cart')
+                        })
+                      },
                     }}
                   />
                 </div>
-                <div className="col-span-2">
-                  <Button
-                    // url="/shop"
-                    // label={'x'}
-                    appearance={'default'}
-                    fullWidth
-                    data-theme={'light'}
-                    icon="trash"
-                    onClick={async () => {
-                      startTransition(async () => {
-                        await removeProduct(product.id)
-                        window.location.reload()
-                      })
+                <div className="flex-initial w-1/4">
+                  <CMSLink
+                    data={{
+                      label: '',
+                      type: 'custom',
+                      url: '/shop',
                     }}
-                  />
+                    look={{
+                      theme: 'light',
+                      type: 'button',
+                      size: 'medium',
+                      width: 'full',
+                      variant: 'blocks',
+                      icon: {
+                        content: <XIcon className="!ml-0" strokeWidth={1.25} />,
+                        iconPosition: 'right',
+                      },
+                    }}
+                    actions={{
+                      onClick: async () => {
+                        startTransition(async () => {
+                          await removeProduct(product.id)
+                          window.location.reload()
+                        })
+                      },
+                    }}
+                  />{' '}
                 </div>
               </div>
             </React.Fragment>
@@ -143,22 +171,37 @@ export function ProductActions({ product, hidePerks, hideRemove }: any) {
       } else {
         return (
           <React.Fragment>
-            <Button
-              url="/shop/cart"
-              label={'Add to Cart'}
-              appearance={'default'}
-              fullWidth
-              data-theme={'light'}
-              icon="cart"
-              onClick={async () => {
-                startTransition(async () => {
-                  await addProduct(product)
-                  startRouting(async () => {
-                    router.push('/shop/cart')
-                  })
-                })
-              }}
-            />
+            <div className="py-4 sm:py-4 flex gap-1">
+              <div className="flex-auto w-full">
+                <CMSLink
+                  data={{
+                    label: 'Add to Cart',
+                    type: 'custom',
+                    url: '/shop/cart',
+                  }}
+                  look={{
+                    theme: 'light',
+                    type: 'button',
+                    size: 'medium',
+                    width: 'full',
+                    variant: 'blocks',
+                    icon: {
+                      content: <PlusIcon strokeWidth={1.25} />,
+                      iconPosition: 'right',
+                    },
+                  }}
+                  actions={{
+                    onClick: async () => {
+                      await addProduct(product)
+                      startRouting(async () => {
+                        router.push('/shop/cart')
+                      })
+                    },
+                  }}
+                />
+              </div>
+            </div>
+
             {!hidePerks && (
               <div className="#hidden sm:flex pt-2 items-center justify-center space-x-2">
                 <div className="py-1 sm:py-2 flex items-center">

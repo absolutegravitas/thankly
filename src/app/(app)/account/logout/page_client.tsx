@@ -2,7 +2,7 @@
 
 import React, { useEffect, useRef, useState } from 'react'
 
-import { Button } from '@app/_components/Button'
+// import { Button } from '@app/_components/Button'
 import { Gutter } from '@app/_components/Gutter'
 import { useAuth } from '@app/_providers/Auth'
 
@@ -54,8 +54,8 @@ export const Logout: React.FC = () => {
         <h3>You have been logged out.</h3>
         <p>What would you like to do next?</p>
         <div className={classes.controls}>
-          <Button label="Log back in" href="/login" appearance="primary" el="link" />
-          <Button label="Go home" href="/" appearance="secondary" el="link" />
+          {/* <Button label="Log back in" href="/login" appearance="primary" el="link" />
+          <Button label="Go home" href="/" appearance="secondary" el="link" /> */}
         </div>
       </Gutter>
     )
@@ -66,8 +66,8 @@ export const Logout: React.FC = () => {
       <Gutter>
         <h3>You are already logged out.</h3>
         <div className={classes.controls}>
-          <Button label="Log back in" href="/login" appearance="primary" el="link" />
-          <Button label="Go home" href="/" appearance="secondary" el="link" />
+          {/* <Button label="Log back in" href="/login" appearance="primary" el="link" />
+          <Button label="Go home" href="/" appearance="secondary" el="link" /> */}
         </div>
       </Gutter>
     )

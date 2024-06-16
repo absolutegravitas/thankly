@@ -1,8 +1,8 @@
 'use client'
 import React, { useState, useTransition, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { Button } from '@app/_components/Button'
-import { clearCart } from '@/app/(app)/_components/ProductActions/actions'
+// import { Button } from '@app/_components/Button'
+import { clearCart } from '@app/_providers/Cart'
 import { revalidateCache } from '@/utilities/revalidateCache'
 
 export function CartButtons() {
@@ -11,10 +11,10 @@ export function CartButtons() {
 
   return (
     <React.Fragment>
-      <Button
+      {/* <Button
         // url="/shop"
         label={!isPending ? 'Clear Cart' : 'Clearing Cart... please wait'}
-        appearance={'default'}
+        appearance={'secondary'}
         fullWidth
         data-theme={'light'}
         icon="trash"
@@ -30,7 +30,7 @@ export function CartButtons() {
       <Button
         // url="/shop"
         label={'Back to Shop'}
-        appearance={'default'}
+        appearance={'secondary'}
         fullWidth
         data-theme={'light'}
         icon="chevron"
@@ -41,6 +41,21 @@ export function CartButtons() {
           // })
         }}
       />
+
+      <Button
+        // url="/shop"
+        label={'Checkout'}
+        appearance={'primary'}
+        fullWidth
+        data-theme={'light'}
+        icon="chevron"
+        onClick={() => {
+          // startTransition(async () => {
+          revalidateCache({ path: '/shop' })
+          router.push('/shop')
+          // })
+        }}
+      /> */}
     </React.Fragment>
   )
 }
@@ -50,20 +65,22 @@ export function CartCheckout() {
   const [isPending, startTransition] = useTransition()
 
   return (
-    <Button
-      url="/checkout"
-      label={!isPending ? 'Checkout' : 'Checking out... please wait'}
-      appearance={'primary'}
-      fullWidth
-      data-theme={'light'}
-      icon="chevron"
-      className="justify-stretch w-full"
-      onClick={async () => {
-        startTransition(async () => {
-          await clearCart()
-          router.push('/checkout')
-        })
-      }}
-    />
+    <React.Fragment>
+      {/* <Button
+        url="/checkout"
+        label={!isPending ? 'Checkout' : 'Checking out... please wait'}
+        appearance={'primary'}
+        fullWidth
+        data-theme={'light'}
+        icon="chevron"
+        className="justify-stretch w-full"
+        onClick={async () => {
+          startTransition(async () => {
+            await clearCart()
+            router.push('/checkout')
+          })
+        }}
+      /> */}
+    </React.Fragment>
   )
 }

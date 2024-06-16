@@ -39,52 +39,39 @@ export const CallToAction: React.FC<CallToActionProps> = (props) => {
       {/* <BackgroundGrid zIndex={0} /> */}
       <Gutter className={classes.callToAction}>
         <div className={[classes.wrapper].filter(Boolean).join(' ')}>
-          <div className={[classes.container, 'grid'].filter(Boolean).join(' ')}>
-            <div className={[classes.contentWrapper, 'cols-7 cols-m-8'].filter(Boolean).join(' ')}>
-              {/* <RichText content={richText.root.children} className={classes.content} /> */}
+          <div
+            className={[classes.container, 'grid grid-cols-1 md:grid-cols-2 gap-4']
+              .filter(Boolean)
+              .join(' ')}
+          >
+            <div className={[classes.contentWrapper, ''].filter(Boolean).join(' ')}>
               <RichText content={content} className={classes.content} />
             </div>
             <div
-              className={[classes.linksContainer, 'cols-8 start-9 cols-m-8 start-m-1 grid']
-                .filter(Boolean)
-                .join(' ')}
+              className={
+                'space-y-6 flex flex-col items-end justify-end justify-items-end flex-auto px-4 md:px-8'
+              }
             >
-              {/* <BackgroundScanline
-                className={[classes.scanline, 'cols-16 start-5 cols-m-8 start-m-1']
-                  .filter(Boolean)
-                  .join(' ')}
-                crosshairs={['top-left', 'bottom-left']}
-              />
+              {hasLinks &&
+                links.map(({ link, type: ctaType }: any, index: any) => {
+                  const type = ctaType ?? 'link'
 
-              <CrosshairIcon className={[classes.crosshairTopLeft].filter(Boolean).join(' ')} />
-              <CrosshairIcon className={[classes.crosshairBottomRight].filter(Boolean).join(' ')} /> */}
-
-              {hasLinks && (
-                <div className={[, classes.links, 'cols-16 cols-m-8'].filter(Boolean).join(' ')}>
-                  {links.map(({ link, type: ctaType }: any, index: any) => {
-                    const type = ctaType ?? 'link'
-
-                    return (
+                  return (
+                    <React.Fragment>
                       <CMSLink
-                        {...link}
                         key={index}
-                        appearance={'default'}
-                        // width={'wide'}
-                        // size={'medium'}
-                        // icon={false}
-                        buttonProps={{
-                          appearance: 'default',
-                          size: 'large',
-                          hideHorizontalBorders: false,
-                          hideBottomBorderExceptLast: true,
-                          forceBackground: true,
+                        data={{ ...link }}
+                        look={{
+                          theme: 'light',
+                          type: 'button',
+                          size: 'medium',
+                          width: 'wide',
+                          variant: 'blocks',
                         }}
-                        className={[classes.button].filter(Boolean).join(' ')}
                       />
-                    )
-                  })}
-                </div>
-              )}
+                    </React.Fragment>
+                  )
+                })}
             </div>
           </div>
         </div>

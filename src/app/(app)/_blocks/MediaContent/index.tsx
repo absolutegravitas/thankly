@@ -2,7 +2,9 @@ import * as React from 'react'
 
 import { BackgroundGrid } from '@app/_components/BackgroundGrid'
 import { BlockWrapper, PaddingProps } from '@app/_components/BlockWrapper'
-import { Button } from '@app/_components/Button'
+// import { Button } from '@app/_components/Button'
+import { CMSLink } from '@app/_components/CMSLink'
+
 import { Gutter } from '@app/_components/Gutter'
 import { Media } from '@app/_components/Media'
 import MediaParallax from '@app/_components/MediaParallax'
@@ -17,6 +19,7 @@ import classes from './index.module.scss'
 
 import { ExtractBlockProps } from '@/utilities/extractBlockProps'
 import { useGetHeroPadding } from '../Hero/useGetHeroPadding'
+import { ChevronRightIcon } from 'lucide-react'
 export type MediaContentProps = ExtractBlockProps<'mediaContent'> & { padding: PaddingProps }
 
 export const MediaContentBlock: React.FC<MediaContentProps> = (props) => {
@@ -45,15 +48,29 @@ export const MediaContentBlock: React.FC<MediaContentProps> = (props) => {
               <RichText content={content} />
 
               {enableLink && link && (
-                <div className={classes.button}>
-                  <Button
+                <div className="block mt-8 w-2/3 md:w-full">
+                  <CMSLink
+                    data={{ ...link }}
+                    look={{
+                      theme: 'light',
+                      type: 'button',
+                      size: 'medium',
+                      width: 'normal',
+                      variant: 'blocks',
+                      icon: {
+                        content: <ChevronRightIcon strokeWidth={1.25} />,
+                        iconPosition: 'right',
+                      },
+                    }}
+                  />
+                  {/* <Button
                     {...link}
                     appearance={'default'}
                     labelStyle="mono"
                     hideHorizontalBorders
                     icon="arrow"
                     el="link"
-                  />
+                  /> */}
                 </div>
               )}
             </div>
@@ -69,14 +86,14 @@ export const MediaContentBlock: React.FC<MediaContentProps> = (props) => {
               <RichText content={content} />
               {enableLink && link && (
                 <div className={classes.button}>
-                  <Button
+                  {/* <Button
                     {...link}
                     appearance={'default'}
                     hideHorizontalBorders
                     labelStyle="mono"
                     icon="arrow"
                     el="link"
-                  />
+                  /> */}
                 </div>
               )}
             </div>

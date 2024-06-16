@@ -50,11 +50,42 @@ export const CardGrid: React.FC<CardGridProps> = (props) => {
       <Gutter>
         <div className={[classes.introWrapper, 'grid'].filter(Boolean).join(' ')}>
           {content && (
-            <div className={[classes.richTextWrapper, 'grid'].filter(Boolean).join(' ')}>
-              <div className={[classes.richText, 'cols-10 cols-m-8'].filter(Boolean).join(' ')}>
+            <div
+              className={[classes.richTextWrapper, 'grid grid-cols-1 md:grid-cols-2 gap-4']
+                .filter(Boolean)
+                .join(' ')}
+            >
+              <div className={[classes.richText, ''].filter(Boolean).join(' ')}>
                 <RichText content={content} />
               </div>
-              {hasLinks && (
+
+              <div
+                className={
+                  'space-y-6 flex flex-col items-end justify-end justify-items-end flex-auto px-4 md:px-8'
+                }
+              >
+                {hasLinks &&
+                  links.map(({ link }: any, index: any) => {
+                    return (
+                      <React.Fragment>
+                        <CMSLink
+                          key={index}
+                          data={{ ...link }}
+                          look={{
+                            theme: 'light',
+                            type: 'button',
+                            size: 'medium',
+                            width: 'wide',
+                            variant: 'blocks',
+                          }}
+                          // className="grow"
+                        />
+                      </React.Fragment>
+                    )
+                  })}
+              </div>
+
+              {/* {hasLinks && (
                 <div
                   className={[classes.linksWrapper, 'cols-4 start-13 cols-l-4 cols-m-8 start-m-1']
                     .filter(Boolean)
@@ -76,17 +107,17 @@ export const CardGrid: React.FC<CardGridProps> = (props) => {
                     )
                   })}
                 </div>
-              )}
+              )} */}
             </div>
           )}
         </div>
 
         {hasCards && (
           <div className={classes.cards}>
-            <div className={classes.margins}>
-              {/* <BackgroundScanline enableBorders={true} className={classes.marginLeft} /> */}
-              {/* <BackgroundScanline enableBorders={true} className={classes.marginRight} /> */}
-            </div>
+            {/* <div className={classes.margins}>
+              <BackgroundScanline enableBorders={true} className={classes.marginLeft} />
+              <BackgroundScanline enableBorders={true} className={classes.marginRight} />
+            </div> */}
             <div
               className={['grid', classes.cardsWrapper].filter(Boolean).join(' ')}
               style={wrapperStyle}

@@ -5,7 +5,7 @@ import { draftMode } from 'next/headers'
 import { notFound } from 'next/navigation'
 
 import type { Product } from '@payload-types'
-import { fetchProduct, fetchProducts } from '@app/_queries'
+import { fetchProduct, fetchProductSlugs } from '@app/_queries/products'
 
 import { generateMeta } from '@/utilities/generateMeta'
 

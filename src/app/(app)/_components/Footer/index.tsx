@@ -11,13 +11,6 @@ import { usePathname, useRouter } from 'next/navigation'
 // import { BackgroundGrid } from '@app/_components/BackgroundGrid'
 import { CMSLink } from '@app/_components/CMSLink'
 import { Gutter } from '@app/_components/Gutter'
-import { FacebookIcon } from '@app/_graphics/FacebookIcon'
-import { InstagramIcon } from '@app/_graphics/InstagramIcon'
-import { ThemeAutoIcon } from '@app/_graphics/ThemeAutoIcon'
-import { ThemeDarkIcon } from '@app/_graphics/ThemeDarkIcon'
-import { ThemeLightIcon } from '@app/_graphics/ThemeLightIcon'
-
-import { ChevronUpDownIcon } from '@app/_icons/ChevronUpDownIcon'
 import { useHeaderObserver } from '@app/_providers/HeaderIntersectionObserver'
 import { useThemePreference } from '@app/_providers/Theme'
 import { getImplicitPreference, themeLocalStorageKey } from '@app/_providers/Theme/shared'
@@ -32,14 +25,12 @@ import Link from 'next/link'
 export const Footer: React.FC<FooterType> = (props) => {
   // console.log('footer props --', props)
   const { columns } = props
-  // const [products, developers, company] = columns ?? []
   const { setTheme } = useThemePreference()
   const { setHeaderTheme } = useHeaderObserver()
+
   const wrapperRef = React.useRef<HTMLElement>(null)
   const selectRef = React.useRef<HTMLSelectElement>(null)
-
   const [buttonClicked, setButtonClicked] = React.useState(false)
-
   const submitButtonRef = React.useRef<HTMLButtonElement>(null)
 
   const handleButtonClick = () => {
@@ -86,23 +77,9 @@ export const Footer: React.FC<FooterType> = (props) => {
       selectRef.current.value = preference ?? 'auto'
     }
   }, [])
+
   const router = useRouter()
-
   const pathname = usePathname()
-
-  const allowedSegments = [
-    'cloud',
-    'cloud-terms',
-    'forgot-password',
-
-    'login',
-    'logout',
-
-    'reset-password',
-  ]
-
-  const pathnameSegments = pathname.split('/').filter(Boolean)
-  const themeId = useId()
   const newsletterId = useId()
 
   const onSubmit = React.useCallback(() => {
@@ -170,17 +147,9 @@ export const Footer: React.FC<FooterType> = (props) => {
   return (
     <React.Fragment>
       <footer ref={wrapperRef} className={classes.footer}>
-        {/* <BackgroundGrid
-        zIndex={2}
-        className={[classes.background, isCloudPage ? classes.topBorder : '']
-          .filter(Boolean)
-          .join(' ')}
-      /> */}
         <Gutter className={classes.container}>
           <div className={[classes.grid, 'grid'].filter(Boolean).join(' ')}>
             {columns?.map(({ label: column, items }, i) => {
-              // console.log('items -- ', items)
-
               return (
                 <div
                   key={`col-${i}`}
@@ -196,15 +165,8 @@ export const Footer: React.FC<FooterType> = (props) => {
                   </h3>
                   <ul role="list" className={`mt-4 list-none space-y-4 pl-0 leading-none`}>
                     {items?.map(({ link }, j) => (
-                      <li
-                        key={`link-${i}-${j}`}
-                        // className="text-gray-700 hover:text-gray-900 "
-                      >
-                        <CMSLink
-                          {...link}
-                          // appearance={'links'}
-                          className={blockFormats.footerMenu}
-                        />
+                      <li key={`link-${i}-${j}`}>
+                        <CMSLink {...link} className={blockFormats.footerMenu} />
                       </li>
                     ))}
                   </ul>
@@ -213,7 +175,6 @@ export const Footer: React.FC<FooterType> = (props) => {
             })}
 
             <div className={['cols-4 cols-m-4 cols-s-8'].filter(Boolean).join(' ')}>
-              {/* <p className={`${classes.colHeader} ${classes.thirdColumn}`}>Stay connected</p> */}
               <h3
                 className={[
                   contentFormats.global,
@@ -240,7 +201,7 @@ export const Footer: React.FC<FooterType> = (props) => {
                   />
                   <div className={classes.inputWrap}>
                     <label className="visually-hidden" htmlFor={newsletterId}>
-                      // Subscribe to our newsletter
+                      {/* // Subscribe to our newsletter */}
                     </label>
                     <Text
                       type="text"
@@ -271,10 +232,7 @@ export const Footer: React.FC<FooterType> = (props) => {
                 </FormComponent>
               </div>
 
-              <div
-                className="grid space-x-3 justify-start"
-                // className={classes.socialLinks}
-              >
+              <div className="grid space-x-3 justify-start">
                 <Link
                   href="https://www.instagram.com/thankly.co"
                   target="_blank"
@@ -312,7 +270,6 @@ export const Footer: React.FC<FooterType> = (props) => {
                   href="https://www.linkedin.com/company/thankly"
                   target="_blank"
                   rel="noopener noreferrer"
-                  // className={[classes.socialIconLink].join(' ')}
                   className="flex-1 text-gray-400 hover:text-gray-900"
                   aria-label="Thankly's LinkedIn page"
                 >

@@ -1,8 +1,5 @@
 import React from 'react'
-import { ArrowIcon } from '@app/_icons/ArrowIcon'
-
-import { CMSLink } from '@app/_components/CMSLink'
-import { PricingCardProps } from '../types'
+import { PricingCardProps } from '@app/_components/cards/types'
 
 import classes from './index.module.scss'
 
@@ -10,12 +7,11 @@ export const PricingCard: React.FC<PricingCardProps> = (props) => {
   const { title, price, className, leader, description, hasPrice } = props
 
   const link = props.link || {}
-
-  const hasLink = link.url || link.reference
+  // const hasLink = link.url || link.reference
 
   return (
     <div
-      className={[className, classes.card, !hasLink && classes.noLink].filter(Boolean).join(' ')}
+      className={[className, classes.card, '!hasLink && classes.noLink'].filter(Boolean).join(' ')}
     >
       {leader && <span className={classes.leader}>{leader}</span>}
       <div className={classes.content}>

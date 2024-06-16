@@ -6,10 +6,10 @@ import { Gutter } from '@app/_components/Gutter'
 import { Product } from '@payload-types'
 
 import classes from './index.module.scss'
-import { ProductCard } from '../../_components/cards/ProductCard'
+import { ProductCard } from '@app/_components/ProductCard'
 
 export type ProductGridProps = {
-  products: Product[] // Array of products
+  products: Product[]
   padding?: PaddingProps
 }
 

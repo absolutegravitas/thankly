@@ -8,7 +8,7 @@ import classes from './index.module.scss'
 import { Tab, TabGroup, TabList, TabPanel, TabPanels } from '@headlessui/react'
 import { contentFormats } from '@app/_css/tailwindClasses'
 import Image from 'next/image'
-import { ProductActions } from '@/app/(app)/_components/ProductActions'
+import { ProductActions } from '@app/_components/ProductActions'
 
 export const ProductBlockContent: React.FC<any> = (props) => {
   const {

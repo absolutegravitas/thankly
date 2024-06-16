@@ -2,7 +2,7 @@ import React from 'react'
 import { ArrowIcon } from '@app/_icons/ArrowIcon'
 
 import { BackgroundScanline } from '@app/_components/BackgroundScanline'
-import { CMSLink } from '@app/_components/CMSLink'
+import { CMSLink, CMSLinkType } from '@app/_components/CMSLink'
 import { SquareCardProps } from '../types'
 
 import classes from './index.module.scss'
@@ -22,7 +22,7 @@ export const SquareCard: React.FC<SquareCardProps> = (props) => {
       ]
         .filter(Boolean)
         .join(' ')}
-      {...props.link}
+      data={props.link as CMSLinkType['data']}
     >
       <div className={classes.leader}>
         <h6 className={classes.leaderText}>{leader}</h6>

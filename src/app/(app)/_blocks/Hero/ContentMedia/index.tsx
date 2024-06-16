@@ -12,6 +12,7 @@ import { RichText } from '@app/_blocks/RichText'
 import classes from './index.module.scss'
 
 import { ExtractBlockProps } from '@/utilities/extractBlockProps'
+import { ChevronRightIcon } from 'lucide-react'
 export type ContentMediaHeroProps = ExtractBlockProps<'fields'>
 
 export const ContentMediaHero: React.FC<ContentMediaHeroProps> = ({
@@ -44,13 +45,28 @@ export const ContentMediaHero: React.FC<ContentMediaHeroProps> = ({
                 links.map(({ link }, i) => {
                   return (
                     <CMSLink
-                      key={i}
-                      {...link}
-                      buttonProps={{
-                        hideHorizontalBorders: false,
+                      data={{ ...link }}
+                      look={{
+                        theme: 'light',
+                        type: 'button',
+                        size: 'medium',
+                        width: 'normal',
+                        variant: 'blocks',
+                        icon: {
+                          content: <ChevronRightIcon strokeWidth={1.25} />,
+                          iconPosition: 'right',
+                        },
                       }}
-                      className={[classes.link, 'cols-12 start-1'].filter(Boolean).join(' ')}
                     />
+
+                    // <CMSLink
+                    //   key={i}
+                    //   {...link}
+                    //   buttonProps={{
+                    //     hideHorizontalBorders: false,
+                    //   }}
+                    //   className={[classes.link, 'cols-12 start-1'].filter(Boolean).join(' ')}
+                    // />
                   )
                 })}
             </div>

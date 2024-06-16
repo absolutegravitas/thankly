@@ -11,6 +11,7 @@ import { RichText } from '@app/_blocks/RichText'
 import classes from './index.module.scss'
 
 import { ExtractBlockProps } from '@/utilities/extractBlockProps'
+import { ChevronRightIcon } from 'lucide-react'
 export type CenteredContentProps = ExtractBlockProps<'fields'>
 
 export const CenteredContent: React.FC<CenteredContentProps> = ({
@@ -42,12 +43,27 @@ export const CenteredContent: React.FC<CenteredContentProps> = ({
                   return (
                     <CMSLink
                       key={i}
-                      {...link}
-                      buttonProps={{
-                        hideHorizontalBorders: false,
-                        hideBottomBorderExceptLast: true,
+                      data={{ ...link }}
+                      look={{
+                        theme: 'light',
+                        type: 'button',
+                        size: 'medium',
+                        width: 'normal',
+                        variant: 'blocks',
+                        icon: {
+                          content: <ChevronRightIcon strokeWidth={1.25} />,
+                          iconPosition: 'right',
+                        },
                       }}
                     />
+                    // <CMSLink
+                    //   key={i}
+                    //   {...link}
+                    //   buttonProps={{
+                    //     hideHorizontalBorders: false,
+                    //     hideBottomBorderExceptLast: true,
+                    //   }}
+                    // />
                   )
                 })}
             </div>

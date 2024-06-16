@@ -30,6 +30,7 @@ type PositionedLogo = {
 
 import { ExtractBlockProps } from '@/utilities/extractBlockProps'
 import { useGetHeroPadding } from '../Hero/useGetHeroPadding'
+import { ChevronRightIcon } from 'lucide-react'
 export type LogoGridProps = ExtractBlockProps<'logoGrid'> & { padding: PaddingProps }
 
 const TOTAL_CELLS = 8
@@ -121,6 +122,20 @@ export const LogoGrid: React.FC<LogoGridProps> = (props) => {
             {enableLink && link && (
               <div className={classes.link}>
                 <CMSLink
+                  data={{ ...link }}
+                  look={{
+                    theme: 'light',
+                    type: 'button',
+                    size: 'medium',
+                    width: 'normal',
+                    variant: 'blocks',
+                    icon: {
+                      content: <ChevronRightIcon strokeWidth={1.25} />,
+                      iconPosition: 'right',
+                    },
+                  }}
+                />
+                {/* <CMSLink
                   {...link}
                   appearance="default"
                   fullWidth
@@ -128,7 +143,7 @@ export const LogoGrid: React.FC<LogoGridProps> = (props) => {
                     icon: 'arrow',
                     hideHorizontalBorders: false,
                   }}
-                />
+                /> */}
               </div>
             )}
           </div>

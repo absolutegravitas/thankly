@@ -5,8 +5,7 @@ import { notFound } from 'next/navigation'
 
 import type { Page } from '@payload-types'
 // import { staticHome } from '../../../payload/seed/home-static'
-import { fetchPage } from '@app/_queries'
-import { fetchPagesList } from '@app/_queries/pages'
+import { fetchPage, fetchProductSlugs } from '@app/_queries/pages'
 
 import { generateMeta } from '@/utilities/generateMeta'
 import { PageTemplate } from './page.client'
@@ -38,7 +37,7 @@ export default async function Page({ params: { slug = 'home' } }) {
 }
 
 export async function generateStaticParams() {
-  return await fetchPagesList()
+  return await fetchProductSlugs()
 }
 
 export async function generateMetadata({ params: { slug = 'home' } }): Promise<Metadata> {

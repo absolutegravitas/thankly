@@ -34,7 +34,11 @@ const Card: React.FC<{
       onMouseEnter={() => setHover(++leader)}
       onMouseLeave={() => setHover(1)}
     >
-      <CMSLink className={classes.card} {...card.link}>
+      <CMSLink
+        className={classes.card}
+        data={{ ...card.link }}
+        // {...card.link}
+      >
         <p className={classes.leader}>0{leader}</p>
         <div className={classes.cardContent}>
           <h3 className={classes.cardTitle}>{card.title}</h3>

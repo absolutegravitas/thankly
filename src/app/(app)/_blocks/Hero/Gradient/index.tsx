@@ -13,6 +13,7 @@ import { RichText } from '@app/_blocks/RichText'
 import classes from './index.module.scss'
 
 import { ExtractBlockProps } from '@/utilities/extractBlockProps'
+import { ChevronRightIcon } from 'lucide-react'
 export type GradientHeroProps = ExtractBlockProps<'fields'>
 
 export const GradientHero: React.FC<GradientHeroProps> = ({
@@ -68,12 +69,27 @@ export const GradientHero: React.FC<GradientHeroProps> = ({
                     return (
                       <CMSLink
                         key={i}
-                        {...link}
-                        buttonProps={{
-                          hideHorizontalBorders: false,
+                        data={{ ...link }}
+                        look={{
+                          theme: 'light',
+                          type: 'button',
+                          size: 'medium',
+                          width: 'normal',
+                          variant: 'blocks',
+                          icon: {
+                            content: <ChevronRightIcon strokeWidth={1.25} />,
+                            iconPosition: 'right',
+                          },
                         }}
-                        className={[classes.link, 'cols-12 start-1'].filter(Boolean).join(' ')}
                       />
+                      // <CMSLink
+                      //   key={i}
+                      //   {...link}
+                      //   buttonProps={{
+                      //     hideHorizontalBorders: false,
+                      //   }}
+                      //   className={[classes.link, 'cols-12 start-1'].filter(Boolean).join(' ')}
+                      // />
                     )
                   })}
               </div>

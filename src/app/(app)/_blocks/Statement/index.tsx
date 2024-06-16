@@ -62,16 +62,27 @@ export const Statement: React.FC<StatementProps> = (props) => {
                 {links.map(({ link }: any, i: any) => {
                   return (
                     <CMSLink
-                      {...link}
                       key={i}
-                      appearance="default"
-                      fullWidth
-                      buttonProps={{
-                        icon: 'arrow',
-                        hideHorizontalBorders: false,
-                        hideBottomBorderExceptLast: true,
+                      data={{ ...link }}
+                      look={{
+                        theme: 'light',
+                        type: 'button',
+                        size: 'medium',
+                        width: 'wide',
+                        variant: 'blocks',
                       }}
                     />
+                    // <CMSLink
+                    //   {...link}
+                    //   key={i}
+                    //   appearance="default"
+                    //   fullWidth
+                    //   buttonProps={{
+                    //     icon: 'arrow',
+                    //     hideHorizontalBorders: false,
+                    //     hideBottomBorderExceptLast: true,
+                    //   }}
+                    // />
                   )
                 })}
               </div>

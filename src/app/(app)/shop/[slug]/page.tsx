@@ -4,7 +4,7 @@ import { draftMode } from 'next/headers'
 import { notFound } from 'next/navigation'
 
 import type { Product } from '@payload-types'
-import { fetchProduct, fetchProductsList } from '@app/_queries/products'
+import { fetchProduct, fetchProductSlugs } from '@app/_queries/products'
 import { generateMeta } from '@/utilities/generateMeta'
 import { ProductTemplate } from './page.client'
 import { revalidate } from '@/utilities/revalidate'
@@ -41,7 +41,7 @@ export default async function ProductPage({ params: { slug } }: any) {
 }
 
 export async function generateStaticParams() {
-  return await fetchProductsList()
+  return await fetchProductSlugs()
 }
 
 export async function generateMetadata({ params: { slug } }: any): Promise<Metadata> {

@@ -44,7 +44,7 @@ export const fetchPage = (slug: string): Promise<Page | null> => {
   return cachedFetchPage()
 }
 
-export const fetchPagesList = unstable_cache(
+export const fetchProductSlugs = unstable_cache(
   async (): Promise<{ pages: any[] } | null> => {
     const config = await configPromise
     let payload: any = await getPayloadHMR({ config })
@@ -72,7 +72,7 @@ export const fetchPagesList = unstable_cache(
     }
     return result || null
   },
-  ['fetchPagesList'],
+  ['fetchProductSlugs'],
   {
     revalidate: 60, // 10 seconds
     // revalidate: 300, // 5 min
@@ -81,6 +81,6 @@ export const fetchPagesList = unstable_cache(
     // revalidate: 604800, // 1 week
     // revalidate: 2592000, // 1 month
     // revalidate: 31536000, // 1 year
-    tags: ['fetchPagesList'],
+    tags: ['fetchProductSlugs'],
   },
 )

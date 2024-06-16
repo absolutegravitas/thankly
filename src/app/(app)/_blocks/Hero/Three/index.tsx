@@ -14,6 +14,7 @@ import { RichText } from '@app/_blocks/RichText'
 import classes from './index.module.scss'
 
 import { ExtractBlockProps } from '@/utilities/extractBlockProps'
+import { ChevronRightIcon } from 'lucide-react'
 export type HeroFields = ExtractBlockProps<'fields'>
 
 export const ThreeHero: React.FC<{ fields: HeroFields }> = ({ fields }) => {
@@ -39,26 +40,58 @@ export const ThreeHero: React.FC<{ fields: HeroFields }> = ({ fields }) => {
                   return (
                     <CMSLink
                       key={i}
-                      {...button}
-                      className={classes.link}
-                      appearance="default"
-                      buttonProps={{
-                        hideBorders: true,
+                      data={{ ...button }}
+                      look={{
+                        theme: 'light',
+                        type: 'button',
+                        size: 'medium',
+                        width: 'normal',
+                        variant: 'blocks',
+                        icon: {
+                          content: <ChevronRightIcon strokeWidth={1.25} />,
+                          iconPosition: 'right',
+                        },
                       }}
                     />
+
+                    // <CMSLink
+                    //   key={i}
+                    //   {...button}
+                    //   className={classes.link}
+                    //   appearance="default"
+                    //   buttonProps={{
+                    //     hideBorders: true,
+                    //   }}
+                    // />
                   )
                 })}
                 {buttons.map((button: any, i: any) => {
                   return (
                     <CMSLink
                       key={i}
-                      {...button}
-                      className={classes.link}
-                      appearance="default"
-                      buttonProps={{
-                        hideBorders: true,
+                      data={{ ...button }}
+                      look={{
+                        theme: 'light',
+                        type: 'button',
+                        size: 'medium',
+                        width: 'normal',
+                        variant: 'blocks',
+                        icon: {
+                          content: <ChevronRightIcon strokeWidth={1.25} />,
+                          iconPosition: 'right',
+                        },
                       }}
                     />
+
+                    // <CMSLink
+                    //   key={i}
+                    //   {...button}
+                    //   className={classes.link}
+                    //   appearance="default"
+                    //   buttonProps={{
+                    //     hideBorders: true,
+                    //   }}
+                    // />
                   )
                 })}
               </div>

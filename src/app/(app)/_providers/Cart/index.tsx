@@ -8,6 +8,46 @@ import { getPayloadHMR } from '@payloadcms/next/utilities'
 import configPromise from '@payload-config'
 import { uuid } from '@/utilities/uuid'
 
+//////////////////////////////////////////////////////////
+export async function createCart() {
+  // create the cart and then set the cookie
+  const config = await configPromise
+  let payload: any = await getPayloadHMR({ config })
+
+  let cart: Cart | null = null
+
+  try {
+    // The created cart is returned
+    cart = await payload.create({
+      collection: 'carts',
+      data: {
+        items: [],
+        totals: {
+          orderValue: 0,
+          shipping: 0,
+          thanklys: 0,
+        },
+      },
+    })
+
+    if (cart) {
+      // console.log('saving cookie...')
+      const expiryDate = new Date()
+      expiryDate.setMinutes(expiryDate.getMinutes() + 10)
+
+      const cookieStore = cookies()
+      cookieStore.set('cartId', cart.id.toString(), { expires: expiryDate })
+      console.log('cookie saved...cartId:', cart.id)
+      revalidatePath('/', 'layout')
+    }
+  } catch (error: any) {
+    console.error(`Error fetching cart.`, error)
+  } finally {
+    return cart || null
+  }
+}
+
+//////////////////////////////////////////////////////////
 export async function getCart(cartId?: string, depth?: number) {
   if (!cartId) {
     const cookieStore = cookies()
@@ -16,8 +56,8 @@ export async function getCart(cartId?: string, depth?: number) {
 
   const config = await configPromise
   let payload: any = await getPayloadHMR({ config })
-
   let cart = null
+
   try {
     // Fetching the cart based on the cartId
     const { docs } = await payload.find({
@@ -42,45 +82,7 @@ export async function getCart(cartId?: string, depth?: number) {
   }
 }
 
-export async function createCart() {
-  // create the cart and then set the cookie
-  const config = await configPromise
-  let payload: any = await getPayloadHMR({ config })
-
-  let cart: Cart | null = null
-
-  try {
-    // The created cart is returned
-    cart = await payload.create({
-      collection: 'carts',
-      data: {
-        items: [],
-        totals: {
-          orderValue: 0,
-          shipping: 0,
-          thanklys: 0,
-        },
-      },
-    })
-
-    if (cart) {
-      // console.log('saving cookie...')
-      // Calculate the expiry date/time for 10 minutes from now
-      const expiryDate = new Date()
-      expiryDate.setMinutes(expiryDate.getMinutes() + 10)
-
-      const cookieStore = cookies()
-      cookieStore.set('cartId', cart.id.toString(), { expires: expiryDate })
-      // console.log('cookie saved...cartId:', cart.id)
-      revalidatePath('/', 'layout')
-    }
-  } catch (error: any) {
-    console.error(`Error fetching cart.`, error)
-  } finally {
-    return cart || null
-  }
-}
-
+//////////////////////////////////////////////////////////
 export async function clearCart() {
   const cookieStore = cookies()
   const cartId = cookieStore.get('cartId')?.value
@@ -94,45 +96,37 @@ export async function clearCart() {
   const result = await payload.delete({
     collection: 'carts',
     where: { id: { equals: cartId } },
-
     depth: 0,
-    // locale: 'en',
-    // fallbackLocale: false,
-    // user: dummyUser,
-    // overrideAccess: false,
-    // showHiddenFields: true,
   })
-  // console.log(result)
   cookieStore.delete('cartId')
-  revalidateTag('fetchProducts')
-  revalidatePath('/', 'layout')
 }
 
-export const addUserToCart = async (user: User) => {
-  // add user to cart
+//////////////////////////////////////////////////////////
+function getCartId() {
   const cookieStore = cookies()
   const cartId = cookieStore.get('cartId')?.value
-  revalidateTag(`cart-${cartId}`)
+  return cartId
 }
 
+//////////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+
+//////////////////////////////////////////////////////////
 export async function addProduct(product: Product) {
   console.log('product to be added -- ', product)
-  try {
-    const cookieStore = cookies()
-    const cartId = cookieStore.get('cartId')?.value
-    let cart
 
-    if (!cartId || cartId === '') {
+  try {
+    const cartId = getCartId()
+    let cart = await getCart(cartId, 0)
+
+    if (!cartId || cartId === '' || !cart) {
       console.log('No cart id found, creating new cart.')
       cart = await createCart()
-    } else {
-      console.log('Cart id found, getting cart details from db....')
-      cart = await getCart(cartId, 0)
-      if (!cart) {
-        console.log('Cart not found, creating new cart.')
-        cart = await createCart()
-      }
-      console.log('cart retrieved -- ', cart)
     }
 
     // add product to cart
@@ -161,15 +155,6 @@ export async function addProduct(product: Product) {
           receiverPrice: null,
           receiverTotal: null,
           receiverShipping: null,
-          // receiverPrice: Math.min(item.product?.price, item.product?.promoPrice),
-          // receiverShipping:
-          //   item.product?.productType === 'gift' ? 'standardParcel' : 'standardMail',
-          // receiverTotal:
-          //   Math.min(item.product?.price, item.product?.promoPrice) +
-          //     item.product?.productType ===
-          //   'gift'
-          //     ? 'standardParcel'
-          //     : 'standardMail',
         },
       ],
     })
@@ -196,7 +181,10 @@ export async function addProduct(product: Product) {
     return 'Error adding item to cart.'
   }
 }
-
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////
 export async function removeProduct(productId: number | string) {
   try {
     const cookieStore = cookies()
@@ -256,6 +244,7 @@ export async function removeProduct(productId: number | string) {
   }
 }
 
+//////////////////////////////////////////////////////////
 export async function addReceiver(productId: number | string, newReceiver: any) {
   try {
     const cookieStore = cookies()
@@ -282,7 +271,14 @@ export async function addReceiver(productId: number | string, newReceiver: any) 
     }
 
     // Add the new receiver to the item's receivers array
-    cart.items[itemIndex].receivers.push(newReceiver)
+    const updatedReceivers = [...cart.items[itemIndex].receivers, newReceiver]
+    cart.items[itemIndex].receivers = updatedReceivers
+
+    // Simplify the payload to include only necessary fields
+    const simplifiedItems = cart.items.map((item: any) => ({
+      ...item,
+      product: item.product.id || item.product,
+    }))
 
     // Update the cart on the server
     const config = await configPromise
@@ -291,7 +287,7 @@ export async function addReceiver(productId: number | string, newReceiver: any) 
     const result = await payload.update({
       collection: 'carts',
       id: cart.id,
-      data: { items: cart.items },
+      data: { items: simplifiedItems },
       depth: 2, // Adjust depth as needed
     })
 
@@ -308,6 +304,8 @@ export async function addReceiver(productId: number | string, newReceiver: any) 
     throw new Error('Error adding receiver')
   }
 }
+
+//////////////////////////////////////////////////////////
 export async function removeReceiver(productId: number | string, receiverId: number | string) {
   try {
     const cookieStore = cookies()
@@ -354,6 +352,7 @@ export async function removeReceiver(productId: number | string, receiverId: num
   }
 }
 
+//////////////////////////////////////////////////////////
 export async function copyReceiver(productId: number | string, receiverId: number | string) {
   try {
     const cookieStore = cookies()
@@ -424,6 +423,7 @@ export async function copyReceiver(productId: number | string, receiverId: numbe
   }
 }
 
+//////////////////////////////////////////////////////////
 export async function isProductInCart(productId: number | string) {
   try {
     const cookieStore = cookies()
@@ -466,6 +466,7 @@ export async function isProductInCart(productId: number | string) {
   }
 }
 
+//////////////////////////////////////////////////////////
 export async function areProductsInCart(productIds: (number | string)[]) {
   try {
     const cookieStore = cookies()
@@ -486,9 +487,6 @@ export async function areProductsInCart(productIds: (number | string)[]) {
 
     const items = cart?.items || []
     const productIdsSet = new Set(productIds)
-
-    // console.log('Product IDs to check:', productIds)
-    // console.log('Cart items:', items)
 
     const results = productIds.map((productId) => {
       const inCart = items.some((item: any) => {

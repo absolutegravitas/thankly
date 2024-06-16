@@ -4,7 +4,7 @@ import { Collapsible, CollapsibleContent, CollapsibleToggler } from '@faceless-u
 import { BackgroundGrid } from '@app/_components/BackgroundGrid'
 import { BackgroundScanline } from '@app/_components/BackgroundScanline'
 import { BlockWrapper, PaddingProps } from '@app/_components/BlockWrapper'
-import { PricingCard } from '@app/_components/cards/PricingCard'
+import { PricingCard } from '@app/_components/PricingCard'
 import { CMSLink } from '@app/_components/CMSLink'
 import { Gutter } from '@app/_components/Gutter'
 import { ChevronIcon } from '@app/_graphics/ChevronIcon'
@@ -126,13 +126,24 @@ export const Pricing: React.FC<Props> = (props) => {
                     <div className={classes.ctaWrapper}>
                       {enableLink && (
                         <CMSLink
-                          appearance={'default'}
-                          className={classes.link}
-                          {...link}
-                          buttonProps={{
-                            hideBorders: true,
+                          data={{ ...link }}
+                          look={{
+                            theme: 'light',
+                            type: 'button',
+                            size: 'medium',
+                            width: 'wide',
+                            variant: 'blocks',
                           }}
                         />
+
+                        // <CMSLink
+                        //   appearance={'default'}
+                        //   className={classes.link}
+                        //   {...link}
+                        //   buttonProps={{
+                        //     hideBorders: true,
+                        //   }}
+                        // />
                       )}
 
                       {/* {enableCreatePayload && (

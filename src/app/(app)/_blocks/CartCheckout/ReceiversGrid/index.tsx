@@ -4,7 +4,7 @@ import React, { CSSProperties, useEffect, useTransition, useState } from 'react'
 
 import classes from './index.module.scss'
 import { ArrowIcon } from '@app/_icons/ArrowIcon'
-import { contentFormats } from '@/app/(app)/_css/tailwindClasses'
+import { contentFormats } from '@app/_css/tailwindClasses'
 import { CopyIcon, TrashIcon } from 'lucide-react' // Assuming these are the Lucide React icons for copy and delete
 import cn from '@/utilities/cn'
 export const ReceiversGrid: React.FC<any> = () => {

@@ -2,7 +2,7 @@
 
 import React, { useState, useTransition, useEffect, startTransition } from 'react'
 
-import { buttonFormats, contentFormats } from '@app/_css/tailwindClasses'
+import { buttonLook, contentFormats } from '@app/_css/tailwindClasses'
 import { cartStaticText } from '@/utilities/staticText'
 import Link from 'next/link'
 import { Media } from '@app/_components/Media'
@@ -14,8 +14,7 @@ import {
   removeProduct,
   copyReceiver,
   removeReceiver,
-} from '@app/_components/ProductActions/actions'
-import { Receivers } from './receivers'
+} from '@app/_providers/Cart'
 import {
   CopyIcon,
   LoaderCircleIcon,
@@ -24,13 +23,13 @@ import {
   TrashIcon,
   UserPlusIcon,
 } from 'lucide-react'
-import { Button } from '@/app/(app)/_components/Button'
 
 export function CartItems() {
   const [cartData, setCartData] = useState<any>()
   const [isPending, startTransition] = useTransition()
   const [optimisticCartData, setOptimisticCartData] = useState<any>()
-
+  const [loading, setLoading] = useState(false)
+  const [isAddingReceiver, setIsAddingReceiver] = useState(false)
   useEffect(() => {
     const fetchCart = async () => {
       const updatedCart = await getCart()
@@ -45,7 +44,7 @@ export function CartItems() {
   }, [cartData])
 
   const handleAddReceiver = async (productId: any) => {
-    // Prepare the new receiver object - replace with actual data
+    setIsAddingReceiver(true)
     const newReceiver = {
       id: 'temp-id',
       firstName: 'Loading...',
@@ -61,7 +60,6 @@ export function CartItems() {
     }
 
     setOptimisticCartData((prevCartData: any) => {
-      // Optimistic update logic
       const updatedCartData = { ...prevCartData }
       const product = updatedCartData.items.find((item: any) => item.product.id === productId)
       if (product) {
@@ -71,12 +69,12 @@ export function CartItems() {
     })
 
     try {
-      // Call addReceiver with both productId and newReceiver
       const updatedCart = await addReceiver(productId, newReceiver)
       setCartData(updatedCart)
     } catch (error) {
       console.error('Failed to add receiver:', error)
-      // Optionally handle error or revert optimistic update
+    } finally {
+      setIsAddingReceiver(false)
     }
   }
 
@@ -184,12 +182,6 @@ export function CartItems() {
       <div className="#border #border-solid col-start-1 col-span-4 h-full rounded-sm bg-gray-150 px-6 pb-8">
         <div className="relative flex items-center justify-between gap-4">
           <div className="">
-            {/* <h2
-              id="summary-heading"
-              className={[`${contentFormats.global} ${contentFormats.h3}`].join(' ')}
-            >
-              Thanklys
-            </h2> */}
             <p className={[contentFormats.global, contentFormats.text].join(' ')}>
               {cartStaticText.receiverMessage}
             </p>
@@ -221,6 +213,9 @@ export function CartItems() {
                       </div>
 
                       <div className="flex flex-col gap-x-3 sm:items-start">
+                        <h5 className="flex basis-1/4">
+                          {(index + 1).toString().padStart(2, '0')}
+                        </h5>{' '}
                         <div
                           className={cn(
                             'pb-3 !text-left !leading-snug',
@@ -244,10 +239,10 @@ export function CartItems() {
                     <div className="flex flex-none items-end gap-x-4 align-top">
                       <div
                         className={cn(
-                          buttonFormats.global,
-                          buttonFormats.small,
-                          buttonFormats.product,
-                          buttonFormats.transparentDark,
+                          buttonLook.global,
+                          buttonLook.small,
+                          buttonLook.product,
+                          buttonLook.transparentDark,
                         )}
                         onClick={() => handleAddReceiver(product.id)}
                       >
@@ -260,10 +255,10 @@ export function CartItems() {
                       </div>
                       <div
                         className={cn(
-                          buttonFormats.global,
-                          buttonFormats.small,
-                          buttonFormats.product,
-                          buttonFormats.transparentDark,
+                          buttonLook.global,
+                          buttonLook.small,
+                          buttonLook.product,
+                          buttonLook.transparentDark,
                         )}
                         onClick={() => handleRemoveProduct(product.id)}
                       >
@@ -428,265 +423,6 @@ export function CartItems() {
                 </div>
               )
             })}
-
-        {/* {!cartData && (
-          <div className="flex flex-col items-center justify-center h-32 bg-gray-100">
-            <div className="sm:flex pt-2 items-center justify-center space-x-2">
-              <div className="py-4 sm:py-4 flex items-center">
-                <LoaderCircleIcon
-                  className="animate-spin h-8 w-8 flex-shrink-0 text-green-500"
-                  strokeWidth={1.25}
-                  aria-hidden="true"
-                />
-                <div className="ml-2 text-sm text-gray-500">Loading your cart...please wait</div>
-              </div>
-            </div>
-          </div>
-        )} */}
-        {/* {cartData?.items?.map((item: any, index: any) => {
-          const { product, receivers, price, shipping, total } = item
-          const { image: metaImage } = product.meta
-
-          return (
-            <div key={index} className="border border-solid border-gray-200/90">
-              <div className="flex flex-col gap-6 p-5 md:flex-row md:justify-between">
-                <div className="flex min-w-0 gap-x-4">
-                  <div className="h-20 w-20 flex-none  bg-gray-50">
-                    {!metaImage && <div className={''}>No image</div>}
-                    {metaImage && typeof metaImage !== 'string' && (
-                      <React.Fragment>
-                        <Media
-                          imgClassName={`aspect-square w-full flex-none rounded-md object-cover`}
-                          resource={metaImage}
-                        />
-                      </React.Fragment>
-                    )}
-                  </div>
-
-                  <div className="flex flex-col gap-x-3 sm:items-start">
-                    <div
-                      className={cn(
-                        'pb-3 !text-left !leading-snug',
-                        contentFormats.global,
-                        contentFormats.h4,
-                      )}
-                    >
-                      {product.title}
-                    </div>
-                    <div
-                      className={cn(
-                        ' hidden !text-left !leading-snug sm:flex',
-                        contentFormats.global,
-                        contentFormats.text,
-                      )}
-                    >
-                      {product.meta.description}
-                    </div>
-                  </div>
-                </div>
-                <div className="flex flex-none items-end gap-x-4 align-top">
-                  <div
-                    className={cn(
-                      buttonFormats.global,
-                      buttonFormats.small,
-                      buttonFormats.product,
-                      buttonFormats.transparentDark,
-                    )}
-                    onClick={async () => {
-                      startTransition(async () => {
-                        const newReceiver = {
-                          id: 'temp-id',
-                          firstName: 'Loading...',
-                          lastName: '',
-                          addressLine1: '',
-                          addressLine2: '',
-                          city: '',
-                          state: '',
-                          postcode: '',
-                          message: '',
-                          total: 0,
-                          shipping: 0,
-                        }
-
-                        const updatedCart = await addReceiver(product.id, newReceiver)
-                        setCartData(updatedCart)
-                      })
-                    }}
-                  >
-                    <UserPlusIcon
-                      className={cn(`mr-2 h-5 w-5 flex-none text-gray-900`)}
-                      aria-hidden="true"
-                      strokeWidth={1.25}
-                    />
-                    <div>{`Add Receiver`}</div>
-                  </div>
-                  <div
-                    className={cn(
-                      buttonFormats.global,
-                      buttonFormats.small,
-                      buttonFormats.product,
-                      buttonFormats.transparentDark,
-                    )}
-                    onClick={async () => {
-                      await removeProduct(product.id)
-                      const updatedCart = await getCart()
-                      setCartData(updatedCart)
-                    }}
-                  >
-                    <TrashIcon
-                      className={cn(`mr-2 h-5 w-5 flex-none `)}
-                      aria-hidden="true"
-                      strokeWidth={1.25}
-                    />
-                    <div>{`Remove Thankly`}</div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="px-4 sm:px-6 lg:px-8">
-                <div className={cn(contentFormats.global, contentFormats.text)}>
-                  {product.productType === 'card' && (
-                    <React.Fragment>
-                      <span className="font-semibold">{`Thankly Cards: `}</span>
-                      <span className={[contentFormats.text].join(' ')}>
-                        {cartStaticText.shippingMessage}
-                        <Link
-                          className={[contentFormats.global, contentFormats.a].join(' ')}
-                          href="https://auspost.com.au/about-us/supporting-communities/services-all-communities/our-future"
-                          target="_blank"
-                        >
-                          Learn More
-                        </Link>
-                      </span>
-                    </React.Fragment>
-                  )}
-                </div>
-
-                <div className="pt-6 grid grid-cols-1 md:grid-cols-2 sm:grid-cols-1 gap-4">
-                  {receivers?.map((receiver: any, index: any) => {
-                    return (
-                      <div
-                        key={index}
-                        className="hover:scale-105  border border-solid hover:bg-gray-200/50 hover:delay-75 duration-150 hover:shadow-md rounded-md px-5 py-6 aspect-square"
-                      >
-                        <div
-                          className={[
-                            `flex flex-row justify-between items-center`, // Added items-center to vertically center the content
-                            contentFormats.global,
-                            contentFormats.h5,
-                          ].join(' ')}
-                        >
-                          <h5 className="flex basis-1/4">
-                            {(index + 1).toString().padStart(2, '0')}
-                          </h5>
-                          <div className="flex basis-3/4 justify-end items-center gap-x-3">
-                            <CopyIcon
-                              className="h-5 w-5 hover:text-green cursor-pointer hover:animate-pulse"
-                              aria-hidden="true"
-                              strokeWidth={1.1}
-                              // onClick={() => handleCopy(index)}
-                            />
-                            <TrashIcon
-                              className="h-5 w-5 cursor-pointer hover:text-green hover:animate-pulse"
-                              aria-hidden="true"
-                              strokeWidth={1.1}
-                              // onClick={() => handleDelete(index)}
-                            />
-                          </div>
-                        </div>
-                        <h5
-                          className={[contentFormats.global, contentFormats.text, `font-semibold`]
-                            .filter(Boolean)
-                            .join(' ')}
-                        >
-                          {`${receiver.firstName} ${receiver.lastName}`}
-                        </h5>
-                        {receiver.addressLine1 && (
-                          <div
-                            className={[
-                              contentFormats.global,
-                              contentFormats.p,
-                              `text-sm pb-5 flex flex-row`,
-                            ]
-                              .filter(Boolean)
-                              .join(' ')}
-                          >
-                            <MapPinIcon className="mr-2" strokeWidth={1.25} />
-                            <span>
-                              {receiver.addressLine1}
-                              {receiver.addressLine2 && (
-                                <>
-                                  <br />
-                                  {receiver.addressLine2}
-                                </>
-                              )}
-                              <br />
-                              {[receiver.city, receiver.state, receiver.postcode]
-                                .filter(Boolean)
-                                .join(', ')}
-                            </span>
-                          </div>
-                        )}
-                        {receiver.message && (
-                          <div
-                            className={[
-                              contentFormats.global,
-                              contentFormats.p,
-                              `text-sm py-4 flex flex-row`,
-                            ]
-                              .filter(Boolean)
-                              .join(' ')}
-                            // onClick={() => handleEditClick(index, receiver.message)}
-                          >
-                            <MessageSquareTextIcon
-                              className="flex-shrink-0 w-5 h-5 mr-2"
-                              strokeWidth={1.25}
-                            />
-                            <span>{receiver.message}</span>
-                          </div>
-                        )}
-
-                        <div className="flex justify-between items-center pt-4">
-                          <div>
-                            <span className={[contentFormats.global, contentFormats.h6].join(' ')}>
-                              Cost:{' '}
-                              {receiver.total?.toLocaleString('en-AU', {
-                                style: 'currency',
-                                currency: 'AUD',
-                                minimumFractionDigits: 0,
-                                maximumFractionDigits: 2,
-                              })}
-                            </span>
-                            <span
-                              className={[contentFormats.global, contentFormats.text].join(' ')}
-                            >
-                              + Shipping:{' '}
-                              {receiver.shipping?.toLocaleString('en-AU', {
-                                style: 'currency',
-                                currency: 'AUD',
-                                minimumFractionDigits: 0,
-                                maximumFractionDigits: 2,
-                              })}
-                            </span>
-                          </div>
-                          <div className={[contentFormats.global, contentFormats.h6].join(' ')}>
-                            Subtotal:{' '}
-                            {(receiver.total + receiver.shipping)?.toLocaleString('en-AU', {
-                              style: 'currency',
-                              currency: 'AUD',
-                              minimumFractionDigits: 0,
-                              maximumFractionDigits: 2,
-                            })}
-                          </div>
-                        </div>
-                      </div>
-                    )
-                  })}
-                </div>
-              </div>
-            </div>
-          )
-        })} */}
       </div>
     </React.Fragment>
   )

@@ -1,179 +1,107 @@
 import React from 'react'
 import Link from 'next/link'
+import { Page, Product } from '@/payload-types'
 
-import { Page, Product } from '@payload-types'
-// eslint-disable-next-line import/no-cycle
-import { Button, ButtonProps } from '../Button'
+import cn from '@/utilities/cn'
+import { generateHref } from '@/utilities/generateHref'
 
-type PageReference = {
-  value: string | Page
-  relationTo: 'pages'
-}
-
-type ProductsReference = {
-  value: string | Product
-  relationTo: 'products'
-}
-
-export type LinkType = string | 'reference' | 'custom' | null
-export type Reference = PageReference | ProductsReference | null | any
+import { buttonLook } from '@app/_css/tailwindClasses'
+import { ArrowRightIcon, ChevronRightIcon } from 'lucide-react'
+import classes from './index.module.scss'
 
 export type CMSLinkType = {
-  type?: LinkType | null
-  newTab?: boolean | null
-  reference?: Reference | null
-  url?: string | null
-  label?: string | null
-  appearance?: 'default' | 'primary' | 'secondary' | 'text' | null
-  children?: React.ReactNode
-  fullWidth?: boolean
-  mobileFullWidth?: boolean
-  className?: string
-  onClick?: (event: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement>) => void
-  onMouseEnter?: () => void
-  onMouseLeave?: () => void
-  buttonProps?: ButtonProps
-}
-
-type GenerateSlugType = {
-  type?: LinkType | null
-  url?: string | null
-  reference?: Reference | null | undefined
-}
-
-const generateHref = (args: GenerateSlugType): string => {
-  const { reference, url, type } = args
-
-  switch (type) {
-    case 'custom':
-      if (!url) return ''
-
-      // Check if URL starts with a slash
-      if (url.startsWith('/')) return url
-
-      // Check if URL starts with "http://" or "https://"
-      if (url.startsWith('http://') || url.startsWith('https://')) return url
-
-      // Check if URL starts with "www."
-      if (url.startsWith('www.')) return `http://${url}`
-
-      // Check if URL matches a pattern for relative URLs (e.g., "shop")
-      if (url.match(/^[a-zA-Z0-9-]+$/)) return `/${url}`
-
-      // Check if URL matches a pattern for relative URLs with a trailing slash (e.g., "shop/")
-      if (url.match(/^[a-zA-Z0-9-]+\/$/)) return `/${url}`
-
-      // By default, treat as an external URL
-      return `http://${url}`
-
-    case 'reference':
-      if (!reference) return ''
-      if (reference.relationTo === 'products') return `/shop/${reference.value.slug}`
-      else return `/${reference.value.slug}`
-  }
-  return ''
-}
-
-export const CMSLink: React.FC<CMSLinkType> = ({
-  type,
-  url,
-  newTab,
-  reference,
-  label,
-  appearance,
-  children,
-  className,
-  onClick,
-  onMouseEnter,
-  onMouseLeave,
-  fullWidth = false,
-  mobileFullWidth = false,
-  buttonProps: buttonPropsFromProps,
-}) => {
-  // console.log('reference', reference)
-
-  let href = generateHref({ type, url, reference })
-
-  if (!href) {
-    return (
-      <span
-        className={className}
-        onClick={onClick}
-        onMouseEnter={onMouseEnter}
-        onMouseLeave={onMouseLeave}
-      >
-        {label}
-        {children}
-      </span>
-    )
-  }
-
-  if (!appearance) {
-    const hrefIsLocal = ['tel:', 'mailto:'].some((prefix) => href.startsWith(prefix))
-
-    // if (!hrefIsLocal && href !== '#') {
-    //   try {
-    //     const objectURL = new URL(href)
-    //     if (objectURL.origin === process.env.NEXT_PUBLIC_SERVER_URL) {
-    //       href = objectURL.href.replace(process.env.NEXT_PUBLIC_SERVER_URL, '')
-    //     }
-    //   } catch (e) {
-    //     // Do not throw error if URL is invalid
-    //     // This will prevent the page from building
-    //     console.log(`Failed to format url: ${href}`, e) // eslint-disable-line no-console
-    //   }
-    // }
-
-    const newTabProps = newTab ? { target: '_blank', rel: 'noopener noreferrer' } : {}
-
-    if (href.indexOf('/') === 0) {
-      return (
-        <Link
-          href={href}
-          {...newTabProps}
-          className={className}
-          onClick={onClick}
-          onMouseEnter={onMouseEnter}
-          onMouseLeave={onMouseLeave}
-          prefetch={false}
-        >
-          {label && label}
-          {children && children}
-        </Link>
-      )
+  data?: {
+    label?: string
+    type?: 'custom' | 'reference' | string | null
+    reference?: {
+      value: string | Page | Product
+      relationTo: 'pages' | 'products'
     }
+    url?: string
+    newTab?: boolean
+  }
+  children?: React.ReactNode
 
+  className?: string
+  look?: {
+    theme?: 'dark' | 'light'
+    type?: 'button' | 'link' | 'submit'
+    size?: keyof (typeof buttonLook)['sizes']
+    width?: keyof (typeof buttonLook)['widths']
+    variant?: keyof (typeof buttonLook)['variants']
+    icon?: {
+      content: React.ReactNode
+      iconPosition?: 'left' | 'right'
+    }
+  }
+
+  actions?: {
+    onClick?: (event?: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void
+    onMouseEnter?: () => void
+    onMouseLeave?: () => void
+  }
+}
+
+export const CMSLink: React.FC<CMSLinkType> = ({ data, children, className, look, actions }) => {
+  console.log('CMSLink -- ', data)
+
+  // validate inputs
+  if (!data) return null // Handle case where data is undefined
+
+  const { label, type, reference, url, newTab } = data
+  const href = generateHref({ type, url, reference })
+  if (!href && data.type) return null
+
+  const newTabProps = newTab ? { target: '_blank', rel: 'noopener noreferrer' } : {}
+
+  let classNames = [
+    className, // classes passed in
+    buttonLook.base,
+    cn(
+      look?.theme === 'dark' ? 'dark-class' : 'light-class',
+      look?.size && look.type != 'link' && buttonLook.sizes[look.size],
+      look?.width && look.type != 'link' && buttonLook.widths[look.width],
+      look?.type != 'link' && buttonLook.variants['base'],
+      look?.variant && buttonLook.variants[look.variant],
+    ),
+  ]
+    .filter(Boolean)
+    .join(' ')
+
+  const handleClick = (
+    event: React.MouseEvent<HTMLAnchorElement | HTMLButtonElement, MouseEvent>,
+  ) => {
+    if (actions?.onClick) {
+      actions.onClick(event as React.MouseEvent<HTMLAnchorElement, MouseEvent>)
+    }
+  }
+
+  const renderContent = () => (
+    <>
+      {look?.icon?.content && look.icon.iconPosition === 'left' && (
+        <span className="mr-2">{look.icon.content}</span>
+      )}
+      {children || label}
+      {look?.icon?.content && look.icon.iconPosition === 'right' && (
+        <span className={data.label === '' || !data?.label ? `sm:ml-0 ml-2` : `ml-2`}>
+          {look.icon.content}
+        </span>
+      )}
+      {!look?.icon && <span className="mr-2">{<ChevronRightIcon strokeWidth={1.25} />}</span>}
+    </>
+  )
+
+  if (look?.type === 'button' || look?.type === 'submit') {
     return (
-      <Link
-        href={href}
-        {...newTabProps}
-        className={className}
-        onMouseEnter={onMouseEnter}
-        onMouseLeave={onMouseLeave}
-        onClick={onClick}
-      >
-        {label && label}
-        {children && children}
+      <button className={classNames} onClick={handleClick} {...newTabProps}>
+        {renderContent()}
+      </button>
+    )
+  } else {
+    return (
+      <Link href={href} className={classNames} {...newTabProps}>
+        {renderContent()}
       </Link>
     )
   }
-
-  const buttonProps: ButtonProps = {
-    ...buttonPropsFromProps,
-    newTab,
-    href,
-    appearance,
-    label,
-    onClick,
-    onMouseEnter,
-    onMouseLeave,
-    fullWidth,
-    mobileFullWidth,
-  }
-
-  if (appearance === 'default') {
-    buttonProps.icon = 'arrow'
-  }
-
-  return <Button {...buttonProps} className={className} el="link" />
 }

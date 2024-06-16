@@ -1,9 +1,8 @@
 import React from 'react'
-import { Button } from '@app/_components/Button'
-import { clearCart, getCart } from '@app/_components/ProductActions/actions'
+import { clearCart, getCart } from '@app/_providers/Cart'
 import { contentFormats } from '@app/_css/tailwindClasses'
 import { LoaderCircleIcon } from 'lucide-react'
-import { CMSLink } from '@/app/(app)/_components/CMSLink'
+import { CMSLink } from '@app/_components/CMSLink'
 import { CartCheckout } from '../CartButtons'
 
 export const CartSummary: React.FC<any> = ({ cart }) => {

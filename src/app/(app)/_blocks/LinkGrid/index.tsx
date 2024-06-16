@@ -13,6 +13,7 @@ import { Page } from '@payload-types'
 
 import classes from './index.module.scss'
 import { useGetHeroPadding } from '../Hero/useGetHeroPadding'
+import { ChevronRightIcon } from 'lucide-react'
 
 // export type LinkGridProps = Extract<Page['layout'][0], { blockType: 'linkGrid' }> & {
 //   padding?: PaddingProps
@@ -25,9 +26,25 @@ type Props = Exclude<Fields['links'], undefined | null>[number]['link']
 const LinkGridItem: React.FC<Props> = (props) => {
   // console.log('lnkGrid', props)
   return (
-    <CMSLink {...props} className={classes.link}>
-      <ArrowIcon size="large" className={classes.arrow} />
-    </CMSLink>
+    <React.Fragment>
+      <CMSLink
+        data={{ ...props }}
+        look={{
+          theme: 'light',
+          type: 'button',
+          size: 'medium',
+          width: 'normal',
+          variant: 'blocks',
+          icon: {
+            content: <ChevronRightIcon strokeWidth={1.25} />,
+            iconPosition: 'right',
+          },
+        }}
+      />
+      {/* <CMSLink {...props} className={classes.link}>
+        <ArrowIcon size="large" className={classes.arrow} />
+      </CMSLink> */}
+    </React.Fragment>
   )
 }
 

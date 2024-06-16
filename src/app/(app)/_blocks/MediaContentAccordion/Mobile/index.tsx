@@ -27,6 +27,7 @@ import classes from './index.module.scss'
 // }
 
 import { ExtractBlockProps } from '@/utilities/extractBlockProps'
+import { ChevronRightIcon } from 'lucide-react'
 export type MediaContentAccordionProps = ExtractBlockProps<'form'> & { className?: string }
 
 export const MobileMediaContentAccordion: React.FC<MediaContentAccordionProps> = ({
@@ -201,9 +202,24 @@ export const MobileMediaContentAccordion: React.FC<MediaContentAccordionProps> =
                           content={item.mediaDescription}
                         />
                         {item.enableLink && item.link && (
-                          <CMSLink className={classes.link} {...item.link}>
-                            <ArrowRightIcon className={classes.arrowIcon} />
-                          </CMSLink>
+                          <CMSLink
+                            data={{ ...item.link }}
+                            look={{
+                              theme: 'light',
+                              type: 'button',
+                              size: 'medium',
+                              width: 'normal',
+                              variant: 'blocks',
+                              icon: {
+                                content: <ChevronRightIcon strokeWidth={1.25} />,
+                                iconPosition: 'right',
+                              },
+                            }}
+                          />
+
+                          // <CMSLink className={classes.link} {...item.link}>
+                          //   <ArrowRightIcon className={classes.arrowIcon} />
+                          // </CMSLink>
                         )}
                       </div>
                     </CollapsibleContent>

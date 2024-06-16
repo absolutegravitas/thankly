@@ -52,7 +52,7 @@ const MobileNavItems = ({ tabs, setActiveTab }: any) => {
                 className={classes.directLink}
                 {...link}
                 label={label}
-                onClick={(e) => {
+                onClick={(e: any) => {
                   e.stopPropagation()
                 }}
               />
