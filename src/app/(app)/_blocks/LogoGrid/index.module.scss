@@ -1,4 +1,4 @@
-@use '@app/_css/common' as *;
+@use '../../_css/common.scss' as *;
 
 .logoGrid {
   position: relative;
@@ -126,7 +126,9 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      transition: opacity 1s ease, filter 1s ease;
+      transition:
+        opacity 1s ease,
+        filter 1s ease;
       opacity: 0;
       filter: blur(0px);
     }

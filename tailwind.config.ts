@@ -153,13 +153,16 @@ const config: Config = {
       // keep a list of default colors to choose from
       // custom colors
       green: '#557755', // thankly green (dark)
-      lightkhaki: '#c2c0ae', // light khaki
+      khaki: '#c2c0ae', // light khaki
       lighterkhaki: '#dfded9', // lighter khaki
       offwhite: '#E7ECEF', // off-white
       slategray: '#d9d9d9', // slate gray
       slateblack: '#292929', // slate black
       jetblack: '#0D1317', // black
 
+      // theme colors
+
+      // others
       inherit: colors.inherit,
       current: colors.current,
       transparent: colors.transparent,

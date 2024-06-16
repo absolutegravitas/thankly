@@ -23,6 +23,7 @@
 8. site specific next config (hardcoded csrf / cors configs)
 9. fighting with graphql and cors atm so all data is pulled via payloadHMR / payload.find
 10. ecommerce (pending)
+    10a. localStorage + Cookies + Server Actions for cart mgmt
 11. vercel crons https://github.com/vercel/examples/blob/main/solutions/cron/vercel.json
 
 ## instructions

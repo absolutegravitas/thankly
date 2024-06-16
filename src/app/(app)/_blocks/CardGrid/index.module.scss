@@ -1,4 +1,4 @@
-@use '@app/_css/common' as *;
+@use '../../_css/common.scss' as *;
 
 .cardGrid {
   position: relative;
@@ -68,13 +68,13 @@
 
 .cardsWrapper {
   position: relative;
-  border-top: 1px solid var(--grid-line-light);
+  // border-top: 1px solid var(--grid-line-light);
 
   &::after {
     content: '';
     width: calc(25% * var(--excess-length-large));
     height: 1px;
-    background: var(--grid-line-light);
+    // background: var(--grid-line-light);
     position: absolute;
     bottom: 0;
     left: calc(100% - 25% * var(--excess-length-large));
@@ -85,21 +85,21 @@
     }
   }
 
-  @include data-theme-selector('dark') {
-    border-color: var(--grid-line-dark);
+  // @include data-theme-selector('dark') {
+  //   border-color: var(--grid-line-dark);
 
-    &::after {
-      background: var(--grid-line-dark);
-    }
-  }
+  //   &::after {
+  //     background: var(--grid-line-dark);
+  //   }
+  // }
 
-  @include data-theme-selector('light') {
-    border-color: var(--grid-line-light);
+  // @include data-theme-selector('light') {
+  //   border-color: var(--grid-line-light);
 
-    &::after {
-      background: var(--grid-line-light);
-    }
-  }
+  //   &::after {
+  //     background: var(--grid-line-light);
+  //   }
+  // }
 
   & .backgroundGrid {
     z-index: 5;

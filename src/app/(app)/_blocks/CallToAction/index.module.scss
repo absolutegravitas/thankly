@@ -1,4 +1,4 @@
-@use '@app/_css/common.scss' as *;
+@use '../../_css/common.scss' as *;
 
 .wrapper {
   position: relative;
@@ -7,9 +7,9 @@
 .container {
   position: relative;
 
-  @include mid-break {
-    row-gap: 3rem;
-  }
+  // @include mid-break {
+  //   row-gap: 3rem;
+  // }
 }
 
 .linksContainer {
@@ -50,57 +50,5 @@
 
   * {
     margin: 0;
-  }
-}
-
-.scanline {
-  top: 50%;
-  transform: translateY(-50%);
-  height: calc(100% + 10rem);
-  margin-right: calc(var(--gutter-h) * -1);
-  width: calc(100% + var(--gutter-h));
-  z-index: 0;
-
-  @include mid-break {
-    top: 0;
-    transform: unset;
-    height: 100%;
-    width: calc(100% + var(--gutter-h) * 2);
-    margin-left: calc(var(--gutter-h) * -1);
-    margin-right: calc(var(--gutter-h) * -2);
-    border-top: 1px solid var(--grid-line-light);
-    border-bottom: 1px solid var(--grid-line-light);
-  }
-}
-
-.crosshairTopLeft {
-  position: absolute;
-  width: 1rem;
-  height: auto;
-  z-index: 5;
-  color: var(--theme-elevation-1000);
-  opacity: 0.5;
-  top: -0.5rem;
-  left: -0.5rem;
-  display: none;
-
-  @include mid-break {
-    display: block;
-  }
-}
-
-.crosshairBottomRight {
-  position: absolute;
-  width: 1rem;
-  height: auto;
-  z-index: 5;
-  color: var(--theme-elevation-1000);
-  opacity: 0.5;
-  bottom: -0.5rem;
-  right: -0.5rem;
-  display: none;
-
-  @include mid-break {
-    display: block;
   }
 }
