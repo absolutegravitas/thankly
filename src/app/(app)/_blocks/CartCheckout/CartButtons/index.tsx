@@ -4,6 +4,8 @@ import { useRouter } from 'next/navigation'
 // import { Button } from '@app/_components/Button'
 import { clearCart } from '@app/_providers/Cart'
 import { revalidateCache } from '@/utilities/revalidateCache'
+import { CMSLink } from '@app/_components/CMSLink'
+import { ShoppingBagIcon, ShoppingCartIcon, XIcon } from 'lucide-react'
 
 export function CartButtons() {
   const router = useRouter()
@@ -11,76 +13,70 @@ export function CartButtons() {
 
   return (
     <React.Fragment>
-      {/* <Button
-        // url="/shop"
-        label={!isPending ? 'Clear Cart' : 'Clearing Cart... please wait'}
-        appearance={'secondary'}
-        fullWidth
-        data-theme={'light'}
-        icon="trash"
-        onClick={async () => {
-          startTransition(async () => {
-            await clearCart()
-            revalidateCache({ path: '/shop' })
-            router.push('/shop')
-          })
+      <CMSLink
+        data={{
+          label: !isPending ? 'Clear Cart' : 'Clearing Cart... please wait',
+          // type: 'custom',
+          // url: '/shop',
+        }}
+        look={{
+          theme: 'light',
+          type: 'button',
+          size: 'medium',
+          width: 'wide',
+          variant: 'blocks',
+          icon: {
+            content: <XIcon strokeWidth={1.25} />,
+            iconPosition: 'right',
+          },
+        }}
+        actions={{
+          onClick: async () => {
+            startTransition(async () => {
+              await clearCart()
+              revalidateCache({ path: '/shop' })
+              router.push('/shop')
+            })
+          },
         }}
       />
-
-      <Button
-        // url="/shop"
-        label={'Back to Shop'}
-        appearance={'secondary'}
-        fullWidth
-        data-theme={'light'}
-        icon="chevron"
-        onClick={() => {
-          // startTransition(async () => {
-          revalidateCache({ path: '/shop' })
-          router.push('/shop')
-          // })
+      <CMSLink
+        data={{
+          label: 'Shop',
+          type: 'custom',
+          url: '/shop',
+        }}
+        look={{
+          theme: 'light',
+          type: 'button',
+          size: 'medium',
+          width: 'wide',
+          variant: 'blocks',
+          icon: {
+            content: <ShoppingBagIcon strokeWidth={1.25} />,
+            iconPosition: 'right',
+          },
         }}
       />
-
-      <Button
-        // url="/shop"
-        label={'Checkout'}
-        appearance={'primary'}
-        fullWidth
-        data-theme={'light'}
-        icon="chevron"
-        onClick={() => {
-          // startTransition(async () => {
-          revalidateCache({ path: '/shop' })
-          router.push('/shop')
-          // })
+      <CMSLink
+        className="dark"
+        data={{
+          label: 'Checkout',
+          type: 'custom',
+          url: '/shop/checkout',
         }}
-      /> */}
-    </React.Fragment>
-  )
-}
-
-export function CartCheckout() {
-  const router = useRouter()
-  const [isPending, startTransition] = useTransition()
-
-  return (
-    <React.Fragment>
-      {/* <Button
-        url="/checkout"
-        label={!isPending ? 'Checkout' : 'Checking out... please wait'}
-        appearance={'primary'}
-        fullWidth
-        data-theme={'light'}
-        icon="chevron"
-        className="justify-stretch w-full"
-        onClick={async () => {
-          startTransition(async () => {
-            await clearCart()
-            router.push('/checkout')
-          })
+        look={{
+          theme: 'dark',
+          type: 'button',
+          size: 'medium',
+          width: 'wide',
+          variant: 'blocks',
+          icon: {
+            content: <ShoppingCartIcon strokeWidth={1.25} />,
+            iconPosition: 'right',
+          },
         }}
-      /> */}
+      />
     </React.Fragment>
   )
 }

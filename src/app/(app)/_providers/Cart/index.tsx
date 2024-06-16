@@ -33,7 +33,7 @@ export async function createCart() {
     if (cart) {
       // console.log('saving cookie...')
       const expiryDate = new Date()
-      expiryDate.setMinutes(expiryDate.getMinutes() + 10)
+      expiryDate.setMinutes(expiryDate.getMinutes() + 60)
 
       const cookieStore = cookies()
       cookieStore.set('cartId', cart.id.toString(), { expires: expiryDate })

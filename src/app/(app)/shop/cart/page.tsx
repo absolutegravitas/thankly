@@ -20,7 +20,7 @@ export default async function CartPage() {
     return (
       <BlockWrapper
         // settings={{ settings: { theme: 'light' } }}
-        padding={{ top: 'large', bottom: 'large' }}
+        padding={{ top: 'small', bottom: 'large' }}
       >
         <Gutter>
           <CartEmpty />
@@ -38,29 +38,30 @@ export default async function CartPage() {
       padding={{ top: 'large', bottom: 'small' }}
     >
       <Gutter>
-        <div className="grid grid-cols-6 gap-6">
-          <div className="col-span-1">
-            {leader && (
-              <div className={[contentFormats.global, `uppercase`].join(' ')}>{leader}</div>
-            )}
+        <div className="flex flex-col md:flex-row">
+          <div className="basis-1/4 flex align-middle items-center justify-middle pb-3">
             {heading && (
-              <h3 className={['flex justify-between space-x-5 #pb-6 !my-0'].join(' ')}>
+              <span
+                className={[
+                  contentFormats.global,
+                  contentFormats.p,
+                  'tracking-tighter sm:tracking-tight text-3xl font-medium',
+                ].join(' ')}
+              >
                 {heading}
-              </h3>
+              </span>
             )}
           </div>
-          <div className="col-start-5 col-span-3">
-            <div className="flex flex-row gap-4">
+          <div className="basis-3/4 items-end justify-items-end w-3/4">
+            <div className="flex flex-row gap-4 items-end justify-items-end">
               <CartButtons />
             </div>
           </div>
         </div>
 
-        <div className="pt-6 grid grid-cols-5 gap-6">
-          <Suspense fallback={<Loading />}>
-            <CartClient cart={cart} />
-          </Suspense>
-        </div>
+        <Suspense fallback={<Loading />}>
+          <CartClient cart={cart} />
+        </Suspense>
       </Gutter>
     </BlockWrapper>
   )

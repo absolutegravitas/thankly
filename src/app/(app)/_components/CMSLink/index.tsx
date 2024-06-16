@@ -58,7 +58,7 @@ export const CMSLink: React.FC<CMSLinkType> = ({ data, children, className, look
     className, // classes passed in
     buttonLook.base,
     cn(
-      look?.theme === 'dark' ? 'dark-class' : 'light-class',
+      look?.theme === 'dark' ? 'dark' : 'light',
       look?.size && look.type != 'link' && buttonLook.sizes[look.size],
       look?.width && look.type != 'link' && buttonLook.widths[look.width],
       look?.type != 'link' && buttonLook.variants['base'],

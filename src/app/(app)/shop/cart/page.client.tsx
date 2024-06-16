@@ -15,8 +15,10 @@ const CartClient: React.FC<CartClientProps> = ({ cart }) => {
 
   return (
     <React.Fragment>
-      <CartItems />
-      <CartSummary cart={cart} />
+      <div className="">
+        <CartItems />
+        <CartSummary cart={cart} />
+      </div>
     </React.Fragment>
   )
 }
