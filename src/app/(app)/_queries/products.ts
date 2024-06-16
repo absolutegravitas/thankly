@@ -4,7 +4,7 @@ import { revalidatePath, unstable_cache } from 'next/cache'
 import { getPayloadHMR } from '@payloadcms/next/utilities'
 import configPromise from '@payload-config'
 import { Cart, Product } from '@payload-types'
-import { getCart } from '@app/_components/ProductActions/actions'
+import { getCart } from '@app/_providers/Cart'
 import { headers, cookies } from 'next/headers'
 
 export const fetchProduct = async (slug: string): Promise<any | null> => {
@@ -122,7 +122,7 @@ export const fetchShopList = async (): Promise<any[] | null> => {
   return shopList()
 }
 
-export const fetchProductsList = unstable_cache(
+export const fetchProductSlugs = unstable_cache(
   async (): Promise<{ slug: string }[]> => {
     const config = await configPromise
     let payload: any = await getPayloadHMR({ config })
@@ -152,7 +152,7 @@ export const fetchProductsList = unstable_cache(
 
     return result // Always return an array
   },
-  ['fetchProductsList'],
+  ['fetchProductSlugs'],
   {
     revalidate: 60, // 10 seconds
     // revalidate: 300, // 5 min
@@ -161,6 +161,6 @@ export const fetchProductsList = unstable_cache(
     // revalidate: 604800, // 1 week
     // revalidate: 2592000, // 1 month
     // revalidate: 31536000, // 1 year
-    tags: ['fetchProductsList'],
+    tags: ['fetchProductSlugs'],
   },
 )

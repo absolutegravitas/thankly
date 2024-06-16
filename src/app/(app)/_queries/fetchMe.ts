@@ -2,7 +2,7 @@ import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 
 import type { User } from '@/payload-types'
-import { ME_QUERY } from './graphql/me'
+// import { ME_QUERY } from './graphql/me'
 import { payloadToken } from './token'
 
 export const fetchMe = async (args?: {
@@ -24,7 +24,7 @@ export const fetchMe = async (args?: {
     },
     next: { tags: ['user'] },
     body: JSON.stringify({
-      query: ME_QUERY,
+      // query: ME_QUERY,
     }),
   })
 

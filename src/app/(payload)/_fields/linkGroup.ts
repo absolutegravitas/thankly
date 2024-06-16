@@ -7,9 +7,6 @@ import link from './link'
 type LinkGroupType = (options?: {
   overrides?: Partial<ArrayField>
   looks?: LinkLooks[] | false
-  // additions?: {
-  //   npmCta?: boolean
-  // }
 }) => Field
 
 const additionalFields: Field[] = [
@@ -22,20 +19,6 @@ const additionalFields: Field[] = [
       // { value: 'npmCta', label: 'NPM CTA' },
     ],
   },
-  // {
-  //   name: 'npmCta',
-  //   type: 'group',
-  //   fields: [
-  //     {
-  //       name: 'label',
-  //       type: 'text',
-  //       required: true,
-  //     },
-  //   ],
-  //   admin: {
-  //     condition: (_: any, { type }) => Boolean(type === 'npmCta'),
-  //   },
-  // },
 ]
 
 const linkGroup: LinkGroupType = ({
