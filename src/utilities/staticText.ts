@@ -28,3 +28,26 @@ export const deliveryMethods = [
   },
   { id: 'express', title: 'Express', turnaround: '2–5 business days', price: 16, checked: false },
 ]
+
+export const shippingPrices = {
+  free: 0,
+
+  standardMail: 0,
+  registeredMail: 9, // "domestic letters from auspost medium @$6.65" https://auspost.com.au/sending/letters-australia/letter-tracking
+  expressMail: 12, // medium c5 @ $8.85 https://auspost.com.au/sending/letters-australia/express-post
+
+  // weight or cubic weight (whichever is greater) and the destination.
+  // https://auspost.com.au/sending/parcels-australia/parcel-post
+
+  standardParcelMini: 10, // mini pouch, prepaid satchels 355 x 225mm // https://auspost.com.au/sending/parcels-australia/parcel-post#postage
+  // or sendle https://try.sendle.com/en-au/250g-sendle-pouch
+  standardParcelSmall: 10, // small
+  standardParcelMedium: 15, // medium
+  standardParcelLarge: 20, // large
+
+  expressSurcharge: 10, // for express parcel, AUSPOST only
+  regionalSurcharge: 15, //for regional postcodes, city to major regional centres and towns don't charge express
+  remoteSurcharge: 20, // for bumfuck nowhere, dont charge xepress
+
+  courierParcel: 14, // via sendle, APPLY REGIONAL OR REMOTE SURCHARGE
+}
