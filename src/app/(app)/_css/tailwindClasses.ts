@@ -17,8 +17,8 @@ export const contentFormats = {
   alignJustify: ``,
 
   // gen text
-  text: `text-justify font-body font-light tracking-tight leading-snug prose-em:font-extrabold #prose-em:text-gray-700`,
-  smallText: `text-sm text-left #text-justify font-body font-light tracking-tight leading-snug prose-em:font-extrabold #prose-em:text-gray-700`,
+  text: `text-justify font-body font-light tracking-tight leading-snug prose-em:font-extrabold`,
+  smallText: `text-sm text-left #text-justify font-body font-light tracking-tight leading-snug prose-em:font-extrabold #prose-em:text-neutral-700`,
 
   h1: `font-title font-semibold text-5xl tracking-tight`,
   h2: `font-title font-semibold text-2xl tracking-tight`,
@@ -27,37 +27,37 @@ export const contentFormats = {
   h5: `font-title font-semibold text-base tracking-tighter`,
   h6: `font-title font-semibold text-base tracking-tighter`,
 
-  p: `font-body font-light text-gray-800 tracking-tight lg:tracking-tighter`,
-  blockquote: `font-body font-light text-gray-800 tracking-tight lg:tracking-tighter`,
-  pre: `font-body font-light text-gray-800 tracking-tight lg:tracking-tighter`,
-  code: `font-body font-light text-gray-800 tracking-tight lg:tracking-tighter`,
-  a: `font-body  font-light underline underline-offset-4 decoration-dotted decoration-gray-800 text-gray-800 hover:font-medium`,
-  strong: `font-bold text-gray-700`,
+  p: `font-body font-light text-neutral-800 dark:text-neutral-100 tracking-tight lg:tracking-tighter`,
+  blockquote: `font-body font-light text-neutral-800 dark:text-neutral-100 tracking-tight lg:tracking-tighter`,
+  pre: `font-body font-light text-neutral-800 dark:text-neutral-100 tracking-tight lg:tracking-tighter`,
+  code: `font-body font-light text-neutral-800 dark:text-neutral-100 tracking-tight lg:tracking-tighter`,
+  a: `font-body  font-light underline underline-offset-4 decoration-dotted decoration-neutral-800 text-neutral-800 dark:text-neutral-100 hover:font-medium`,
+  strong: `font-bold text-neutral-700`,
 
-  em: 'font-bold text-gray-700',
+  em: 'font-bold text-neutral-700',
   italic: `italic`,
-  ul: 'font-title font-light text-gray-800 tracking-tight lg:tracking-tighter prose-ul:list-disc marker:text-gray-700',
-  li: 'font-title font-light text-gray-800 tracking-tight lg:tracking-tighter  marker:text-gray-700',
-  ol: 'font-title font-light text-gray-800 tracking-tight lg:tracking-tighter prose-ol:list-decimal marker:text-gray-700',
+  ul: 'font-title font-light text-neutral-800 dark:text-neutral-100 tracking-tight lg:tracking-tighter prose-ul:list-disc marker:text-neutral-700',
+  li: 'font-title font-light text-neutral-800 dark:text-neutral-100 tracking-tight lg:tracking-tighter  marker:text-neutral-700',
+  ol: 'font-title font-light text-neutral-800 dark:text-neutral-100 tracking-tight lg:tracking-tighter prose-ol:list-decimal marker:text-neutral-700',
 
   error: 'rounded-sm font-medium text-white bg-red-700 px-4 py-3',
   success: 'rounded-sm font-medium text-offwhite bg-lime-600 px-4 py-3',
   warning: 'rounded-sm font-medium  bg-amber-400 px-4 py-3',
 
   // order status
-  orderProcessing: `text-gray-600 bg-gray-50 ring-gray-500/10`,
+  orderProcessing: `text-neutral-600 bg-neutral-50 ring-neutral-500/10`,
 
   orderCompleted: `text-green-700 bg-green-50 ring-green-600/20`,
-  orderCancelled: `text-red-600 bg-gray-50 ring-gray-500/10`,
-  orderReturned: `text-gray-600 bg-gray-50 ring-gray-500/10`,
+  orderCancelled: `text-red-600 bg-neutral-50 ring-neutral-500/10`,
+  orderReturned: `text-neutral-600 bg-neutral-50 ring-neutral-500/10`,
 
   // order line item status
-  lineItemProcessing: `text-gray-600 bg-gray-50 ring-gray-500/10`, // when just created
-  lineItemShipped: `text-gray-600 bg-gray-50 ring-gray-500/10`, // when fulfilled
+  lineItemProcessing: `text-neutral-600 bg-neutral-50 ring-neutral-500/10`, // when just created
+  lineItemShipped: `text-neutral-600 bg-neutral-50 ring-neutral-500/10`, // when fulfilled
 
   lineItemCompleted: `text-green-700 bg-green-50 ring-green-600/20`,
-  lineItemCancelled: `text-gray-600 bg-gray-50 ring-gray-500/10`,
-  lineItemReturned: `text-gray-600 bg-gray-50 ring-gray-500/10`,
+  lineItemCancelled: `text-neutral-600 bg-neutral-50 ring-neutral-500/10`,
+  lineItemReturned: `text-neutral-600 bg-neutral-50 ring-neutral-500/10`,
 }
 
 export const buttonLook = {
@@ -78,11 +78,11 @@ export const buttonLook = {
   },
 
   variants: {
-    base: `border border-solid border-gray-500 rounded-sm transition hover:border-green hover:shadow-md #hover:font-semibold duration-150 shadow-sm dark:hover:border-green #hover:bg-neutral-300 hover:bg-khaki #hover:bg-green/70 focus:bg-khaki`, // for buttons only
-    links: `underline underline-offset-2 decoration-gray-800 text-gray-800 hover:font-medium`,
+    base: `no-underline hover:no-underline border border-solid border-neutral-500 rounded-sm transition hover:border-green hover:shadow-md duration-150 shadow-sm dark:hover:border-green`, // for buttons only
+    links: `underline underline-offset-2 decoration-neutral-800 text-neutral-800 dark:text-neutral-100 hover:font-medium`,
 
     default: ``, // default look button
-    blocks: `bg-transparent no-underline inline-flex`,
+    blocks: `cursor-pointer bg-transparent no-underline inline-flex hover:border-green hover:shadow-md hover:bg-neutral-950 hover:text-white dark:hover:bg-green dark:hover:text-white dark:hover:border-green dark:hover:shadow-md`,
   },
 
   actions: {
@@ -97,10 +97,10 @@ export const tailwindColorMatch = {
   '#ffffff': 'bg-white', // white
   '#c2c0ae': 'bg-lightkhaki', // light khaki
   '#dfded9': 'bg-lighterkhaki', // lighter khaki
-  '#cbd5e1': 'bg-gray-300', // slate gray
+  '#cbd5e1': 'bg-neutral-300', // slate gray
   '#557755': 'bg-green', // thankly green (dark)
-  '#374151': 'bg-gray-700', // slate black
-  '#030712': 'bg-gray-900', // jet black
+  '#374151': 'bg-neutral-700', // slate black
+  '#030712': 'bg-neutral-900', // jet black
 }
 
 export const textColorVariants = {

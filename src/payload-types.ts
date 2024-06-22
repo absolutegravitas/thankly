@@ -268,17 +268,20 @@ export interface Reusable {
 export interface Cart {
   id: number;
   customer?: (number | null) | User;
-  totals?: {
-    orderValue?: number | null;
-    thanklys?: number | null;
-    shipping?: number | null;
+  totals: {
+    cartTotal: number;
+    cartThanklys: number;
+    cartShipping: number;
   };
   items?:
     | {
+        productPrice?: number | null;
         product: number | Product;
-        price?: number | null;
-        shipping?: number | null;
-        total?: number | null;
+        totals: {
+          itemTotal: number;
+          itemThanklys: number;
+          itemShipping: number;
+        };
         receivers?:
           | {
               firstName?: string | null;
@@ -300,9 +303,11 @@ export interface Cart {
                     | 'courierParcel'
                   )
                 | null;
-              receiverPrice?: number | null;
-              receiverShipping?: number | null;
-              receiverTotal?: number | null;
+              totals: {
+                receiverTotal: number;
+                receiverThankly: number;
+                receiverShipping: number;
+              };
               id?: string | null;
             }[]
           | null;

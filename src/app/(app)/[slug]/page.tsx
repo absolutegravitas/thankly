@@ -37,7 +37,21 @@ export default async function Page({ params: { slug = 'home' } }) {
 }
 
 export async function generateStaticParams() {
-  return await fetchProductSlugs()
+  try {
+    const slugs = await fetchProductSlugs()
+
+    // Ensure 'home' is always included
+    const homeSlug = { slug: 'home' }
+    const uniqueSlugs = [homeSlug, ...slugs].filter(
+      (item, index, self) => index === self.findIndex((t) => t.slug === item.slug),
+    )
+
+    console.log('Generated static params:', uniqueSlugs)
+    return uniqueSlugs
+  } catch (error) {
+    console.error('Error in generateStaticParams:', error)
+    return [{ slug: 'home' }]
+  }
 }
 
 export async function generateMetadata({ params: { slug = 'home' } }): Promise<Metadata> {

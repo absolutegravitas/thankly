@@ -28,28 +28,31 @@ export const Carts: CollectionConfig = {
       type: 'group',
       fields: [
         {
-          name: 'orderValue',
-          type: 'number',
-          required: false,
-        },
-        {
-          name: 'thanklys',
-          type: 'number',
-          required: false,
-        },
-        {
-          name: 'shipping',
-          type: 'number',
-          required: false,
+          type: 'row',
+          fields: [
+            {
+              name: 'cartTotal',
+              type: 'number',
+              required: true,
+              defaultValue: 0,
+            },
+            {
+              name: 'cartThanklys',
+              type: 'number',
+              required: true,
+              defaultValue: 0,
+            },
+            {
+              name: 'cartShipping',
+              type: 'number',
+              required: true,
+              defaultValue: 0,
+            },
+          ],
         },
       ],
     },
-    // value, // Typed as `string` as shown above
-    // data, // Typed as a Partial of your ExampleDocumentType
-    // siblingData, // Typed as a Partial of SiblingDataType
-    // originalDoc, // Typed as ExampleDocumentType
-    // operation,
-    // req,
+
     {
       name: 'items',
       label: 'Items',
@@ -57,6 +60,7 @@ export const Carts: CollectionConfig = {
       // required: true, // doesn't export types as a proper array unless this is specified, but also fucks up cart creation in frontend
       // minRows: 1,
       fields: [
+        { name: 'productPrice', type: 'number', defaultValue: 0, min: 0 },
         {
           name: 'product',
           type: 'relationship',
@@ -64,18 +68,47 @@ export const Carts: CollectionConfig = {
           required: true,
         },
         {
-          type: 'row',
+          name: 'totals',
+          type: 'group',
           fields: [
-            { name: 'price', type: 'number', min: 0, admin: { width: '25%' } },
             {
-              name: 'shipping',
-              type: 'number',
-              min: 0,
-              admin: { width: '25%' },
+              type: 'row',
+              fields: [
+                {
+                  name: 'itemTotal',
+                  type: 'number',
+                  required: true,
+                  defaultValue: 0,
+                },
+                {
+                  name: 'itemThanklys',
+                  type: 'number',
+                  required: true,
+                  defaultValue: 0,
+                },
+                {
+                  name: 'itemShipping',
+                  type: 'number',
+                  required: true,
+                  defaultValue: 0,
+                },
+              ],
             },
-            { name: 'total', type: 'number', min: 0, admin: { width: '25%' } },
           ],
         },
+        // {
+        //   type: 'row',
+        //   fields: [
+        //     { name: 'price', type: 'number', min: 0, admin: { width: '25%' } },
+        //     {
+        //       name: 'shipping',
+        //       type: 'number',
+        //       min: 0,
+        //       admin: { width: '25%' },
+        //     },
+        //     { name: 'total', type: 'number', min: 0, admin: { width: '25%' } },
+        //   ],
+        // },
         {
           name: 'receivers',
           labels: { singular: 'Receiver', plural: 'Receivers' },
@@ -125,39 +158,33 @@ export const Carts: CollectionConfig = {
                 },
               ],
             },
+
             {
-              type: 'row',
+              name: 'totals',
+              type: 'group',
               fields: [
                 {
-                  name: 'receiverPrice',
-                  type: 'number',
-                  min: 0,
-                  admin: { width: '25%' },
-                },
-                {
-                  name: 'receiverShipping',
-                  type: 'number',
-                  min: 0,
-                  admin: { width: '25%' },
-                },
-                {
-                  name: 'receiverTotal',
-                  type: 'number',
-                  min: 0,
-                  admin: { width: '25%' },
-                  // hooks: {
-                  //   afterChange: [
-                  //     ({ value, previousValue, req }) => {
-                  //       if (value !== previousValue) {
-                  //         // Log or perform an action when the membership status changes
-                  //         // console.log(
-                  //         //   `User ID ${req.user.id} changed their membership status from ${previousValue} to ${value}.`,
-                  //         // )
-                  //         // Here, you can implement actions that could track conversions from one tier to another
-                  //       }
-                  //     },
-                  //   ],
-                  // },
+                  type: 'row',
+                  fields: [
+                    {
+                      name: 'receiverTotal',
+                      type: 'number',
+                      required: true,
+                      defaultValue: 0,
+                    },
+                    {
+                      name: 'receiverThankly',
+                      type: 'number',
+                      required: true,
+                      defaultValue: 0,
+                    },
+                    {
+                      name: 'receiverShipping',
+                      type: 'number',
+                      required: true,
+                      defaultValue: 0,
+                    },
+                  ],
                 },
               ],
             },

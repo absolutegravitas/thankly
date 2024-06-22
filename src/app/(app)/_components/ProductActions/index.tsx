@@ -11,7 +11,7 @@ import {
   XIcon,
 } from 'lucide-react'
 import Link from 'next/link'
-import { addProduct, removeProduct } from '@app/_providers/Cart'
+import { addProduct, removeProduct } from '@app/_providers/Cart/actions'
 // import { Button } from '@app/_components/Button'
 import { useRouter } from 'next/navigation'
 import { CMSLink } from '@app/_components/CMSLink'
@@ -19,9 +19,9 @@ import { messages } from '@/utilities/staticText'
 
 export function ProductActions({ product, hidePerks, hideRemove }: any) {
   const { stockOnHand, inCart } = product
-  console.log('product block props -- ', product)
-  console.log('hidePerks -- ', hidePerks)
-  console.log('hideRemove -- ', hideRemove)
+  // console.log('product block props -- ', product)
+  // console.log('hidePerks -- ', hidePerks)
+  // console.log('hideRemove -- ', hideRemove)
 
   const router = useRouter()
   const [isPending, startTransition] = useTransition()

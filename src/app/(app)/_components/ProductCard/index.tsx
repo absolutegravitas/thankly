@@ -23,7 +23,7 @@ export const ProductCard: React.FC<any> = (product) => {
     lowStockThreshold,
     className,
   } = product
-  console.log('product', product)
+  // console.log('product', product)
   return (
     <div className={[`relative`, className].filter(Boolean).join(' ')}>
       <Link href={`/shop/${slug}`} className="relative no-underline hover:no-underline">

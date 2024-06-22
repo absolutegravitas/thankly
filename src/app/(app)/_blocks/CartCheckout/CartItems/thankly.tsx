@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useState, useTransition, useEffect, startTransition } from 'react'
+import Image from 'next/image'
 
 import { buttonLook, contentFormats } from '@app/_css/tailwindClasses'
 import { cartStaticText } from '@/utilities/staticText'
@@ -14,15 +15,18 @@ import {
   removeProduct,
   copyReceiver,
   removeReceiver,
-} from '@app/_providers/Cart'
+} from '@app/_providers/Cart/actions'
 import {
   CopyIcon,
   LoaderCircleIcon,
   MapPinIcon,
   MessageSquareTextIcon,
+  SendIcon,
   TrashIcon,
   UserPlusIcon,
+  XIcon,
 } from 'lucide-react'
+import { CMSLink } from '@app/_components/CMSLink'
 
 export function CartItems() {
   const [cartData, setCartData] = useState<any>()
@@ -30,6 +34,7 @@ export function CartItems() {
   const [optimisticCartData, setOptimisticCartData] = useState<any>()
   const [loading, setLoading] = useState(false)
   const [isAddingReceiver, setIsAddingReceiver] = useState(false)
+
   useEffect(() => {
     const fetchCart = async () => {
       const updatedCart = await getCart()
@@ -46,7 +51,7 @@ export function CartItems() {
   const handleAddReceiver = async (productId: any) => {
     setIsAddingReceiver(true)
     const newReceiver = {
-      id: 'temp-id',
+      id: `temp-${Date.now()}`, // Use a unique temporary ID
       firstName: 'Loading...',
       lastName: '',
       addressLine1: '',
@@ -178,281 +183,251 @@ export function CartItems() {
   }
 
   return (
-    <React.Fragment>
-      <div className="#border #border-solid col-start-1 col-span-4 h-full rounded-sm bg-gray-150 px-6 pb-8">
-        <div className="relative flex items-center justify-between gap-4">
-          <div className="">
-            {/* <h2
-              id="summary-heading"
-              className={[`${contentFormats.global} ${contentFormats.h3}`].join(' ')}
-            >
-              Thanklys
-            </h2> */}
-            <p className={[contentFormats.global, contentFormats.text].join(' ')}>
-              {cartStaticText.receiverMessage}
-            </p>
-          </div>
-        </div>
+    <div className="p-5 #border #border-solid border-zinc-200 rounded-md divide-y">
+      {optimisticCartData?.items?.map((item: any, index: any) => {
+        const { product, receivers, price, shipping, total } = item
+        const { image: metaImage } = product.meta
 
-        {!cartData
-          ? Array(3)
-              .fill(null)
-              .map((_, index) => <SkeletonCartItem key={index} />)
-          : optimisticCartData?.items?.map((item: any, index: any) => {
-              const { product, receivers, price, shipping, total } = item
-              const { image: metaImage } = product.meta
+        return (
+          <div key={index} className="">
+            {/* Product Info */}
+            <div className="space-y-4">
+              <div className="#grid flex sm:flex items-start sm:items-center sm:space-x-4 space-x-3">
+                <div className="h-20 w-20 bg-gray-50 mb-2 sm:mb-0 sm:mr-4">
+                  {metaImage && typeof metaImage !== 'string' && (
+                    <div className="relative w-full h-full group">
+                      <Image
+                        src={metaImage.url}
+                        alt={metaImage.alt || ''}
+                        priority={false}
+                        fill
+                        className="aspect-square object-cover rounded-sm shadow-md hover:scale-105 hover:delay-75 duration-150 transition-transform"
+                      />
+                    </div>
+                  )}
+                </div>
+                {/* title & description */}
+                <div className="flex-1">
+                  <span className={cn(contentFormats.global, contentFormats.h4, `no-underline`)}>
+                    {product.title}
+                  </span>
 
-              return (
-                <React.Fragment>
-                  <div key={index} className="border border-solid border-gray-200/90">
-                    <div className="flex flex-col gap-6 p-5 md:flex-row md:justify-between">
-                      <div className="flex min-w-0 gap-x-4">
-                        <div className="h-20 w-20 flex-none bg-gray-50">
-                          {!metaImage && <div className={''}>No image</div>}
-                          {metaImage && typeof metaImage !== 'string' && (
-                            <React.Fragment>
-                              <Media
-                                imgClassName={`aspect-square w-full flex-none rounded-md object-cover`}
-                                resource={metaImage}
-                              />
-                            </React.Fragment>
-                          )}
-                        </div>
+                  <div
+                    className={cn(
+                      'mt-2 !text-left !leading-snug !font-normal !tracking-tighter !antialiased line-clamp-2 sm:line-clamp-1 sm:pr-10',
+                      contentFormats.global,
+                      contentFormats.text,
+                    )}
+                  >
+                    {product.meta.description}
+                  </div>
+                </div>
+              </div>
 
-                        <div className="flex flex-col gap-x-3 sm:items-start">
-                          <div
-                            className={cn(
-                              'pb-3 !text-left !leading-snug',
-                              contentFormats.global,
-                              contentFormats.h4,
-                            )}
-                          >
-                            {product.title}
-                          </div>
-                          <div
-                            className={cn(
-                              ' hidden !text-left !leading-snug sm:flex',
-                              contentFormats.global,
-                              contentFormats.text,
-                            )}
-                          >
-                            {product.meta.description}
-                          </div>
+              {/* Notices */}
+              <div className={cn(contentFormats.global, contentFormats.text, `!mt-0 text-sm py-4`)}>
+                {product.productType != 'card' && (
+                  <React.Fragment>
+                    {cartStaticText.receiverMessage + ` `}
+                    <span className="font-semibold">{`Thankly Cards: `}</span>
+                    <span className={[contentFormats.text, `text-sm`].join(' ')}>
+                      {cartStaticText.shippingMessage}
+                      <Link
+                        className={[contentFormats.global, contentFormats.a, `!text-sm`].join(' ')}
+                        href="https://auspost.com.au/about-us/supporting-communities/services-all-communities/our-future"
+                        target="_blank"
+                      >
+                        Learn More
+                      </Link>
+                    </span>
+                  </React.Fragment>
+                )}
+              </div>
+            </div>
+
+            {/* Receiver Actions */}
+            <div className="basis-1/4 flex #items-center #justify-end pb-3 gap-4">
+              <CMSLink
+                data={{
+                  label: 'Add Receiver',
+                  // type: 'custom',
+                  // url: '/shop',
+                }}
+                look={{
+                  theme: 'light',
+                  type: 'button',
+                  size: 'small',
+                  width: 'narrow',
+                  variant: 'blocks',
+                  icon: {
+                    content: <UserPlusIcon strokeWidth={1.25} />,
+                    iconPosition: 'right',
+                  },
+                }}
+                actions={{
+                  onClick: () => handleAddReceiver(product.id),
+                }}
+              />
+              <CMSLink
+                data={{
+                  label: 'Delete Thankly',
+                  // type: 'custom',
+                  // url: '/shop',
+                }}
+                look={{
+                  theme: 'light',
+                  type: 'button',
+                  size: 'small',
+                  width: 'narrow',
+                  variant: 'blocks',
+                  icon: {
+                    content: <UserPlusIcon strokeWidth={1.25} />,
+                    iconPosition: 'right',
+                  },
+                }}
+                actions={{
+                  onClick: () => handleAddReceiver(product.id),
+                }}
+              />
+            </div>
+            {/* Receivers */}
+            <div className="pt-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
+              {receivers?.map((receiver: any, index: any) => {
+                return (
+                  <div
+                    key={index}
+                    className="relative flex flex-col justify-between border border-solid hover:scale-105 hover:bg-neutral-300/50 hover:delay-75 duration-150 shadow-md p-6 aspect-square"
+                  >
+                    <div>
+                      <div className="flex flex-row justify-between items-center">
+                        <span className={[contentFormats.p, 'font-semibold basis-3/4'].join(' ')}>
+                          {`#` + (index + 1).toString().padStart(2, '0')}
+                        </span>
+                        <div className="flex basis-3/4 justify-end items-center gap-x-3">
+                          <CopyIcon
+                            className="h-5 w-5 hover:text-green cursor-pointer hover:animate-pulse"
+                            aria-hidden="true"
+                            strokeWidth={1.4}
+                            onClick={() => handleCopyReceiver(product.id, receiver.id)}
+                          />
+                          <XIcon
+                            className="h-5 w-5 cursor-pointer hover:text-green hover:animate-pulse"
+                            aria-hidden="true"
+                            strokeWidth={1.4}
+                            onClick={() => handleDeleteReceiver(product.id, receiver.id)}
+                          />
                         </div>
                       </div>
-                      <div className="flex flex-none items-end gap-x-4 align-top">
+                      <h5
+                        className={[contentFormats.global, contentFormats.p, 'font-semibold '].join(
+                          ' ',
+                        )}
+                      >
+                        {`${receiver.firstName} ${receiver.lastName}`}
+                      </h5>
+                      {receiver.addressLine1 && (
+                        <React.Fragment>
+                          <div
+                            className={[
+                              contentFormats.global,
+                              contentFormats.p,
+                              'text-sm pb-5 flex flex-row leading-0',
+                            ]
+                              .filter(Boolean)
+                              .join(' ')}
+                          >
+                            <MapPinIcon className="mr-2" strokeWidth={1.25} />
+                            <span>
+                              {receiver.addressLine1}
+                              {receiver.addressLine2 && (
+                                <>
+                                  <br />
+                                  {receiver.addressLine2}
+                                </>
+                              )}
+                              <br />
+                              {[receiver.city, receiver.state, receiver.postcode]
+                                .filter(Boolean)
+                                .join(', ')}
+                            </span>
+                          </div>
+
+                          <div
+                            className={[
+                              contentFormats.global,
+                              contentFormats.p,
+                              'text-sm pb-5 flex flex-row',
+                            ]
+                              .filter(Boolean)
+                              .join(' ')}
+                          >
+                            <SendIcon className="mr-2" strokeWidth={1.25} />
+                            <span>{receiver.shippingOption}</span>
+                          </div>
+                        </React.Fragment>
+                      )}
+                      {receiver.message && (
                         <div
-                          className={cn(
-                            buttonLook.global,
-                            buttonLook.small,
-                            buttonLook.product,
-                            buttonLook.transparentDark,
-                          )}
-                          onClick={() => handleAddReceiver(product.id)}
+                          className={[
+                            contentFormats.global,
+                            contentFormats.p,
+                            'text-sm py-4 flex flex-row leading-tight',
+                          ]
+                            .filter(Boolean)
+                            .join(' ')}
                         >
-                          <UserPlusIcon
-                            className={cn(`mr-2 h-5 w-5 flex-none text-gray-900`)}
-                            aria-hidden="true"
+                          <MessageSquareTextIcon
+                            className="flex-shrink-0 w-5 h-5 mr-2"
                             strokeWidth={1.25}
                           />
-                          <div>{`Add Receiver`}</div>
+                          <span>{receiver.message}</span>
                         </div>
-                        <div
-                          className={cn(
-                            buttonLook.global,
-                            buttonLook.small,
-                            buttonLook.product,
-                            buttonLook.transparentDark,
-                          )}
-                          onClick={() => handleRemoveProduct(product.id)}
-                        >
-                          <TrashIcon
-                            className={cn(`mr-2 h-5 w-5 flex-none `)}
-                            aria-hidden="true"
-                            strokeWidth={1.25}
-                          />
-                          <div>{`Remove Thankly`}</div>
-                        </div>
-                      </div>
+                      )}
                     </div>
 
-                    <div className="px-4 sm:px-6 lg:px-8">
-                      <div className={cn(contentFormats.global, contentFormats.text)}>
-                        {product.productType === 'card' && (
-                          <React.Fragment>
-                            <span className="font-semibold">{`Thankly Cards: `}</span>
-                            <span className={[contentFormats.text].join(' ')}>
-                              {cartStaticText.shippingMessage}
-                              <Link
-                                className={[contentFormats.global, contentFormats.a].join(' ')}
-                                href="https://auspost.com.au/about-us/supporting-communities/services-all-communities/our-future"
-                                target="_blank"
-                              >
-                                Learn More
-                              </Link>
-                            </span>
-                          </React.Fragment>
+                    <div className="mt-auto text-right">
+                      <div>
+                        <span className={[contentFormats.global, contentFormats.text].join(' ')}>
+                          Cost:{' '}
+                          {(receiver.total || 0).toLocaleString('en-AU', {
+                            style: 'currency',
+                            currency: 'AUD',
+                            minimumFractionDigits: 0,
+                            maximumFractionDigits: 2,
+                          })}
+                        </span>
+                      </div>
+                      <div>
+                        <span className={[contentFormats.global, contentFormats.text].join(' ')}>
+                          {`+ Shipping: ${receiver.shippingOption != 'free' ? '(' + receiver.shippingOption + ')' : ''}`}
+                          {(receiver.shipping || 0).toLocaleString('en-AU', {
+                            style: 'currency',
+                            currency: 'AUD',
+                            minimumFractionDigits: 0,
+                            maximumFractionDigits: 2,
+                          })}
+                        </span>
+                      </div>
+                      <div className={[contentFormats.global, contentFormats.h6].join(' ')}>
+                        {/* {'Subtotal: '} */}
+                        {((receiver.total || 0) + (receiver.shipping || 0) || 0).toLocaleString(
+                          'en-AU',
+                          {
+                            style: 'currency',
+                            currency: 'AUD',
+                            minimumFractionDigits: 0,
+                            maximumFractionDigits: 2,
+                          },
                         )}
                       </div>
-
-                      <div className="pt-6 grid grid-cols-1 md:grid-cols-2 sm:grid-cols-1 gap-4">
-                        {receivers?.map((receiver: any, index: any) => {
-                          return (
-                            <div
-                              key={index}
-                              className="hover:scale-105 border border-solid hover:bg-gray-200/50 hover:delay-75 duration-150 hover:shadow-md rounded-md px-5 py-6 aspect-square"
-                            >
-                              <div
-                                className={[
-                                  `flex flex-row justify-between items-center`, // Added items-center to vertically center the content
-                                  contentFormats.global,
-                                  contentFormats.h5,
-                                ].join(' ')}
-                              >
-                                <h5 className="flex basis-1/4">
-                                  {(index + 1).toString().padStart(2, '0')}
-                                </h5>
-                                <div className="flex basis-3/4 justify-end items-center gap-x-3">
-                                  <CopyIcon
-                                    className="h-5 w-5 hover:text-green cursor-pointer hover:animate-pulse"
-                                    aria-hidden="true"
-                                    strokeWidth={1.1}
-                                    onClick={() => handleCopyReceiver(product.id, receiver.id)}
-                                  />
-                                  <TrashIcon
-                                    className="h-5 w-5 cursor-pointer hover:text-green hover:animate-pulse"
-                                    aria-hidden="true"
-                                    strokeWidth={1.1}
-                                    onClick={() => handleDeleteReceiver(product.id, receiver.id)}
-                                  />
-                                </div>
-                              </div>
-                              <h5
-                                className={[
-                                  contentFormats.global,
-                                  contentFormats.text,
-                                  `font-semibold`,
-                                ]
-                                  .filter(Boolean)
-                                  .join(' ')}
-                              >
-                                {`${receiver.firstName} ${receiver.lastName}`}
-                              </h5>
-                              {receiver.addressLine1 && (
-                                <div
-                                  className={[
-                                    contentFormats.global,
-                                    contentFormats.p,
-                                    `text-sm pb-5 flex flex-row`,
-                                  ]
-                                    .filter(Boolean)
-                                    .join(' ')}
-                                >
-                                  <MapPinIcon className="mr-2" strokeWidth={1.25} />
-                                  <span>
-                                    {receiver.addressLine1}
-                                    {receiver.addressLine2 && (
-                                      <>
-                                        <br />
-                                        {receiver.addressLine2}
-                                      </>
-                                    )}
-                                    <br />
-                                    {[receiver.city, receiver.state, receiver.postcode]
-                                      .filter(Boolean)
-                                      .join(', ')}
-                                  </span>
-                                </div>
-                              )}
-                              {receiver.message && (
-                                <div
-                                  className={[
-                                    contentFormats.global,
-                                    contentFormats.p,
-                                    `text-sm py-4 flex flex-row`,
-                                  ]
-                                    .filter(Boolean)
-                                    .join(' ')}
-                                >
-                                  <MessageSquareTextIcon
-                                    className="flex-shrink-0 w-5 h-5 mr-2"
-                                    strokeWidth={1.25}
-                                  />
-                                  <span>{receiver.message}</span>
-                                </div>
-                              )}
-
-                              <div className="flex justify-between items-center pt-4">
-                                <div>
-                                  <span
-                                    className={[contentFormats.global, contentFormats.h6].join(' ')}
-                                  >
-                                    Cost:{' '}
-                                    {receiver.total?.toLocaleString('en-AU', {
-                                      style: 'currency',
-                                      currency: 'AUD',
-                                      minimumFractionDigits: 0,
-                                      maximumFractionDigits: 2,
-                                    })}
-                                  </span>
-                                  <span
-                                    className={[contentFormats.global, contentFormats.text].join(
-                                      ' ',
-                                    )}
-                                  >
-                                    + Shipping:{' '}
-                                    {receiver.shipping?.toLocaleString('en-AU', {
-                                      style: 'currency',
-                                      currency: 'AUD',
-                                      minimumFractionDigits: 0,
-                                      maximumFractionDigits: 2,
-                                    })}
-                                  </span>
-                                </div>
-                                <div
-                                  className={[contentFormats.global, contentFormats.h6].join(' ')}
-                                >
-                                  Subtotal:{' '}
-                                  {(receiver.total + receiver.shipping)?.toLocaleString('en-AU', {
-                                    style: 'currency',
-                                    currency: 'AUD',
-                                    minimumFractionDigits: 0,
-                                    maximumFractionDigits: 2,
-                                  })}
-                                </div>
-                              </div>
-                            </div>
-                          )
-                        })}
-                      </div>
                     </div>
-
-                    {/* <Receivers productType={product.productType} receivers={receivers} /> */}
                   </div>
-                </React.Fragment>
-              )
-            })}
-      </div>
-    </React.Fragment>
-  )
-}
-
-export const SkeletonCartItem = () => {
-  return (
-    <div className="border border-solid border-gray-200/90 animate-pulse">
-      <div className="flex flex-col gap-6 p-5 md:flex-row md:justify-between">
-        <div className="flex min-w-0 gap-x-4">
-          <div className="h-20 w-20 flex-none bg-gray-200"></div>
-          <div className="flex flex-col gap-x-3 sm:items-start">
-            <div className="w-32 h-6 bg-gray-200 mb-2"></div>
-            <div className="w-48 h-4 bg-gray-200"></div>
+                )
+              })}
+            </div>
           </div>
-        </div>
-        <div className="flex flex-none items-end gap-x-4 align-top">
-          <div className="w-24 h-8 bg-gray-200"></div>
-          <div className="w-24 h-8 bg-gray-200"></div>
-        </div>
-      </div>
+        )
+      })}
     </div>
   )
 }

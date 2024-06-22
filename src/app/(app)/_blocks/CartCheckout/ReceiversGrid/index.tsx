@@ -1,233 +1,157 @@
-'use client'
-
-import React, { CSSProperties, useEffect, useTransition, useState } from 'react'
-
-import classes from './index.module.scss'
-import { ArrowIcon } from '@app/_icons/ArrowIcon'
 import { contentFormats } from '@app/_css/tailwindClasses'
-import { CopyIcon, TrashIcon } from 'lucide-react' // Assuming these are the Lucide React icons for copy and delete
-import cn from '@/utilities/cn'
-export const ReceiversGrid: React.FC<any> = () => {
-  const [index, setIndex] = useState(0)
-  const [editingIndex, setEditingIndex] = useState<number | null>(null)
-  const [editedMessage, setEditedMessage] = useState<string>('')
+import {
+  addReceiver,
+  removeReceiver,
+  removeProduct,
+  copyReceiver,
+} from '@app/_providers/Cart/actions'
+import { MapPinIcon, MessageSquareTextIcon, SendIcon } from 'lucide-react'
+import React from 'react'
+import {
+  AddReceiverButton,
+  CopyReceiverIcon,
+  RemoveProductButton,
+  RemoveReceiverIcon,
+} from './ReceiverActions'
 
-  // useEffect to watch for changes in the receivers array
-  useEffect(() => {
-    // Do something when receivers array changes
-  }, [receivers])
-
-  const handleEditClick = (index: number, currentMessage: string) => {
-    setEditingIndex(index)
-    setEditedMessage(currentMessage)
-  }
-
-  const handleSaveClick = () => {
-    // Save the new message
-    if (editingIndex !== null) {
-      receivers[editingIndex].message = editedMessage
-      setEditingIndex(null)
-      setEditedMessage('')
-    }
-  }
+export const ReceiversGrid: React.FC<any> = async (item: any) => {
+  // console.log('cart item receivers --', JSON.stringify(item?.receivers || null))
 
   return (
-    <div className="px-4 sm:px-6 lg:px-8">
-      {receivers.length > 0 && (
-        <div className={classes.cards}>
-          {/* <div className={classes.margins}>
-              <BackgroundScanline enableBorders={true} className={classes.marginLeft} />
-              <BackgroundScanline enableBorders={true} className={classes.marginRight} />
-            </div> */}
-          <div
-            className={['grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6']
-              .filter(Boolean)
-              .join(' ')}
-          >
-            {receivers.map((receiver: any, index: any) => {
-              return (
-                <div
-                  key={index}
-                  className={'border-solid border #hover:bg-gray-100'}
-                  onMouseEnter={() => setIndex(index + 1)}
-                  onMouseLeave={() => setIndex(0)}
-                >
-                  <div className={[classes.card, , 'hover:bg-gray-100'].filter(Boolean).join(' ')}>
-                    <div className={[classes.leader, ''].join(' ')}>
-                      <h6 className={[classes.leaderText, ''].join(' ')}>
-                        {(index + 1).toString().padStart(2, '0')}
-                      </h6>
-                      <div className="flex flex-none items-end gap-x-3 align-top">
-                        <CopyIcon
-                          className={`h-5 w-5 flex-none hover:text-green cursor-pointer hover:animate-pulse`}
-                          aria-hidden="true"
-                          strokeWidth={1.1}
-                        />
+    <React.Fragment>
+      <div className="basis-1/4 flex #items-center #justify-end pb-3 gap-4">
+        <AddReceiverButton productId={item.product.id} addReceiver={addReceiver} />
+        <RemoveProductButton cartItemId={item.id} removeProduct={removeProduct} />
+      </div>
 
-                        <TrashIcon
-                          className={cn(
-                            `h-5 w-5 flex-none cursor-pointer hover:text-green hover:animate-pulse`,
-                          )}
-                          aria-hidden="true"
-                          strokeWidth={1.1}
-                        />
-                      </div>
-                    </div>
-
-                    <div className={''}>
-                      <h5
-                        className={[
-                          contentFormats.global,
-                          contentFormats.text,
-                          `font-semibold text-base`,
-                        ]
-                          .filter(Boolean)
-                          .join(' ')}
-                      >
-                        {`${receiver.firstName} ${receiver.lastName}`}
-                      </h5>{' '}
-                      {receiver.addressLine1 && (
-                        <div
-                          className={[
-                            classes.descriptionWrapper,
-                            contentFormats.global,
-                            contentFormats.p,
-                            `text-sm `,
-                          ]
-                            .filter(Boolean)
-                            .join(' ')}
-                        >
-                          <p className={classes.description}>
-                            {receiver.addressLine1}
-                            {receiver.addressLine2 && (
-                              <>
-                                <br />
-                                {receiver.addressLine2}
-                              </>
-                            )}
-                            <br />
-                            {[receiver.city, receiver.state, receiver.postcode]
-                              .filter(Boolean)
-                              .join(', ')}
-                          </p>
-                        </div>
-                      )}
-                    </div>
-                    {editingIndex === index ? (
-                      <div className={classes.descriptionWrapper}>
-                        <div className="relative mt-2 flex items-center">
-                          <textarea
-                            // type="text"
-                            value={editedMessage}
-                            name="search"
-                            onChange={(e) => setEditedMessage(e.target.value)}
-                            id="search"
-                            className={cn(
-                              contentFormats.global,
-                              // contentFormats.text,
-                              `font-body text-sm leading-tighter tracking-tight`,
-                              'block w-full rounded-xs border-0 py-1.5 pr-14 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-green sm:text-sm sm:leading-6',
-                            )}
-                          />
-                          <div
-                            onClick={handleSaveClick}
-                            className="cursor-pointer absolute inset-y-0 right-0 flex py-1.5 pr-1.5"
-                          >
-                            <kbd className="inline-flex items-center rounded border border-gray-200 px-1 font-sans text-xs text-gray-400">
-                              {`Save >`}
-                            </kbd>
-                          </div>
-                        </div>
-                      </div>
-                    ) : (
-                      receiver.message && (
-                        <div
-                          className={[
-                            classes.descriptionWrapper,
-                            contentFormats.global,
-                            contentFormats.p,
-                            `text-sm`,
-                          ]
-                            .filter(Boolean)
-                            .join(' ')}
-                          onClick={() => handleEditClick(index, receiver.message)}
-                        >
-                          <p className={classes.description}>{receiver.message}</p>
-                        </div>
-                      )
-                    )}
+      {/* Receiver Grid */}
+      <div className="pt-6 grid grid-cols-1 lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-2 gap-4">
+        {item?.receivers?.map((receiver: any, index: any) => {
+          return (
+            <div
+              key={index}
+              className="relative flex flex-col justify-between border border-solid hover:scale-105 hover:bg-neutral-300/50 hover:delay-75 duration-150 #shadow-md p-6 aspect-square"
+            >
+              <div>
+                <div className="flex flex-row justify-between items-center">
+                  <span className={[contentFormats.p, 'font-semibold basis-3/4'].join(' ')}>
+                    {`#` + (index + 1).toString().padStart(2, '0')}
+                  </span>
+                  <div className="flex basis-3/4 justify-end items-center gap-x-3">
+                    <CopyReceiverIcon
+                      cartItemId={item.id}
+                      receiverId={receiver.id}
+                      copyReceiver={copyReceiver}
+                    />
+                    <RemoveReceiverIcon
+                      cartItemId={item.id} // This should be the ID of the cart item, not the product
+                      receiverId={receiver.id}
+                      removeReceiver={removeReceiver}
+                    />
                   </div>
                 </div>
-              )
-            })}
-          </div>
-        </div>
-      )}
-    </div>
+                <h5
+                  className={[contentFormats.global, contentFormats.p, 'font-semibold '].join(' ')}
+                >
+                  {`${receiver.firstName} ${receiver.lastName}`}
+                </h5>
+                {receiver.addressLine1 && (
+                  <React.Fragment>
+                    <div
+                      className={[
+                        contentFormats.global,
+                        contentFormats.p,
+                        'text-sm pb-5 flex flex-row leading-0',
+                      ]
+                        .filter(Boolean)
+                        .join(' ')}
+                    >
+                      <MapPinIcon className="mr-2" strokeWidth={1.25} />
+                      <span>
+                        {receiver.addressLine1}
+                        {receiver.addressLine2 && (
+                          <>
+                            <br />
+                            {receiver.addressLine2}
+                          </>
+                        )}
+                        <br />
+                        {[receiver.city, receiver.state, receiver.postcode]
+                          .filter(Boolean)
+                          .join(', ')}
+                      </span>
+                    </div>
+
+                    <div
+                      className={[
+                        contentFormats.global,
+                        contentFormats.p,
+                        'text-sm pb-5 flex flex-row',
+                      ]
+                        .filter(Boolean)
+                        .join(' ')}
+                    >
+                      <SendIcon className="mr-2" strokeWidth={1.25} />
+                      <span>{receiver.shippingOption}</span>
+                    </div>
+                  </React.Fragment>
+                )}
+                {receiver.message && (
+                  <div
+                    className={[
+                      contentFormats.global,
+                      contentFormats.p,
+                      'text-sm py-4 flex flex-row leading-tight',
+                    ]
+                      .filter(Boolean)
+                      .join(' ')}
+                  >
+                    <MessageSquareTextIcon
+                      className="flex-shrink-0 w-5 h-5 mr-2"
+                      strokeWidth={1.25}
+                    />
+                    <span>{receiver.message}</span>
+                  </div>
+                )}
+              </div>
+
+              <div className="mt-auto text-right">
+                <div>
+                  <span className={[contentFormats.global, contentFormats.text].join(' ')}>
+                    Cost:{' '}
+                    {(receiver.total || 0).toLocaleString('en-AU', {
+                      style: 'currency',
+                      currency: 'AUD',
+                      minimumFractionDigits: 0,
+                      maximumFractionDigits: 2,
+                    })}
+                  </span>
+                </div>
+                <div>
+                  <span className={[contentFormats.global, contentFormats.text].join(' ')}>
+                    {`+ Shipping: ${receiver.shippingOption != 'free' ? '(' + receiver.shippingOption + ')' : ''}`}
+                    {(receiver.shipping || 0).toLocaleString('en-AU', {
+                      style: 'currency',
+                      currency: 'AUD',
+                      minimumFractionDigits: 0,
+                      maximumFractionDigits: 2,
+                    })}
+                  </span>
+                </div>
+                <div className={[contentFormats.global, contentFormats.h6].join(' ')}>
+                  {/* {'Subtotal: '} */}
+                  {((receiver.total || 0) + (receiver.shipping || 0) || 0).toLocaleString('en-AU', {
+                    style: 'currency',
+                    currency: 'AUD',
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 2,
+                  })}
+                </div>
+              </div>
+            </div>
+          )
+        })}
+      </div>
+    </React.Fragment>
   )
 }
-export default ReceiversGrid
-
-const receivers = [
-  {
-    id: '665fd322f855774296f7a9f1',
-    firstName: 'John',
-    lastName: 'Smith',
-    message:
-      'It was the best of times, it was the blurst of times. Wherefore are thou blah blahLorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus id eleifend leo. Nullam aliquet, nisi at congue consectetur, massa ligula lacinia lorem.',
-    addressLine1: '123 Fake St',
-    addressLine2: null,
-    city: 'Melbourne',
-    state: 'VIC',
-    postcode: '3124',
-    shippingOption: 'free',
-    receiverPrice: null,
-    receiverShipping: null,
-    receiverTotal: null,
-  },
-  {
-    id: '665fd322f855774296f7a9f1',
-    firstName: 'John',
-    lastName: 'Smith',
-    message: 'It was the blurst of times...',
-    addressLine1: '123 Fake St',
-    addressLine2: null,
-    city: 'Melbourne',
-    state: 'VIC',
-    postcode: '3124',
-    shippingOption: 'free',
-    receiverPrice: null,
-    receiverShipping: null,
-    receiverTotal: null,
-  },
-  {
-    id: '665fd322f855774296f7a9f1',
-    firstName: 'John',
-    lastName: 'Smith',
-    message: 'It was the blurst of times...',
-    addressLine1: '123 Fake St',
-    addressLine2: null,
-    city: 'Melbourne',
-    state: 'VIC',
-    postcode: '3124',
-    shippingOption: 'free',
-    receiverPrice: null,
-    receiverShipping: null,
-    receiverTotal: null,
-  },
-  {
-    id: '665fd322f855774296f7a9f1',
-    firstName: 'John',
-    lastName: 'Smith',
-    message: 'It was the blurst of times...',
-    addressLine1: '123 Fake St',
-    addressLine2: null,
-    city: 'Melbourne',
-    state: 'VIC',
-    postcode: '3124',
-    shippingOption: 'free',
-    receiverPrice: null,
-    receiverShipping: null,
-    receiverTotal: null,
-  },
-]

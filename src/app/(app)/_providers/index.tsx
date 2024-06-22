@@ -8,8 +8,8 @@ import { ModalContainer, ModalProvider } from '@faceless-ui/modal'
 import { MouseInfoProvider } from '@faceless-ui/mouse-info'
 import { ScrollInfoProvider } from '@faceless-ui/scroll-info'
 import { WindowInfoProvider } from '@faceless-ui/window-info'
+// import { CartProvider } from '@app/_providers/Cart'
 
-import { ClockIcon } from '@app/_graphics/ClockIcon'
 import { InfoIcon } from '@app/_graphics/InfoIcon'
 import { CheckIcon } from '@app/_icons/CheckIcon'
 import { CloseIcon } from '@app/_icons/CloseIcon'
@@ -26,6 +26,7 @@ export const Providers: React.FC<{
   return (
     <CookiesProvider>
       <AuthProvider>
+        {/* <CartProvider> */}
         <ScrollInfoProvider>
           <MouseInfoProvider>
             <WindowInfoProvider
@@ -96,6 +97,7 @@ export const Providers: React.FC<{
             </WindowInfoProvider>
           </MouseInfoProvider>
         </ScrollInfoProvider>
+        {/* </CartProvider> */}
       </AuthProvider>
     </CookiesProvider>
   )

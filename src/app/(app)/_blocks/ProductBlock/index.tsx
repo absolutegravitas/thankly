@@ -25,7 +25,7 @@ export const ProductBlockContent: React.FC<any> = (props) => {
     inCart,
   } = props
 
-  console.log('product block', props)
+  // console.log('product block', props)
   return (
     <Gutter>
       <div className="mx-auto max-w-2xl px-4 pt-8  sm:px-6 sm:py-16 lg:grid lg:max-w-7xl lg:grid-cols-2 lg:gap-x-8 lg:px-8">

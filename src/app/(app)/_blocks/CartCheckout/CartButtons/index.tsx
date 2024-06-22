@@ -2,10 +2,10 @@
 import React, { useState, useTransition, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 // import { Button } from '@app/_components/Button'
-import { clearCart } from '@app/_providers/Cart'
+import { clearCart } from '@app/_providers/Cart/actions'
 import { revalidateCache } from '@/utilities/revalidateCache'
 import { CMSLink } from '@app/_components/CMSLink'
-import { ShoppingBagIcon, ShoppingCartIcon, XIcon } from 'lucide-react'
+import { ArrowBigLeft, ArrowLeftIcon, ShoppingBagIcon, ShoppingCartIcon, XIcon } from 'lucide-react'
 
 export function CartButtons() {
   const router = useRouter()
@@ -23,7 +23,7 @@ export function CartButtons() {
           theme: 'light',
           type: 'button',
           size: 'medium',
-          width: 'wide',
+          width: 'full',
           variant: 'blocks',
           icon: {
             content: <XIcon strokeWidth={1.25} />,
@@ -42,7 +42,7 @@ export function CartButtons() {
       />
       <CMSLink
         data={{
-          label: 'Shop',
+          label: 'Back to Shop',
           type: 'custom',
           url: '/shop',
         }}
@@ -50,15 +50,15 @@ export function CartButtons() {
           theme: 'light',
           type: 'button',
           size: 'medium',
-          width: 'wide',
+          width: 'full',
           variant: 'blocks',
           icon: {
-            content: <ShoppingBagIcon strokeWidth={1.25} />,
+            content: <ArrowLeftIcon strokeWidth={1.25} />,
             iconPosition: 'right',
           },
         }}
       />
-      <CMSLink
+      {/* <CMSLink
         className="dark"
         data={{
           label: 'Checkout',
@@ -76,7 +76,7 @@ export function CartButtons() {
             iconPosition: 'right',
           },
         }}
-      />
+      /> */}
     </React.Fragment>
   )
 }

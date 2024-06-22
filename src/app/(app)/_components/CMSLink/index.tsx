@@ -42,9 +42,14 @@ export type CMSLinkType = {
   }
 }
 
-export const CMSLink: React.FC<CMSLinkType> = ({ data, children, className, look, actions }) => {
-  console.log('CMSLink -- ', data)
-
+export const CMSLink: React.FC<CMSLinkType & { pending?: boolean }> = ({
+  data,
+  children,
+  className,
+  look,
+  actions,
+  pending,
+}) => {
   // validate inputs
   if (!data) return null // Handle case where data is undefined
 
@@ -59,9 +64,9 @@ export const CMSLink: React.FC<CMSLinkType> = ({ data, children, className, look
     buttonLook.base,
     cn(
       look?.theme === 'dark' ? 'dark' : 'light',
-      look?.size && look.type != 'link' && buttonLook.sizes[look.size],
-      look?.width && look.type != 'link' && buttonLook.widths[look.width],
-      look?.type != 'link' && buttonLook.variants['base'],
+      look?.size && look.type !== 'link' && buttonLook.sizes[look.size],
+      look?.width && look.type !== 'link' && buttonLook.widths[look.width],
+      look?.type !== 'link' && buttonLook.variants['base'],
       look?.variant && buttonLook.variants[look.variant],
     ),
   ]
@@ -91,10 +96,11 @@ export const CMSLink: React.FC<CMSLinkType> = ({ data, children, className, look
     </>
   )
 
-  if (look?.type === 'button' || look?.type === 'submit') {
+  if ((look?.type === 'button' || look?.type === 'submit') && actions?.onClick) {
     return (
-      <button className={classNames} onClick={handleClick} {...newTabProps}>
-        {renderContent()}
+      <button className={classNames} onClick={handleClick} disabled={pending} {...newTabProps}>
+        {/* {renderContent()} */}
+        {pending ? 'processing...' : renderContent()}
       </button>
     )
   } else {

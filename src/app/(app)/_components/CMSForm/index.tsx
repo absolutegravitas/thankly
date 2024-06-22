@@ -182,7 +182,7 @@ const RenderForm = ({ form }: { form: FormType }) => {
               className={[classes.submitButton, classes.hideTopBorder].filter(Boolean).join(' ')}
               processing={isLoading}
               label={submitButtonLabel}
-              iconRotation={45}
+              // iconRotation={45}
             />
           </Form>
         </React.Fragment>

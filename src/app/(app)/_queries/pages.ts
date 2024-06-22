@@ -45,10 +45,9 @@ export const fetchPage = (slug: string): Promise<Page | null> => {
 }
 
 export const fetchProductSlugs = unstable_cache(
-  async (): Promise<{ pages: any[] } | null> => {
+  async (): Promise<{ slug: string }[]> => {
     const config = await configPromise
     let payload: any = await getPayloadHMR({ config })
-    let result: any
 
     try {
       const { docs } = await payload.find({
@@ -59,28 +58,26 @@ export const fetchProductSlugs = unstable_cache(
 
       console.log('docs', docs)
 
-      if (docs?.length === 0) {
-        console.log('not found')
-        return null
+      if (!docs || docs.length === 0) {
+        console.log('No pages found')
+        return []
       }
-      console.log('found pages list')
-      result = docs.map((page: Page) => ({
-        slug: page.slug,
-      }))
+
+      console.log('Found pages list')
+
+      return docs
+        .map((page: Page) => ({
+          slug: page.slug || '',
+        }))
+        .filter((item: any) => item.slug !== '') // Filter out any empty slugs
     } catch (error) {
       console.error('Error fetching pages:', error)
+      return []
     }
-    return result || null
   },
   ['fetchProductSlugs'],
   {
     revalidate: 60, // 10 seconds
-    // revalidate: 300, // 5 min
-    // revalidate: 3600, // 1 hour
-    // revalidate: 86400, // 1 day
-    // revalidate: 604800, // 1 week
-    // revalidate: 2592000, // 1 month
-    // revalidate: 31536000, // 1 year
     tags: ['fetchProductSlugs'],
   },
 )

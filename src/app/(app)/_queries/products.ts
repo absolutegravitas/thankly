@@ -4,7 +4,7 @@ import { revalidatePath, unstable_cache } from 'next/cache'
 import { getPayloadHMR } from '@payloadcms/next/utilities'
 import configPromise from '@payload-config'
 import { Cart, Product } from '@payload-types'
-import { getCart } from '@app/_providers/Cart'
+import { getCart } from '@app/_providers/Cart/actions'
 import { headers, cookies } from 'next/headers'
 
 export const fetchProduct = async (slug: string): Promise<any | null> => {
