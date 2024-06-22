@@ -57,6 +57,60 @@ const EditableField: React.FC<EditableFieldProps> = ({
     }
   }
 
+  const handleSave = async () => {
+    setIsEditing(false)
+    if (value !== initialValue) {
+      await updateReceiver(cartItemId, receiverId, { [field]: value })
+    }
+  }
+
+  const handleClick = () => {
+    setIsEditing(true)
+  }
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
+  ) => {
+    let newValue = e.target.value
+    if (type === 'textarea') {
+      newValue = newValue.replace(/[^a-zA-Z0-9.,!? \n]/g, '')
+    }
+    setValue(newValue)
+  }
+
+  const handleKeyDown = (
+    e: React.KeyboardEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
+  ) => {
+    if (e.key === 'Enter' && type !== 'textarea') {
+      e.preventDefault()
+      handleSave()
+    }
+  }
+
+  const renderValue = () => {
+    if (type === 'name' && typeof value === 'object') {
+      return `${value.firstName} ${value.lastName}`
+    }
+    if (type === 'select' && typeof value === 'string') {
+      return (
+        value.charAt(0).toUpperCase() +
+        value
+          .slice(1)
+          .replace(/([A-Z])/g, ' $1')
+          .trim()
+      )
+    }
+    if (type === 'textarea' && typeof value === 'string') {
+      return value.split('\n').map((line, index) => (
+        <React.Fragment key={index}>
+          {line}
+          {index < value.split('\n').length - 1 && <br />}
+        </React.Fragment>
+      ))
+    }
+    return value as string
+  }
+
   //   const loadGooglePlacesAPI = () => {
   //     if (!document.querySelector('script[src*="maps.googleapis.com"]')) {
   //       const script = document.createElement('script')
@@ -167,45 +221,6 @@ const EditableField: React.FC<EditableFieldProps> = ({
     }
   }
 
-  const handleClick = () => {
-    setIsEditing(true)
-  }
-
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
-  ) => {
-    let newValue = e.target.value
-    if (type === 'textarea') {
-      // Restrict to letters, numbers, and basic punctuation
-      newValue = newValue.replace(/[^a-zA-Z0-9.,!? \n]/g, '')
-    }
-    setValue(newValue)
-  }
-
-  const renderValue = () => {
-    if (type === 'name' && typeof value === 'object') {
-      return `${value.firstName} ${value.lastName}`
-    }
-    if (type === 'select' && typeof value === 'string') {
-      return (
-        value.charAt(0).toUpperCase() +
-        value
-          .slice(1)
-          .replace(/([A-Z])/g, ' $1')
-          .trim()
-      )
-    }
-    if (type === 'textarea' && typeof value === 'string') {
-      return value.split('\n').map((line, index) => (
-        <React.Fragment key={index}>
-          {line}
-          {index < value.split('\n').length - 1 && <br />}
-        </React.Fragment>
-      ))
-    }
-    return value as string
-  }
-
   const renderField = () => {
     if (isEditing) {
       switch (type) {
@@ -221,6 +236,7 @@ const EditableField: React.FC<EditableFieldProps> = ({
                     firstName: e.target.value,
                   })
                 }
+                onKeyDown={handleKeyDown}
                 className="bg-transparent outline-none w-1/2 border-b border-gray-300"
                 autoFocus
               />
@@ -233,6 +249,7 @@ const EditableField: React.FC<EditableFieldProps> = ({
                     lastName: e.target.value,
                   })
                 }
+                onKeyDown={handleKeyDown}
                 className="bg-transparent outline-none w-1/2 border-b border-gray-300"
               />
             </div>
@@ -246,6 +263,15 @@ const EditableField: React.FC<EditableFieldProps> = ({
               onChange={handleChange}
               className="bg-transparent outline-none w-full border-b border-gray-300"
               autoFocus
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  e.preventDefault()
+                  // Only save if there's no active autocomplete suggestion
+                  if (!document.querySelector('.pac-item-selected')) {
+                    handleSave()
+                  }
+                }
+              }}
               placeholder="Enter your address"
             />
           )
@@ -255,6 +281,7 @@ const EditableField: React.FC<EditableFieldProps> = ({
               type="text"
               value={value as string}
               onChange={handleChange}
+              onKeyDown={handleKeyDown}
               className="bg-transparent outline-none w-full border-b border-gray-300"
               autoFocus
             />
@@ -264,6 +291,7 @@ const EditableField: React.FC<EditableFieldProps> = ({
             <select
               value={value as string}
               onChange={handleChange}
+              onKeyDown={handleKeyDown}
               className="bg-transparent outline-none w-full border-b border-gray-300"
               autoFocus
             >
@@ -281,6 +309,12 @@ const EditableField: React.FC<EditableFieldProps> = ({
             <textarea
               value={value as string}
               onChange={handleChange}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                  e.preventDefault()
+                  handleSave()
+                }
+              }}
               className="bg-transparent outline-none w-full border-b border-gray-300"
               style={{ lineHeight: '1.5', height: '6em' }}
               maxLength={400}
