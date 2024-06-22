@@ -42,7 +42,7 @@ export function CartButtons() {
       />
       <CMSLink
         data={{
-          label: 'Back to Shop',
+          label: 'Continue Shopping',
           type: 'custom',
           url: '/shop',
         }}

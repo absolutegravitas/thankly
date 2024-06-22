@@ -68,7 +68,7 @@ export function ProductActions({ product, hidePerks, hideRemove }: any) {
             <div className="ml-2 text-sm text-gray-500">
               {`We're Sorry! This thankly is currently out of stock. `}
               <br className="sm:block hidden" />
-              <Link href="/shop">Back to Shop &#8594;</Link>
+              <Link href="/shop">{`Back to Shop`} &#8594;</Link>
             </div>
           </div>
         </div>

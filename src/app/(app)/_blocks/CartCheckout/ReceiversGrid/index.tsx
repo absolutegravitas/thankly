@@ -13,6 +13,7 @@ import {
   RemoveProductButton,
   RemoveReceiverIcon,
 } from './ReceiverActions'
+import EditableField from './EditableField'
 
 export const ReceiversGrid: React.FC<any> = async (item: any) => {
   // console.log('cart item receivers --', JSON.stringify(item?.receivers || null))
@@ -53,49 +54,64 @@ export const ReceiversGrid: React.FC<any> = async (item: any) => {
                 <h5
                   className={[contentFormats.global, contentFormats.p, 'font-semibold '].join(' ')}
                 >
-                  {`${receiver.firstName} ${receiver.lastName}`}
+                  <EditableField
+                    initialValue={{ firstName: receiver.firstName, lastName: receiver.lastName }}
+                    field="name"
+                    cartItemId={item.id}
+                    receiverId={receiver.id}
+                    type="name"
+                  />
                 </h5>
-                {receiver.addressLine1 && (
-                  <React.Fragment>
-                    <div
-                      className={[
-                        contentFormats.global,
-                        contentFormats.p,
-                        'text-sm pb-5 flex flex-row leading-0',
-                      ]
-                        .filter(Boolean)
-                        .join(' ')}
-                    >
-                      <MapPinIcon className="mr-2" strokeWidth={1.25} />
-                      <span>
-                        {receiver.addressLine1}
-                        {receiver.addressLine2 && (
-                          <>
-                            <br />
-                            {receiver.addressLine2}
-                          </>
-                        )}
-                        <br />
-                        {[receiver.city, receiver.state, receiver.postcode]
-                          .filter(Boolean)
-                          .join(', ')}
-                      </span>
+                <div
+                  className={[contentFormats.global, contentFormats.p, 'text-sm pb-5 flex flex-col']
+                    .filter(Boolean)
+                    .join(' ')}
+                >
+                  <div
+                    className={[
+                      contentFormats.global,
+                      contentFormats.p,
+                      'text-sm pb-5 flex flex-col',
+                    ]
+                      .filter(Boolean)
+                      .join(' ')}
+                  >
+                    <div className="flex items-start">
+                      <MapPinIcon className="mr-2 mt-1 flex-shrink-0" strokeWidth={1.25} />
+                      <div className="flex-grow">
+                        <EditableField
+                          initialValue={[
+                            receiver.addressLine1,
+                            receiver.addressLine2,
+                            receiver.city,
+                            receiver.state,
+                            receiver.postcode,
+                          ]
+                            .filter(Boolean)
+                            .join(', ')}
+                          field="address"
+                          cartItemId={item.id}
+                          receiverId={receiver.id}
+                          type="address"
+                        />
+                      </div>
                     </div>
-
-                    <div
-                      className={[
-                        contentFormats.global,
-                        contentFormats.p,
-                        'text-sm pb-5 flex flex-row',
-                      ]
-                        .filter(Boolean)
-                        .join(' ')}
-                    >
-                      <SendIcon className="mr-2" strokeWidth={1.25} />
-                      <span>{receiver.shippingOption}</span>
-                    </div>
-                  </React.Fragment>
-                )}
+                  </div>
+                </div>
+                <div
+                  className={[contentFormats.global, contentFormats.p, 'text-sm pb-5 flex flex-row']
+                    .filter(Boolean)
+                    .join(' ')}
+                >
+                  <SendIcon className="mr-2" strokeWidth={1.25} />
+                  <EditableField
+                    initialValue={receiver.shippingOption}
+                    field="shippingOption"
+                    cartItemId={item.id}
+                    receiverId={receiver.id}
+                    type="select"
+                  />
+                </div>
                 {receiver.message && (
                   <div
                     className={[
@@ -110,7 +126,13 @@ export const ReceiversGrid: React.FC<any> = async (item: any) => {
                       className="flex-shrink-0 w-5 h-5 mr-2"
                       strokeWidth={1.25}
                     />
-                    <span>{receiver.message}</span>
+                    <EditableField
+                      initialValue={receiver.message}
+                      field="message"
+                      cartItemId={item.id}
+                      receiverId={receiver.id}
+                      type="textarea"
+                    />
                   </div>
                 )}
               </div>

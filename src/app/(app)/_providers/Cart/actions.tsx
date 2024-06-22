@@ -139,24 +139,25 @@ export async function addProduct(product: Product) {
           id: `${Date.now()}`, // Use a unique temporary ID
           firstName: 'John',
           lastName: 'Smith',
-          message:
-            'It was the best of times, it was the blurst of times. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus id eleifend leo. Nullam aliquet, nisi at congue consectetur, massa ligula lacinia lorem.',
-          addressLine1: '123 Fake St',
+          message: 'Add a message with your thankly here...',
+          addressLine1: 'Add delivery address here...',
           addressLine2: null,
-          city: 'Melbourne',
-          state: 'VIC',
-          postcode: '3000',
+          city: '',
+          state: '',
+          postcode: '',
           shippingOption: 'free',
-          receiverPrice: null,
-          receiverTotal: null,
-          receiverShipping: null,
+          totals: {
+            receiverThankly: Math.min(product.price ?? 0, product.promoPrice ?? 0),
+            receiverTotal: 0,
+            receiverShipping: 0,
+          },
         },
       ],
     })
 
-    // console.log('product added to cart -- ', cart)
+    console.log('product added to cart -- ', cart)
 
-    cart = updateCartTotals(cart)
+    // cart = updateCartTotals(cart)
 
     // Result will be the updated cart document.
     const result = await payload.update({
@@ -211,7 +212,7 @@ export async function addReceiver(productId: number | string, newReceiver: any) 
     }))
 
     // Update cart totals
-    cart = updateCartTotals(cart)
+    // cart = updateCartTotals(cart)
 
     // Update the cart on the server
     const config = await configPromise
@@ -230,6 +231,164 @@ export async function addReceiver(productId: number | string, newReceiver: any) 
   } catch (error: any) {
     console.error('Error adding receiver:', error.message)
     throw new Error('Error adding receiver')
+  }
+}
+
+//////////////////////////////////////////////////////////
+export async function copyReceiver(cartItemId: string, receiverId: string) {
+  console.log('Attempting to copy receiver -- ', receiverId)
+  console.log('For cart item -- ', cartItemId)
+  try {
+    let cartId = getCartId()
+    let cart
+    if (!cartId || cartId === '') {
+      console.log('No cart id found, nothing to do...')
+      return null
+    } else {
+      console.log('Cart id found, getting cart details from db....')
+      cart = await getCart(cartId, 2) // Adjust the depth as needed
+      if (!cart) {
+        console.log('Cart not found, nothing to do...')
+        return null
+      }
+    }
+
+    // console.log('Original cart items:', JSON.stringify(cart.items, null, 2))
+
+    // Copy receiver in the cart items array
+    cart.items = cart.items.map((item: any) => {
+      console.log(`Checking item with id: ${item.id}`)
+      if (item.id === cartItemId) {
+        console.log(`Found matching item. Receivers before:`, item.receivers.length)
+        console.log('Receivers:', JSON.stringify(item.receivers, null, 2))
+
+        const receiverToCopy = item.receivers.find((receiver: any) => receiver.id === receiverId)
+        if (receiverToCopy) {
+          const newReceiver = { ...receiverToCopy, id: `${Date.now()}` }
+          return {
+            ...item,
+            receivers: [...item.receivers, newReceiver],
+          }
+        }
+      }
+      return item
+    })
+
+    console.log('Updated cart items:', JSON.stringify(cart.items, null, 2))
+    // cart = updateCartTotals(cart)
+
+    // Simplify the payload to include only necessary fields
+    const simplifiedItems = cart?.items?.map((item: any) => ({
+      ...item,
+      product: item.product.id || item.product,
+    }))
+
+    const config = await configPromise
+    let payload: any = await getPayloadHMR({ config })
+    const result = await payload.update({
+      collection: 'carts',
+      id: cart.id,
+      data: { items: simplifiedItems },
+      depth: 2, // Adjust depth as needed
+    })
+
+    revalidatePath('/shop/cart')
+    return result
+  } catch (error: any) {
+    console.error('Error copying receiver:', error.message)
+    throw new Error(`Error copying receiver: ${error.message}`)
+  }
+}
+
+//////////////////////////////////////////////////////////
+export async function updateReceiver(cartItemId: string, receiverId: string, updatedFields: any) {
+  console.log('Attempting to update receiver -- ', receiverId)
+  console.log('For cart item -- ', cartItemId)
+  console.log('Updated fields:', updatedFields)
+  try {
+    let cartId = getCartId()
+    let cart
+    if (!cartId || cartId === '') {
+      console.log('No cart id found, nothing to do...')
+      return null
+    } else {
+      console.log('Cart id found, getting cart details from db....')
+      cart = await getCart(cartId, 2) // Adjust the depth as needed
+      if (!cart) {
+        console.log('Cart not found, nothing to do...')
+        return null
+      }
+    }
+
+    // Update receiver in the cart items array
+    cart.items = cart.items.map((item: any) => {
+      console.log(`Checking item with id: ${item.id}`)
+      if (item.id === cartItemId) {
+        console.log(`Found matching item. Updating receiver...`)
+        const updatedReceivers = item.receivers.map((receiver: any) => {
+          if (receiver.id === receiverId) {
+            const updatedReceiver = { ...receiver }
+
+            // Handle name field
+            if (updatedFields.name) {
+              updatedReceiver.firstName = updatedFields.name.firstName
+              updatedReceiver.lastName = updatedFields.name.lastName
+            }
+
+            // Handle address field
+            if (updatedFields.address) {
+              const addressParts = updatedFields.address.split(', ')
+              updatedReceiver.addressLine1 = addressParts[0]
+              updatedReceiver.addressLine2 = addressParts.length > 4 ? addressParts[1] : ''
+              updatedReceiver.city = addressParts[addressParts.length - 3]
+              updatedReceiver.state = addressParts[addressParts.length - 2]
+              updatedReceiver.postcode = addressParts[addressParts.length - 1]
+            }
+
+            // Handle other fields
+            if (updatedFields.shippingOption) {
+              updatedReceiver.shippingOption = updatedFields.shippingOption
+            }
+            if (updatedFields.message) {
+              updatedReceiver.message = updatedFields.message
+            }
+
+            return updatedReceiver
+          }
+          return receiver
+        })
+        return {
+          ...item,
+          receivers: updatedReceivers,
+        }
+      }
+      return item
+    })
+
+    console.log('Updated cart items:', JSON.stringify(cart.items, null, 2))
+
+    // cart = updateCartTotals(cart)
+
+    // Simplify the payload to include only necessary fields
+    const simplifiedItems = cart.items?.map((item: any) => ({
+      ...item,
+      product: item.product.id || item.product,
+    }))
+
+    const config = await configPromise
+    let payload: any = await getPayloadHMR({ config })
+    const result = await payload.update({
+      collection: 'carts',
+      id: cart.id,
+      data: { items: simplifiedItems },
+      depth: 2, // Adjust depth as needed
+    })
+
+    revalidatePath('/shop/cart')
+    return result
+  } catch (error: any) {
+    console.error('Error updating receiver:', error.message)
+    throw new Error(`Error updating receiver: ${error.message}`)
   }
 }
 
@@ -278,7 +437,7 @@ export async function removeReceiver(cartItemId: string, receiverId: string) {
 
     console.log('Updated cart items:', JSON.stringify(cart.items, null, 2))
 
-    cart = updateCartTotals(cart)
+    // cart = updateCartTotals(cart)
 
     // Simplify the payload to include only necessary fields
     const simplifiedItems = cart.items?.map((item: any) => ({
@@ -326,7 +485,7 @@ export async function removeProduct(cartItemId: string) {
     cart.items = cart.items.filter((item: any) => item.id !== cartItemId)
 
     console.log('Updated cart items:', JSON.stringify(cart.items, null, 2))
-    cart = updateCartTotals(cart)
+    // cart = updateCartTotals(cart)
 
     const config = await configPromise
     let payload: any = await getPayloadHMR({ config })
@@ -363,77 +522,7 @@ export async function removeProduct(cartItemId: string) {
 }
 
 //////////////////////////////////////////////////////////
-export async function copyReceiver(cartItemId: string, receiverId: string) {
-  console.log('Attempting to copy receiver -- ', receiverId)
-  console.log('For cart item -- ', cartItemId)
-  try {
-    let cartId = getCartId()
-    let cart
-    if (!cartId || cartId === '') {
-      console.log('No cart id found, nothing to do...')
-      return null
-    } else {
-      console.log('Cart id found, getting cart details from db....')
-      cart = await getCart(cartId, 2) // Adjust the depth as needed
-      if (!cart) {
-        console.log('Cart not found, nothing to do...')
-        return null
-      }
-    }
-
-    // console.log('Original cart items:', JSON.stringify(cart.items, null, 2))
-
-    // Copy receiver in the cart items array
-    cart.items = cart.items.map((item: any) => {
-      console.log(`Checking item with id: ${item.id}`)
-      if (item.id === cartItemId) {
-        console.log(`Found matching item. Receivers before:`, item.receivers.length)
-        console.log('Receivers:', JSON.stringify(item.receivers, null, 2))
-
-        const receiverToCopy = item.receivers.find((receiver: any) => receiver.id === receiverId)
-        if (receiverToCopy) {
-          const newReceiver = { ...receiverToCopy, id: `${Date.now()}` }
-          return {
-            ...item,
-            receivers: [...item.receivers, newReceiver],
-          }
-        }
-      }
-      return item
-    })
-
-    console.log('Updated cart items:', JSON.stringify(cart.items, null, 2))
-    cart = updateCartTotals(cart)
-
-    // Simplify the payload to include only necessary fields
-    const simplifiedItems = cart?.items?.map((item: any) => ({
-      ...item,
-      product: item.product.id || item.product,
-    }))
-
-    const config = await configPromise
-    let payload: any = await getPayloadHMR({ config })
-    const result = await payload.update({
-      collection: 'carts',
-      id: cart.id,
-      data: { items: simplifiedItems },
-      depth: 2, // Adjust depth as needed
-    })
-
-    revalidatePath('/shop/cart')
-    return result
-  } catch (error: any) {
-    console.error('Error copying receiver:', error.message)
-    throw new Error(`Error copying receiver: ${error.message}`)
-  }
-}
-
-//////////////////////////////////////////////////////////
 function updateCartTotals(cart: Cart): Cart {
-  let orderValue = 0
-  let thanklys = 0
-  let shipping = 0
-
   // iterate through cart and update totals
   // console.log('Original cart items:', JSON.stringify(cart.items, null, 2))
 
@@ -443,9 +532,11 @@ function updateCartTotals(cart: Cart): Cart {
     // Update each receiver's price and total
     item.receivers?.forEach((receiver) => {
       receiver.totals.receiverThankly = basePrice
+      // receiver.totals.receiverShipping
+
       receiver.totals.receiverTotal =
         (receiver.totals.receiverThankly || 0) + (receiver.totals?.receiverShipping || 0)
-      if (receiver.totals?.receiverShipping) shipping += receiver.totals?.receiverShipping
+      // if (receiver.totals?.receiverShipping) shipping += receiver.totals?.receiverShipping
     })
 
     // Update item totals
@@ -460,13 +551,13 @@ function updateCartTotals(cart: Cart): Cart {
       ) || 0
     item.totals.itemTotal = item.productPrice + item.totals?.itemShipping
 
-    orderValue += item.totals?.itemTotal || 0
-    shipping += item.totals?.itemShipping || 0
+    // orderValue += item.totals?.itemTotal || 0
+    // shipping += item.totals?.itemShipping || 0
   })
 
   // Calculate thanklys as the sum of all cart item totals
-  thanklys = cart.items?.reduce((sum, item) => sum + (item.totals?.itemTotal || 0), 0) || 0
-  shipping = cart.items?.reduce((sum, item) => sum + (item.totals?.itemShipping || 0), 0) || 0
+  // thanklys = cart.items?.reduce((sum, item) => sum + (item.totals?.itemTotal || 0), 0) || 0
+  // shipping = cart.items?.reduce((sum, item) => sum + (item.totals?.itemShipping || 0), 0) || 0
 
   console.log('totaled cart:', JSON.stringify(cart, null, 2))
 
@@ -474,7 +565,6 @@ function updateCartTotals(cart: Cart): Cart {
 
   return cart
 }
-//////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////
 

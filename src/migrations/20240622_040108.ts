@@ -428,22 +428,26 @@ CREATE TABLE IF NOT EXISTS "carts_items_receivers" (
 	"state" varchar,
 	"postcode" varchar,
 	"shippingOption" "enum_carts_items_receivers_shipping_option",
-	"receiver_price" numeric,
-	"receiver_shipping" numeric,
-	"receiver_total" numeric
+	"totals_receiver_total" numeric NOT NULL,
+	"totals_receiver_thankly" numeric NOT NULL,
+	"totals_receiver_shipping" numeric NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS "carts_items" (
 	"_order" integer NOT NULL,
 	"_parent_id" integer NOT NULL,
 	"id" varchar PRIMARY KEY NOT NULL,
-	"price" numeric,
-	"shipping" numeric,
-	"total" numeric
+	"product_price" numeric,
+	"totals_item_total" numeric NOT NULL,
+	"totals_item_thanklys" numeric NOT NULL,
+	"totals_item_shipping" numeric NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS "carts" (
 	"id" serial PRIMARY KEY NOT NULL,
+	"totals_cart_total" numeric NOT NULL,
+	"totals_cart_thanklys" numeric NOT NULL,
+	"totals_cart_shipping" numeric NOT NULL,
 	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
 	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
 );

@@ -11,6 +11,7 @@ const policies = {
     'https://fonts.googleapis.com',
     'https://fonts.gstatic.com',
     'http://cdn.jsdelivr.net',
+    'https://www.googletagmanager.com',
   ],
   'child-src': ["'self'", 'http://cdn.jsdelivr.net'],
   'style-src': [
@@ -30,6 +31,8 @@ const policies = {
     'https://tailwindui.com',
     'https://images.unsplash.com',
     'http://cdn.jsdelivr.net',
+    'https://maps.gstatic.com',
+    'https://*google.com.au',
   ],
   'font-src': ["'self'", 'https://fonts.googleapis.com', 'https://fonts.gstatic.com'],
   'frame-src': [
@@ -43,6 +46,7 @@ const policies = {
     'https://checkout.stripe.com',
     'https://api.stripe.com',
     'https://maps.googleapis.com',
+    'https://analytics.google.com',
   ],
 }
 

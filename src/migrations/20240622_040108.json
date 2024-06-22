@@ -1,5 +1,5 @@
 {
-  "id": "c31d9089-2e07-446a-9538-ba1d453f9ac9",
+  "id": "eb7a2948-e0f2-4184-ab1b-d9a30073bb4a",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "5",
   "dialect": "pg",
@@ -2296,23 +2296,23 @@
           "primaryKey": false,
           "notNull": false
         },
-        "receiver_price": {
-          "name": "receiver_price",
+        "totals_receiver_total": {
+          "name": "totals_receiver_total",
           "type": "numeric",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
-        "receiver_shipping": {
-          "name": "receiver_shipping",
+        "totals_receiver_thankly": {
+          "name": "totals_receiver_thankly",
           "type": "numeric",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
-        "receiver_total": {
-          "name": "receiver_total",
+        "totals_receiver_shipping": {
+          "name": "totals_receiver_shipping",
           "type": "numeric",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         }
       },
       "indexes": {
@@ -2371,23 +2371,29 @@
           "primaryKey": true,
           "notNull": true
         },
-        "price": {
-          "name": "price",
+        "product_price": {
+          "name": "product_price",
           "type": "numeric",
           "primaryKey": false,
           "notNull": false
         },
-        "shipping": {
-          "name": "shipping",
+        "totals_item_total": {
+          "name": "totals_item_total",
           "type": "numeric",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
-        "total": {
-          "name": "total",
+        "totals_item_thanklys": {
+          "name": "totals_item_thanklys",
           "type": "numeric",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
+        },
+        "totals_item_shipping": {
+          "name": "totals_item_shipping",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": true
         }
       },
       "indexes": {
@@ -2434,23 +2440,23 @@
           "primaryKey": true,
           "notNull": true
         },
-        "totals_order_value": {
-          "name": "totals_order_value",
+        "totals_cart_total": {
+          "name": "totals_cart_total",
           "type": "numeric",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
-        "totals_thanklys": {
-          "name": "totals_thanklys",
+        "totals_cart_thanklys": {
+          "name": "totals_cart_thanklys",
           "type": "numeric",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
-        "totals_shipping": {
-          "name": "totals_shipping",
+        "totals_cart_shipping": {
+          "name": "totals_cart_shipping",
           "type": "numeric",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "updated_at": {
           "name": "updated_at",

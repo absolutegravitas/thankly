@@ -1,0 +1,307 @@
+'use client'
+
+declare global {
+  interface Window {
+    initAutocomplete: () => void
+  }
+}
+
+import React, { useState, useEffect, useRef, useCallback } from 'react'
+import { updateReceiver } from '@app/_providers/Cart/actions'
+import { debounce } from 'lodash'
+
+type FieldType = 'text' | 'name' | 'address' | 'select' | 'textarea'
+
+interface EditableFieldProps {
+  initialValue: string | { firstName: string; lastName: string }
+  field: string
+  cartItemId: string
+  receiverId: string
+  type?: FieldType
+}
+
+const EditableField: React.FC<EditableFieldProps> = ({
+  initialValue,
+  field,
+  cartItemId,
+  receiverId,
+  type = 'text',
+}) => {
+  const [isEditing, setIsEditing] = useState(false)
+  const [value, setValue] = useState<typeof initialValue>(initialValue)
+  const inputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    setValue(initialValue)
+  }, [initialValue])
+
+  useEffect(() => {
+    if (type === 'address' && isEditing) {
+      loadGooglePlacesAPI()
+    }
+  }, [type, isEditing])
+
+  const loadGooglePlacesAPI = () => {
+    if (!window.google || !window.google.maps) {
+      const script = document.createElement('script')
+      script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_PLACES}&libraries=places&callback=initAutocomplete`
+      script.async = true
+      script.defer = true
+
+      // Assign the initAutocomplete function to the window object
+      window.initAutocomplete = initAutocomplete
+
+      document.head.appendChild(script)
+    } else {
+      initAutocomplete()
+    }
+  }
+
+  //   const loadGooglePlacesAPI = () => {
+  //     if (!document.querySelector('script[src*="maps.googleapis.com"]')) {
+  //       const script = document.createElement('script')
+  //       script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_PLACES}&libraries=places`
+  //       script.async = true
+  //       script.defer = true
+  //       script.onload = initAutocomplete
+  //       document.head.appendChild(script)
+  //     } else {
+  //       initAutocomplete()
+  //     }
+  //   }
+
+  //   const loadGooglePlacesAPI = () => {
+  //     const script = document.createElement('script')
+  //     script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_PLACES}&libraries=places`
+  //     script.async = true
+  //     script.defer = true
+  //     script.onload = initAutocomplete
+  //     document.head.appendChild(script)
+  //   }
+
+  const initAutocomplete = useCallback(() => {
+    if (!inputRef.current || type !== 'address') return
+
+    const autocomplete = new google.maps.places.Autocomplete(inputRef.current, {
+      types: ['address'],
+      componentRestrictions: { country: 'AU' },
+      fields: ['address_components', 'formatted_address'],
+    })
+
+    const debouncedPlaceChanged = debounce(() => {
+      const place = autocomplete.getPlace()
+      if (place.address_components) {
+        const addressComponents = place.address_components
+        const streetNumber =
+          addressComponents.find((component) => component.types.includes('street_number'))
+            ?.long_name || ''
+        const streetName =
+          addressComponents.find((component) => component.types.includes('route'))?.long_name || ''
+        const city =
+          addressComponents.find((component) => component.types.includes('locality'))?.long_name ||
+          ''
+        const state =
+          addressComponents.find((component) =>
+            component.types.includes('administrative_area_level_1'),
+          )?.short_name || ''
+        const postcode =
+          addressComponents.find((component) => component.types.includes('postal_code'))
+            ?.long_name || ''
+
+        const fullAddress = `${streetNumber} ${streetName}, ${city}, ${state}, ${postcode}`
+        setValue(fullAddress)
+        updateReceiver(cartItemId, receiverId, { address: fullAddress })
+      }
+    }, 500)
+
+    autocomplete.addListener('place_changed', debouncedPlaceChanged)
+  }, [inputRef, type, cartItemId, receiverId]) // Add any other dependencies
+
+  useEffect(() => {
+    window.initAutocomplete = initAutocomplete
+  }, [initAutocomplete])
+
+  //   const initAutocomplete = () => {
+  //     if (inputRef.current && type === 'address') {
+  //       const autocomplete = new google.maps.places.Autocomplete(inputRef.current, {
+  //         types: ['address'],
+  //         componentRestrictions: { country: 'AU' },
+  //         fields: ['address_components', 'formatted_address'],
+  //       })
+
+  //       const debouncedPlaceChanged = debounce(() => {
+  //         const place = autocomplete.getPlace()
+  //         if (place.address_components) {
+  //           const addressComponents = place.address_components
+  //           const streetNumber =
+  //             addressComponents.find((component) => component.types.includes('street_number'))
+  //               ?.long_name || ''
+  //           const streetName =
+  //             addressComponents.find((component) => component.types.includes('route'))?.long_name ||
+  //             ''
+  //           const city =
+  //             addressComponents.find((component) => component.types.includes('locality'))
+  //               ?.long_name || ''
+  //           const state =
+  //             addressComponents.find((component) =>
+  //               component.types.includes('administrative_area_level_1'),
+  //             )?.short_name || ''
+  //           const postcode =
+  //             addressComponents.find((component) => component.types.includes('postal_code'))
+  //               ?.long_name || ''
+
+  //           const fullAddress = `${streetNumber} ${streetName}, ${city}, ${state}, ${postcode}`
+  //           setValue(fullAddress)
+  //           updateReceiver(cartItemId, receiverId, { address: fullAddress })
+  //         }
+  //       }, 500)
+
+  //       autocomplete.addListener('place_changed', debouncedPlaceChanged)
+  //     }
+  //   }
+
+  const handleBlur = async () => {
+    setIsEditing(false)
+    if (value !== initialValue) {
+      await updateReceiver(cartItemId, receiverId, { [field]: value })
+    }
+  }
+
+  const handleClick = () => {
+    setIsEditing(true)
+  }
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>,
+  ) => {
+    let newValue = e.target.value
+    if (type === 'textarea') {
+      // Restrict to letters, numbers, and basic punctuation
+      newValue = newValue.replace(/[^a-zA-Z0-9.,!? \n]/g, '')
+    }
+    setValue(newValue)
+  }
+
+  const renderValue = () => {
+    if (type === 'name' && typeof value === 'object') {
+      return `${value.firstName} ${value.lastName}`
+    }
+    if (type === 'select' && typeof value === 'string') {
+      return (
+        value.charAt(0).toUpperCase() +
+        value
+          .slice(1)
+          .replace(/([A-Z])/g, ' $1')
+          .trim()
+      )
+    }
+    if (type === 'textarea' && typeof value === 'string') {
+      return value.split('\n').map((line, index) => (
+        <React.Fragment key={index}>
+          {line}
+          {index < value.split('\n').length - 1 && <br />}
+        </React.Fragment>
+      ))
+    }
+    return value as string
+  }
+
+  const renderField = () => {
+    if (isEditing) {
+      switch (type) {
+        case 'name':
+          return (
+            <div className="flex space-x-2">
+              <input
+                type="text"
+                value={(value as { firstName: string; lastName: string }).firstName}
+                onChange={(e) =>
+                  setValue({
+                    ...(value as { firstName: string; lastName: string }),
+                    firstName: e.target.value,
+                  })
+                }
+                className="bg-transparent outline-none w-1/2 border-b border-gray-300"
+                autoFocus
+              />
+              <input
+                type="text"
+                value={(value as { firstName: string; lastName: string }).lastName}
+                onChange={(e) =>
+                  setValue({
+                    ...(value as { firstName: string; lastName: string }),
+                    lastName: e.target.value,
+                  })
+                }
+                className="bg-transparent outline-none w-1/2 border-b border-gray-300"
+              />
+            </div>
+          )
+        case 'address':
+          return (
+            <input
+              ref={inputRef}
+              type="text"
+              value={value as string}
+              onChange={handleChange}
+              className="bg-transparent outline-none w-full border-b border-gray-300"
+              autoFocus
+              placeholder="Enter your address"
+            />
+          )
+        case 'text':
+          return (
+            <input
+              type="text"
+              value={value as string}
+              onChange={handleChange}
+              className="bg-transparent outline-none w-full border-b border-gray-300"
+              autoFocus
+            />
+          )
+        case 'select':
+          return (
+            <select
+              value={value as string}
+              onChange={handleChange}
+              className="bg-transparent outline-none w-full border-b border-gray-300"
+              autoFocus
+            >
+              <option value="free">Free</option>
+              <option value="standardMail">Standard Mail</option>
+              <option value="registeredMail">Registered Mail</option>
+              <option value="expressMail">Express Mail</option>
+              <option value="standardParcel">Standard Parcel</option>
+              <option value="expressParcel">Express Parcel</option>
+              <option value="courierParcel">Courier Parcel</option>
+            </select>
+          )
+        case 'textarea':
+          return (
+            <textarea
+              value={value as string}
+              onChange={handleChange}
+              className="bg-transparent outline-none w-full border-b border-gray-300"
+              style={{ lineHeight: '1.5', height: '6em' }}
+              maxLength={400}
+              autoFocus
+            />
+          )
+      }
+    }
+
+    return (
+      <span className="cursor-pointer" onClick={handleClick}>
+        {renderValue()}
+      </span>
+    )
+  }
+
+  return (
+    <div onBlur={handleBlur} className="w-full">
+      {renderField()}
+    </div>
+  )
+}
+
+export default EditableField

@@ -36,6 +36,7 @@ export const CartItems: React.FC<any> = async () => {
                         alt={metaImage.alt || ''}
                         priority={false}
                         fill
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                         className="aspect-square object-cover rounded-sm shadow-md hover:scale-105 hover:delay-75 duration-150 transition-transform"
                       />
                     </div>

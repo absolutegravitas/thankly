@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { CookiesProvider } from 'react-cookie'
-import { IconProps, Slide, ToastContainer } from 'react-toastify'
+// import { IconProps, Slide, ToastContainer } from 'react-toastify'
 import { GridProvider } from '@faceless-ui/css-grid'
 import { ModalContainer, ModalProvider } from '@faceless-ui/modal'
 import { MouseInfoProvider } from '@faceless-ui/mouse-info'
@@ -68,7 +68,7 @@ export const Providers: React.FC<{
                         <HeaderIntersectionObserver>
                           {children}
                           <ModalContainer />
-                          <ToastContainer
+                          {/* <ToastContainer
                             position="bottom-center"
                             transition={Slide}
                             // icon={false}
@@ -87,7 +87,7 @@ export const Providers: React.FC<{
                                   return null
                               }
                             }}
-                          />
+                          /> */}
                         </HeaderIntersectionObserver>
                       </PageTransition>
                     </ModalProvider>
