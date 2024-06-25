@@ -19,6 +19,7 @@ import classes from './index.module.scss'
 
 import { ExtractBlockProps } from '@/utilities/extractBlockProps'
 import { ChevronRightIcon } from 'lucide-react'
+import { getPaddingClasses } from '../../_css/tailwindClasses'
 export type MediaContentProps = ExtractBlockProps<'mediaContent'> & { padding: PaddingProps }
 
 export const MediaContentBlock: React.FC<MediaContentProps> = (props) => {
@@ -114,7 +115,7 @@ export const MediaContent: React.FC<MediaContentProps> = (props) => {
   const { settings } = props.mediaContentFields
 
   return (
-    <BlockWrapper padding={{ top: 'small', bottom: 'small' }} settings={settings}>
+    <BlockWrapper className={getPaddingClasses('hero')} settings={settings}>
       {/* <BackgroundGrid zIndex={0} /> */}
       <div className={classes.wrapper}>
         <MediaContentBlock {...props} />

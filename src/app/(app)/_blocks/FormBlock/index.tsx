@@ -18,6 +18,7 @@ import classes from './index.module.scss'
 // }
 
 import { ExtractBlockProps } from '@/utilities/extractBlockProps'
+import { getPaddingClasses } from '../../_css/tailwindClasses'
 export type FormBlockProps = ExtractBlockProps<'form'> & { padding: PaddingProps }
 
 export const FormBlock: React.FC<FormBlockProps> = (props) => {
@@ -58,8 +59,7 @@ export const FormBlock: React.FC<FormBlockProps> = (props) => {
     <BlockWrapper
       data-theme="dark"
       settings={settings}
-      padding={{ top: 'large', bottom: 'large' }}
-      className={classes.formBlock}
+      className={[getPaddingClasses('hero'), classes.formBlock].join(' ')}
     >
       {/* <BackgroundGrid zIndex={0} /> */}
       <div

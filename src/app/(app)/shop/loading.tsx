@@ -1,6 +1,7 @@
 import React from 'react'
 import { BlockWrapper } from '@app/_components/BlockWrapper'
 import { Gutter } from '@app/_components/Gutter'
+import { getPaddingClasses } from '../_css/tailwindClasses'
 
 const ProductCardSkeleton = () => (
   <div className="animate-pulse bg-white rounded-lg shadow-sm overflow-hidden">
@@ -24,7 +25,7 @@ export default function LoadingShop() {
         <div className="bg-gray-300 h-8 w-1/4 mb-8 rounded"></div>
         <BlockWrapper
           settings={{ settings: { theme: 'light' } }}
-          padding={{ top: 'large', bottom: 'large' }}
+          className={getPaddingClasses('hero')}
         >
           <Gutter>
             <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:gap-x-8">

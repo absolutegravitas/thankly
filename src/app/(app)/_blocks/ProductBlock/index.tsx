@@ -5,7 +5,7 @@ import { BlockWrapper } from '@app/_components/BlockWrapper'
 import { Gutter } from '@app/_components/Gutter'
 import { ProductActions } from '@app/_components/ProductActions'
 import { Product, Media } from '@payload-types'
-import { contentFormats } from '@app/_css/tailwindClasses'
+import { contentFormats, getPaddingClasses } from '@app/_css/tailwindClasses'
 import cn from '@/utilities/cn'
 import { getImageAlt, getImageUrl } from '@/utilities/getmageUrl'
 
@@ -135,7 +135,7 @@ export const ProductBlock: React.FC<ProductBlockProps> = ({
   selectedImageIndex = 0,
 }) => {
   return (
-    <BlockWrapper settings={{ theme: 'light' }} padding={{ top: 'small', bottom: 'small' }}>
+    <BlockWrapper settings={{ theme: 'light' }} className={getPaddingClasses('hero')}>
       <ProductBlockContent
         product={product}
         inCart={inCart}

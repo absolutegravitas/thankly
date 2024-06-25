@@ -7,6 +7,7 @@ import { Product } from '@payload-types'
 
 import classes from './index.module.scss'
 import { ProductCard } from '@app/_components/ProductCard'
+import { getPaddingClasses } from '../../_css/tailwindClasses'
 
 export type ProductGridProps = {
   products: Product[]
@@ -28,8 +29,9 @@ export const ProductGrid: React.FC<ProductGridProps> = ({ products }) => {
   return (
     <BlockWrapper
       settings={{ settings: { theme: 'light' } }}
-      padding={{ top: 'large', bottom: 'large' }}
-      className={[classes.ProductGrid].filter(Boolean).join(' ')}
+      className={[getPaddingClasses('hero'), 'py-16', classes.ProductGrid]
+        .filter(Boolean)
+        .join(' ')}
     >
       <Gutter>
         {hasProducts && (

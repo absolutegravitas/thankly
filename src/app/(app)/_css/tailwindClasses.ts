@@ -135,13 +135,13 @@ type ContentBlockPadding = {
 
 const contentBlockPadding: ContentBlockPadding = {
   standard: {
-    mobile: 'px-4 py-8',
-    desktop: 'md:px-8 md:py-16',
+    mobile: '#px-4 py-8',
+    desktop: '#md:px-8 md:py-16',
     description: 'Standard content blocks',
   },
   hero: {
-    mobile: 'px-4 py-12',
-    desktop: 'md:px-8 md:py-24',
+    mobile: '#px-4 py-12',
+    desktop: '#md:px-8 md:py-24',
     description: 'Hero sections',
   },
   compact: {

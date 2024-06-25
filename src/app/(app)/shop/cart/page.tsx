@@ -5,7 +5,7 @@ import { Gutter } from '@app/_components/Gutter'
 import { CartEmpty } from '@app/_blocks/CartCheckout/CartEmpty'
 import { getCart } from '@app/_providers/Cart/actions'
 import { cartStaticText } from '@/utilities/staticText'
-import { contentFormats } from '@app/_css/tailwindClasses'
+import { contentFormats, getPaddingClasses } from '@app/_css/tailwindClasses'
 import { CartButtons } from '../../_blocks/CartCheckout/CartButtons'
 
 import Loading from './loading'
@@ -19,10 +19,7 @@ export default async function CartPage() {
   if (!cart) {
     console.log('Cart not found or is empty...')
     return (
-      <BlockWrapper
-        // settings={{ settings: { theme: 'light' } }}
-        padding={{ top: 'small', bottom: 'large' }}
-      >
+      <BlockWrapper className={getPaddingClasses('hero')}>
         <CartEmpty />
       </BlockWrapper>
     )
@@ -32,10 +29,7 @@ export default async function CartPage() {
   const { leader, heading } = cartStaticText
 
   return (
-    <BlockWrapper
-      // settings={{ settings: { theme: 'light' } }}
-      padding={{ top: 'large', bottom: 'small' }}
-    >
+    <BlockWrapper className={getPaddingClasses('hero')}>
       <Gutter>
         <div className="flex flex-col md:flex-row">
           <div className="sm:basis-3/6 md:basis-3/6 lg:basis-4/6 flex align-middle items-center justify-middle pb-3">

@@ -4,7 +4,7 @@ import { useTransition } from 'react'
 import { BlockWrapper } from './_components/BlockWrapper'
 import { CMSLink } from './_components/CMSLink'
 import { Gutter } from './_components/Gutter'
-import { contentFormats } from './_css/tailwindClasses'
+import { contentFormats, getPaddingClasses } from './_css/tailwindClasses'
 import { useRouter } from 'next/navigation'
 import { ArrowRightIcon, HomeIcon, ShoppingCartIcon } from 'lucide-react'
 import { ShoppingBagIcon } from '@app/_icons/ShoppingBagIcon'
@@ -14,11 +14,7 @@ export default function NotFound() {
   const [isPending, startTransition] = useTransition()
 
   return (
-    <BlockWrapper
-      settings={{ settings: { theme: 'light' } }}
-      padding={{ top: 'large', bottom: 'small' }}
-      // className={[classes.ProductGrid].filter(Boolean).join(' ')}
-    >
+    <BlockWrapper settings={{ settings: { theme: 'light' } }} className={getPaddingClasses('hero')}>
       <Gutter>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-3/4">
           <div className="justify-center text-center">

@@ -9,11 +9,12 @@ import { RichText } from '@app/_blocks/RichText'
 import classes from './index.module.scss'
 
 import { ExtractBlockProps } from '@/utilities/extractBlockProps'
+import { getPaddingClasses } from '@/app/(app)/_css/tailwindClasses'
 export type DefaultHeroProps = ExtractBlockProps<'fields'>
 
 export const DefaultHero: React.FC<DefaultHeroProps> = ({ description, theme }) => {
   return (
-    <BlockWrapper settings={{ theme: theme }} padding={{ top: 'small', bottom: 'small' }}>
+    <BlockWrapper settings={{ theme: theme }} className={getPaddingClasses('hero')}>
       <Gutter>
         {/* <BackgroundGrid zIndex={0} /> */}
         <div className={classes.defaultHero}>

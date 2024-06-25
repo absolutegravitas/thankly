@@ -24,6 +24,9 @@ export const ProductCard: React.FC<any> = (product) => {
     className,
   } = product
 
+  const imageUrl = media && media.length > 0 ? getImageUrl(media[0]?.mediaItem) : null
+  const imageAlt = media && media.length > 0 ? getImageAlt(media[0]?.mediaItem) : 'Product image'
+
   return (
     <div className={[`relative`, className].filter(Boolean).join(' ')}>
       <Link href={`/shop/${slug}`} className="relative no-underline hover:no-underline">
@@ -40,50 +43,37 @@ export const ProductCard: React.FC<any> = (product) => {
             </div>
           )}
 
-          {media && media.length > 0 && (
+          {imageUrl ? (
+            <Image
+              src={imageUrl}
+              alt={imageAlt}
+              fill
+              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+              className="object-cover object-center transition-opacity duration-300"
+              placeholder="blur"
+              blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mN8/+F9PQAI8wNPvd7POQAAAABJRU5ErkJggg=="
+            />
+          ) : (
+            <div className="absolute inset-0 flex items-center justify-center text-gray-500">
+              No Image Available
+            </div>
+          )}
+
+          {/* {media && media.length > 0 && (
             <div className="relative w-full h-full group">
+              <div className="absolute inset-0 bg-gray-100 rounded-md"></div>
               <Image
                 src={getImageUrl(media[0]?.mediaItem)}
                 alt={getImageAlt(media[0]?.mediaItem)}
                 priority
                 width={800}
                 height={800}
-                className="rounded-md object-cover object-center aspect-square shadow-md"
+                className="rounded-md object-cover object-center aspect-square shadow-md transition-opacity duration-300"
+                placeholder="blur"
+                blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mN8/+F9PQAI8wNPvd7POQAAAABJRU5ErkJggg=="
               />
             </div>
-          )}
-          {/* // {!metaImage && (
-          //   <div className="w-full h-full flex items-center justify-center bg-gray-200">
-          //     No image
-          //   </div>
-          // )}
-          // {metaImage && typeof metaImage !== 'string' && (
-          //   <div className="relative w-full h-full group">
-          //     <Image
-          //       src={metaImage.url}
-          //       alt={metaImage.alt || ''}
-          //       fill
-          //       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          //       className="object-cover rounded-md shadow-md hover:scale-105 hover:delay-75 duration-150 transition-transform"
-          //     />
-          //     <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-150">
-          //       <svg
-          //         className="w-16 h-16 text-white"
-          //         fill="none"
-          //         stroke="currentColor"
-          //         viewBox="0 0 24 24"
-          //         xmlns="http://www.w3.org/2000/svg"
-          //       >
-          //         <path
-          //           strokeLinecap="round"
-          //           strokeLinejoin="round"
-          //           strokeWidth="2"
-          //           d="M9 5l7 7-7 7"
-          //         />
-          //       </svg>
-          //     </div>
-          //   </div>
-          // )} */}
+          )} */}
         </div>
 
         {title && (
