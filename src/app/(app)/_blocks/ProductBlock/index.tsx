@@ -121,7 +121,7 @@ const ProductBlockContent: React.FC<ProductBlockContentProps> = ({
                   <Link
                     key={image.id || index}
                     href={`/shop/${product.slug}?image=${index}`}
-                    className={`aspect-square overflow-hidden rounded-md ${index === selectedImageIndex ? 'ring-2 ring-indigo-500' : ''}`}
+                    className={`aspect-square overflow-hidden rounded-md ${index === selectedImageIndex ? 'ring-2 ring-green' : ''}`}
                   >
                     <Image
                       src={getImageUrl(image.mediaItem)}

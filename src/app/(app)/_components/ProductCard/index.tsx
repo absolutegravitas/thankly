@@ -6,12 +6,14 @@ import cn from '@/utilities/cn'
 import { contentFormats } from '@app/_css/tailwindClasses'
 import { ProductActions } from '@app/_components/ProductActions'
 import { messages } from '@/utilities/staticText'
+import { Media } from '@/payload-types'
 
 export const ProductCard: React.FC<any> = (product) => {
   const {
     slug,
     id,
     title,
+    media,
     meta: { image: metaImage, description },
     price,
     promoPrice,
@@ -21,7 +23,30 @@ export const ProductCard: React.FC<any> = (product) => {
     className,
   } = product
 
-  const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL || ''
+  const getImageUrl = (mediaItem: number | Media | null | undefined): string => {
+    if (
+      typeof mediaItem === 'object' &&
+      mediaItem !== null &&
+      'url' in mediaItem &&
+      typeof mediaItem.url === 'string'
+    ) {
+      const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL || ''
+      return `${baseUrl}${mediaItem.url}`
+    }
+    return `https://placehold.co/800x800?text=No+Image`
+  }
+
+  const getImageAlt = (mediaItem: number | Media | null | undefined): string => {
+    if (
+      typeof mediaItem === 'object' &&
+      mediaItem !== null &&
+      'alt' in mediaItem &&
+      typeof mediaItem.alt === 'string'
+    ) {
+      return mediaItem.alt
+    }
+    return 'Product image placeholder'
+  }
 
   return (
     <div className={[`relative`, className].filter(Boolean).join(' ')}>
@@ -39,38 +64,50 @@ export const ProductCard: React.FC<any> = (product) => {
             </div>
           )}
 
-          {!metaImage && (
-            <div className="w-full h-full flex items-center justify-center bg-gray-200">
-              No image
-            </div>
-          )}
-          {metaImage && typeof metaImage !== 'string' && (
+          {media && media.length > 0 && (
             <div className="relative w-full h-full group">
               <Image
-                src={metaImage.url}
-                alt={metaImage.alt || ''}
-                fill
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                className="object-cover rounded-md shadow-md hover:scale-105 hover:delay-75 duration-150 transition-transform"
+                src={getImageUrl(media[0]?.mediaItem)}
+                alt={getImageAlt(media[0]?.mediaItem)}
+                priority
+                width={800}
+                height={800}
+                className="rounded-md object-cover object-center aspect-square shadow-md"
               />
-              <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-150">
-                <svg
-                  className="w-16 h-16 text-white"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
-              </div>
             </div>
           )}
+          {/* // {!metaImage && (
+          //   <div className="w-full h-full flex items-center justify-center bg-gray-200">
+          //     No image
+          //   </div>
+          // )}
+          // {metaImage && typeof metaImage !== 'string' && (
+          //   <div className="relative w-full h-full group">
+          //     <Image
+          //       src={metaImage.url}
+          //       alt={metaImage.alt || ''}
+          //       fill
+          //       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          //       className="object-cover rounded-md shadow-md hover:scale-105 hover:delay-75 duration-150 transition-transform"
+          //     />
+          //     <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-150">
+          //       <svg
+          //         className="w-16 h-16 text-white"
+          //         fill="none"
+          //         stroke="currentColor"
+          //         viewBox="0 0 24 24"
+          //         xmlns="http://www.w3.org/2000/svg"
+          //       >
+          //         <path
+          //           strokeLinecap="round"
+          //           strokeLinejoin="round"
+          //           strokeWidth="2"
+          //           d="M9 5l7 7-7 7"
+          //         />
+          //       </svg>
+          //     </div>
+          //   </div>
+          // )} */}
         </div>
 
         {title && (
