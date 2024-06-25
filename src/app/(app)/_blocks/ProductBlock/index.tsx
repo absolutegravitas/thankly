@@ -1,34 +1,66 @@
-// copied from Media Content Block
 import React from 'react'
-
-import { BlockWrapper, PaddingProps } from '@app/_components/BlockWrapper'
-import { Gutter } from '@app/_components/Gutter'
-import cn from '@/utilities/cn'
-import classes from './index.module.scss'
-import { Tab, TabGroup, TabList, TabPanel, TabPanels } from '@headlessui/react'
-import { contentFormats } from '@app/_css/tailwindClasses'
 import Image from 'next/image'
+import Link from 'next/link'
+import { BlockWrapper } from '@app/_components/BlockWrapper'
+import { Gutter } from '@app/_components/Gutter'
 import { ProductActions } from '@app/_components/ProductActions'
+import { Product, Media } from '@payload-types'
+import { contentFormats } from '@app/_css/tailwindClasses'
+import cn from '@/utilities/cn'
 
-export const ProductBlockContent: React.FC<any> = (props) => {
-  const {
-    id,
-    title,
-    productType,
-    price,
-    promoPrice,
-    stockOnHand,
-    lowStockThreshold,
-    media,
-    meta,
-    image,
-    inCart,
-  } = props
+interface ProductBlockContentProps {
+  product: Product
+  inCart: boolean
+  selectedImageIndex?: number
+}
 
-  // console.log('product block', props)
+const ProductBlockContent: React.FC<ProductBlockContentProps> = ({
+  product,
+  inCart,
+  selectedImageIndex = 0,
+}) => {
+  const { title, price, promoPrice, meta, media } = product
+
+  const formatPrice = (amount: number | null | undefined) => {
+    if (amount == null) return 'Price not available'
+    return new Intl.NumberFormat('en-AU', {
+      style: 'currency',
+      currency: 'AUD',
+      minimumFractionDigits: 0,
+      maximumFractionDigits: 2,
+    }).format(amount)
+  }
+
+  const displayPrice = price ?? 0
+  const displayPromoPrice = promoPrice ?? 0
+
+  const getImageUrl = (mediaItem: number | Media | null | undefined): string => {
+    if (
+      typeof mediaItem === 'object' &&
+      mediaItem !== null &&
+      'url' in mediaItem &&
+      typeof mediaItem.url === 'string'
+    ) {
+      return mediaItem.url
+    }
+    return `https://placehold.co/800x800?text=No+Image`
+  }
+
+  const getImageAlt = (mediaItem: number | Media | null | undefined): string => {
+    if (
+      typeof mediaItem === 'object' &&
+      mediaItem !== null &&
+      'alt' in mediaItem &&
+      typeof mediaItem.alt === 'string'
+    ) {
+      return mediaItem.alt
+    }
+    return 'Product image placeholder'
+  }
+
   return (
     <Gutter>
-      <div className="mx-auto max-w-2xl px-4 pt-8  sm:px-6 sm:py-16 lg:grid lg:max-w-7xl lg:grid-cols-2 lg:gap-x-8 lg:px-8">
+      <div className="mx-auto max-w-2xl px-4 pt-8 sm:px-6 sm:py-16 lg:grid lg:max-w-7xl lg:grid-cols-2 lg:gap-x-8 lg:px-8">
         {/* Product details */}
         <div className="lg:max-w-lg lg:self-start align-top">
           <div className="mt-3 sm:flex items-start justify-between align-top">
@@ -49,119 +81,64 @@ export const ProductBlockContent: React.FC<any> = (props) => {
               )}
             >
               <span
-                className={` ${+promoPrice != 0 && +promoPrice < +price && 'line-through text-gray-500'}`}
+                className={`${displayPromoPrice !== 0 && displayPromoPrice < displayPrice ? 'line-through text-gray-500' : ''}`}
               >
-                {price.toLocaleString('en-AU', {
-                  style: 'currency',
-                  currency: 'AUD',
-                  minimumFractionDigits: 0,
-                  maximumFractionDigits: 2,
-                })}
+                {formatPrice(displayPrice)}
               </span>
-              {+promoPrice != 0 && (
-                <span className="text-black ml-2 ">
-                  {promoPrice.toLocaleString('en-AU', {
-                    style: 'currency',
-                    currency: 'AUD',
-                    minimumFractionDigits: 0,
-                    maximumFractionDigits: 2,
-                  })}
-                </span>
+              {displayPromoPrice !== 0 && displayPromoPrice < displayPrice && (
+                <span className="text-black ml-2 ">{formatPrice(displayPromoPrice)}</span>
               )}
             </div>
           </div>
 
           <section aria-labelledby="information-heading" className="mt-4">
-            {/* <div className="ml-4 border-l border-gray-300 pl-4">
-                <h2 className="sr-only">Reviews</h2>
-                <div className="flex items-center">
-                  <div>
-                    <div className="flex items-center">
-                      {[0, 1, 2, 3, 4].map((rating) => (
-                        <StarIcon
-                          key={rating}
-                          className={cn(
-                            reviews.average > rating ? 'text-yellow-400' : 'text-gray-300',
-                            'h-5 w-5 flex-shrink-0',
-                          )}
-                          aria-hidden="true"
-                        />
-                      ))}
-                    </div>
-                    <p className="sr-only">{reviews.average} out of 5 stars</p>
-                  </div>
-                  <p className="ml-2 text-sm text-gray-500">{reviews.totalCount} reviews</p>
-                </div>
-              </div> 
-            </div>
-*/}
             <div className="mt-4 space-y-6">
-              <p className="text-base text-gray-500">{meta.description}</p>
+              <p className="text-base text-gray-500">{meta?.description || ''}</p>
             </div>
           </section>
         </div>
 
-        {/* Product image */}
+        {/* Product images */}
         <div className="mt-10 lg:col-start-2 lg:row-span-2 lg:mt-0 lg:self-center">
-          <div className="aspect-h-1 aspect-w-1 overflow-hidden rounded-xs">
-            {/* Image gallery */}
-            <TabGroup className="flex flex-col-reverse">
-              {/* Image selector */}
-              <div className="mx-auto mt-6 #hidden w-full max-w-2xl sm:block lg:max-w-none">
-                <TabList className="grid grid-cols-4 gap-6 sm:gap-3">
-                  {media?.map((image: any, index: any) => (
-                    <Tab
-                      key={image.id}
-                      className="relative flex h-24 w-24 cursor-pointer items-center justify-center rounded-xs bg-white  hover:bg-gray-50  focus:border-solid focus:border focus:border-green border-0"
-                    >
-                      {({ selected }) => (
-                        <React.Fragment>
-                          <span className="fill absolute inset-0 overflow-hidden #rounded-xs rounded-md shadow-md hover:scale-105 hover:delay-75 duration-150">
-                            <Image
-                              src={image.mediaItem.url}
-                              alt={image.mediaItem.alt || ''}
-                              priority={index === 0 ? true : false}
-                              fill
-                              // layout="fill"
-                              // objectFit="cover"
-                              className="object-cover object-center aspect-square"
-                            />
-                          </span>
-                          <span
-                            className={cn(
-                              selected ? 'ring-green' : 'ring-transparent',
-                              'pointer-events-none absolute inset-0 rounded-xs #ring-2 #ring-offset-2',
-                            )}
-                            aria-hidden="true"
-                          />
-                        </React.Fragment>
-                      )}
-                    </Tab>
-                  ))}
-                </TabList>
+          {media && media.length > 0 && (
+            <>
+              {/* Main image */}
+              <div className="aspect-square overflow-hidden rounded-md mb-4">
+                <Image
+                  src={getImageUrl(media[selectedImageIndex]?.mediaItem)}
+                  alt={getImageAlt(media[selectedImageIndex]?.mediaItem)}
+                  priority
+                  width={800}
+                  height={800}
+                  className="object-cover object-center w-full h-full"
+                />
               </div>
 
-              <TabPanels className="aspect-h-1 aspect-w-1 #w-1/2">
-                {media?.map((image: any, index: any) => (
-                  <TabPanel className={`fill`} key={image.id}>
+              {/* Thumbnail images */}
+              <div className="grid grid-cols-4 gap-4">
+                {media.map((image, index) => (
+                  <Link
+                    key={image.id || index}
+                    href={`/shop/${product.slug}?image=${index}`}
+                    className={`aspect-square overflow-hidden rounded-md ${index === selectedImageIndex ? 'ring-2 ring-indigo-500' : ''}`}
+                  >
                     <Image
-                      src={image.mediaItem.url}
-                      priority={index === 0 ? true : false}
-                      alt={image.mediaItem.alt}
-                      height={800}
-                      width={800}
-                      className="fill object-cover object-center rounded-md aspect-square"
+                      src={getImageUrl(image.mediaItem)}
+                      alt={getImageAlt(image.mediaItem)}
+                      width={200}
+                      height={200}
+                      className="object-cover object-center w-full h-full"
                     />
-                  </TabPanel>
+                  </Link>
                 ))}
-              </TabPanels>
-            </TabGroup>
-          </div>
+              </div>
+            </>
+          )}
         </div>
 
         <div className="mt-10 lg:col-start-1 lg:row-start-2 lg:max-w-lg lg:self-start">
           <section aria-labelledby="options-heading">
-            <ProductActions product={props} hidePerks={false} hideRemove={false} />
+            <ProductActions product={product} hidePerks={false} hideRemove={false} />
           </section>
         </div>
       </div>
@@ -169,14 +146,26 @@ export const ProductBlockContent: React.FC<any> = (props) => {
   )
 }
 
-export const ProductBlock: React.FC<any> = (props) => {
+interface ProductBlockProps {
+  product: Product
+  inCart: boolean
+  selectedImageIndex?: number
+}
+
+export const ProductBlock: React.FC<ProductBlockProps> = ({
+  product,
+  inCart,
+  selectedImageIndex = 0,
+}) => {
   return (
     <BlockWrapper settings={{ theme: 'light' }} padding={{ top: 'small', bottom: 'small' }}>
-      {/* <BackgroundGrid zIndex={0} /> */}
-      <div className={classes.wrapper}>
-        <ProductBlockContent {...props} />
-      </div>
+      <ProductBlockContent
+        product={product}
+        inCart={inCart}
+        selectedImageIndex={selectedImageIndex}
+      />
     </BlockWrapper>
   )
 }
+
 export default ProductBlock

@@ -28,6 +28,10 @@
 
 ## instructions
 
+ben thomas 2%
+tom spargos 35x
+rowan aurora 1.5%-2%
+
 ### local development
 
 - pull repo
@@ -38,7 +42,7 @@
   NEXT_PUBLIC_SERVER_URL=http://localhost:3000
 - setup your local db, i've used dockerised postgres via the ./start-database.sh script
 - use the bash script to start a postgresql container with the un / password set from the .env file
-- first time startup will be slow (db tables being created, serve
+- first time startup will be slow db tables being created, serve
 
 #### pre-conditions
 

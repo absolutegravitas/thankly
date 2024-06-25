@@ -32,7 +32,7 @@ const policies = {
     'https://images.unsplash.com',
     'http://cdn.jsdelivr.net',
     'https://maps.gstatic.com',
-    'https://*google.com.au',
+    'https://google.com.au',
   ],
   'font-src': ["'self'", 'https://fonts.googleapis.com', 'https://fonts.gstatic.com'],
   'frame-src': [

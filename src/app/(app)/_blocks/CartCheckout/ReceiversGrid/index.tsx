@@ -22,7 +22,7 @@ export const ReceiversGrid: React.FC<any> = async (item: any) => {
     <React.Fragment>
       <div className="basis-1/4 flex #items-center #justify-end pb-3 gap-4">
         <AddReceiverButton productId={item.product.id} addReceiver={addReceiver} />
-        <RemoveProductButton cartItemId={item.id} removeProduct={removeProduct} />
+        <RemoveProductButton cartItemId={item.product.id} removeProduct={removeProduct} />
       </div>
 
       {/* Receiver Grid */}

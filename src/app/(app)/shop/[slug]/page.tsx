@@ -1,25 +1,25 @@
-import React, { Suspense } from 'react'
-import { Metadata } from 'next'
+import React from 'react'
 import { draftMode } from 'next/headers'
+import { fetchProduct } from '@app/_queries/products'
 import { notFound } from 'next/navigation'
-
+import ProductBlock from '@app/_blocks/ProductBlock'
 import type { Product } from '@payload-types'
-import { fetchProduct, fetchProductSlugs } from '@app/_queries/products'
-import { generateMeta } from '@/utilities/generateMeta'
-import { ProductTemplate } from './page.client'
-import { revalidate } from '@/utilities/revalidate'
-import { revalidateCache } from '@/utilities/revalidateCache'
-import { revalidatePage } from '@/utilities/revalidatePage'
+import { isProductInCart } from '@app/_providers/Cart/actions'
 
-export default async function ProductPage({ params: { slug } }: any) {
+export default async function ProductPage({
+  params: { slug },
+  searchParams,
+}: {
+  params: { slug: string }
+  searchParams: { [key: string]: string | string[] | undefined }
+}) {
   const { isEnabled: isDraftMode } = draftMode()
-  let product: Product | null = null
+  const selectedImageIndex =
+    typeof searchParams.image === 'string' ? parseInt(searchParams.image, 10) : 0
 
+  let product: Product | null = null
   try {
-    // revalidateCache({ tag: `fetchProduct-${slug}` })
-    revalidateCache({ path: `/shop/${slug}` })
     product = await fetchProduct(slug)
-    console.log('product slug ', product)
   } catch (error) {
     console.error('Failed to fetch product:', error)
     return notFound()
@@ -33,32 +33,41 @@ export default async function ProductPage({ params: { slug } }: any) {
     return notFound()
   }
 
-  return (
-    <Suspense fallback="Loading...">
-      <ProductTemplate product={product} />
-    </Suspense>
-  )
+  // Check if the product is in the cart
+  const inCart = await isProductInCart(product.id)
+
+  return <ProductBlock product={product} inCart={inCart} selectedImageIndex={selectedImageIndex} />
 }
 
-export async function generateStaticParams() {
-  return await fetchProductSlugs()
+{
+  /* <Blocks blocks={product?.layout?.root?.children} /> */
 }
+// export async function generateStaticParams() {
+//   return await fetchProductSlugs()
+// }
 
-export async function generateMetadata({ params: { slug } }: any): Promise<Metadata> {
-  const { isEnabled: isDraftMode } = draftMode()
+// export async function generateMetadata({ params: { slug } }: any): Promise<Metadata> {
+//   const { isEnabled: isDraftMode } = draftMode()
 
-  let product: Product | null = null
+//   let product: Product | null = null
 
-  try {
-    product = await fetchProduct(slug)
-  } catch (error) {
-    console.error('Failed to fetch product:', error)
-    return {}
-  }
+//   try {
+//     product = await fetchProduct(slug)
+//   } catch (error) {
+//     console.error('Failed to fetch product:', error)
+//     return {}
+//   }
 
-  // if (!page && slug === 'home') {
-  //   page = staticHome
-  // }
+//   // if (!page && slug === 'home') {
+//   //   page = staticHome
+//   // }
 
-  return generateMeta({ doc: product })
-}
+//   return generateMeta({ doc: product })
+// }
+
+// Cancelled 1x traveller from a flight booking on 11-May (MEL>SIN>ROM / BOM>MEL).
+// Under the terms of MMT and being MMT Black Platinum customer, the Airline, I was entitled to that refund INR 118290 to be credited into MMT wallet or bank account.
+
+// Have called up multiple times and have yet to receive this refund. As of 24-May, MMT has (illegally I believe) changed the refund calculations on the site to less than half of the originally confirmed amount (see screenshots).
+
+// I have yet to see ANY outcome or actual work on this. Multiple follow ups and escalations to MMT have yielded naught. Case history on MMT website / my booking is not updated. Follow up calls are assured but forgotten about after initial contact.

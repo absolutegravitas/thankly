@@ -1,16 +1,18 @@
 import React from 'react'
 import { draftMode } from 'next/headers'
+import { fetchShopList } from '@app/_queries/products'
+import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
-import ShopClient from './page.client'
-import { fetchShopList } from '../_queries/products'
-import { revalidateCache } from '@/utilities/revalidateCache'
+import ProductGrid from '@app/_blocks/ProductGrid'
 
-export default async function Shop() {
+// Force dynamic rendering
+export const dynamic = 'force-dynamic'
+
+export default async function ShopPage() {
   const { isEnabled: isDraftMode } = draftMode()
-  let products: any | null = null
+  let products = null
 
   try {
-    revalidateCache({ path: '/shop' })
     products = await fetchShopList()
   } catch (error) {
     console.error('Failed to fetch products:', error)
@@ -19,14 +21,14 @@ export default async function Shop() {
 
   if (!products || products.length === 0) {
     return (
-      <div>
-        <h1>Products</h1>
-        <p>There are no products in the shop.</p>
+      <div className="bg-white">
+        <div className="mx-auto max-w-2xl px-4 py-16 sm:px-6 sm:py-24 lg:max-w-7xl lg:px-8">
+          <h1 className="text-2xl font-bold tracking-tight text-gray-900">Products</h1>
+          <p className="mt-4 text-gray-500">There are no products in the shop.</p>
+        </div>
       </div>
     )
   }
 
-  // console.log('/shop products found ', products)
-
-  return <ShopClient products={products} />
+  return <ProductGrid products={products} />
 }

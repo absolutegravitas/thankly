@@ -18,6 +18,7 @@ interface EditableFieldProps {
   cartItemId: string
   receiverId: string
   type?: FieldType
+  disabled?: boolean
 }
 
 const EditableField: React.FC<EditableFieldProps> = ({
@@ -26,10 +27,13 @@ const EditableField: React.FC<EditableFieldProps> = ({
   cartItemId,
   receiverId,
   type = 'text',
+  disabled = false,
 }) => {
   const [isEditing, setIsEditing] = useState(false)
   const [value, setValue] = useState<typeof initialValue>(initialValue)
   const inputRef = useRef<HTMLInputElement>(null)
+  const [isBusy, setIsBusy] = useState(false)
+  const busyClass = isBusy ? 'cursor-wait' : ''
 
   useEffect(() => {
     setValue(initialValue)
@@ -58,14 +62,27 @@ const EditableField: React.FC<EditableFieldProps> = ({
   }
 
   const handleSave = async () => {
+    if (isBusy) return // Prevent multiple saves
+    setIsBusy(true)
     setIsEditing(false)
     if (value !== initialValue) {
-      await updateReceiver(cartItemId, receiverId, { [field]: value })
+      try {
+        await updateReceiver(cartItemId, receiverId, { [field]: value })
+      } catch (error) {
+        console.error('Error saving:', error)
+        // Optionally, revert to editing state or show an error message
+      } finally {
+        setIsBusy(false)
+      }
+    } else {
+      setIsBusy(false)
     }
   }
 
   const handleClick = () => {
-    setIsEditing(true)
+    if (!disabled && !isBusy) {
+      setIsEditing(true)
+    }
   }
 
   const handleChange = (
@@ -143,6 +160,7 @@ const EditableField: React.FC<EditableFieldProps> = ({
     })
 
     const debouncedPlaceChanged = debounce(() => {
+      setIsBusy(true)
       const place = autocomplete.getPlace()
       if (place.address_components) {
         const addressComponents = place.address_components
@@ -164,12 +182,23 @@ const EditableField: React.FC<EditableFieldProps> = ({
 
         const fullAddress = `${streetNumber} ${streetName}, ${city}, ${state}, ${postcode}`
         setValue(fullAddress)
-        updateReceiver(cartItemId, receiverId, { address: fullAddress })
+        // updateReceiver(cartItemId, receiverId, { address: fullAddress })
+        try {
+          updateReceiver(cartItemId, receiverId, { address: fullAddress })
+        } catch (error) {
+          console.error('Error saving address:', error)
+          // Optionally handle the error (e.g., show an error message)
+        } finally {
+          setIsBusy(false)
+        }
+        setIsEditing(false)
+      } else {
+        setIsBusy(false)
       }
     }, 500)
 
     autocomplete.addListener('place_changed', debouncedPlaceChanged)
-  }, [inputRef, type, cartItemId, receiverId]) // Add any other dependencies
+  }, [inputRef, type, cartItemId, receiverId, setValue, updateReceiver, setIsBusy]) // Add any other dependencies
 
   useEffect(() => {
     window.initAutocomplete = initAutocomplete
@@ -221,6 +250,13 @@ const EditableField: React.FC<EditableFieldProps> = ({
     }
   }
 
+  const LoadingIndicator = () => (
+    <div className="absolute right-2 top-1/2 transform -translate-y-1/2">
+      {/* Add your preferred loading indicator here */}
+      <span className="animate-spin">⌛</span>
+    </div>
+  )
+
   const renderField = () => {
     if (isEditing) {
       switch (type) {
@@ -237,8 +273,9 @@ const EditableField: React.FC<EditableFieldProps> = ({
                   })
                 }
                 onKeyDown={handleKeyDown}
-                className="bg-transparent outline-none w-1/2 border-b border-gray-300"
+                className={`bg-transparent outline-none w-1/2 border-b border-gray-300 ${busyClass}`}
                 autoFocus
+                disabled={isBusy}
               />
               <input
                 type="text"
@@ -250,76 +287,96 @@ const EditableField: React.FC<EditableFieldProps> = ({
                   })
                 }
                 onKeyDown={handleKeyDown}
-                className="bg-transparent outline-none w-1/2 border-b border-gray-300"
+                disabled={isBusy}
+                className={`bg-transparent outline-none w-1/2 border-b border-gray-300 ${busyClass}`}
               />
+              {isBusy && <LoadingIndicator />}
             </div>
           )
         case 'address':
           return (
-            <input
-              ref={inputRef}
-              type="text"
-              value={value as string}
-              onChange={handleChange}
-              className="bg-transparent outline-none w-full border-b border-gray-300"
-              autoFocus
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  e.preventDefault()
-                  // Only save if there's no active autocomplete suggestion
-                  if (!document.querySelector('.pac-item-selected')) {
-                    handleSave()
+            <div className="relative">
+              <input
+                ref={inputRef}
+                type="text"
+                value={value as string}
+                onChange={handleChange}
+                className={`bg-transparent outline-none w-full border-b border-gray-300 ${busyClass}`}
+                autoFocus
+                disabled={isBusy}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    e.preventDefault()
+                    // Only save if there's no active autocomplete suggestion
+                    if (!document.querySelector('.pac-item-selected')) {
+                      handleSave()
+                    }
                   }
-                }
-              }}
-              placeholder="Enter your address"
-            />
+                }}
+                placeholder="Enter your address"
+              />
+              {isBusy && <LoadingIndicator />}
+            </div>
           )
         case 'text':
           return (
-            <input
-              type="text"
-              value={value as string}
-              onChange={handleChange}
-              onKeyDown={handleKeyDown}
-              className="bg-transparent outline-none w-full border-b border-gray-300"
-              autoFocus
-            />
+            <div className="relative">
+              <input
+                type="text"
+                value={value as string}
+                onChange={handleChange}
+                onKeyDown={handleKeyDown}
+                className={`bg-transparent outline-none w-full border-b border-gray-300 ${busyClass}`}
+                autoFocus
+                disabled={isBusy}
+              />
+              {isBusy && <LoadingIndicator />}
+            </div>
           )
         case 'select':
           return (
-            <select
-              value={value as string}
-              onChange={handleChange}
-              onKeyDown={handleKeyDown}
-              className="bg-transparent outline-none w-full border-b border-gray-300"
-              autoFocus
-            >
-              <option value="free">Free</option>
-              <option value="standardMail">Standard Mail</option>
-              <option value="registeredMail">Registered Mail</option>
-              <option value="expressMail">Express Mail</option>
-              <option value="standardParcel">Standard Parcel</option>
-              <option value="expressParcel">Express Parcel</option>
-              <option value="courierParcel">Courier Parcel</option>
-            </select>
+            <div className="relative">
+              <select
+                value={value as string}
+                onChange={handleChange}
+                onKeyDown={handleKeyDown}
+                className="bg-transparent outline-none w-full border-b border-gray-300"
+                autoFocus
+              >
+                <option value="" disabled selected>
+                  Select an option
+                </option>
+                <option value="free">Free</option>
+                <option value="standardMail">Standard Mail</option>
+                <option value="registeredMail">Registered Mail</option>
+                <option value="expressMail">Express Mail</option>
+                <option value="standardParcel">Standard Parcel</option>
+                <option value="expressParcel">Express Parcel</option>
+                <option value="courierParcel">Courier Parcel</option>
+              </select>
+              {isBusy && <LoadingIndicator />}
+            </div>
           )
         case 'textarea':
           return (
-            <textarea
-              value={value as string}
-              onChange={handleChange}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                  e.preventDefault()
-                  handleSave()
-                }
-              }}
-              className="bg-transparent outline-none w-full border-b border-gray-300"
-              style={{ lineHeight: '1.5', height: '6em' }}
-              maxLength={400}
-              autoFocus
-            />
+            <div className="relative">
+              <textarea
+                value={value as string}
+                onChange={handleChange}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault()
+                    handleSave()
+                  }
+                }}
+                className={`bg-transparent outline-none w-full border-b border-gray-300 ${busyClass}`}
+                style={{ lineHeight: '1.5', height: '6em' }}
+                maxLength={400}
+                autoFocus
+                disabled={isBusy}
+              />
+              {isBusy && <LoadingIndicator />}
+            </div>
           )
       }
     }

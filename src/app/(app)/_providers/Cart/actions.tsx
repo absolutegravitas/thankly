@@ -47,8 +47,18 @@ export async function createCart() {
 
 //////////////////////////////////////////////////////////
 export async function getCart(cartId?: string, depth?: number) {
+  const isStaticGeneration = typeof window === 'undefined' && !cookies().has('cartId')
+
+  if (isStaticGeneration) {
+    return null // Return null during static generation
+  }
+
   if (!cartId) {
     cartId = getCartId()
+  }
+
+  if (!cartId) {
+    return null // Return null if no cartId is found
   }
 
   const config = await configPromise
@@ -59,7 +69,7 @@ export async function getCart(cartId?: string, depth?: number) {
     const { docs } = await payload.find({
       collection: 'carts',
       where: { id: { equals: cartId } },
-      depth: depth || 2, // has to be min of 2 otherwise checkout breaks because media obj is not traversed to
+      depth: depth || 2,
       limit: 1,
       pagination: false,
     })
@@ -70,17 +80,53 @@ export async function getCart(cartId?: string, depth?: number) {
       cart = null
     }
 
-    // Why Use revalidatePath for Cart Page with Server Components?
-    // Targeted Revalidation: revalidatePath allows you to specify exact paths that should be revalidated when the cart data changes. This is ideal for pages like a cart page where you want specific UI components to update immediately upon cart changes.
-    // Clear Intent: Using revalidatePath('/cart'), for example, explicitly tells Next.js to refresh the cache for the /cart path. This ensures that any server components or static content associated with the cart page are updated with the latest data.
-
     revalidatePath('/shop/cart')
   } catch (error) {
     console.error(`Error fetching cart: ${cartId}`, error)
-  } finally {
-    return cart || null
   }
+
+  return cart || null
 }
+
+function getCartId() {
+  return cookies().get('cartId')?.value
+}
+
+// export async function getCart(cartId?: string, depth?: number) {
+//   if (!cartId) {
+//     cartId = getCartId()
+//   }
+
+//   const config = await configPromise
+//   let payload: any = await getPayloadHMR({ config })
+//   let cart = null
+
+//   try {
+//     const { docs } = await payload.find({
+//       collection: 'carts',
+//       where: { id: { equals: cartId } },
+//       depth: depth || 2, // has to be min of 2 otherwise checkout breaks because media obj is not traversed to
+//       limit: 1,
+//       pagination: false,
+//     })
+
+//     cart = docs[0]
+
+//     if (cart && cart.items.length === 0) {
+//       cart = null
+//     }
+
+//     // Why Use revalidatePath for Cart Page with Server Components?
+//     // Targeted Revalidation: revalidatePath allows you to specify exact paths that should be revalidated when the cart data changes. This is ideal for pages like a cart page where you want specific UI components to update immediately upon cart changes.
+//     // Clear Intent: Using revalidatePath('/cart'), for example, explicitly tells Next.js to refresh the cache for the /cart path. This ensures that any server components or static content associated with the cart page are updated with the latest data.
+
+//     revalidatePath('/shop/cart')
+//   } catch (error) {
+//     console.error(`Error fetching cart: ${cartId}`, error)
+//   } finally {
+//     return cart || null
+//   }
+// }
 
 //////////////////////////////////////////////////////////
 export async function clearCart() {
@@ -102,41 +148,32 @@ export async function clearCart() {
 }
 
 //////////////////////////////////////////////////////////
-function getCartId() {
-  const cookieStore = cookies()
-  const cartId = cookieStore.get('cartId')?.value
-  return cartId
-}
 
 //////////////////////////////////////////////////////////
-export async function addProduct(product: Product) {
-  // console.log('product to be added -- ', product)
-
+export async function addProduct(product: Product): Promise<Cart> {
   try {
-    // see if there's an existing cart to add the product to
     const cartId = getCartId()
     let cart = await getCart(cartId, 0)
 
-    // if not, create a new cart
     if (!cartId || cartId === '' || !cart) {
       console.log('No cart id found, creating new cart.')
       cart = await createCart()
     }
 
-    // then add the Product to the cart including an initial Receiver to this product
     const config = await configPromise
     let payload: any = await getPayloadHMR({ config })
 
-    // get cart.items array
     const items = cart?.items || []
-
-    items.push({
-      product: product.id,
+    const newItem = {
+      product: product.id, // Ensure this is just the ID
       productPrice: Math.min(product.price ?? 0, product.promoPrice ?? 0),
-      // add one empty receiver the first time a product is added
+      totals: {
+        itemTotal: 0,
+        itemThanklys: 0,
+        itemShipping: 0,
+      },
       receivers: [
         {
-          id: `${Date.now()}`, // Use a unique temporary ID
           firstName: 'John',
           lastName: 'Smith',
           message: 'Add a message with your thankly here...',
@@ -145,34 +182,45 @@ export async function addProduct(product: Product) {
           city: '',
           state: '',
           postcode: '',
-          shippingOption: 'free',
+          shippingOption: product.productType === 'card' ? 'standardMail' : 'courierParcel',
           totals: {
-            receiverThankly: Math.min(product.price ?? 0, product.promoPrice ?? 0),
             receiverTotal: 0,
+            receiverThankly: Math.min(product.price ?? 0, product.promoPrice ?? 0),
             receiverShipping: 0,
           },
+          id: `${Date.now()}`,
         },
       ],
-    })
+    }
 
-    console.log('product added to cart -- ', cart)
+    items.push(newItem)
 
-    // cart = updateCartTotals(cart)
+    console.log('Product being added to cart:', newItem)
 
-    // Result will be the updated cart document.
     const result = await payload.update({
       collection: 'carts',
       id: cart.id,
-      data: { items: [...items] },
+      data: {
+        items: items.map((item: any) => ({
+          ...item,
+          product: typeof item.product === 'object' ? item.product.id : item.product,
+        })),
+        totals: {
+          cartTotal: 0,
+          cartThanklys: 0,
+          cartShipping: 0,
+        },
+      },
       depth: 0,
     })
-    // console.log('cart result --', result)
-    revalidatePath('/shop/cart')
 
+    console.log('Updated cart:', result)
+
+    revalidatePath('/shop/cart')
     return result
   } catch (e: any) {
-    console.log(e.message)
-    return 'Error adding item to cart.'
+    console.error('Error adding item to cart:', e)
+    throw new Error(`Error adding item to cart: ${e.message}`)
   }
 }
 
@@ -482,7 +530,7 @@ export async function removeProduct(cartItemId: string) {
     // console.log('Original cart items:', JSON.stringify(cart.items, null, 2))
 
     // Remove the entire item from the cart
-    cart.items = cart.items.filter((item: any) => item.id !== cartItemId)
+    cart.items = cart.items.filter((item: any) => item.product.id !== cartItemId)
 
     console.log('Updated cart items:', JSON.stringify(cart.items, null, 2))
     // cart = updateCartTotals(cart)
@@ -508,7 +556,12 @@ export async function removeProduct(cartItemId: string) {
       result = await payload.update({
         collection: 'carts',
         id: cart.id,
-        data: { items: cart.items },
+        data: {
+          items: cart.items.map((item: any) => ({
+            ...item,
+            product: typeof item.product === 'object' ? item.product.id : item.product,
+          })),
+        },
         depth: 2, // Adjust depth as needed
       })
     }
@@ -576,10 +629,35 @@ function updateCartTotals(cart: Cart): Cart {
 //////////////////////////////////////////////////////////
 
 //////////////////////////////////////////////////////////
+
+// export async function isProductInCart(productId: number | string) {
+//   const cartId = getCartId()
+//   if (!cartId) return false
+
+//   const config = await configPromise
+//   let payload: any = await getPayloadHMR({ config })
+
+//   try {
+//     const { docs } = await payload.find({
+//       collection: 'carts',
+//       where: {
+//         id: { equals: cartId },
+//         'items.product': { equals: productId },
+//       },
+//       depth: 0,
+//       limit: 1,
+//     })
+
+//     return docs.length > 0
+//   } catch (e: any) {
+//     console.error('Error checking if product is in cart:', e.message)
+//     return false
+//   }
+// }
 export async function isProductInCart(productId: number | string) {
   try {
-    const cookieStore = cookies()
-    const cartId = cookieStore.get('cartId')?.value
+    const cartId = getCartId()
+    if (!cartId) return false
     let cart
 
     if (!cartId || cartId === '') {
