@@ -1,12 +1,9 @@
-import React, { Fragment, useEffect } from 'react'
+import React from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-
-import classes from './index.module.scss'
 import { ChevronRightIcon } from 'lucide-react'
 import cn from '@/utilities/cn'
-import { blockFormats, buttonLook, contentFormats } from '@app/_css/tailwindClasses'
-
+import { contentFormats } from '@app/_css/tailwindClasses'
 import { ProductActions } from '@app/_components/ProductActions'
 import { messages } from '@/utilities/staticText'
 
@@ -23,33 +20,38 @@ export const ProductCard: React.FC<any> = (product) => {
     lowStockThreshold,
     className,
   } = product
-  // console.log('product', product)
+
+  const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL || ''
+
   return (
     <div className={[`relative`, className].filter(Boolean).join(' ')}>
       <Link href={`/shop/${slug}`} className="relative no-underline hover:no-underline">
-        <div className={classes.mediaWrapper + ` aspect-square `}>
+        <div className={`aspect-square relative`}>
           {(stockOnHand === 0 || stockOnHand === null || stockOnHand === undefined) && (
-            <div className="relative left-0 top-0 z-10 flex w-full items-center justify-center bg-gray-900/50 p-2 font-body font-semibold uppercase tracking-wider text-white !no-underline">
+            <div className="absolute left-0 top-0 z-10 flex w-full items-center justify-center bg-gray-900/50 p-2 font-body font-semibold uppercase tracking-wider text-white !no-underline">
               <span className="text-base uppercase">{messages.outOfStock}</span>
             </div>
           )}
 
           {stockOnHand <= lowStockThreshold && stockOnHand > 0 && (
-            <div className="relative left-0 top-0 z-10 flex w-full items-center justify-center bg-gray-900/50 p-2 font-body font-semibold uppercase tracking-wider text-white !no-underline">
+            <div className="absolute left-0 top-0 z-10 flex w-full items-center justify-center bg-gray-900/50 p-2 font-body font-semibold uppercase tracking-wider text-white !no-underline">
               <span className="text-base">{messages.lowStock}</span>
             </div>
           )}
 
-          {!metaImage && <div className={classes.placeholder}>No image</div>}
+          {!metaImage && (
+            <div className="w-full h-full flex items-center justify-center bg-gray-200">
+              No image
+            </div>
+          )}
           {metaImage && typeof metaImage !== 'string' && (
             <div className="relative w-full h-full group">
               <Image
                 src={metaImage.url}
                 alt={metaImage.alt || ''}
-                priority={false}
                 fill
-                // objectFit="cover"
-                className="aspect-square object-cover rounded-md shadow-md hover:scale-105 hover:delay-75 duration-150 transition-transform"
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                className="object-cover rounded-md shadow-md hover:scale-105 hover:delay-75 duration-150 transition-transform"
               />
               <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-150">
                 <svg
@@ -114,8 +116,8 @@ export const ProductCard: React.FC<any> = (product) => {
           >
             {description.replace(/\s/g, ' ')}
           </div>
-          <Link href={`/shop/${slug}`} className="relative #no-underline #hover:no-underline">
-            <div className="pt-3 pb-5 flex justify-end items-center cursor-pointer #hover:underline #no-underline">
+          <Link href={`/shop/${slug}`} className="relative">
+            <div className="pt-3 pb-5 flex justify-end items-center cursor-pointer">
               <span className="justify-end font-title text-base mr-2">{`Details`}</span>
               <ChevronRightIcon
                 className="hover:underline h-5 w-auto duration-300 hover:animate-pulse"
