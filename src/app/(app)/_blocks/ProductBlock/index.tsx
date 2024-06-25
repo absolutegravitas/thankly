@@ -41,7 +41,8 @@ const ProductBlockContent: React.FC<ProductBlockContentProps> = ({
       'url' in mediaItem &&
       typeof mediaItem.url === 'string'
     ) {
-      return mediaItem.url
+      const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL || ''
+      return `${baseUrl}${mediaItem.url}`
     }
     return `https://placehold.co/800x800?text=No+Image`
   }
