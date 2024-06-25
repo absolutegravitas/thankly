@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation'
 import ProductBlock from '@app/_blocks/ProductBlock'
 import type { Product } from '@payload-types'
 import { isProductInCart } from '@app/_providers/Cart/actions'
+import Blocks from '../../_blocks'
 
 export default async function ProductPage({
   params: { slug },
@@ -36,34 +37,13 @@ export default async function ProductPage({
   // Check if the product is in the cart
   const inCart = await isProductInCart(product.id)
 
-  return <ProductBlock product={product} inCart={inCart} selectedImageIndex={selectedImageIndex} />
+  return (
+    <React.Fragment>
+      <ProductBlock product={product} inCart={inCart} selectedImageIndex={selectedImageIndex} />
+      <Blocks blocks={product?.layout?.root?.children} />
+    </React.Fragment>
+  )
 }
-
-{
-  /* <Blocks blocks={product?.layout?.root?.children} /> */
-}
-// export async function generateStaticParams() {
-//   return await fetchProductSlugs()
-// }
-
-// export async function generateMetadata({ params: { slug } }: any): Promise<Metadata> {
-//   const { isEnabled: isDraftMode } = draftMode()
-
-//   let product: Product | null = null
-
-//   try {
-//     product = await fetchProduct(slug)
-//   } catch (error) {
-//     console.error('Failed to fetch product:', error)
-//     return {}
-//   }
-
-//   // if (!page && slug === 'home') {
-//   //   page = staticHome
-//   // }
-
-//   return generateMeta({ doc: product })
-// }
 
 // Cancelled 1x traveller from a flight booking on 11-May (MEL>SIN>ROM / BOM>MEL).
 // Under the terms of MMT and being MMT Black Platinum customer, the Airline, I was entitled to that refund INR 118290 to be credited into MMT wallet or bank account.

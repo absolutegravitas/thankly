@@ -23,14 +23,13 @@ import classes from './index.module.scss'
 // }
 
 import { ExtractBlockProps } from '@/utilities/extractBlockProps'
-import { useGetHeroPadding } from '../Hero/useGetHeroPadding'
+import { getPaddingClasses } from '../../_css/tailwindClasses'
 export type Props = ExtractBlockProps<'slider'> & { padding: PaddingProps }
 
 export const SliderBlock: React.FC<Props> = (props) => {
   const { sliderFields } = props
   const { settings } = sliderFields
   const { currentSlideIndex } = useSlider()
-  const padding = useGetHeroPadding(settings.theme, props)
 
   const slides = sliderFields.quoteSlides
 
@@ -42,8 +41,7 @@ export const SliderBlock: React.FC<Props> = (props) => {
   return (
     <BlockWrapper
       settings={settings}
-      padding={padding}
-      className={[classes.slider].filter(Boolean).join(' ')}
+      className={[getPaddingClasses('standard'), classes.slider].filter(Boolean).join(' ')}
     >
       {/* <BackgroundGrid zIndex={0} /> */}
 

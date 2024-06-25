@@ -18,15 +18,13 @@ import classes from './index.module.scss'
 // }
 
 import { ExtractBlockProps } from '@/utilities/extractBlockProps'
-import { useGetHeroPadding } from '../Hero/useGetHeroPadding'
+import { getPaddingClasses } from '../../_css/tailwindClasses'
 export type CardGridProps = ExtractBlockProps<'cardGrid'> & { padding: PaddingProps }
 
 export const CardGrid: React.FC<CardGridProps> = (props) => {
   const {
     cardGridFields: { content, cards, links, settings, revealDescription },
   } = props
-
-  const padding = useGetHeroPadding(settings.theme, props)
 
   const [index, setIndex] = useState(0)
 
@@ -43,8 +41,7 @@ export const CardGrid: React.FC<CardGridProps> = (props) => {
   return (
     <BlockWrapper
       settings={settings}
-      padding={{ ...padding, top: 'large' }}
-      className={[classes.cardGrid].filter(Boolean).join(' ')}
+      className={[getPaddingClasses('standard'), classes.cardGrid].filter(Boolean).join(' ')}
     >
       {/* <BackgroundGrid zIndex={1} /> */}
       <Gutter>

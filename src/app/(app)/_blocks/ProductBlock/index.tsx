@@ -7,6 +7,7 @@ import { ProductActions } from '@app/_components/ProductActions'
 import { Product, Media } from '@payload-types'
 import { contentFormats } from '@app/_css/tailwindClasses'
 import cn from '@/utilities/cn'
+import { getImageAlt, getImageUrl } from '@/utilities/getmageUrl'
 
 interface ProductBlockContentProps {
   product: Product
@@ -33,31 +34,6 @@ const ProductBlockContent: React.FC<ProductBlockContentProps> = ({
 
   const displayPrice = price ?? 0
   const displayPromoPrice = promoPrice ?? 0
-
-  const getImageUrl = (mediaItem: number | Media | null | undefined): string => {
-    if (
-      typeof mediaItem === 'object' &&
-      mediaItem !== null &&
-      'url' in mediaItem &&
-      typeof mediaItem.url === 'string'
-    ) {
-      const baseUrl = process.env.NEXT_PUBLIC_SERVER_URL || ''
-      return `${baseUrl}${mediaItem.url}`
-    }
-    return `https://placehold.co/800x800?text=No+Image`
-  }
-
-  const getImageAlt = (mediaItem: number | Media | null | undefined): string => {
-    if (
-      typeof mediaItem === 'object' &&
-      mediaItem !== null &&
-      'alt' in mediaItem &&
-      typeof mediaItem.alt === 'string'
-    ) {
-      return mediaItem.alt
-    }
-    return 'Product image placeholder'
-  }
 
   return (
     <Gutter>

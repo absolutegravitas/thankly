@@ -20,8 +20,13 @@ import classes from './index.module.scss'
 //   padding?: PaddingProps
 // }
 
+const defaultPadding: PaddingProps = {
+  top: 'large',
+  bottom: 'large',
+}
+
 import { ExtractBlockProps } from '@/utilities/extractBlockProps'
-import { useGetHeroPadding } from '../Hero/useGetHeroPadding'
+import { getPaddingClasses } from '../../_css/tailwindClasses'
 export type CallToActionProps = ExtractBlockProps<'cta'> & { padding: PaddingProps }
 
 export const CallToAction: React.FC<CallToActionProps> = (props) => {
@@ -29,13 +34,12 @@ export const CallToAction: React.FC<CallToActionProps> = (props) => {
   const {
     ctaFields: { content, links, settings },
   } = props
-  const padding = useGetHeroPadding(settings.theme, props)
 
   const hasLinks = links && links.length > 0
 
   // console.log('content for richText // ', JSON.stringify(content))
   return (
-    <BlockWrapper settings={settings} padding={padding}>
+    <BlockWrapper settings={settings} className={getPaddingClasses('standard')}>
       {/* <BackgroundGrid zIndex={0} /> */}
       <Gutter className={classes.callToAction}>
         <div className={[classes.wrapper].filter(Boolean).join(' ')}>

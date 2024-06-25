@@ -1,3 +1,5 @@
+'use client'
+
 import dynamic from 'next/dynamic'
 import classes from '@app/_blocks/RichText/index.module.scss'
 import React from 'react'
@@ -55,15 +57,11 @@ const blockComponents = {
   statement: Statement,
   stickyHighlights: StickyHighlights,
 }
-const Blocks = ({ blocks, locale }: any) => {
-  // console.log('blocks //', JSON.stringify(blocks))
 
+const Blocks = ({ blocks, locale }: any) => {
   return (
     <React.Fragment>
       {blocks?.map((block: any, ix: number) => {
-        // console.log('type //', block.type)
-
-        //create switch statement for block.type
         switch (block.type) {
           case 'paragraph':
             return (

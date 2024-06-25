@@ -6,7 +6,7 @@ import { BackgroundGrid } from '@app/_components/BackgroundGrid'
 import { BlockWrapper } from '@app/_components/BlockWrapper'
 import { CMSLink } from '@app/_components/CMSLink'
 import { Gutter } from '@app/_components/Gutter'
-import { useGetHeroPadding } from '@app/_blocks/Hero/useGetHeroPadding'
+
 import { Media } from '@app/_components/Media'
 import MediaParallax from '@app/_components/MediaParallax'
 import { RichText } from '@app/_blocks/RichText'
@@ -14,6 +14,7 @@ import classes from './index.module.scss'
 
 import { ExtractBlockProps } from '@/utilities/extractBlockProps'
 import { ChevronRightIcon } from 'lucide-react'
+import { getPaddingClasses } from '@/app/(app)/_css/tailwindClasses'
 export type GradientHeroProps = ExtractBlockProps<'fields'>
 
 export const GradientHero: React.FC<GradientHeroProps> = ({
@@ -27,10 +28,9 @@ export const GradientHero: React.FC<GradientHeroProps> = ({
   firstContentBlock,
 }) => {
   const theme = fullBackground ? 'dark' : themeFromProps
-  const padding = useGetHeroPadding(theme, firstContentBlock)
 
   return (
-    <BlockWrapper settings={{ theme }} padding={{ top: 'small', bottom: 'small' }}>
+    <BlockWrapper settings={{ theme }} className={getPaddingClasses('standard')}>
       {Boolean(fullBackground) && (
         <Media
           className={[classes.bgFull, enableBreadcrumbsBar ? classes.hasBreadcrumbsEnabled : '']

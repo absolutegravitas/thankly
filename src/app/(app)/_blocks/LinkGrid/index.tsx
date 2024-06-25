@@ -12,8 +12,8 @@ import { ArrowIcon } from '@app/_icons/ArrowIcon'
 import { Page } from '@payload-types'
 
 import classes from './index.module.scss'
-import { useGetHeroPadding } from '../Hero/useGetHeroPadding'
 import { ChevronRightIcon } from 'lucide-react'
+import { getPaddingClasses } from '../../_css/tailwindClasses'
 
 // export type LinkGridProps = Extract<Page['layout'][0], { blockType: 'linkGrid' }> & {
 //   padding?: PaddingProps
@@ -58,12 +58,12 @@ export const LinkGrid: React.FC<
   const { settings } = linkGridFields
   const links = linkGridFields?.links
   const hasLinks = Array.isArray(links) && links.length > 0
-  const padding = useGetHeroPadding(settings.theme, props)
 
   return (
     <BlockWrapper
-      className={[className, classes.linkGrid].filter(Boolean).join(' ')}
-      padding={padding}
+      className={[getPaddingClasses('standard'), className, classes.linkGrid]
+        .filter(Boolean)
+        .join(' ')}
       settings={linkGridFields?.settings}
     >
       {/* <BackgroundGrid zIndex={0} /> */}

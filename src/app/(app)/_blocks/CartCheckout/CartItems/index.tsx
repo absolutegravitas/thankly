@@ -9,6 +9,7 @@ import { Cart } from '@/payload-types'
 import { getCart } from '@app/_providers/Cart/actions'
 import { MailWarningIcon } from 'lucide-react'
 import { ReceiversGrid } from '../ReceiversGrid'
+import { getImageAlt, getImageUrl } from '@/utilities/getmageUrl'
 
 export const CartItems: React.FC<any> = async () => {
   let cart: Cart | null = null
@@ -28,7 +29,18 @@ export const CartItems: React.FC<any> = async () => {
             {/* Product Info */}
             <div className="space-y-4">
               <div className="#grid flex sm:flex items-start sm:items-center sm:space-x-4 space-x-3">
-                <div className="h-20 w-20 bg-gray-50 mb-2 sm:mb-0 sm:mr-4">
+                {/* <div className="relative w-full h-full group"> */}
+                <Image
+                  src={getImageUrl(product.media[0]?.mediaItem)}
+                  alt={getImageAlt(product.media[0]?.mediaItem)}
+                  priority
+                  width={100}
+                  height={100}
+                  className="rounded-sm object-cover object-center aspect-square shadow-md"
+                />
+                {/* </div> */}
+
+                {/* <div className="h-20 w-20 bg-gray-50 mb-2 sm:mb-0 sm:mr-4">
                   {metaImage && typeof metaImage !== 'string' && (
                     <div className="relative w-full h-full group">
                       <Image
@@ -41,7 +53,7 @@ export const CartItems: React.FC<any> = async () => {
                       />
                     </div>
                   )}
-                </div>
+                </div> */}
                 {/* title & description */}
                 <div className="flex-1">
                   <span className={cn(contentFormats.global, contentFormats.h4, `no-underline`)}>

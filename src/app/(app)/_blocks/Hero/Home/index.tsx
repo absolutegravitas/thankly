@@ -8,7 +8,7 @@ import { ChangeHeaderTheme } from '@app/_components/ChangeHeaderTheme'
 import { CMSLink } from '@app/_components/CMSLink'
 import { Gutter } from '@app/_components/Gutter'
 import { LogoShowcase } from '@app/_blocks/Hero/Home/LogoShowcase'
-import { useGetHeroPadding } from '@app/_blocks/Hero/useGetHeroPadding'
+
 import { Media } from '@app/_components/Media'
 import { BlocksProp } from '@app/_components/RenderBlocks'
 // import { RichText } from '@app/_components/RichText'
@@ -18,6 +18,7 @@ import { RichText } from '@app/_blocks/RichText'
 import classes from './index.module.scss'
 
 import { ExtractBlockProps } from '@/utilities/extractBlockProps'
+import { getPaddingClasses } from '@/app/(app)/_css/tailwindClasses'
 export type FormFieldsProps = ExtractBlockProps<'fields'>
 
 export const HomeHero: React.FC<
@@ -45,7 +46,6 @@ export const HomeHero: React.FC<
   const mobileLaptopMediaRef = useRef<HTMLDivElement | null>(null)
   const [laptopMediaHeight, setLaptopMediaHeight] = useState(0)
   const [mobileMediaWrapperHeight, setMobileMediaWrapperHeight] = useState(0)
-  const padding = useGetHeroPadding(theme, firstContentBlock)
   const [windowWidth, setWindowWidth] = useState(0)
 
   useEffect(() => {
@@ -159,7 +159,11 @@ export const HomeHero: React.FC<
 
   return (
     <ChangeHeaderTheme theme={theme}>
-      <BlockWrapper setPadding={false} settings={{ theme: theme }} padding={padding}>
+      <BlockWrapper
+        setPadding={false}
+        settings={{ theme: theme }}
+        className={getPaddingClasses('hero')}
+      >
         <div className={classes.homeHero}>
           <div className={classes.background}>
             <div className={classes.imagesContainerWrapper}>

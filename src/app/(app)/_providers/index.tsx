@@ -16,7 +16,6 @@ import { CloseIcon } from '@app/_icons/CloseIcon'
 import { ErrorIcon } from '@app/_icons/ErrorIcon'
 import { HeaderIntersectionObserver } from '@app/_providers/HeaderIntersectionObserver'
 import { AuthProvider } from './Auth'
-import { ComputedCSSValuesProvider } from './ComputedCSSValues'
 import { PageTransition } from './PageTransition'
 import { ThemePreferenceProvider } from './Theme'
 
@@ -62,13 +61,12 @@ export const Providers: React.FC<{
                     xl: 12,
                   }}
                 >
-                  <ComputedCSSValuesProvider>
-                    <ModalProvider transTime={0} zIndex="var(--z-modal)">
-                      <PageTransition>
-                        <HeaderIntersectionObserver>
-                          {children}
-                          <ModalContainer />
-                          {/* <ToastContainer
+                  <ModalProvider transTime={0} zIndex="var(--z-modal)">
+                    <PageTransition>
+                      <HeaderIntersectionObserver>
+                        {children}
+                        <ModalContainer />
+                        {/* <ToastContainer
                             position="bottom-center"
                             transition={Slide}
                             // icon={false}
@@ -88,10 +86,9 @@ export const Providers: React.FC<{
                               }
                             }}
                           /> */}
-                        </HeaderIntersectionObserver>
-                      </PageTransition>
-                    </ModalProvider>
-                  </ComputedCSSValuesProvider>
+                      </HeaderIntersectionObserver>
+                    </PageTransition>
+                  </ModalProvider>
                 </GridProvider>
               </ThemePreferenceProvider>
             </WindowInfoProvider>

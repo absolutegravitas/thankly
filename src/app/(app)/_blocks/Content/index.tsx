@@ -13,13 +13,12 @@ import classes from './index.module.scss'
 // }
 
 import { ExtractBlockProps } from '@/utilities/extractBlockProps'
-import { useGetHeroPadding } from '../Hero/useGetHeroPadding'
+import { getPaddingClasses } from '../../_css/tailwindClasses'
 export type Props = ExtractBlockProps<'content'> & { padding: PaddingProps }
 
 const Columns: React.FC<Props> = (props) => {
   const { contentFields } = props
   const { layout, columnOne, columnTwo, columnThree, settings } = contentFields
-  const padding = useGetHeroPadding(settings.theme, props)
 
   switch (layout) {
     case 'oneColumn': {
@@ -90,7 +89,7 @@ export const ContentBlock: React.FC<Props> = (props) => {
   // console.log(props)
   // return <React.Fragment></React.Fragment>
   return (
-    <BlockWrapper padding={padding} settings={settings}>
+    <BlockWrapper className={getPaddingClasses('standard')} settings={settings}>
       {/* <BackgroundGrid zIndex={0} /> */}
       <Gutter className={classes.contentBlock}>
         {useLeadingHeader && <RichText className={classes.leadingHeader} content={leadingHeader} />}

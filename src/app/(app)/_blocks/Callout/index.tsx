@@ -12,7 +12,6 @@ import MediaParallax from '@app/_components/MediaParallax'
 import { RichText } from '@app/_blocks/RichText'
 import { QuoteIconAlt } from '@app/_icons/QuoteIconAlt'
 import { Page } from '@payload-types'
-import { useGetHeroPadding } from '@app/_blocks/Hero/useGetHeroPadding'
 
 import classes from './index.module.scss'
 
@@ -21,6 +20,7 @@ import classes from './index.module.scss'
 // }
 
 import { ExtractBlockProps } from '@/utilities/extractBlockProps'
+import { getPaddingClasses } from '../../_css/tailwindClasses'
 export type CalloutProps = ExtractBlockProps<'callout'> & { padding?: PaddingProps }
 
 export const Callout: React.FC<CalloutProps> = (props) => {
@@ -29,10 +29,9 @@ export const Callout: React.FC<CalloutProps> = (props) => {
   } = props
 
   const hasImages = images?.length && images.length > 0
-  const padding = useGetHeroPadding(settings.theme, props)
 
   return (
-    <BlockWrapper settings={settings} padding={padding}>
+    <BlockWrapper settings={settings} className={getPaddingClasses('standard')}>
       {/* <BackgroundGrid className={classes.backgroundGrid} zIndex={0} /> */}
       <div className={classes.wrapper}>
         <Gutter>

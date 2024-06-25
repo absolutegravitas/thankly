@@ -29,8 +29,8 @@ type PositionedLogo = {
 // }
 
 import { ExtractBlockProps } from '@/utilities/extractBlockProps'
-import { useGetHeroPadding } from '../Hero/useGetHeroPadding'
 import { ChevronRightIcon } from 'lucide-react'
+import { getPaddingClasses } from '../../_css/tailwindClasses'
 export type LogoGridProps = ExtractBlockProps<'logoGrid'> & { padding: PaddingProps }
 
 const TOTAL_CELLS = 8
@@ -50,7 +50,6 @@ export const LogoGrid: React.FC<LogoGridProps> = (props) => {
   const {
     logoGridFields: { content, enableLink, link, logos, settings },
   } = props
-  const padding = useGetHeroPadding(settings.theme, props)
 
   const [logoPositions, setLogoPositions] = useState<PositionedLogo[]>([])
   const [currentAnimatingIndex, setCurrentAnimatingIndex] = useState<number | null>(null)
@@ -110,9 +109,8 @@ export const LogoGrid: React.FC<LogoGridProps> = (props) => {
 
   return (
     <BlockWrapper
-      className={[classes.logoGrid].filter(Boolean).join(' ')}
-      padding={padding}
       settings={settings}
+      className={[getPaddingClasses('standard'), classes.logoGrid].filter(Boolean).join(' ')}
     >
       <Gutter>
         <BackgroundGrid className={classes.backgroundGrid} zIndex={0} />

@@ -18,7 +18,7 @@ import classes from './index.module.scss'
 // }
 
 import { ExtractBlockProps } from '@/utilities/extractBlockProps'
-import { useGetHeroPadding } from '../Hero/useGetHeroPadding'
+import { getPaddingClasses } from '../../_css/tailwindClasses'
 export type HoverCardsProps = ExtractBlockProps<'hoverCards'> & { padding: PaddingProps }
 
 const Card: React.FC<{
@@ -55,7 +55,6 @@ export const HoverCards: React.FC<HoverCardsProps> = (props) => {
     hoverCardsFields: { richText, cards, settings },
   } = props
   // console.log('hovercardsfoelds //', props)
-  const padding = useGetHeroPadding(settings.theme, props)
 
   const [activeGradient, setActiveGradient] = useState(1)
 
@@ -66,9 +65,7 @@ export const HoverCards: React.FC<HoverCardsProps> = (props) => {
   return (
     <BlockWrapper
       settings={{ theme: 'light' }}
-      padding={padding}
-      // padding={{ bottom: 'large', top: 'large' }}
-      className={[classes.wrapper].filter(Boolean).join(' ')}
+      className={[getPaddingClasses('standard'), classes.wrapper].filter(Boolean).join(' ')}
     >
       <BackgroundGrid zIndex={1} />
       {/* <div className={classes.noiseWrapper}>

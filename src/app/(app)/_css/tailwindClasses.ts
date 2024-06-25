@@ -112,3 +112,74 @@ export const textColorVariants = {
   '#292929': 'text-slateblack', // slate black
   '#0d1317': 'text-black', // jet black
 }
+
+type PaddingBlock = {
+  mobile: string
+  desktop: string
+  description: string
+}
+
+type ContentBlockTypes =
+  | 'standard'
+  | 'hero'
+  | 'compact'
+  | 'feature'
+  | 'cta'
+  | 'footer'
+  | 'narrow'
+  | 'wide'
+
+type ContentBlockPadding = {
+  [key in ContentBlockTypes]: PaddingBlock
+}
+
+const contentBlockPadding: ContentBlockPadding = {
+  standard: {
+    mobile: 'px-4 py-8',
+    desktop: 'md:px-8 md:py-16',
+    description: 'Standard content blocks',
+  },
+  hero: {
+    mobile: 'px-4 py-12',
+    desktop: 'md:px-8 md:py-24',
+    description: 'Hero sections',
+  },
+  compact: {
+    mobile: 'px-4 py-6',
+    desktop: 'md:px-6 md:py-8',
+    description: 'Compact content blocks',
+  },
+  feature: {
+    mobile: 'px-4 py-10',
+    desktop: 'md:px-8 md:py-20',
+    description: 'Feature sections',
+  },
+  cta: {
+    mobile: 'px-4 py-10',
+    desktop: 'md:px-8 md:py-16',
+    description: 'Call-to-Action blocks',
+  },
+  footer: {
+    mobile: 'px-4 py-8',
+    desktop: 'md:px-8 md:py-12',
+    description: 'Footer section',
+  },
+  narrow: {
+    mobile: 'px-2 py-4',
+    desktop: 'md:px-4 md:py-8',
+    description: 'Narrow content blocks',
+  },
+  wide: {
+    mobile: 'px-4 py-12',
+    desktop: 'md:px-12 md:py-24',
+    description: 'Wide content blocks',
+  },
+}
+
+const getPaddingClasses = (blockType: ContentBlockTypes): string => {
+  const block = contentBlockPadding[blockType]
+  return `${block.mobile} ${block.desktop}`
+}
+
+export { contentBlockPadding, getPaddingClasses }
+export type { ContentBlockTypes }

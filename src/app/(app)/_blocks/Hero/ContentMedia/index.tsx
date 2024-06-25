@@ -6,13 +6,14 @@ import { BackgroundGrid } from '@app/_components/BackgroundGrid'
 import { BlockWrapper } from '@app/_components/BlockWrapper'
 import { CMSLink } from '@app/_components/CMSLink'
 import { Gutter } from '@app/_components/Gutter'
-import { useGetHeroPadding } from '@app/_blocks/Hero/useGetHeroPadding'
+
 import { Media } from '@app/_components/Media'
 import { RichText } from '@app/_blocks/RichText'
 import classes from './index.module.scss'
 
 import { ExtractBlockProps } from '@/utilities/extractBlockProps'
 import { ChevronRightIcon } from 'lucide-react'
+import { getPaddingClasses } from '@/app/(app)/_css/tailwindClasses'
 export type ContentMediaHeroProps = ExtractBlockProps<'fields'>
 
 export const ContentMediaHero: React.FC<ContentMediaHeroProps> = ({
@@ -23,10 +24,8 @@ export const ContentMediaHero: React.FC<ContentMediaHeroProps> = ({
   theme,
   firstContentBlock,
 }) => {
-  const padding = useGetHeroPadding(theme, firstContentBlock)
-
   return (
-    <BlockWrapper settings={{ theme }} padding={padding}>
+    <BlockWrapper settings={{ theme }} className={getPaddingClasses('standard')}>
       {/* <BackgroundGrid zIndex={0} /> */}
       <Gutter>
         <div className={[classes.wrapper, 'grid'].filter(Boolean).join(' ')}>

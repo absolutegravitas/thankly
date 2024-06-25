@@ -18,7 +18,6 @@ import classes from './index.module.scss'
 // }
 
 import { ExtractBlockProps } from '@/utilities/extractBlockProps'
-import { useGetHeroPadding } from '../Hero/useGetHeroPadding'
 import { ChevronRightIcon } from 'lucide-react'
 export type MediaContentProps = ExtractBlockProps<'mediaContent'> & { padding: PaddingProps }
 
@@ -113,7 +112,6 @@ export const MediaContentBlock: React.FC<MediaContentProps> = (props) => {
 
 export const MediaContent: React.FC<MediaContentProps> = (props) => {
   const { settings } = props.mediaContentFields
-  const padding = useGetHeroPadding(settings.theme, props)
 
   return (
     <BlockWrapper padding={{ top: 'small', bottom: 'small' }} settings={settings}>

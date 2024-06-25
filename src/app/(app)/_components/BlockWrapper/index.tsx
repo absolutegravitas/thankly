@@ -1,24 +1,21 @@
 'use client'
-import React, { useEffect, useMemo, useState } from 'react'
 
+import React, { useEffect, useState } from 'react'
 import { ChangeHeaderTheme } from '@app/_components/ChangeHeaderTheme'
 import { Page } from '@payload-types'
 import { useThemePreference } from '@app/_providers/Theme'
-
+import { ExtractBlockProps } from '@/utilities/extractBlockProps'
 import classes from './index.module.scss'
 
-// export type Settings = Extract<Page['layout'],{ blockType: 'cardGrid' }>['cardGridFields']['settings']
-
-import { ExtractBlockProps } from '@/utilities/extractBlockProps'
 export type Settings = ExtractBlockProps<'cardGrid'>['cardGridFields']['settings']
 
 export type PaddingProps = {
-  top?: 'large' | 'small' | 'hero'
-  bottom?: 'large' | 'small'
+  top?: 'large' | 'medium' | 'small' | 'hero'
+  bottom?: 'large' | 'medium' | 'small'
 }
 
 type Props = {
-  settings?: any //Settings
+  settings?: any // Settings
   className?: string
   children: React.ReactNode
   padding?: PaddingProps
@@ -29,6 +26,11 @@ type Props = {
    */
   setPadding?: boolean
 } & React.HTMLAttributes<HTMLDivElement>
+
+const defaultPadding: PaddingProps = {
+  top: 'medium',
+  bottom: 'medium',
+}
 
 export const BlockWrapper: React.FC<Props> = ({
   settings,
@@ -49,14 +51,20 @@ export const BlockWrapper: React.FC<Props> = ({
     }
   }, [settings, themeFromContext])
 
+  const appliedPadding = {
+    top: padding?.top || defaultPadding.top,
+    bottom: padding?.bottom || defaultPadding.bottom,
+  }
+
+  const paddingClasses = [`py-content-${appliedPadding.top}`, `pb-content-${appliedPadding.bottom}`]
+
   return (
     <ChangeHeaderTheme theme={themeState ?? 'light'}>
       <div
         className={[
           classes.blockWrapper,
           theme && classes[`theme-${theme}`],
-          padding?.top && classes[`padding-top-${padding?.top}`],
-          padding?.bottom && classes[`padding-bottom-${padding?.bottom}`],
+          ...paddingClasses,
           setPadding && classes.setPadding,
           className,
         ]

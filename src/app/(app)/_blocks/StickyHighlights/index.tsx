@@ -16,6 +16,7 @@ import classes from './index.module.scss'
 // }
 
 import { ExtractBlockProps } from '@/utilities/extractBlockProps'
+import { getPaddingClasses } from '../../_css/tailwindClasses'
 export type Props = ExtractBlockProps<'stickyHighlights'> & {
   className?: string
   padding: PaddingProps
@@ -37,8 +38,9 @@ export const StickyHighlights: React.FC<Props> = ({
   return (
     <BlockWrapper
       settings={settings}
-      padding={padding}
-      className={[classes.stickyHighlights, className].filter(Boolean).join(' ')}
+      className={[getPaddingClasses('standard'), classes.stickyHighlights, className]
+        .filter(Boolean)
+        .join(' ')}
       id={id}
     >
       <Gutter>

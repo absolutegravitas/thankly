@@ -10,7 +10,7 @@ import { Page } from '@payload-types'
 import classes from './index.module.scss'
 
 import { ExtractBlockProps } from '@/utilities/extractBlockProps'
-import { useGetHeroPadding } from '../Hero/useGetHeroPadding'
+import { getPaddingClasses } from '../../_css/tailwindClasses'
 export type ContentGridProps = ExtractBlockProps<'contentGrid'> & { padding: PaddingProps }
 
 type CellsProps = ContentGridProps['contentGridFields'] & {
@@ -48,13 +48,11 @@ export const ContentGrid: React.FC<ContentGridProps> = (props) => {
     contentGridFields: { settings, style: styleFromProps, content, links },
   } = props || {}
 
-  const padding = useGetHeroPadding(settings.theme, props)
-
   const hasLinks = Array.isArray(links) && links.length > 0
   const style = styleFromProps ?? 'gridBelow'
 
   return (
-    <BlockWrapper settings={settings} padding={{ ...padding, top: 'large' }}>
+    <BlockWrapper settings={settings} className={getPaddingClasses('standard')}>
       {/* <BackgroundGrid zIndex={0} /> */}
       <Gutter className={[classes.wrapper, classes[style], 'grid'].filter(Boolean).join(' ')}>
         <div

@@ -20,13 +20,12 @@ import classes from './index.module.scss'
 // }
 
 import { ExtractBlockProps } from '@/utilities/extractBlockProps'
-import { useGetHeroPadding } from '../Hero/useGetHeroPadding'
+import { getPaddingClasses } from '../../_css/tailwindClasses'
 export type Props = ExtractBlockProps<'pricing'> & { padding: PaddingProps }
 
 export const Pricing: React.FC<Props> = (props) => {
   const { pricingFields } = props
   const { plans, disclaimer, settings } = pricingFields || {}
-  const padding = useGetHeroPadding(settings.theme, props)
 
   const [toggledPlan, setToggledPlan] = React.useState('')
   const hasPlans = Array.isArray(plans) && plans.length > 0
@@ -58,7 +57,10 @@ export const Pricing: React.FC<Props> = (props) => {
   }
 
   return (
-    <BlockWrapper settings={settings} padding={padding} className={classes.pricingBlock}>
+    <BlockWrapper
+      settings={settings}
+      className={[getPaddingClasses('standard'), classes.pricingBlock].filter(Boolean).join(' ')}
+    >
       <BackgroundGrid zIndex={1} />
       <Gutter className={classes.gutter}>
         {/* <BackgroundScanline className={classes.scanline} enableBorders /> */}

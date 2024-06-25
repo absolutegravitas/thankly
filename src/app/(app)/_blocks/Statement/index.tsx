@@ -18,7 +18,7 @@ import classes from './index.module.scss'
 // }
 
 import { ExtractBlockProps } from '@/utilities/extractBlockProps'
-import { useGetHeroPadding } from '../Hero/useGetHeroPadding'
+import { getPaddingClasses } from '../../_css/tailwindClasses'
 export type StatementProps = ExtractBlockProps<'statement'> & { padding: PaddingProps }
 
 export const Statement: React.FC<StatementProps> = (props) => {
@@ -35,7 +35,6 @@ export const Statement: React.FC<StatementProps> = (props) => {
     },
     // padding,
   } = props
-  const padding = useGetHeroPadding(settings.theme, props)
 
   const hasLinks = links && links.length > 0
 
@@ -47,7 +46,7 @@ export const Statement: React.FC<StatementProps> = (props) => {
         : 'cols-12 start-3 cols-m-8 start-m-1'
 
   return (
-    <BlockWrapper settings={settings} padding={padding}>
+    <BlockWrapper settings={settings} className={getPaddingClasses('standard')}>
       {/* <BackgroundGrid zIndex={0} /> */}
       <Gutter className={classes.statementWrap}>
         <div className={['grid'].filter(Boolean).join(' ')}>

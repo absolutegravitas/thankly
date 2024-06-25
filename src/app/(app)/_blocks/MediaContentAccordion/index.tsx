@@ -17,7 +17,7 @@ import classes from './index.module.scss'
 // }
 
 import { ExtractBlockProps } from '@/utilities/extractBlockProps'
-import { useGetHeroPadding } from '../Hero/useGetHeroPadding'
+import { getPaddingClasses } from '../../_css/tailwindClasses'
 export type MediaContentAccordionProps = ExtractBlockProps<'mediaContentAccordion'> & {
   padding: PaddingProps
 }
@@ -25,13 +25,13 @@ export type MediaContentAccordionProps = ExtractBlockProps<'mediaContentAccordio
 export const MediaContentAccordion: React.FC<MediaContentAccordionProps> = (props) => {
   const { mediaContentAccordionFields } = props
   const { settings } = mediaContentAccordionFields || {}
-  const padding = useGetHeroPadding(settings.theme, props)
 
   return (
     <BlockWrapper
       settings={settings}
-      padding={padding}
-      className={[classes.mediaContentAccordion].filter(Boolean).join(' ')}
+      className={[getPaddingClasses('standard'), classes.mediaContentAccordion]
+        .filter(Boolean)
+        .join(' ')}
     >
       <Gutter>
         {/* <BackgroundGrid zIndex={0} /> */}
