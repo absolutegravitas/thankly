@@ -8,7 +8,7 @@ export const messages = {
   shippingFreeMessage: `FREE Delivery for orders over $100.`,
 }
 
-export const cartStaticText = {
+export const cartText = {
   leader: `Checkout`,
   heading: `Your Cart`,
   receiverMessage: `Send thanklys to as many people as you like. Click / tap on the fields to edit your message, delivery address and other details.`,
@@ -30,24 +30,31 @@ export const deliveryMethods = [
 ]
 
 export const shippingPrices = {
-  free: 0,
+  free: 0, // implement in future for large orders
 
-  standardMail: 0,
-  registeredMail: 9, // "domestic letters from auspost medium @$6.65" https://auspost.com.au/sending/letters-australia/letter-tracking
-  expressMail: 12, // medium c5 @ $8.85 https://auspost.com.au/sending/letters-australia/express-post
+  cards: {
+    standardMail: 0,
+    registeredMail: 9, // "domestic letters from auspost medium @$6.65" https://auspost.com.au/sending/letters-australia/letter-tracking
+    // expressMail: 12, // medium c5 @ $8.85 https://auspost.com.au/sending/letters-australia/express-post
+  },
 
-  // weight or cubic weight (whichever is greater) and the destination.
-  // https://auspost.com.au/sending/parcels-australia/parcel-post
+  gifts: {
+    size: {
+      // https://auspost.com.au/sending/parcels-australia/parcel-post
+      // mini pouch, prepaid satchels 355 x 225mm // https://auspost.com.au/sending/parcels-australia/parcel-post#postage
+      // sendle https://try.sendle.com/en-au/250g-sendle-pouch
 
-  standardParcelMini: 10, // mini pouch, prepaid satchels 355 x 225mm // https://auspost.com.au/sending/parcels-australia/parcel-post#postage
-  // or sendle https://try.sendle.com/en-au/250g-sendle-pouch
-  standardParcelSmall: 10, // small
-  standardParcelMedium: 15, // medium
-  standardParcelLarge: 20, // large
+      mini: 10,
+      small: 10,
+      medium: 15,
+      large: 20,
+    },
 
-  expressSurcharge: 10, // for express parcel, AUSPOST only
-  regionalSurcharge: 15, //for regional postcodes, city to major regional centres and towns don't charge express
-  remoteSurcharge: 20, // for bumfuck nowhere, dont charge xepress
-
-  courierParcel: 14, // via sendle, APPLY REGIONAL OR REMOTE SURCHARGE
+    surcharge: {
+      metro: 0,
+      expressParcel: 10,
+      regional: 15,
+      remote: 20,
+    },
+  },
 }

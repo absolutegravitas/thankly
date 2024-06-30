@@ -12,6 +12,7 @@ import { FullLogo } from '@app/_graphics/FullLogo'
 import { CMSLink } from '../../CMSLink'
 
 import classes from './index.module.scss'
+import ShoppingBagIcon from '@app/_icons/ShoppingBagIcon'
 
 type DesktopNavType = Pick<Menu, 'tabs'> & { hideBackground?: boolean }
 export const DesktopNav: React.FC<DesktopNavType> = ({ tabs, hideBackground }) => {
@@ -245,6 +246,12 @@ export const DesktopNav: React.FC<DesktopNavType> = ({ tabs, hideBackground }) =
               </div>
             </div>
           </div>
+          {/* <div className={'cols-4'}>
+            <div className={[classes.secondaryNavItems, classes.show].join(' ')}>
+              <ShoppingBagIcon />
+            </div>
+          </div> */}
+
           {/* <div className={'cols-4'}>
             <div
               className={[classes.secondaryNavItems, user !== undefined && classes.show].join(' ')}

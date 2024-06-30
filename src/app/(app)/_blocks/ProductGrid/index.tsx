@@ -27,31 +27,33 @@ export const ProductGrid: React.FC<ProductGridProps> = ({ products }) => {
   } as CSSProperties
 
   return (
-    <BlockWrapper
-      settings={{ settings: { theme: 'light' } }}
-      className={[getPaddingClasses('hero'), 'py-16', classes.ProductGrid]
-        .filter(Boolean)
-        .join(' ')}
-    >
-      <Gutter>
-        {hasProducts && (
-          <div className={classes.cards}>
-            <div
-              className={['grid', classes.cardsWrapper].filter(Boolean).join(' ')}
-              style={wrapperStyle}
-            >
-              {products?.map((product, index) => {
-                return (
-                  <div key={index} className={'cols-4 cols-s-8'}>
-                    <ProductCard className={classes.card} {...product} />
-                  </div>
-                )
-              })}
-            </div>
+    <React.Fragment>
+      {/* <BlockWrapper
+        settings={{ settings: { theme: 'light' } }}
+        className={[getPaddingClasses('hero'), 'py-16', classes.ProductGrid]
+          .filter(Boolean)
+          .join(' ')}
+      >
+        <Gutter> */}
+      {hasProducts && (
+        <div className={classes.cards}>
+          <div
+            className={['grid', classes.cardsWrapper].filter(Boolean).join(' ')}
+            style={wrapperStyle}
+          >
+            {products?.map((product, index) => {
+              return (
+                <div key={index} className={'cols-4 cols-s-8'}>
+                  <ProductCard className={classes.card} {...product} />
+                </div>
+              )
+            })}
           </div>
-        )}
-      </Gutter>
-    </BlockWrapper>
+        </div>
+      )}
+      {/* </Gutter>
+      </BlockWrapper> */}
+    </React.Fragment>
   )
 }
 export default ProductGrid

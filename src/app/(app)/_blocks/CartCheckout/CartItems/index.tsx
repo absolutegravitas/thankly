@@ -2,11 +2,11 @@ import React from 'react'
 import Image from 'next/image'
 
 import { buttonLook, contentFormats } from '@app/_css/tailwindClasses'
-import { cartStaticText } from '@/utilities/staticText'
+import { cartText } from '@/utilities/refData'
 import Link from 'next/link'
 import cn from '@/utilities/cn'
 import { Cart } from '@/payload-types'
-import { getCart } from '@app/_providers/Cart/actions'
+import { getCart } from '@/app/(app)/_providers/Cart/cartActions'
 import { MailWarningIcon } from 'lucide-react'
 import { ReceiversGrid } from '../ReceiversGrid'
 import { getImageAlt, getImageUrl } from '@/utilities/getmageUrl'
@@ -80,7 +80,7 @@ export const CartItems: React.FC<any> = async () => {
 
                     <span className="font-semibold">{`Thankly Cards: `}</span>
                     <span className={[contentFormats.text, `text-sm`].join(' ')}>
-                      {cartStaticText.shippingMessage}
+                      {cartText.shippingMessage}
                       <Link
                         className={[contentFormats.global, contentFormats.a, `!text-sm`].join(' ')}
                         href="https://auspost.com.au/about-us/supporting-communities/services-all-communities/our-future"

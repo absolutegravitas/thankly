@@ -8,7 +8,6 @@ import { Gutter } from '@app/_components/Gutter'
 import { contentFormats, getPaddingClasses } from '@app/_css/tailwindClasses'
 import { useRouter } from 'next/navigation'
 import { ArrowRightIcon, HomeIcon, ShoppingCartIcon } from 'lucide-react'
-import { ShoppingBagIcon } from '@app/_icons/ShoppingBagIcon'
 
 export const CartEmpty: React.FC<any> = () => {
   const router = useRouter()

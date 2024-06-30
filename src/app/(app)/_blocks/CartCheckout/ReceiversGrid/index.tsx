@@ -1,10 +1,7 @@
 import { contentFormats } from '@app/_css/tailwindClasses'
-import {
-  addReceiver,
-  removeReceiver,
-  removeProduct,
-  copyReceiver,
-} from '@app/_providers/Cart/actions'
+import { addReceiver, removeReceiver, copyReceiver } from '@app/_providers/Cart/receiverActions'
+import { removeProduct } from '@/app/(app)/_providers/Cart/cartItemsActions'
+
 import { MapPinIcon, MessageSquareTextIcon, SendIcon } from 'lucide-react'
 import React from 'react'
 import {
@@ -105,8 +102,8 @@ export const ReceiversGrid: React.FC<any> = async (item: any) => {
                 >
                   <SendIcon className="mr-2" strokeWidth={1.25} />
                   <EditableField
-                    initialValue={receiver.shippingOption}
-                    field="shippingOption"
+                    initialValue={receiver.shippingMethod}
+                    field="shippingMethod"
                     cartItemId={item.id}
                     receiverId={receiver.id}
                     type="select"
@@ -141,7 +138,7 @@ export const ReceiversGrid: React.FC<any> = async (item: any) => {
                 <div>
                   <span className={[contentFormats.global, contentFormats.text].join(' ')}>
                     Cost:{' '}
-                    {(receiver.total || 0).toLocaleString('en-AU', {
+                    {(receiver.totals.receiverThankly || 0).toLocaleString('en-AU', {
                       style: 'currency',
                       currency: 'AUD',
                       minimumFractionDigits: 0,
@@ -151,8 +148,10 @@ export const ReceiversGrid: React.FC<any> = async (item: any) => {
                 </div>
                 <div>
                   <span className={[contentFormats.global, contentFormats.text].join(' ')}>
-                    {`+ Shipping: ${receiver.shippingOption != 'free' ? '(' + receiver.shippingOption + ')' : ''}`}
-                    {(receiver.shipping || 0).toLocaleString('en-AU', {
+                    {`+ Shipping: ${
+                      receiver.shippingMethod !== 'free' ? `(${receiver.shippingMethod})` : ''
+                    }`}
+                    {(receiver.totals.receiverShipping || 0).toLocaleString('en-AU', {
                       style: 'currency',
                       currency: 'AUD',
                       minimumFractionDigits: 0,
@@ -161,8 +160,7 @@ export const ReceiversGrid: React.FC<any> = async (item: any) => {
                   </span>
                 </div>
                 <div className={[contentFormats.global, contentFormats.h6].join(' ')}>
-                  {/* {'Subtotal: '} */}
-                  {((receiver.total || 0) + (receiver.shipping || 0) || 0).toLocaleString('en-AU', {
+                  {(receiver.totals.receiverTotal || 0).toLocaleString('en-AU', {
                     style: 'currency',
                     currency: 'AUD',
                     minimumFractionDigits: 0,

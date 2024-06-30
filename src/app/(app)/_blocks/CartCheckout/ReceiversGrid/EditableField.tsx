@@ -7,10 +7,12 @@ declare global {
 }
 
 import React, { useState, useEffect, useRef, useCallback } from 'react'
-import { updateReceiver } from '@app/_providers/Cart/actions'
+import { updateReceiver } from '@/app/(app)/_providers/Cart/receiverActions'
 import { debounce } from 'lodash'
-
+import { getShippingCost } from '@/app/(app)/_providers/Cart/cartActions'
 type FieldType = 'text' | 'name' | 'address' | 'select' | 'textarea'
+type ProductType = 'card' | 'gift'
+type ShippingClass = 'mini' | 'small' | 'medium' | 'large'
 
 interface EditableFieldProps {
   initialValue: string | { firstName: string; lastName: string }
@@ -19,6 +21,16 @@ interface EditableFieldProps {
   receiverId: string
   type?: FieldType
   disabled?: boolean
+  productType: ProductType
+  shippingClass?: ShippingClass
+  getShippingCost: (
+    productType: ProductType,
+    shippingMethod: string | null | undefined,
+    postcode: string | null | undefined,
+    shippingClass?: ShippingClass,
+  ) => Promise<number | null>
+  updateShippingCost: (cartItemId: string, receiverId: string, shippingCost: number | null) => void
+  postcode: string | null | undefined
 }
 
 const EditableField: React.FC<EditableFieldProps> = ({
@@ -28,12 +40,30 @@ const EditableField: React.FC<EditableFieldProps> = ({
   receiverId,
   type = 'text',
   disabled = false,
+  productType,
+  shippingClass,
+  getShippingCost,
+  updateShippingCost,
+  postcode,
 }) => {
   const [isEditing, setIsEditing] = useState(false)
   const [value, setValue] = useState<typeof initialValue>(initialValue)
+  const [error, setError] = useState<string | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
   const [isBusy, setIsBusy] = useState(false)
   const busyClass = isBusy ? 'cursor-wait' : ''
+  const placeholderAddress = 'Add delivery address here...'
+
+  const shippingOptions =
+    productType === 'card'
+      ? [
+          { label: 'Standard Mail', value: 'standardMail' },
+          { label: 'Registered Post', value: 'registeredMail' },
+        ]
+      : [
+          { label: 'Standard Parcel', value: 'standardParcel' },
+          { label: 'Express Parcel', value: 'expressParcel' },
+        ]
 
   useEffect(() => {
     setValue(initialValue)
@@ -44,6 +74,13 @@ const EditableField: React.FC<EditableFieldProps> = ({
       loadGooglePlacesAPI()
     }
   }, [type, isEditing])
+
+  useEffect(() => {
+    if (field === 'shippingMethod' && typeof value === 'string' && value === '') {
+      const defaultShippingMethod = productType === 'card' ? 'standardMail' : 'standardParcel'
+      setValue(defaultShippingMethod)
+    }
+  }, [field, value, productType])
 
   const loadGooglePlacesAPI = () => {
     if (!window.google || !window.google.maps) {
@@ -61,16 +98,92 @@ const EditableField: React.FC<EditableFieldProps> = ({
     }
   }
 
+  const validateField = (
+    fieldType: FieldType,
+    fieldValue: string | { firstName: string; lastName: string },
+  ): string | null => {
+    switch (fieldType) {
+      case 'name':
+        if (typeof fieldValue === 'object') {
+          if (!fieldValue.firstName.trim() || !fieldValue.lastName.trim()) {
+            return 'First name and last name are required'
+          }
+          if (fieldValue.firstName.length > 50 || fieldValue.lastName.length > 50) {
+            return 'Name cannot exceed 50 characters'
+          }
+        }
+        break
+      case 'address':
+        if (typeof fieldValue === 'string' && fieldValue.trim().length < 10) {
+          return 'Please enter a valid address'
+        }
+        break
+      case 'text':
+        if (typeof fieldValue === 'string' && fieldValue.trim().length === 0) {
+          return 'This field cannot be empty'
+        }
+        break
+      case 'select':
+        if (typeof fieldValue === 'string') {
+          const validOptions =
+            productType === 'card'
+              ? ['standardMail', 'registeredMail']
+              : ['standardParcel', 'expressParcel']
+          if (!validOptions.includes(fieldValue)) {
+            return 'Please select a valid option'
+          }
+        }
+        break
+      case 'textarea':
+        if (typeof fieldValue === 'string') {
+          if (fieldValue.trim().length === 0) {
+            return 'This field cannot be empty'
+          }
+          if (fieldValue.length > 400) {
+            return 'Message cannot exceed 400 characters'
+          }
+        }
+        break
+    }
+    return null
+  }
+  const calculateAndUpdateShipping = async (shippingMethod: string) => {
+    try {
+      const shippingCost = await getShippingCost(
+        productType,
+        shippingMethod,
+        postcode,
+        shippingClass,
+      )
+      updateShippingCost(cartItemId, receiverId, shippingCost)
+    } catch (error) {
+      console.error('Error calculating shipping cost:', error)
+      setError('Failed to calculate shipping cost. Please try again.')
+    }
+  }
+
   const handleSave = async () => {
-    if (isBusy) return // Prevent multiple saves
+    if (isBusy) return
     setIsBusy(true)
+
+    const validationError = validateField(type, value)
+    if (validationError) {
+      setError(validationError)
+      setIsBusy(false)
+      return
+    }
+
     setIsEditing(false)
+    setError(null)
     if (value !== initialValue) {
       try {
         await updateReceiver(cartItemId, receiverId, { [field]: value })
+        if (field === 'shippingMethod' && typeof value === 'string') {
+          await calculateAndUpdateShipping(value)
+        }
       } catch (error) {
         console.error('Error saving:', error)
-        // Optionally, revert to editing state or show an error message
+        setError('Failed to save. Please try again.')
       } finally {
         setIsBusy(false)
       }
@@ -82,6 +195,10 @@ const EditableField: React.FC<EditableFieldProps> = ({
   const handleClick = () => {
     if (!disabled && !isBusy) {
       setIsEditing(true)
+      setError(null)
+      if (type === 'address' && value === placeholderAddress) {
+        setValue('')
+      }
     }
   }
 
@@ -93,6 +210,11 @@ const EditableField: React.FC<EditableFieldProps> = ({
       newValue = newValue.replace(/[^a-zA-Z0-9.,!? \n]/g, '')
     }
     setValue(newValue)
+    setError(null)
+
+    if (field === 'shippingMethod') {
+      handleSave()
+    }
   }
 
   const handleKeyDown = (
@@ -103,7 +225,6 @@ const EditableField: React.FC<EditableFieldProps> = ({
       handleSave()
     }
   }
-
   const renderValue = () => {
     if (type === 'name' && typeof value === 'object') {
       return `${value.firstName} ${value.lastName}`
@@ -159,7 +280,7 @@ const EditableField: React.FC<EditableFieldProps> = ({
       fields: ['address_components', 'formatted_address'],
     })
 
-    const debouncedPlaceChanged = debounce(() => {
+    const debouncedPlaceChanged = debounce(async () => {
       setIsBusy(true)
       const place = autocomplete.getPlace()
       if (place.address_components) {
@@ -185,9 +306,13 @@ const EditableField: React.FC<EditableFieldProps> = ({
         // updateReceiver(cartItemId, receiverId, { address: fullAddress })
         try {
           updateReceiver(cartItemId, receiverId, { address: fullAddress })
+          // Set default shipping method after address is selected
+          const defaultShippingMethod = productType === 'card' ? 'standardMail' : 'standardParcel'
+          await updateReceiver(cartItemId, receiverId, { shippingMethod: defaultShippingMethod })
+          await calculateAndUpdateShipping(defaultShippingMethod)
         } catch (error) {
           console.error('Error saving address:', error)
-          // Optionally handle the error (e.g., show an error message)
+          setError('Failed to save address. Please try again.')
         } finally {
           setIsBusy(false)
         }
@@ -198,7 +323,17 @@ const EditableField: React.FC<EditableFieldProps> = ({
     }, 500)
 
     autocomplete.addListener('place_changed', debouncedPlaceChanged)
-  }, [inputRef, type, cartItemId, receiverId, setValue, updateReceiver, setIsBusy]) // Add any other dependencies
+  }, [
+    inputRef,
+    type,
+    cartItemId,
+    receiverId,
+    setValue,
+    updateReceiver,
+    setIsBusy,
+    productType,
+    calculateAndUpdateShipping,
+  ])
 
   useEffect(() => {
     window.initAutocomplete = initAutocomplete
@@ -343,16 +478,11 @@ const EditableField: React.FC<EditableFieldProps> = ({
                 className="bg-transparent outline-none w-full border-b border-gray-300"
                 autoFocus
               >
-                <option value="" disabled selected>
-                  Select an option
-                </option>
-                <option value="free">Free</option>
-                <option value="standardMail">Standard Mail</option>
-                <option value="registeredMail">Registered Mail</option>
-                <option value="expressMail">Express Mail</option>
-                <option value="standardParcel">Standard Parcel</option>
-                <option value="expressParcel">Express Parcel</option>
-                <option value="courierParcel">Courier Parcel</option>
+                {shippingOptions.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
               </select>
               {isBusy && <LoadingIndicator />}
             </div>
@@ -391,6 +521,7 @@ const EditableField: React.FC<EditableFieldProps> = ({
   return (
     <div onBlur={handleBlur} className="w-full">
       {renderField()}
+      {error && <div className="text-red-500 text-sm mt-1">{error}</div>}
     </div>
   )
 }

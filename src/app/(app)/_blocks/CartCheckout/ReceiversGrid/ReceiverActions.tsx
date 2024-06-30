@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useTransition } from 'react'
+import React, { useState, useTransition } from 'react'
 
 import { CMSLink } from '@app/_components/CMSLink'
 import { CopyIcon, TrashIcon, UserPlusIcon, XIcon } from 'lucide-react'
@@ -12,6 +12,7 @@ interface AddReceiverButtonProps {
 
 export const AddReceiverButton: React.FC<AddReceiverButtonProps> = ({ productId, addReceiver }) => {
   const [isPending, startTransition] = useTransition()
+  const [error, setError] = useState<string | null>(null)
 
   const handleClick = () => {
     startTransition(async () => {
@@ -20,41 +21,48 @@ export const AddReceiverButton: React.FC<AddReceiverButtonProps> = ({ productId,
         firstName: 'John',
         lastName: 'Smith',
         message: 'Add a message with your thankly here...',
-        addressLine1: 'Delivery address here..',
+        addressLine1: 'Add delivery address here...',
         addressLine2: null,
-        city: '',
-        state: '',
-        postcode: '',
-        shippingOption: null,
-        receiverPrice: null,
-        receiverTotal: null,
-        receiverShipping: null,
+        city: null,
+        state: null,
+        postcode: null,
+        shippingMethod: null,
       }
-      await addReceiver(productId, newReceiver)
+
+      try {
+        await addReceiver(productId, newReceiver)
+        setError(null)
+      } catch (error) {
+        console.error('Error adding receiver:', error)
+        setError('Failed to add receiver. Please try again.')
+      }
     })
   }
 
   return (
-    <CMSLink
-      data={{
-        label: 'Add Receiver',
-      }}
-      look={{
-        theme: 'light',
-        type: 'button',
-        size: 'small',
-        width: 'narrow',
-        variant: 'blocks',
-        icon: {
-          content: <UserPlusIcon strokeWidth={1.25} />,
-          iconPosition: 'right',
-        },
-      }}
-      actions={{
-        onClick: handleClick,
-      }}
-      pending={isPending}
-    />
+    <>
+      <CMSLink
+        data={{
+          label: 'Add Receiver',
+        }}
+        look={{
+          theme: 'light',
+          type: 'button',
+          size: 'small',
+          width: 'narrow',
+          variant: 'blocks',
+          icon: {
+            content: <UserPlusIcon strokeWidth={1.25} />,
+            iconPosition: 'right',
+          },
+        }}
+        actions={{
+          onClick: handleClick,
+        }}
+        pending={isPending}
+      />
+      {error && <div className="text-red-500 text-sm mt-1">{error}</div>}
+    </>
   )
 }
 

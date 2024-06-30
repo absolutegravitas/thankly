@@ -9,7 +9,6 @@ import { seoPlugin } from '@payloadcms/plugin-seo'
 import { redirectsPlugin } from '@payloadcms/plugin-redirects'
 import { formBuilderPlugin } from '@payloadcms/plugin-form-builder'
 import { nestedDocsPlugin } from '@payloadcms/plugin-nested-docs'
-
 // collections
 // import { Accounts, Sessions } from '@cms/_collections/accounts'
 import { Media } from '@cms/_collections/media'
@@ -20,13 +19,8 @@ import { Orders } from '@cms/_collections/orders'
 import { Settings } from '@cms/_collections/settings'
 import { Users } from '@cms/_collections/users'
 
-import {
-  COLLECTION_SLUG_MEDIA,
-  COLLECTION_SLUG_PAGE,
-  COLLECTION_SLUG_PRODUCTS,
-} from '@cms/_collections/config'
-
-import { buildConfig } from 'payload/config'
+// import { buildConfig } from 'payload/config' // deprecated
+import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
 import generateBreadcrumbsUrl from '@/utilities/generateBreadcrumbsUrl'
 import { Carts } from './app/(payload)/_collections/carts'
@@ -47,11 +41,11 @@ export default buildConfig({
   admin: {
     user: Users.slug,
     livePreview: {
-      url: ({ data, locale }) =>
+      url: ({ data, locale }: any) =>
         `${process.env.NEXT_PUBLIC_SERVER_URL}/preview${data.path}${
           locale ? `?locale=${locale.code}` : ''
         }`,
-      collections: [COLLECTION_SLUG_PAGE],
+      collections: ['pages'],
       breakpoints: [
         { label: 'Mobile', name: 'mobile', width: 375, height: 667 },
         { label: 'Tablet', name: 'tablet', width: 768, height: 1024 },
@@ -81,10 +75,10 @@ export default buildConfig({
 
   plugins: [
     seoPlugin({ collections: ['pages', 'products'], uploadsCollection: 'media' }),
-    redirectsPlugin({
-      collections: ['pages', 'products'],
-      overrides: { admin: { group: 'Globals' } },
-    }),
+    // redirectsPlugin({
+    //   collections: ['pages', 'products'],
+    //   overrides: { admin: { group: 'Globals' } },
+    // }),
     formBuilderPlugin({ redirectRelationships: ['pages'], fields: { state: false } }),
     nestedDocsPlugin({ collections: ['pages'], generateURL: generateBreadcrumbsUrl }),
     vercelBlobStorage({

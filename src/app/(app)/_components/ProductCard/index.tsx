@@ -5,9 +5,23 @@ import { ChevronRightIcon } from 'lucide-react'
 import cn from '@/utilities/cn'
 import { contentFormats } from '@app/_css/tailwindClasses'
 import { ProductActions } from '@app/_components/ProductActions'
-import { messages } from '@/utilities/staticText'
+import { messages } from '@/utilities/refData'
 import { Media } from '@/payload-types'
 import { getImageAlt, getImageUrl } from '@/utilities/getmageUrl'
+
+const GenericProductSVG = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 100 100"
+    fill="none"
+    stroke="currentColor"
+    className="w-full h-full text-gray-300"
+  >
+    <rect width="100" height="100" rx="10" stroke-width="2" />
+    <path d="M20 80 L50 20 L80 80 Z" stroke-width="2" />
+    <circle cx="50" cy="50" r="20" stroke-width="2" />
+  </svg>
+)
 
 export const ProductCard: React.FC<any> = (product) => {
   const {
@@ -26,11 +40,12 @@ export const ProductCard: React.FC<any> = (product) => {
 
   const imageUrl = media && media.length > 0 ? getImageUrl(media[0]?.mediaItem) : null
   const imageAlt = media && media.length > 0 ? getImageAlt(media[0]?.mediaItem) : 'Product image'
+  const placeholderSVG = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='none' stroke='%23cccccc'%3E%3Crect width='100' height='100' rx='10' stroke-width='2' /%3E%3Cpath d='M20 80 L50 20 L80 80 Z' stroke-width='2' /%3E%3Ccircle cx='50' cy='50' r='20' stroke-width='2' /%3E%3C/svg%3E`
 
   return (
-    <div className={[`relative`, className].filter(Boolean).join(' ')}>
-      <Link href={`/shop/${slug}`} className="relative no-underline hover:no-underline">
-        <div className={`aspect-square relative`}>
+    <div className={cn('relative', 'w-full', 'max-w-sm', 'mx-auto', className)}>
+      <Link href={`/shop/${slug}`} className="relative no-underline hover:no-underline block">
+        <div className="aspect-square relative overflow-hidden rounded-sm shadow-md">
           {(stockOnHand === 0 || stockOnHand === null || stockOnHand === undefined) && (
             <div className="absolute left-0 top-0 z-10 flex w-full items-center justify-center bg-gray-900/50 p-2 font-body font-semibold uppercase tracking-wider text-white !no-underline">
               <span className="text-base uppercase">{messages.outOfStock}</span>
@@ -43,48 +58,40 @@ export const ProductCard: React.FC<any> = (product) => {
             </div>
           )}
 
-          {imageUrl ? (
-            <Image
-              src={imageUrl}
-              alt={imageAlt}
-              fill
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-              className="object-cover object-center transition-opacity duration-300"
-              placeholder="blur"
-              blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mN8/+F9PQAI8wNPvd7POQAAAABJRU5ErkJggg=="
-            />
-          ) : (
-            <div className="absolute inset-0 flex items-center justify-center text-gray-500">
-              No Image Available
-            </div>
-          )}
-
-          {/* {media && media.length > 0 && (
-            <div className="relative w-full h-full group">
-              <div className="absolute inset-0 bg-gray-100 rounded-md"></div>
-              <Image
-                src={getImageUrl(media[0]?.mediaItem)}
-                alt={getImageAlt(media[0]?.mediaItem)}
-                priority
-                width={800}
-                height={800}
-                className="rounded-md object-cover object-center aspect-square shadow-md transition-opacity duration-300"
-                placeholder="blur"
-                blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mN8/+F9PQAI8wNPvd7POQAAAABJRU5ErkJggg=="
-              />
-            </div>
-          )} */}
+          <Image
+            src={imageUrl || placeholderSVG}
+            alt={imageAlt}
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+            className="object-cover object-center"
+            placeholder="blur"
+            blurDataURL={placeholderSVG}
+          />
         </div>
 
         {title && (
-          <div className="mt-3 py-3 flex items-center justify-between">
-            <span className={cn(contentFormats.global, contentFormats.h4, `no-underline`)}>
+          <div className="mt-4 flex items-center justify-between">
+            <h3
+              className={cn(
+                contentFormats.global,
+                contentFormats.h4,
+                'text-lg font-semibold truncate flex-grow',
+              )}
+            >
               {title}
-            </span>
+            </h3>
 
-            <div className={cn(`flex`, contentFormats.global, contentFormats.h4)}>
+            <div
+              className={cn(
+                'flex flex-col items-end ml-2',
+                contentFormats.global,
+                contentFormats.h4,
+              )}
+            >
               <span
-                className={` ${+promoPrice != 0 && +promoPrice < +price && 'line-through text-gray-500'}`}
+                className={cn('text-sm', {
+                  'line-through text-gray-500': +promoPrice !== 0 && +promoPrice < +price,
+                })}
               >
                 {price.toLocaleString('en-AU', {
                   style: 'currency',
@@ -93,8 +100,8 @@ export const ProductCard: React.FC<any> = (product) => {
                   maximumFractionDigits: 2,
                 })}
               </span>
-              {+promoPrice != 0 && (
-                <span className="text-black ml-2 ">
+              {+promoPrice !== 0 && +promoPrice < +price && (
+                <span className="text-black font-semibold">
                   {promoPrice.toLocaleString('en-AU', {
                     style: 'currency',
                     currency: 'AUD',
@@ -111,27 +118,26 @@ export const ProductCard: React.FC<any> = (product) => {
         <React.Fragment>
           <div
             className={cn(
-              `flex`,
               contentFormats.global,
               contentFormats.text,
-              `pb-5 pt-2 line-clamp-4`,
+              'mt-2 text-sm text-gray-600 line-clamp-3',
             )}
           >
             {description.replace(/\s/g, ' ')}
           </div>
-          <Link href={`/shop/${slug}`} className="relative">
-            <div className="pt-3 pb-5 flex justify-end items-center cursor-pointer">
-              <span className="justify-end font-title text-base mr-2">{`Details`}</span>
-              <ChevronRightIcon
-                className="hover:underline h-5 w-auto duration-300 hover:animate-pulse"
-                strokeWidth={1.25}
-              />
-            </div>
+          <Link
+            href={`/shop/${slug}`}
+            className="mt-2 inline-flex items-center text-sm font-medium  hover:underline"
+          >
+            Details
+            <ChevronRightIcon className="ml-1 h-4 w-4" />
           </Link>
         </React.Fragment>
       )}
 
-      <ProductActions product={product} hidePerks={true} hideRemove={true} />
+      <div className="mt-4">
+        <ProductActions product={product} hidePerks={true} hideRemove={true} />
+      </div>
     </div>
   )
 }

@@ -2,10 +2,10 @@
 import React, { useState, useTransition, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 // import { Button } from '@app/_components/Button'
-import { clearCart } from '@app/_providers/Cart/actions'
+import { clearCart } from '@/app/(app)/_providers/Cart/cartActions'
 import { revalidateCache } from '@/utilities/revalidateCache'
 import { CMSLink } from '@app/_components/CMSLink'
-import { ArrowBigLeft, ArrowLeftIcon, ShoppingBagIcon, ShoppingCartIcon, XIcon } from 'lucide-react'
+import { ArrowLeftIcon, XIcon } from 'lucide-react'
 
 export function CartButtons() {
   const router = useRouter()

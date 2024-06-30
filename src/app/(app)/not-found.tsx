@@ -7,7 +7,6 @@ import { Gutter } from './_components/Gutter'
 import { contentFormats, getPaddingClasses } from './_css/tailwindClasses'
 import { useRouter } from 'next/navigation'
 import { ArrowRightIcon, HomeIcon, ShoppingCartIcon } from 'lucide-react'
-import { ShoppingBagIcon } from '@app/_icons/ShoppingBagIcon'
 
 export default function NotFound() {
   const router = useRouter()

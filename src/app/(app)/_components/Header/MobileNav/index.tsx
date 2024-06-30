@@ -17,7 +17,7 @@ import { Theme } from '@app/_providers/Theme/types'
 import { FullLogo } from '@app/_graphics/FullLogo'
 import { MenuIcon } from '@app/_graphics/MenuIcon'
 import { CMSLink } from '../../CMSLink'
-
+import ShoppingBagIcon from '@app/_icons/ShoppingBagIcon'
 import classes from './index.module.scss'
 
 export const modalSlug = 'mobile-nav'
@@ -73,26 +73,19 @@ const MobileNavItems = ({ tabs, setActiveTab }: any) => {
           )
       })}
 
-      {/* <Link
-        className={[classes.newProject, classes.mobileMenuItem].filter(Boolean).join(' ')}
-        href="/new"
-        prefetch={false}
-      >
-        New project
-      </Link> */}
       {/* {!user && (
         <Link className={classes.mobileMenuItem} href="/login" prefetch={false}>
           Login
         </Link>
       )} */}
-      <CrosshairIcon
+      {/* <CrosshairIcon
         className={[classes.crosshair, classes.crosshairTopLeft].filter(Boolean).join(' ')}
         size="large"
       />
       <CrosshairIcon
         className={[classes.crosshair, classes.crosshairBottomLeft].filter(Boolean).join(' ')}
         size="large"
-      />
+      /> */}
     </ul>
   )
 }
@@ -272,6 +265,9 @@ export const MobileNav: React.FC<NavItems> = (props) => {
                 <FullLogo />
               </Link>
               <div className={classes.icons}>
+                {/* <div className={classes.shoppingBag}>
+                  <ShoppingBagIcon />
+                </div> */}
                 {/* <div className={classes.cloudNewProject}>
                   {!user && (
                     <Link href="/login" prefetch={false}>

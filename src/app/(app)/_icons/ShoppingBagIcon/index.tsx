@@ -1,47 +1,51 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
+import Link from 'next/link'
+import { getCart } from '@app/_providers/Cart/cartActions'
 
-import { IconProps } from '../types'
+const ShoppingBagIcon = () => {
+  const [itemCount, setItemCount] = useState(0)
 
-import classes from '../index.module.scss'
+  const fetchCartItems = async () => {
+    const cart = await getCart()
+    if (cart && cart.items) {
+      setItemCount(cart.items.length)
+    }
+  }
 
-export const ShoppingBagIcon: React.FC<IconProps> = (props) => {
-  const { color, rotation, size, className, bold } = props
+  useEffect(() => {
+    fetchCartItems()
+
+    // Set up an interval to refresh the cart data every 30 seconds
+    const intervalId = setInterval(fetchCartItems, 30000)
+
+    // Clean up the interval when the component unmounts
+    return () => clearInterval(intervalId)
+  }, [])
 
   return (
-    <svg
-      width="100%"
-      height="100%"
-      viewBox="0 0 15 16"
-      xmlns="http://www.w3.org/2000/svg"
-      className={[
-        className,
-        classes.icon,
-        color && classes[color],
-        size && classes[size],
-        bold && classes.bold,
-      ]
-        .filter(Boolean)
-        .join(' ')}
-      style={{
-        transform: rotation ? `rotate(${rotation}deg)` : undefined,
-      }}
-    >
-      <polygon
+    <Link href="/shop/cart" prefetch={false} className="relative">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="24"
+        height="24"
+        viewBox="0 0 24 24"
         fill="none"
-        // stroke="#000000"
-        // stroke-width="2"
-        stroke-miterlimit="10"
-        className={classes.stroke}
-        points="44,18 54,18 54,63 10,63 10,18 20,18 "
-      />
-      <path
-        fill="none"
-        stroke="#000000"
-        stroke-width="1"
-        stroke-miterlimit="10"
-        // className={classes.stroke}
-        d="M22,24V11c0-5.523,4.477-10,10-10s10,4.477,10,10v13"
-      />
-    </svg>
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      >
+        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
+        <line x1="3" y1="6" x2="21" y2="6"></line>
+        <path d="M16 10a4 4 0 0 1-8 0"></path>
+      </svg>
+      {itemCount > 0 && (
+        <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
+          {itemCount}
+        </span>
+      )}
+    </Link>
   )
 }
+
+export default ShoppingBagIcon

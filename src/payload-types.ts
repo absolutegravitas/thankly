@@ -15,7 +15,6 @@ export interface Config {
     reusable: Reusable;
     media: Media;
     carts: Cart;
-    redirects: Redirect;
     forms: Form;
     'form-submissions': FormSubmission;
     'payload-preferences': PayloadPreference;
@@ -88,16 +87,8 @@ export interface Order {
               city?: string | null;
               state?: string | null;
               postcode?: string | null;
-              shippingOption?:
-                | (
-                    | 'free'
-                    | 'standardMail'
-                    | 'registeredMail'
-                    | 'expressMail'
-                    | 'standardParcel'
-                    | 'expressParcel'
-                    | 'courierParcel'
-                  )
+              shippingMethod?:
+                | ('standardMail' | 'registeredMail' | 'expressMail' | 'standardParcel' | 'expressParcel')
                 | null;
               receiverPrice?: number | null;
               receiverShipping?: number | null;
@@ -120,10 +111,11 @@ export interface Product {
   title: string;
   slug?: string | null;
   productType?: ('card' | 'gift') | null;
+  shippingClass?: ('mini' | 'small' | 'medium' | 'large') | null;
   stripeId?: string | null;
   theme?: ('light' | 'dark') | null;
   availability?: ('available' | 'unavailable') | null;
-  price?: number | null;
+  price: number;
   stripePriceId?: string | null;
   promoPrice?: number | null;
   stripePromoPriceId?: string | null;
@@ -271,7 +263,7 @@ export interface Cart {
   totals: {
     cartTotal: number;
     cartThanklys: number;
-    cartShipping: number;
+    cartShipping?: number | null;
   };
   items?:
     | {
@@ -280,7 +272,7 @@ export interface Cart {
         totals: {
           itemTotal: number;
           itemThanklys: number;
-          itemShipping: number;
+          itemShipping?: number | null;
         };
         receivers?:
           | {
@@ -292,21 +284,13 @@ export interface Cart {
               city?: string | null;
               state?: string | null;
               postcode?: string | null;
-              shippingOption?:
-                | (
-                    | 'free'
-                    | 'standardMail'
-                    | 'registeredMail'
-                    | 'expressMail'
-                    | 'standardParcel'
-                    | 'expressParcel'
-                    | 'courierParcel'
-                  )
+              shippingMethod?:
+                | ('free' | 'standardMail' | 'registeredMail' | 'expressMail' | 'standardParcel' | 'expressParcel')
                 | null;
               totals: {
                 receiverTotal: number;
                 receiverThankly: number;
-                receiverShipping: number;
+                receiverShipping?: number | null;
               };
               id?: string | null;
             }[]
@@ -314,29 +298,6 @@ export interface Cart {
         id?: string | null;
       }[]
     | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "redirects".
- */
-export interface Redirect {
-  id: number;
-  from: string;
-  to?: {
-    type?: ('reference' | 'custom') | null;
-    reference?:
-      | ({
-          relationTo: 'pages';
-          value: number | Page;
-        } | null)
-      | ({
-          relationTo: 'products';
-          value: number | Product;
-        } | null);
-    url?: string | null;
-  };
   updatedAt: string;
   createdAt: string;
 }
@@ -749,55 +710,6 @@ export interface Footer {
         id?: string | null;
       }[]
     | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "CallToAction".
- */
-export interface CallToAction {
-  ctaFields?: {
-    settings?: {
-      theme?: ('light' | 'dark') | null;
-    };
-    content?: {
-      root: {
-        type: string;
-        children: {
-          type: string;
-          version: number;
-          [k: string]: unknown;
-        }[];
-        direction: ('ltr' | 'rtl') | null;
-        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-        indent: number;
-        version: number;
-      };
-      [k: string]: unknown;
-    } | null;
-    links?:
-      | {
-          link: {
-            type?: ('reference' | 'custom') | null;
-            newTab?: boolean | null;
-            reference?:
-              | ({
-                  relationTo: 'pages';
-                  value: number | Page;
-                } | null)
-              | ({
-                  relationTo: 'products';
-                  value: number | Product;
-                } | null);
-            url?: string | null;
-            label: string;
-          };
-          id?: string | null;
-        }[]
-      | null;
-  };
-  id?: string | null;
-  blockName?: string | null;
-  blockType: 'cta';
 }
 
 

@@ -4,7 +4,7 @@ import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { CMSLink } from '@app/_components/CMSLink'
 import { PlusIcon, LoaderCircleIcon } from 'lucide-react'
-import { addProduct } from '@app/_providers/Cart/actions'
+import { addProduct } from '@app/_providers/Cart/cartItemsActions'
 import { Product } from '@payload-types'
 
 export function AddToCartButton({ product }: { product: Product }) {
@@ -16,7 +16,7 @@ export function AddToCartButton({ product }: { product: Product }) {
     setIsLoading(true)
     setError(null)
     try {
-      console.log('produt to add', product)
+      // console.log('produt to add', product)
       await addProduct(product)
       router.push('/shop/cart')
     } catch (e: any) {

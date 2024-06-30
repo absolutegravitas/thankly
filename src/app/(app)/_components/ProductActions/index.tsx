@@ -1,11 +1,11 @@
 import React from 'react'
 import { CheckIcon, FrownIcon, MessageCircleWarningIcon, SendHorizonalIcon } from 'lucide-react'
 import Link from 'next/link'
-import { messages } from '@/utilities/staticText'
+import { messages } from '@/utilities/refData'
 import { AddToCartButton } from './AddToCart'
 import { ViewInCartButton } from './ViewInCart'
 import { RemoveFromCartButton } from './RemoveFromCart'
-import { isProductInCart } from '@app/_providers/Cart/actions'
+import { isProductInCart } from '@app/_providers/Cart/cartItemsActions'
 
 export async function ProductActions({ product, hidePerks, hideRemove }: any) {
   const { stockOnHand } = product

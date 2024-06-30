@@ -3,7 +3,7 @@
 import React, { useState } from 'react'
 import { CMSLink } from '@app/_components/CMSLink'
 import { XIcon, LoaderCircleIcon } from 'lucide-react'
-import { removeProduct } from '@app/_providers/Cart/actions'
+import { removeProduct } from '@app/_providers/Cart/cartItemsActions'
 
 export function RemoveFromCartButton({ cartItemId }: { cartItemId: string }) {
   const [isLoading, setIsLoading] = useState(false)

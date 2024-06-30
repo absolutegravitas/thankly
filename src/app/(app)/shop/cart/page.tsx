@@ -3,8 +3,8 @@ import { Cart } from '@/payload-types'
 import { BlockWrapper } from '@app/_components/BlockWrapper'
 import { Gutter } from '@app/_components/Gutter'
 import { CartEmpty } from '@app/_blocks/CartCheckout/CartEmpty'
-import { getCart } from '@app/_providers/Cart/actions'
-import { cartStaticText } from '@/utilities/staticText'
+import { getCart } from '@app/_providers/Cart/cartActions'
+import { cartText } from '@/utilities/refData'
 import { contentFormats, getPaddingClasses } from '@app/_css/tailwindClasses'
 import { CartButtons } from '../../_blocks/CartCheckout/CartButtons'
 
@@ -26,13 +26,13 @@ export default async function CartPage() {
   }
 
   // console.log('server cart ', JSON.stringify(cart))
-  const { leader, heading } = cartStaticText
+  const { leader, heading } = cartText
 
   return (
     <BlockWrapper className={getPaddingClasses('hero')}>
       <Gutter>
         <div className="flex flex-col md:flex-row">
-          <div className="sm:basis-3/6 md:basis-3/6 lg:basis-4/6 flex align-middle items-center justify-middle pb-3">
+          <div className="sm:basis-3/6 md:basis-3/6 lg:basis-4/6 flex align-middle items-center justify-middle pb-3 pt-6 sm:pt-0">
             {heading && (
               <React.Fragment>
                 <span
@@ -58,15 +58,22 @@ export default async function CartPage() {
             'tracking-tighter sm:tracking-tight #text-3xl font-semibold',
           ].join(' ')}
         >
-          {cartStaticText.receiverMessage}
+          {cartText.receiverMessage}
         </div>
 
-        <Suspense fallback={<CartItemsSkeleton />}>
-          <CartItems />
-        </Suspense>
-        <Suspense fallback={<CartSummarySkeleton />}>
-          <CartSummary />
-        </Suspense>
+        <div className="flex flex-col lg:flex-row gap-6">
+          <div className="flex-grow">
+            <Suspense fallback={<CartItemsSkeleton />}>
+              <CartItems />
+            </Suspense>
+          </div>
+
+          <div className="lg:w-1/3 lg:sticky lg:top-0 lg:self-start">
+            <Suspense fallback={<CartSummarySkeleton />}>
+              <CartSummary />
+            </Suspense>
+          </div>
+        </div>
       </Gutter>
     </BlockWrapper>
   )

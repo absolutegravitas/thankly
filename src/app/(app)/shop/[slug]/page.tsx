@@ -4,7 +4,7 @@ import { fetchProduct } from '@app/_queries/products'
 import { notFound } from 'next/navigation'
 import ProductBlock from '@app/_blocks/ProductBlock'
 import type { Product } from '@payload-types'
-import { isProductInCart } from '@app/_providers/Cart/actions'
+import { isProductInCart } from '@app/_providers/Cart/cartItemsActions'
 import Blocks from '../../_blocks'
 
 export default async function ProductPage({
