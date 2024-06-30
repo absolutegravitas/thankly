@@ -1,5 +1,5 @@
 // import type { AfterChangeHook } from 'payload/dist/collections/config/types'
-import type { CollectionAfterChangeHook } from 'payload/types'
+import type { CollectionAfterChangeHook } from 'payload'
 import { revalidate } from '@cms/_hooks/revalidate'
 
 // Revalidate the page in the background, so the user doesn't have to wait

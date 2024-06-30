@@ -1,4 +1,4 @@
-import type { CollectionConfig } from 'payload/types'
+import type { CollectionConfig } from 'payload'
 import { adminsOnly, publishedOnly } from '@/utilities/access'
 
 // import { formatPreviewURL } from '@/utilities/formatPreviewURL'

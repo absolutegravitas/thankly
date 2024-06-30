@@ -1,4 +1,4 @@
-import type { Block } from 'payload/types'
+import type { Block } from 'payload'
 // import { ColourTextField } from '@nouance/payload-better-fields-plugin'
 
 import link from '@cms/_fields/link'

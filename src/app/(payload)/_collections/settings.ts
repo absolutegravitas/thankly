@@ -1,4 +1,4 @@
-import type { GlobalConfig } from 'payload/types'
+import type { GlobalConfig } from 'payload'
 import linkGroup from '@cms/_fields/linkGroup'
 import { contentField } from '@cms/_fields/contentField'
 import link from '@cms/_fields/link'

@@ -6,7 +6,7 @@ import policies from './csp.js'
 
 const nextConfig = {
   reactStrictMode: true,
-  swcMinify: true,
+  // swcMinify: true,
   eslint: { ignoreDuringBuilds: true },
   // redirects,
 

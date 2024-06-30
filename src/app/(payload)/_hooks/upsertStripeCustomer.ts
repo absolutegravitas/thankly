@@ -2,11 +2,11 @@
 // update properties if needed e.g. name, email etc.
 
 // import type { BeforeChangeHook } from 'payload/dist/collections/config/types'
-import type { CollectionBeforeChangeHook } from 'payload/types'
+import type { CollectionBeforeChangeHook } from 'payload'
 import Stripe from 'stripe'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
-  apiVersion: '2024-04-10',
+  apiVersion: '2024-06-20',
 })
 
 export const upsertStripeCustomer: CollectionBeforeChangeHook = async ({

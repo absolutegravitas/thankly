@@ -1,4 +1,4 @@
-import type { Block } from 'payload/types'
+import type { Block } from 'payload'
 import { HTMLConverterFeature, lexicalEditor, TreeViewFeature } from '@payloadcms/richtext-lexical'
 
 import link from '@cms/_fields/link'
@@ -9,39 +9,6 @@ import { themeField } from '@cms/_fields/blockFields'
 export const Hero: Block = {
   slug: 'hero',
   fields: [
-    // common
-
-    // {
-    //   type: 'select',
-    //   name: 'type',
-    //   label: 'Type',
-    //   required: true,
-    //   defaultValue: 'slider',
-    //   options: [{ label: 'Slider', value: 'slider' }],
-    // },
-    // {
-    //   name: 'slides',
-    //   type: 'array',
-    //   admin: {
-    //     condition: (_: any, { type } = {}) => ['slider'].includes(type),
-    //     components: {
-    //       RowLabel: ({ data, index, path }) => {
-    //         if (data.name) {
-    //           return data.name
-    //         }
-    //       },
-    //     },
-    //   },
-    //   fields: [
-    //     { name: 'name', label: 'Slide Name', type: 'text', required: false },
-    //     { name: 'image', type: 'upload', relationTo: 'media', required: false },
-    //     contentField(),
-    //     linkGroup({
-    //       //   overrides: { maxRows: 3 },
-    //     }),
-    //   ],
-    // },
-
     themeField,
     {
       type: 'select',
@@ -109,7 +76,7 @@ export const Hero: Block = {
         name: 'primaryButtons',
         label: 'Primary Buttons',
         admin: {
-          condition: (_: any, { type }) => type === 'home',
+          condition: (_: any, { type }: any) => type === 'home',
         },
       },
     }),
@@ -286,7 +253,7 @@ export const Hero: Block = {
     linkGroup({
       overrides: {
         admin: {
-          condition: (_: any, { type } = {}) =>
+          condition: (_: any, { type }: any = {}) =>
             [
               'contentMedia',
               'default',

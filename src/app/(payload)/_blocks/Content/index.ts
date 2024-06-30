@@ -1,4 +1,4 @@
-import type { Block } from 'payload/types'
+import type { Block } from 'payload'
 
 import { blockFields } from '@cms/_fields/blockFields'
 import { contentField } from '@cms/_fields/contentField'
@@ -19,14 +19,14 @@ export const Content: Block = {
           name: 'leadingHeader',
           label: 'Leading Header',
           admin: {
-            condition: (_: any, siblingData) => siblingData.useLeadingHeader,
+            condition: (_: any, siblingData: any) => siblingData.useLeadingHeader,
           },
         }),
         // richText({
         //   name: 'leadingHeader',
         //   label: 'Leading Header',
         //   admin: {
-        //     condition: (_: any, siblingData) => siblingData.useLeadingHeader,
+        //     condition: (_: any, siblingData:any) => siblingData.useLeadingHeader,
         //   },
         // }),
         {
@@ -60,7 +60,7 @@ export const Content: Block = {
         contentField({
           name: 'columnTwo',
           admin: {
-            condition: (_: any, siblingData) =>
+            condition: (_: any, siblingData: any) =>
               ['twoColumns', 'twoThirdsOneThird', 'halfAndHalf', 'threeColumns'].includes(
                 siblingData.layout,
               ),
@@ -69,7 +69,7 @@ export const Content: Block = {
         contentField({
           name: 'columnThree',
           admin: {
-            condition: (_: any, siblingData) => siblingData.layout === 'threeColumns',
+            condition: (_: any, siblingData: any) => siblingData.layout === 'threeColumns',
           },
         }),
         // richText({
@@ -78,7 +78,7 @@ export const Content: Block = {
         // richText({
         //   name: 'columnTwo',
         //   admin: {
-        //     condition: (_: any, siblingData) =>
+        //     condition: (_: any, siblingData:any) =>
         //       ['twoColumns', 'twoThirdsOneThird', 'halfAndHalf', 'threeColumns'].includes(
         //         siblingData.layout,
         //       ),
@@ -87,7 +87,7 @@ export const Content: Block = {
         // richText({
         //   name: 'columnThree',
         //   admin: {
-        //     condition: (_: any, siblingData) => siblingData.layout === 'threeColumns',
+        //     condition: (_: any, siblingData:any) => siblingData.layout === 'threeColumns',
         //   },
         // }),
       ],

@@ -1,4 +1,4 @@
-import type { Block } from 'payload/types'
+import type { Block } from 'payload'
 
 import { blockFields } from '@cms/_fields/blockFields'
 import linkGroup from '@cms/_fields/linkGroup'
@@ -7,7 +7,7 @@ import { contentField } from '@cms/_fields/contentField'
 
 export const CallToAction: Block = {
   slug: 'cta',
-  interfaceName: 'CallToAction',
+  // interfaceName: 'CallToAction',
   labels: {
     singular: 'Call to Action',
     plural: 'Calls to Action',

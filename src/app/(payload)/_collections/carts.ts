@@ -1,4 +1,4 @@
-import type { CollectionConfig } from 'payload/types'
+import type { CollectionConfig } from 'payload'
 import { adminsOnly, isAdminOrCurrentUser } from '@/utilities/access'
 
 export const Carts: CollectionConfig = {
@@ -45,8 +45,8 @@ export const Carts: CollectionConfig = {
             {
               name: 'cartShipping',
               type: 'number',
-              required: true,
-              defaultValue: 0,
+              required: false,
+              // defaultValue: 0,
             },
           ],
         },
@@ -89,26 +89,14 @@ export const Carts: CollectionConfig = {
                 {
                   name: 'itemShipping',
                   type: 'number',
-                  required: true,
-                  defaultValue: 0,
+                  required: false,
+                  // defaultValue: 0,
                 },
               ],
             },
           ],
         },
-        // {
-        //   type: 'row',
-        //   fields: [
-        //     { name: 'price', type: 'number', min: 0, admin: { width: '25%' } },
-        //     {
-        //       name: 'shipping',
-        //       type: 'number',
-        //       min: 0,
-        //       admin: { width: '25%' },
-        //     },
-        //     { name: 'total', type: 'number', min: 0, admin: { width: '25%' } },
-        //   ],
-        // },
+
         {
           name: 'receivers',
           labels: { singular: 'Receiver', plural: 'Receivers' },
@@ -140,7 +128,7 @@ export const Carts: CollectionConfig = {
               type: 'row',
               fields: [
                 {
-                  name: 'shippingOption',
+                  name: 'shippingMethod',
                   type: 'select',
                   defaultValue: 'free',
                   hasMany: false,
@@ -148,12 +136,11 @@ export const Carts: CollectionConfig = {
                   admin: { width: '100%' },
                   options: [
                     { label: 'FREE', value: 'free' },
-                    { label: 'Standard Mail (AusPost)', value: 'standardMail' },
-                    { label: 'Registered Post (AusPost)', value: 'registeredMail' },
-                    { label: 'Express Post (AusPost)', value: 'expressMail' },
-                    { label: 'AusPost Parcel', value: 'standardParcel' },
-                    { label: 'AusPost Express', value: 'expressParcel' },
-                    { label: 'Courier Parcel', value: 'courierParcel' },
+                    { label: 'Standard Mail', value: 'standardMail' },
+                    { label: 'Registered Post', value: 'registeredMail' },
+                    { label: 'Express Post', value: 'expressMail' },
+                    { label: 'Standard Parcel', value: 'standardParcel' },
+                    { label: 'Express Parcel', value: 'expressParcel' },
                   ],
                 },
               ],
@@ -181,8 +168,8 @@ export const Carts: CollectionConfig = {
                     {
                       name: 'receiverShipping',
                       type: 'number',
-                      required: true,
-                      defaultValue: 0,
+                      required: false,
+                      // defaultValue: 0,
                     },
                   ],
                 },

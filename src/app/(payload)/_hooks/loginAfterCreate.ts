@@ -1,5 +1,5 @@
 // import type { AfterChangeHook } from 'payload/dist/collections/config/types'
-import type { CollectionAfterChangeHook } from 'payload/types'
+import type { CollectionAfterChangeHook } from 'payload'
 // not called by anything
 // export const loginAfterCreate: CollectionAfterChangeHook = async ({
 //   doc,

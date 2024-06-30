@@ -1,4 +1,4 @@
-import type { Block } from 'payload/types'
+import type { Block } from 'payload'
 
 import { blockFields } from '@cms/_fields/blockFields'
 import { Content } from '../Content'

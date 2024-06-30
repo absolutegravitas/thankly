@@ -1,9 +1,9 @@
 import Stripe from 'stripe'
 import type { Product } from '@payload-types'
-import { CollectionAfterDeleteHook } from 'payload/types'
+import { CollectionAfterDeleteHook } from 'payload'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
-  apiVersion: '2024-04-10',
+  apiVersion: '2024-06-20',
 })
 
 // doesn't really delete - just soft deletes

@@ -1,4 +1,4 @@
-import type { Field, FieldHook } from 'payload/types'
+import type { Field, FieldHook } from 'payload'
 import deepMerge from 'deepmerge'
 import * as LucideIcons from 'lucide-react'
 

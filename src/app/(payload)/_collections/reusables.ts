@@ -1,4 +1,4 @@
-import type { CollectionConfig } from 'payload/types'
+import type { CollectionConfig } from 'payload'
 import { layoutField } from '@cms/_fields/layoutField'
 import { adminsOnly } from '../../../utilities/access'
 

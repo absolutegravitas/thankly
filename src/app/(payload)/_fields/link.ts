@@ -1,4 +1,4 @@
-import type { Field } from 'payload/types'
+import type { Field } from 'payload'
 
 import deepMerge from '@/utilities/deepMerge'
 
@@ -131,7 +131,7 @@ const link: LinkType = ({ looks, disableLabel = false, overrides = {} } = {}) =>
       required: true,
       maxDepth: 1,
       admin: {
-        condition: (_: any, siblingData) => siblingData?.type === 'reference',
+        condition: (_: any, siblingData: any) => siblingData?.type === 'reference',
       },
     },
     {
@@ -140,7 +140,7 @@ const link: LinkType = ({ looks, disableLabel = false, overrides = {} } = {}) =>
       type: 'text',
       required: true,
       admin: {
-        condition: (_: any, siblingData) => siblingData?.type === 'custom',
+        condition: (_: any, siblingData: any) => siblingData?.type === 'custom',
       },
     },
   ]

@@ -1,4 +1,4 @@
-import type { CollectionConfig } from 'payload/types'
+import type { CollectionConfig } from 'payload'
 import payload from 'payload'
 
 import { adminsAndUserOnly, adminsOnly } from '../../../utilities/access'
@@ -140,20 +140,19 @@ export const Orders: CollectionConfig = {
               type: 'row',
               fields: [
                 {
-                  name: 'shippingOption',
+                  name: 'shippingMethod',
                   type: 'select',
                   defaultValue: 'free',
                   hasMany: false,
                   required: false,
                   admin: { width: '100%' },
                   options: [
-                    { label: 'FREE', value: 'free' },
+                    // { label: 'FREE', value: 'free' },
                     { label: 'Standard Mail', value: 'standardMail' },
                     { label: 'Registered Post', value: 'registeredMail' },
                     { label: 'Express Post', value: 'expressMail' },
-                    { label: 'AusPost Parcel', value: 'standardParcel' },
-                    { label: 'AusPost Express', value: 'expressParcel' },
-                    { label: 'Courier', value: 'courierParcel' },
+                    { label: 'Standard Parcel', value: 'standardParcel' },
+                    { label: 'Express Parcel', value: 'expressParcel' },
                   ],
                 },
               ],

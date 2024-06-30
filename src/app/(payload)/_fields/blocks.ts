@@ -1,4 +1,4 @@
-import type { Field } from 'payload/types'
+import type { Field } from 'payload'
 import blocks from '@cms/_blocks'
 import deepMerge from 'deepmerge'
 

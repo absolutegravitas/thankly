@@ -1,5 +1,5 @@
 import deepMerge from '@/utilities/deepMerge'
-import type { Field } from 'payload/types'
+import type { Field } from 'payload'
 import {
   lexicalEditor,
   FixedToolbarFeature,
@@ -12,7 +12,7 @@ import {
   SerializedBlockNode,
 } from '@payloadcms/richtext-lexical'
 
-import type { RichTextField } from 'payload/types'
+import type { RichTextField } from 'payload'
 
 type ContentField = (
   overrides?: Partial<RichTextField> & {

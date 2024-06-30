@@ -12,7 +12,7 @@ import {
   SerializedBlockNode,
 } from '@payloadcms/richtext-lexical'
 
-import type { RichTextField } from 'payload/types'
+import type { RichTextField } from 'payload'
 
 import { Banner } from '@cms/_blocks/Banner'
 import { Callout } from '@cms/_blocks/Callout'

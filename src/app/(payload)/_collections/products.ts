@@ -1,4 +1,4 @@
-import type { CollectionConfig } from 'payload/types'
+import type { CollectionConfig } from 'payload'
 
 import { slugField } from '@cms/_fields/slug'
 // import { populateArchiveBlock } from '@/blocks/ArchiveBlock/populateArchiveBlock'
@@ -55,14 +55,21 @@ export const Products: CollectionConfig = {
           type: 'select',
           defaultValue: 'gift',
           options: [
-            {
-              label: 'Card',
-              value: 'card',
-            },
-            {
-              label: 'Gift',
-              value: 'gift',
-            },
+            { label: 'Card', value: 'card' },
+            { label: 'Gift', value: 'gift' },
+          ],
+        },
+        // basically product size/weight determines what the predefault base ship price is for a gift
+        {
+          name: 'shippingClass',
+          type: 'select',
+          defaultValue: 'medium',
+          admin: { condition: (_, siblingData) => siblingData.productType === 'gift' },
+          options: [
+            { label: 'Mini', value: 'mini' },
+            { label: 'Small', value: 'small' },
+            { label: 'Medium', value: 'medium' },
+            { label: 'Large', value: 'large' },
           ],
         },
       ],
@@ -75,10 +82,6 @@ export const Products: CollectionConfig = {
           label: 'Basics',
           description: 'Basic Product Info',
           fields: [
-            // grab from meta
-            // { name: 'shortDescription', type: 'textarea', maxLength: 150, required: false },
-            // grab from media Slider & default from meta
-            // { name: 'defaultImage', type: 'upload', relationTo: 'media', required: false },
             {
               type: 'row',
               fields: [
@@ -110,8 +113,8 @@ export const Products: CollectionConfig = {
                   name: 'price',
                   label: 'Price',
                   type: 'number',
-                  required: false,
-                  defaultValue: '0',
+                  required: true,
+                  defaultValue: 0,
                 },
                 { name: 'stripePriceId', type: 'text', required: false, hidden: false },
 
@@ -120,7 +123,7 @@ export const Products: CollectionConfig = {
                   label: 'Promotional Price',
                   type: 'number',
                   required: false,
-                  defaultValue: '0',
+                  // defaultValue: null,
                 },
                 { name: 'stripePromoPriceId', type: 'text', required: false, hidden: false },
               ],
@@ -138,21 +141,6 @@ export const Products: CollectionConfig = {
                 },
               ],
             },
-            // don't need brands (just create a reusable logo grid and drop into layout)
-            // {
-            //   type: 'row',
-            //   fields: [
-            //     {
-            //       name: 'brands',
-            //       type: 'array',
-            //       fields: [
-            //         { name: 'brandLogo', type: 'upload', relationTo: 'media' },
-            //         { name: 'brandName', label: 'Brand Name', type: 'text' },
-            //         { name: 'productName', label: 'Product Name', type: 'text' },
-            //       ],
-            //     },
-            //   ],
-            // },
           ],
         },
         {
