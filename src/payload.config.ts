@@ -29,7 +29,7 @@ const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
 export default buildConfig({
-  collections: [Users, Orders, Products, Pages, Reusable, Media, Carts],
+  collections: [Orders, Products, Pages, Reusable, Media, Carts, Users],
   globals: [Settings],
   editor: lexicalEditor({}),
   db: postgresAdapter({ pool: { connectionString: process.env.POSTGRES_URL } }),

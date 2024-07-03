@@ -6,18 +6,23 @@ import { CMSLink } from '@app/_components/CMSLink'
 import { PlusIcon, LoaderCircleIcon } from 'lucide-react'
 import { addProduct } from '@app/_providers/Cart/cartItemsActions'
 import { Product } from '@payload-types'
+import { useCart } from '@app/_providers/Cart'
 
 export function AddToCartButton({ product }: { product: Product }) {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const router = useRouter()
+  const { addProduct } = useCart()
 
   const handleAddToCart = async () => {
     setIsLoading(true)
     setError(null)
     try {
       // console.log('produt to add', product)
-      await addProduct(product)
+      addProduct(
+        product,
+        Math.max(0, Math.min(product.price ?? Infinity, product.promoPrice ?? Infinity)),
+      )
       router.push('/shop/cart')
     } catch (e: any) {
       setError(e.message || 'Failed to add product to cart. Please try again.')

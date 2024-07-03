@@ -8,13 +8,13 @@
 
 export interface Config {
   collections: {
-    users: User;
     orders: Order;
     products: Product;
     pages: Page;
     reusable: Reusable;
     media: Media;
     carts: Cart;
+    users: User;
     forms: Form;
     'form-submissions': FormSubmission;
     'payload-preferences': PayloadPreference;
@@ -27,36 +27,6 @@ export interface Config {
   user: User & {
     collection: 'users';
   };
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "users".
- */
-export interface User {
-  id: number;
-  firstName?: string | null;
-  lastName?: string | null;
-  orgName?: string | null;
-  orgId?: string | null;
-  website?: string | null;
-  status?: ('active' | 'inactive') | null;
-  type?: ('staff' | 'guest' | 'retail' | 'business' | 'partner')[] | null;
-  roles: ('admin' | 'public')[];
-  stripeId?: string | null;
-  orders?: (number | Order)[] | null;
-  updatedAt: string;
-  createdAt: string;
-  enableAPIKey?: boolean | null;
-  apiKey?: string | null;
-  apiKeyIndex?: string | null;
-  email: string;
-  resetPasswordToken?: string | null;
-  resetPasswordExpiration?: string | null;
-  salt?: string | null;
-  hash?: string | null;
-  loginAttempts?: number | null;
-  lockUntil?: string | null;
-  password?: string | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -101,6 +71,36 @@ export interface Order {
     | null;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "users".
+ */
+export interface User {
+  id: number;
+  firstName?: string | null;
+  lastName?: string | null;
+  orgName?: string | null;
+  orgId?: string | null;
+  website?: string | null;
+  status?: ('active' | 'inactive') | null;
+  type?: ('staff' | 'guest' | 'retail' | 'business' | 'partner')[] | null;
+  roles: ('admin' | 'public')[];
+  stripeId?: string | null;
+  orders?: (number | Order)[] | null;
+  updatedAt: string;
+  createdAt: string;
+  enableAPIKey?: boolean | null;
+  apiKey?: string | null;
+  apiKeyIndex?: string | null;
+  email: string;
+  resetPasswordToken?: string | null;
+  resetPasswordExpiration?: string | null;
+  salt?: string | null;
+  hash?: string | null;
+  loginAttempts?: number | null;
+  lockUntil?: string | null;
+  password?: string | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -284,9 +284,7 @@ export interface Cart {
               city?: string | null;
               state?: string | null;
               postcode?: string | null;
-              shippingMethod?:
-                | ('free' | 'standardMail' | 'registeredMail' | 'expressMail' | 'standardParcel' | 'expressParcel')
-                | null;
+              shippingMethod?: ('free' | 'standardMail' | 'expressMail' | 'standardParcel' | 'expressParcel') | null;
               totals: {
                 receiverTotal: number;
                 receiverThankly: number;

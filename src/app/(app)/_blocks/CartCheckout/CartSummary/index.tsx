@@ -4,14 +4,14 @@ import { DollarSignIcon, ChevronUpIcon } from 'lucide-react'
 import { CMSLink } from '@app/_components/CMSLink'
 import { getCart } from '@/app/(app)/_providers/Cart/cartActions'
 import { Cart } from '@/payload-types'
+import { CartButtons } from '../CartButtons'
 
-export const CartSummary: React.FC<any> = async () => {
-  let cart: Cart | null = await getCart()
-
-  if (!cart) return null
+export const CartSummary: React.FC<any> = (cart) => {
+  // let cart: Cart | null = await getCart()
+  // if (!cart) return null
 
   return (
-    <div className="lg:border lg:border-solid lg:border-neutral-400 lg:p-8 fixed bottom-0 left-0 right-0 lg:relative lg:bottom-auto lg:left-auto lg:right-auto bg-gray-50 shadow-lg lg:shadow-none lg:bg-white border-t border-gray-200 lg:border-t-0">
+    <div className=" fixed bottom-0 left-0 right-0 lg:relative lg:bottom-auto lg:left-auto lg:right-auto bg-gray-50 shadow-lg lg:shadow-none lg:bg-white border-t border-gray-200 lg:border-t-0">
       <div className="lg:hidden">
         <details className="group">
           <summary className="flex justify-between items-center p-4 cursor-pointer list-none bg-white">
@@ -60,6 +60,7 @@ export const CartSummary: React.FC<any> = async () => {
             },
           }}
         />
+        <CartButtons />
       </div>
     </div>
   )
@@ -96,15 +97,22 @@ const OrderSummaryContent: React.FC<{ cart: Cart }> = ({ cart }) => (
     <div className="flex items-center justify-between">
       <dt className={[contentFormats.global, contentFormats.text].join(' ')}>Total Shipping</dt>
       <dd className={[contentFormats.global, contentFormats.text].join(' ')}>
-        {cart.totals.cartShipping !== null
-          ? cart.totals.cartShipping?.toLocaleString('en-AU', {
-              style: 'currency',
-              currency: 'AUD',
-              minimumFractionDigits: 0,
-              maximumFractionDigits: 2,
-            })
-          : '(provide all shipping addresses)'}
+        {cart.totals.cartShipping?.toLocaleString('en-AU', {
+          style: 'currency',
+          currency: 'AUD',
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 2,
+        })}
       </dd>
     </div>
+
+    {cart.totals.cartShipping && cart.totals.cartShipping >= 100 && (
+      <div className="flex items-center justify-between">
+        <dt className={[contentFormats.global, contentFormats.text].join(' ')}>
+          Free Shipping (over $100)
+        </dt>
+        <dd className={[contentFormats.global, contentFormats.text].join(' ')}>0.00</dd>
+      </div>
+    )}
   </div>
 )

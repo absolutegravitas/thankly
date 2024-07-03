@@ -29,7 +29,6 @@ export const CartItems: React.FC<any> = async () => {
             {/* Product Info */}
             <div className="space-y-4">
               <div className="#grid flex sm:flex items-start sm:items-center sm:space-x-4 space-x-3">
-                {/* <div className="relative w-full h-full group"> */}
                 <Image
                   src={getImageUrl(product.media[0]?.mediaItem)}
                   alt={getImageAlt(product.media[0]?.mediaItem)}
@@ -38,23 +37,7 @@ export const CartItems: React.FC<any> = async () => {
                   height={100}
                   className="rounded-sm object-cover object-center aspect-square shadow-md"
                 />
-                {/* </div> */}
 
-                {/* <div className="h-20 w-20 bg-gray-50 mb-2 sm:mb-0 sm:mr-4">
-                  {metaImage && typeof metaImage !== 'string' && (
-                    <div className="relative w-full h-full group">
-                      <Image
-                        src={metaImage.url}
-                        alt={metaImage.alt || ''}
-                        priority={false}
-                        fill
-                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                        className="aspect-square object-cover rounded-sm shadow-md hover:scale-105 hover:delay-75 duration-150 transition-transform"
-                      />
-                    </div>
-                  )}
-                </div> */}
-                {/* title & description */}
                 <div className="flex-1">
                   <span className={cn(contentFormats.global, contentFormats.h4, `no-underline`)}>
                     {product.title}

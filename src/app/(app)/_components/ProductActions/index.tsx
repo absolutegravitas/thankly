@@ -1,3 +1,5 @@
+'use client'
+
 import React from 'react'
 import { CheckIcon, FrownIcon, MessageCircleWarningIcon, SendHorizonalIcon } from 'lucide-react'
 import Link from 'next/link'
@@ -5,11 +7,15 @@ import { messages } from '@/utilities/refData'
 import { AddToCartButton } from './AddToCart'
 import { ViewInCartButton } from './ViewInCart'
 import { RemoveFromCartButton } from './RemoveFromCart'
-import { isProductInCart } from '@app/_providers/Cart/cartItemsActions'
+// import { isProductInCart } from '@app/_providers/Cart/cartItemsActions'
+import { useCart } from '@app/_providers/Cart'
 
 export async function ProductActions({ product, hidePerks, hideRemove }: any) {
   const { stockOnHand } = product
-  const inCart = await isProductInCart(product.id)
+  // const inCart = await isProductInCart(product.id)
+
+  const { isProductInCart } = useCart()
+  const inCart = isProductInCart(product.id)
 
   if (stockOnHand === 0) {
     return (

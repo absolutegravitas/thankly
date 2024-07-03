@@ -19,6 +19,7 @@ import { MenuIcon } from '@app/_graphics/MenuIcon'
 import { CMSLink } from '../../CMSLink'
 import ShoppingBagIcon from '@app/_icons/ShoppingBagIcon'
 import classes from './index.module.scss'
+import { MiniCart } from '../../CartMini'
 
 export const modalSlug = 'mobile-nav'
 export const subMenuSlug = 'mobile-sub-menu'
@@ -265,9 +266,10 @@ export const MobileNav: React.FC<NavItems> = (props) => {
                 <FullLogo />
               </Link>
               <div className={classes.icons}>
-                {/* <div className={classes.shoppingBag}>
-                  <ShoppingBagIcon />
-                </div> */}
+                <div className={classes.shoppingBag}>
+                  <MiniCart />
+                  {/* <ShoppingBagIcon /> */}
+                </div>
                 {/* <div className={classes.cloudNewProject}>
                   {!user && (
                     <Link href="/login" prefetch={false}>

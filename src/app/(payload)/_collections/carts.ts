@@ -137,7 +137,7 @@ export const Carts: CollectionConfig = {
                   options: [
                     { label: 'FREE', value: 'free' },
                     { label: 'Standard Mail', value: 'standardMail' },
-                    { label: 'Registered Post', value: 'registeredMail' },
+                    // { label: 'Registered Post', value: 'registeredMail' },
                     { label: 'Express Post', value: 'expressMail' },
                     { label: 'Standard Parcel', value: 'standardParcel' },
                     { label: 'Express Parcel', value: 'expressParcel' },

@@ -1,3 +1,5 @@
+'use client'
+
 import React, { Suspense } from 'react'
 import { Cart } from '@/payload-types'
 import { BlockWrapper } from '@app/_components/BlockWrapper'
@@ -7,16 +9,18 @@ import { getCart } from '@app/_providers/Cart/cartActions'
 import { cartText } from '@/utilities/refData'
 import { contentFormats, getPaddingClasses } from '@app/_css/tailwindClasses'
 import { CartButtons } from '../../_blocks/CartCheckout/CartButtons'
+import { useCart } from '@app/_providers/Cart'
 
 import Loading from './loading'
 import { CartItems } from '@app/_blocks/CartCheckout/CartItems'
 import { CartSummary } from '@app/_blocks/CartCheckout/CartSummary'
 
-export default async function CartPage() {
-  let cart: Cart | null = null
-  cart = await getCart()
+export default function CartPage() {
+  const { cart, cartIsEmpty, hasInitializedCart } = useCart()
+  // let cart: Cart | null = null
+  // cart = await getCart()
 
-  if (!cart) {
+  if (cartIsEmpty) {
     console.log('Cart not found or is empty...')
     return (
       <BlockWrapper className={getPaddingClasses('hero')}>
@@ -25,30 +29,22 @@ export default async function CartPage() {
     )
   }
 
-  // console.log('server cart ', JSON.stringify(cart))
-  const { leader, heading } = cartText
-
   return (
     <BlockWrapper className={getPaddingClasses('hero')}>
       <Gutter>
         <div className="flex flex-col md:flex-row">
           <div className="sm:basis-3/6 md:basis-3/6 lg:basis-4/6 flex align-middle items-center justify-middle pb-3 pt-6 sm:pt-0">
-            {heading && (
-              <React.Fragment>
-                <span
-                  className={[
-                    contentFormats.global,
-                    contentFormats.p,
-                    'tracking-tighter sm:tracking-tight text-2xl sm:text-3xl font-medium',
-                  ].join(' ')}
-                >
-                  {heading}
-                </span>
-              </React.Fragment>
-            )}
-          </div>
-          <div className="sm:basis-1/2 md:basis-1/2 lg:basis-2/6 flex items-center justify-end pb-3 gap-4">
-            <CartButtons />
+            <React.Fragment>
+              <span
+                className={[
+                  contentFormats.global,
+                  contentFormats.p,
+                  'tracking-tighter sm:tracking-tight text-2xl sm:text-3xl font-medium',
+                ].join(' ')}
+              >
+                {'Your Cart'}
+              </span>
+            </React.Fragment>
           </div>
         </div>
         <div
@@ -61,16 +57,14 @@ export default async function CartPage() {
           {cartText.receiverMessage}
         </div>
 
-        <div className="flex flex-col lg:flex-row gap-6">
-          <div className="flex-grow">
-            <Suspense fallback={<CartItemsSkeleton />}>
-              <CartItems />
-            </Suspense>
+        <div className="flex flex-col md:flex-row gap-6">
+          <div className="md:basis-auto lg:basis-3/4">
+            <Suspense fallback={<CartItemsSkeleton />}>{/* <CartItems {...cart} /> */}</Suspense>
           </div>
 
-          <div className="lg:w-1/3 lg:sticky lg:top-0 lg:self-start">
+          <div className="md:basis-auto lg:basis-1/4">
             <Suspense fallback={<CartSummarySkeleton />}>
-              <CartSummary />
+              <CartSummary {...cart} />
             </Suspense>
           </div>
         </div>

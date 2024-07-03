@@ -17,7 +17,7 @@ export const contentFormats = {
   alignJustify: ``,
 
   // gen text
-  text: `text-justify font-body font-light tracking-tight leading-snug prose-em:font-extrabold`,
+  text: `#text-justify font-body font-light tracking-tight leading-snug prose-em:font-extrabold`,
   smallText: `text-sm text-left #text-justify font-body font-light tracking-tight leading-snug prose-em:font-extrabold #prose-em:text-neutral-700`,
 
   h1: `font-title font-semibold text-5xl tracking-tight`,

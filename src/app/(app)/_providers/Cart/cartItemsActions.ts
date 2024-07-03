@@ -35,18 +35,18 @@ export async function addProduct(product: Product): Promise<Cart> {
           state: null,
           postcode: null,
           shippingMethod: null,
-          totals: {
-            receiverTotal: productPrice,
-            receiverThankly: productPrice,
-            receiverShipping: null,
-          },
+          // totals: {
+          //   receiverTotal: productPrice,
+          //   receiverThankly: productPrice,
+          //   receiverShipping: null,
+          // },
         },
       ],
-      totals: {
-        itemTotal: productPrice,
-        itemThanklys: productPrice,
-        itemShipping: null,
-      },
+      // totals: {
+      //   itemTotal: productPrice,
+      //   itemThanklys: productPrice,
+      //   itemShipping: null,
+      // },
     }
 
     items.push(newItem)
@@ -120,17 +120,17 @@ export async function removeProduct(cartItemId: string) {
             ...item,
             product: typeof item.product === 'object' ? item.product.id : item.product,
           })),
-          totals: {
-            cartTotal: cart.items.reduce(
-              (total: number, item: any) => total + item.totals.itemTotal,
-              0,
-            ),
-            cartThanklys: cart.items.reduce(
-              (total: number, item: any) => total + item.totals.itemThanklys,
-              0,
-            ),
-            cartShipping: null, // do this via validation function that checks whether address has been populated
-          },
+          // totals: {
+          //   cartTotal: cart.items.reduce(
+          //     (total: number, item: any) => total + item.totals.itemTotal,
+          //     0,
+          //   ),
+          //   cartThanklys: cart.items.reduce(
+          //     (total: number, item: any) => total + item.totals.itemThanklys,
+          //     0,
+          //   ),
+          //   cartShipping: null, // do this via validation function that checks whether address has been populated
+          // },
         },
         depth: 2, // Adjust depth as needed
       })

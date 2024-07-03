@@ -27,17 +27,17 @@ export async function addReceiver(productId: number | string, newReceiver: any) 
 
     // Add the new receiver to the item's receivers array
     // when adding a receiver, there should be some receiver totals calculated BUT no shipping totals calculated because address / shipping option hasnt been supplied
-    newReceiver.totals = {
-      receiverTotal: Math.min(
-        cart.items[itemIndex].product.price ?? 0,
-        cart.items[itemIndex].product.promoPrice ?? 0,
-      ),
-      receiverThankly: Math.min(
-        cart.items[itemIndex].product.price ?? 0,
-        cart.items[itemIndex].product.promoPrice ?? 0,
-      ),
-      receiverShipping: null,
-    }
+    // newReceiver.totals = {
+    //   receiverTotal: Math.min(
+    //     cart.items[itemIndex].product.price ?? 0,
+    //     cart.items[itemIndex].product.promoPrice ?? 0,
+    //   ),
+    //   receiverThankly: Math.min(
+    //     cart.items[itemIndex].product.price ?? 0,
+    //     cart.items[itemIndex].product.promoPrice ?? 0,
+    //   ),
+    //   receiverShipping: null,
+    // }
 
     const updatedReceivers = [...cart.items[itemIndex].receivers, newReceiver]
     cart.items[itemIndex].receivers = updatedReceivers
@@ -57,17 +57,17 @@ export async function addReceiver(productId: number | string, newReceiver: any) 
       id: cart.id,
       data: {
         items: simplifiedItems,
-        totals: {
-          cartTotal: simplifiedItems.reduce(
-            (total: number, item: any) => total + item.totals.itemTotal,
-            0,
-          ),
-          cartThanklys: simplifiedItems.reduce(
-            (total: number, item: any) => total + item.totals.itemThanklys,
-            0,
-          ),
-          cartShipping: null, // do this via validation function that checks whether address has been populated
-        },
+        // totals: {
+        //   cartTotal: simplifiedItems.reduce(
+        //     (total: number, item: any) => total + item.totals.itemTotal,
+        //     0,
+        //   ),
+        //   cartThanklys: simplifiedItems.reduce(
+        //     (total: number, item: any) => total + item.totals.itemThanklys,
+        //     0,
+        //   ),
+        //   cartShipping: null, // do this via validation function that checks whether address has been populated
+        // },
       },
       depth: 2, // Adjust depth as needed
     })
@@ -110,18 +110,18 @@ export async function copyReceiver(cartItemId: string, receiverId: string) {
         const receiverToCopy = item.receivers.find((receiver: any) => receiver.id === receiverId)
         if (receiverToCopy) {
           let newReceiver = { ...receiverToCopy, id: `${Date.now()}` }
-          // redo totals for this new receiver if needed
-          if (newReceiver.postcode != null && newReceiver.shippingMethod != null) {
-            //update shipping cost
-            newReceiver.totals.receiverShipping = getShippingCost(
-              item.product.productType,
-              newReceiver.shippingMethod,
-              newReceiver.postcode,
-              item.product.shippingClass || 'medium',
-            )
-            newReceiver.totals.receiverTotal =
-              newReceiver.totals.receiverShipping + newReceiver.totals.itemThanklys
-          }
+          // // redo totals for this new receiver if needed
+          // if (newReceiver.postcode != null && newReceiver.shippingMethod != null) {
+          //   //update shipping cost
+          //   newReceiver.totals.receiverShipping = getShippingCost(
+          //     item.product.productType,
+          //     newReceiver.shippingMethod,
+          //     newReceiver.postcode,
+          //     item.product.shippingClass || 'medium',
+          //   )
+          //   newReceiver.totals.receiverTotal =
+          //     newReceiver.totals.receiverShipping + newReceiver.totals.itemThanklys
+          // }
 
           return {
             ...item,
@@ -140,8 +140,6 @@ export async function copyReceiver(cartItemId: string, receiverId: string) {
       product: item.product.id || item.product,
     }))
 
-    // update cartItem totals
-
     const config = await configPromise
     let payload: any = await getPayloadHMR({ config })
     const result = await payload.update({
@@ -149,18 +147,18 @@ export async function copyReceiver(cartItemId: string, receiverId: string) {
       id: cart.id,
       data: {
         items: simplifiedItems,
-        totals: {
-          // filter from cartitems.totals.itemtotal
-          cartTotal: simplifiedItems.reduce(
-            (total: number, item: any) => total + item.totals.itemTotal,
-            0,
-          ),
-          cartThanklys: simplifiedItems.reduce(
-            (total: number, item: any) => total + item.totals.itemThanklys,
-            0,
-          ),
-          cartShipping: null,
-        },
+        // totals: {
+        //   // filter from cartitems.totals.itemtotal
+        //   cartTotal: simplifiedItems.reduce(
+        //     (total: number, item: any) => total + item.totals.itemTotal,
+        //     0,
+        //   ),
+        //   cartThanklys: simplifiedItems.reduce(
+        //     (total: number, item: any) => total + item.totals.itemThanklys,
+        //     0,
+        //   ),
+        //   cartShipping: null,
+        // },
       },
       depth: 2, // Adjust depth as needed
     })

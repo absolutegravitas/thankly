@@ -3,22 +3,28 @@
 import React, { useState } from 'react'
 import { CMSLink } from '@app/_components/CMSLink'
 import { XIcon, LoaderCircleIcon } from 'lucide-react'
-import { removeProduct } from '@app/_providers/Cart/cartItemsActions'
+// import { removeProduct } from '@app/_providers/Cart/cartItemsActions'
+import { useCart } from '../../_providers/Cart'
+import { useRouter } from 'next/navigation'
 
 export function RemoveFromCartButton({ cartItemId }: { cartItemId: string }) {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const { removeProduct } = useCart()
+  const router = useRouter()
 
   const handleRemoveFromCart = async () => {
     setIsLoading(true)
     setError(null)
-    try {
-      await removeProduct(cartItemId)
-      window.location.reload() // Refresh the page to reflect the changes
-    } catch (e: any) {
-      setError(e.message || 'Failed to remove product from cart. Please try again.')
-      setIsLoading(false)
-    }
+    removeProduct(cartItemId)
+    // try {
+    //   await
+    //   window.location.reload() // Refresh the page to reflect the changes
+    // } catch (e: any) {
+    //   setError(e.message || 'Failed to remove product from cart. Please try again.')
+    setIsLoading(false)
+    router.refresh()
+    // }
   }
 
   if (error) {

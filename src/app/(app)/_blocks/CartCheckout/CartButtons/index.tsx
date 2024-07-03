@@ -6,13 +6,14 @@ import { clearCart } from '@/app/(app)/_providers/Cart/cartActions'
 import { revalidateCache } from '@/utilities/revalidateCache'
 import { CMSLink } from '@app/_components/CMSLink'
 import { ArrowLeftIcon, XIcon } from 'lucide-react'
+import Link from 'next/link'
 
 export function CartButtons() {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
 
   return (
-    <React.Fragment>
+    <div className="flex flex-col gap-4 pt-10">
       <CMSLink
         data={{
           label: !isPending ? 'Clear Cart' : 'Clearing Cart... please wait',
@@ -40,7 +41,11 @@ export function CartButtons() {
           },
         }}
       />
-      <CMSLink
+
+      <Link href="/shop" className="flex items-center justify-center">
+        &larr;{` Continue Shopping`}
+      </Link>
+      {/* <CMSLink
         data={{
           label: 'Continue Shopping',
           type: 'custom',
@@ -57,7 +62,7 @@ export function CartButtons() {
             iconPosition: 'right',
           },
         }}
-      />
+      /> */}
       {/* <CMSLink
         className="dark"
         data={{
@@ -77,6 +82,6 @@ export function CartButtons() {
           },
         }}
       /> */}
-    </React.Fragment>
+    </div>
   )
 }
