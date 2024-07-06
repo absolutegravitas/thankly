@@ -1,48 +1,65 @@
 import React from 'react'
 import { contentFormats } from '@app/_css/tailwindClasses'
-import { DollarSignIcon, ChevronUpIcon } from 'lucide-react'
+import { DollarSignIcon, ChevronUpIcon, MailWarningIcon } from 'lucide-react'
 import { CMSLink } from '@app/_components/CMSLink'
-import { getCart } from '@/app/(app)/_providers/Cart/cartActions'
 import { Cart } from '@/payload-types'
 import { CartButtons } from '../CartButtons'
+import { cartText } from '@/utilities/refData'
+import Link from 'next/link'
+import cn from '@/utilities/cn'
+import { useRouter } from 'next/navigation'
 
 export const CartSummary: React.FC<any> = (cart) => {
-  // let cart: Cart | null = await getCart()
-  // if (!cart) return null
+  if (!cart || !cart.totals) {
+    return null // or return a loading state or placeholder
+  }
 
   return (
-    <div className=" fixed bottom-0 left-0 right-0 lg:relative lg:bottom-auto lg:left-auto lg:right-auto bg-gray-50 shadow-lg lg:shadow-none lg:bg-white border-t border-gray-200 lg:border-t-0">
-      <div className="lg:hidden">
-        <details className="group">
-          <summary className="flex justify-between items-center p-4 cursor-pointer list-none bg-white">
-            <span className="text-lg font-semibold">Order Summary</span>
-            <span className={`${contentFormats.global} ${contentFormats.h3} group-open:hidden`}>
-              {cart.totals.cartTotal.toLocaleString('en-AU', {
-                style: 'currency',
-                currency: 'AUD',
-                minimumFractionDigits: 0,
-                maximumFractionDigits: 2,
-              })}
-            </span>
-            <ChevronUpIcon className="ml-2 group-open:rotate-180 transition-transform" />
-          </summary>
+    <div id="summary-heading" className="scroll-py-28 scroll-mt-24">
+      <h2 className={`${contentFormats.global} ${contentFormats.h3} mb-6`}>Order Summary</h2>
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <dt className={[contentFormats.global, contentFormats.text, `font-semibold`].join(' ')}>
+            {`Total (inc. taxes)`}
+          </dt>
+          <dd className={[contentFormats.global, contentFormats.text, `font-semibold`].join(' ')}>
+            {cart.totals.cartTotal.toLocaleString('en-AU', {
+              style: 'currency',
+              currency: 'AUD',
+              minimumFractionDigits: 0,
+              maximumFractionDigits: 2,
+            })}
+          </dd>
+        </div>
 
-          <div className="p-4 bg-white">
-            <OrderSummaryContent cart={cart} />
-          </div>
-        </details>
-      </div>
+        <div className="flex items-center justify-between">
+          <dt className={[contentFormats.global, contentFormats.text].join(' ')}>Thanklys</dt>
+          <dd className={[contentFormats.global, contentFormats.text].join(' ')}>
+            {cart.totals.cartThanklys.toLocaleString('en-AU', {
+              style: 'currency',
+              currency: 'AUD',
+              minimumFractionDigits: 0,
+              maximumFractionDigits: 2,
+            })}
+          </dd>
+        </div>
 
-      <div className="hidden lg:block">
-        <h2 id="summary-heading" className={`${contentFormats.global} ${contentFormats.h3} mb-6`}>
-          Order Summary
-        </h2>
-        <OrderSummaryContent cart={cart} />
+        <div className="flex items-center justify-between">
+          <dt className={[contentFormats.global, contentFormats.text].join(' ')}>{`+ Shipping`}</dt>
+          <dd className={[contentFormats.global, contentFormats.text].join(' ')}>
+            {cart.totals.cartShipping?.toLocaleString('en-AU', {
+              style: 'currency',
+              currency: 'AUD',
+              minimumFractionDigits: 0,
+              maximumFractionDigits: 2,
+            })}
+          </dd>
+        </div>
       </div>
 
       <div className="mt-4 lg:mt-8 p-4 lg:p-0">
         <CMSLink
-          className="block w-full"
+          className="block w-full !bg-green !text-white"
           data={{
             label: 'Checkout',
             type: 'custom',
@@ -60,59 +77,57 @@ export const CartSummary: React.FC<any> = (cart) => {
             },
           }}
         />
+
+        {/* Notices */}
+        <div className={cn(contentFormats.global, contentFormats.text, `!mt-0 text-sm py-4`)}>
+          {/* {product.productType != 'card' && ( */}
+          <React.Fragment>
+            <MailWarningIcon className="mr-2" />
+
+            <span className="font-semibold">{`Thankly Cards: `}</span>
+            <span className={[contentFormats.text, `text-sm`].join(' ')}>
+              {cartText.shippingMessage}
+              <Link
+                className={[contentFormats.global, contentFormats.a, `!text-sm`].join(' ')}
+                href="https://auspost.com.au/about-us/supporting-communities/services-all-communities/our-future"
+                target="_blank"
+              >
+                Learn More
+              </Link>
+            </span>
+          </React.Fragment>
+          {/* )} */}
+        </div>
+
         <CartButtons />
+      </div>
+      <div className="sm:hidden z-50">
+        <MobileOrderSummary cartTotal={cart.totals.cartTotal} />
       </div>
     </div>
   )
 }
 
-const OrderSummaryContent: React.FC<{ cart: Cart }> = ({ cart }) => (
-  <div className="space-y-4">
-    <div className="flex items-center justify-between">
-      <dt className={[contentFormats.global, contentFormats.text, `font-semibold`].join(' ')}>
-        {`Cart Total (inclusive of taxes)`}
-      </dt>
-      <dd className={[contentFormats.global, contentFormats.text, `font-semibold`].join(' ')}>
-        {cart.totals.cartTotal.toLocaleString('en-AU', {
+const MobileOrderSummary = ({ cartTotal }: any) => {
+  return (
+    <Link
+      href="#summary-heading"
+      scroll={true}
+      className="no-underline fixed bottom-4 right-4 bg-green text-white rounded-md px-8 p-3 shadow-2xl flex flex-col items-center cursor-pointer"
+    >
+      <span className={cn(contentFormats.global, contentFormats.text, 'mt-1')}>
+        {`Order Total: `}
+        {cartTotal.toLocaleString('en-AU', {
           style: 'currency',
           currency: 'AUD',
           minimumFractionDigits: 0,
           maximumFractionDigits: 2,
         })}
-      </dd>
-    </div>
-
-    <div className="flex items-center justify-between">
-      <dt className={[contentFormats.global, contentFormats.text].join(' ')}>All Thanklys</dt>
-      <dd className={[contentFormats.global, contentFormats.text].join(' ')}>
-        {cart.totals.cartThanklys.toLocaleString('en-AU', {
-          style: 'currency',
-          currency: 'AUD',
-          minimumFractionDigits: 0,
-          maximumFractionDigits: 2,
-        })}
-      </dd>
-    </div>
-
-    <div className="flex items-center justify-between">
-      <dt className={[contentFormats.global, contentFormats.text].join(' ')}>Total Shipping</dt>
-      <dd className={[contentFormats.global, contentFormats.text].join(' ')}>
-        {cart.totals.cartShipping?.toLocaleString('en-AU', {
-          style: 'currency',
-          currency: 'AUD',
-          minimumFractionDigits: 0,
-          maximumFractionDigits: 2,
-        })}
-      </dd>
-    </div>
-
-    {cart.totals.cartShipping && cart.totals.cartShipping >= 100 && (
-      <div className="flex items-center justify-between">
-        <dt className={[contentFormats.global, contentFormats.text].join(' ')}>
-          Free Shipping (over $100)
-        </dt>
-        <dd className={[contentFormats.global, contentFormats.text].join(' ')}>0.00</dd>
-      </div>
-    )}
-  </div>
-)
+      </span>
+      <span className={cn(contentFormats.global, contentFormats.h5, 'mt-1')}>
+        {`View Summary `}
+        &rarr;
+      </span>
+    </Link>
+  )
+}

@@ -10,7 +10,7 @@ import { RemoveFromCartButton } from './RemoveFromCart'
 // import { isProductInCart } from '@app/_providers/Cart/cartItemsActions'
 import { useCart } from '@app/_providers/Cart'
 
-export async function ProductActions({ product, hidePerks, hideRemove }: any) {
+export function ProductActions({ product, hidePerks, hideRemove }: any) {
   const { stockOnHand } = product
   // const inCart = await isProductInCart(product.id)
 

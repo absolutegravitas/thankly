@@ -102,13 +102,8 @@ export const Carts: CollectionConfig = {
           labels: { singular: 'Receiver', plural: 'Receivers' },
           type: 'array',
           fields: [
-            {
-              type: 'row',
-              fields: [
-                { name: 'firstName', type: 'text' },
-                { name: 'lastName', type: 'text' },
-              ],
-            },
+            { name: 'name', type: 'text' },
+
             {
               type: 'row',
               fields: [{ name: 'message', type: 'textarea', admin: { width: '100%' } }],

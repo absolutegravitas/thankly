@@ -29,6 +29,13 @@ export type CartAction =
       }
     }
   | {
+      type: 'COPY_RECEIVER'
+      payload: {
+        productId: number | string
+        receiverId: string
+      }
+    }
+  | {
       type: 'UPDATE_RECEIVER'
       payload: {
         productId: number | string
@@ -157,8 +164,7 @@ export const cartReducer = (cart: Cart, action: CartAction): Cart => {
           productId: productId,
           receiver: {
             id: Date.now().toString(),
-            firstName: null,
-            lastName: null,
+            name: null,
             message: null,
             addressLine1: null,
             addressLine2: null,
@@ -191,6 +197,41 @@ export const cartReducer = (cart: Cart, action: CartAction): Cart => {
                 itemShipping:
                   (item.totals?.itemShipping || 0) + (receiver.totals?.receiverShipping || 0),
               },
+            }
+          }
+          return item
+        }) || []
+
+      return {
+        ...cart,
+        items: updatedItems,
+        totals: calculateCartTotals(updatedItems),
+      }
+    }
+
+    case 'COPY_RECEIVER': {
+      const { productId, receiverId } = action.payload
+      const updatedItems =
+        cart.items?.map((item) => {
+          if (getProductId(item.product) === productId) {
+            const receiverToCopy = item.receivers?.find((r) => r.id === receiverId)
+            if (receiverToCopy) {
+              const newReceiver = {
+                ...receiverToCopy,
+                id: Date.now().toString(), // Generate a new ID for the copied receiver
+              }
+              return {
+                ...item,
+                receivers: [...(item.receivers || []), newReceiver],
+                totals: {
+                  itemTotal:
+                    (item.totals?.itemTotal || 0) + (newReceiver.totals?.receiverTotal || 0),
+                  itemThanklys:
+                    (item.totals?.itemThanklys || 0) + (newReceiver.totals?.receiverThankly || 0),
+                  itemShipping:
+                    (item.totals?.itemShipping || 0) + (newReceiver.totals?.receiverShipping || 0),
+                },
+              }
             }
           }
           return item

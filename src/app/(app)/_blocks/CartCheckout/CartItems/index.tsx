@@ -1,22 +1,19 @@
+'use client'
+
 import React from 'react'
 import Image from 'next/image'
 
 import { buttonLook, contentFormats } from '@app/_css/tailwindClasses'
-import { cartText } from '@/utilities/refData'
 import Link from 'next/link'
 import cn from '@/utilities/cn'
 import { Cart } from '@/payload-types'
-import { getCart } from '@/app/(app)/_providers/Cart/cartActions'
 import { MailWarningIcon } from 'lucide-react'
 import { ReceiversGrid } from '../ReceiversGrid'
 import { getImageAlt, getImageUrl } from '@/utilities/getmageUrl'
+import { AddReceiverButton, RemoveProductButton } from '../ReceiversGrid/ReceiverActions'
 
-export const CartItems: React.FC<any> = async () => {
-  let cart: Cart | null = null
-  cart = await getCart()
-  const cartItems = cart?.items || null
-
-  // console.log('cart items cart --', cart)
+export const CartItems: React.FC<{ cart: Cart }> = ({ cart }) => {
+  const { items: cartItems } = cart
 
   return (
     <div className="sm:py-8 py-10 divide-y">
@@ -26,9 +23,8 @@ export const CartItems: React.FC<any> = async () => {
 
         return (
           <div key={index} className="">
-            {/* Product Info */}
-            <div className="space-y-4">
-              <div className="#grid flex sm:flex items-start sm:items-center sm:space-x-4 space-x-3">
+            <div className="space-y-4 md:border md:border-solid  md:border-neutral-300 pb-6">
+              <div className=" flex sm:flex items-start sm:items-center sm:space-x-4 space-x-3 bg-neutral-200        ">
                 <Image
                   src={getImageUrl(product.media[0]?.mediaItem)}
                   alt={getImageAlt(product.media[0]?.mediaItem)}
@@ -53,31 +49,13 @@ export const CartItems: React.FC<any> = async () => {
                     {product.meta.description}
                   </div>
                 </div>
+                <div className="flex justify-end items-center py-3 pr-3 ">
+                  {/* <AddReceiverButton productId={item.product.id} addReceiver={addReceiver} /> */}
+                  <RemoveProductButton cartItemId={item.product.id} />
+                </div>
               </div>
-
-              {/* Notices */}
-              <div className={cn(contentFormats.global, contentFormats.text, `!mt-0 text-sm py-4`)}>
-                {product.productType != 'card' && (
-                  <React.Fragment>
-                    <MailWarningIcon className="mr-2" />
-
-                    <span className="font-semibold">{`Thankly Cards: `}</span>
-                    <span className={[contentFormats.text, `text-sm`].join(' ')}>
-                      {cartText.shippingMessage}
-                      <Link
-                        className={[contentFormats.global, contentFormats.a, `!text-sm`].join(' ')}
-                        href="https://auspost.com.au/about-us/supporting-communities/services-all-communities/our-future"
-                        target="_blank"
-                      >
-                        Learn More
-                      </Link>
-                    </span>
-                  </React.Fragment>
-                )}
-              </div>
-
               {/* Receivers Grid */}
-              <ReceiversGrid {...item} />
+              <ReceiversGrid item={item} />
             </div>
           </div>
         )

@@ -2,18 +2,20 @@
 import React, { useState, useTransition, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 // import { Button } from '@app/_components/Button'
-import { clearCart } from '@/app/(app)/_providers/Cart/cartActions'
-import { revalidateCache } from '@/utilities/revalidateCache'
+// import { clearCart } from '@/app/(app)/_providers/Cart/cartActions'
+// import { revalidateCache } from '@/utilities/revalidateCache'
 import { CMSLink } from '@app/_components/CMSLink'
 import { ArrowLeftIcon, XIcon } from 'lucide-react'
 import Link from 'next/link'
+import { useCart } from '@app/_providers/Cart'
 
 export function CartButtons() {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
+  const { clearCart } = useCart()
 
   return (
-    <div className="flex flex-col gap-4 pt-10">
+    <div className="flex flex-row gap-4 pt-10">
       <CMSLink
         data={{
           label: !isPending ? 'Clear Cart' : 'Clearing Cart... please wait',
@@ -34,18 +36,18 @@ export function CartButtons() {
         actions={{
           onClick: async () => {
             startTransition(async () => {
-              await clearCart()
-              revalidateCache({ path: '/shop' })
+              clearCart()
+              // revalidateCache({ path: '/shop' })
               router.push('/shop')
             })
           },
         }}
       />
 
-      <Link href="/shop" className="flex items-center justify-center">
+      {/* <Link href="/shop" className="flex items-center justify-center">
         &larr;{` Continue Shopping`}
-      </Link>
-      {/* <CMSLink
+      </Link> */}
+      <CMSLink
         data={{
           label: 'Continue Shopping',
           type: 'custom',
@@ -62,7 +64,7 @@ export function CartButtons() {
             iconPosition: 'right',
           },
         }}
-      /> */}
+      />
       {/* <CMSLink
         className="dark"
         data={{

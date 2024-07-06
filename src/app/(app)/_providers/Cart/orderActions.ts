@@ -33,8 +33,7 @@ export async function createOrder(cartId: string): Promise<Order | null> {
           itemTotalShipping: item.totals.itemShipping,
           itemTotal: item.totals.itemTotal,
           receivers: item.receivers?.map((receiver) => ({
-            firstName: receiver.firstName,
-            lastName: receiver.lastName,
+            name: receiver.name,
             message: receiver.message,
             addressLine1: receiver.addressLine1,
             addressLine2: receiver.addressLine2,

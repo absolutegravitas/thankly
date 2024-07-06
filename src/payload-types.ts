@@ -276,8 +276,7 @@ export interface Cart {
         };
         receivers?:
           | {
-              firstName?: string | null;
-              lastName?: string | null;
+              name?: string | null;
               message?: string | null;
               addressLine1?: string | null;
               addressLine2?: string | null;

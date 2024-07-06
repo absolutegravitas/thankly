@@ -1,24 +1,18 @@
 'use client'
 
 import React, { Suspense } from 'react'
-import { Cart } from '@/payload-types'
 import { BlockWrapper } from '@app/_components/BlockWrapper'
 import { Gutter } from '@app/_components/Gutter'
 import { CartEmpty } from '@app/_blocks/CartCheckout/CartEmpty'
-import { getCart } from '@app/_providers/Cart/cartActions'
 import { cartText } from '@/utilities/refData'
 import { contentFormats, getPaddingClasses } from '@app/_css/tailwindClasses'
-import { CartButtons } from '../../_blocks/CartCheckout/CartButtons'
 import { useCart } from '@app/_providers/Cart'
 
-import Loading from './loading'
 import { CartItems } from '@app/_blocks/CartCheckout/CartItems'
 import { CartSummary } from '@app/_blocks/CartCheckout/CartSummary'
 
 export default function CartPage() {
   const { cart, cartIsEmpty, hasInitializedCart } = useCart()
-  // let cart: Cart | null = null
-  // cart = await getCart()
 
   if (cartIsEmpty) {
     console.log('Cart not found or is empty...')
@@ -57,14 +51,16 @@ export default function CartPage() {
           {cartText.receiverMessage}
         </div>
 
-        <div className="flex flex-col md:flex-row gap-6">
+        <div className="flex flex-col gap-6">
           <div className="md:basis-auto lg:basis-3/4">
-            <Suspense fallback={<CartItemsSkeleton />}>{/* <CartItems {...cart} /> */}</Suspense>
+            <Suspense fallback={<CartItemsSkeleton />}>
+              {cart && <CartItems cart={cart} />}
+            </Suspense>
           </div>
 
           <div className="md:basis-auto lg:basis-1/4">
             <Suspense fallback={<CartSummarySkeleton />}>
-              <CartSummary {...cart} />
+              {cart && <CartSummary cart={cart} />}
             </Suspense>
           </div>
         </div>

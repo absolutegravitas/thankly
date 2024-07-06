@@ -32,6 +32,7 @@ export type CartContext = {
     updatedFields: Partial<NonNullable<CartItem['receivers']>[number]>,
   ) => void
   removeReceiver: (productId: number | string, receiverId: string) => void
+  copyReceiver: (productId: number | string, receiverId: string) => void
   updateShippingMethod: (
     productId: number | string,
     receiverId: string,
@@ -105,6 +106,13 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     [],
   )
 
+  const copyReceiver = useCallback((productId: number | string, receiverId: string) => {
+    dispatchCart({
+      type: 'COPY_RECEIVER',
+      payload: { productId, receiverId },
+    })
+  }, [])
+
   const updateReceiver = useCallback(
     (
       productId: number | string,
@@ -168,6 +176,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     cart,
     addProduct,
     addReceiver,
+    copyReceiver,
     updateReceiver,
     removeReceiver,
     updateShippingMethod,

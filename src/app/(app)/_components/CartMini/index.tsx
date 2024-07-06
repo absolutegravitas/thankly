@@ -54,7 +54,7 @@ export const MiniCart: React.FC = () => {
           {cart.items && cart.items?.length > 3 && (
             <div className="text-sm text-gray-500">...and {cart.items?.length - 3} more items</div>
           )}
-          <div className="mt-4 font-semibold">
+          <div className="my-4 font-semibold">
             Total:{' '}
             {cart.totals.cartTotal.toLocaleString('en-AU', { style: 'currency', currency: 'AUD' })}
           </div>

@@ -4,10 +4,16 @@ import React, { useState, useTransition } from 'react'
 
 import { CMSLink } from '@app/_components/CMSLink'
 import { CopyIcon, TrashIcon, UserPlusIcon, XIcon } from 'lucide-react'
+import { useCart } from '@app/_providers/Cart'
+import { CartItem } from '@/app/(app)/_providers/Cart/reducer'
+import { useRouter } from 'next/navigation'
 
 interface AddReceiverButtonProps {
-  productId: string
-  addReceiver: (productId: string, receiver: any) => Promise<void>
+  productId: number | string
+  addReceiver: (
+    productId: number | string,
+    receiver: NonNullable<CartItem['receivers']>[number],
+  ) => void
 }
 
 export const AddReceiverButton: React.FC<AddReceiverButtonProps> = ({ productId, addReceiver }) => {
@@ -15,11 +21,10 @@ export const AddReceiverButton: React.FC<AddReceiverButtonProps> = ({ productId,
   const [error, setError] = useState<string | null>(null)
 
   const handleClick = () => {
-    startTransition(async () => {
-      const newReceiver = {
+    startTransition(() => {
+      const newReceiver: NonNullable<CartItem['receivers']>[number] = {
         id: `${Date.now()}`,
-        firstName: 'John',
-        lastName: 'Smith',
+        name: 'John Smith',
         message: 'Add a message with your thankly here...',
         addressLine1: 'Add delivery address here...',
         addressLine2: null,
@@ -27,10 +32,15 @@ export const AddReceiverButton: React.FC<AddReceiverButtonProps> = ({ productId,
         state: null,
         postcode: null,
         shippingMethod: null,
+        totals: {
+          receiverTotal: 0,
+          receiverThankly: 0,
+          receiverShipping: 0,
+        },
       }
 
       try {
-        await addReceiver(productId, newReceiver)
+        addReceiver(productId, newReceiver)
         setError(null)
       } catch (error) {
         console.error('Error adding receiver:', error)
@@ -66,13 +76,13 @@ export const AddReceiverButton: React.FC<AddReceiverButtonProps> = ({ productId,
   )
 }
 
-interface CopyReceiverButtonProps {
-  cartItemId: string
+interface CopyReceiverIconProps {
+  cartItemId: string | number
   receiverId: string
-  copyReceiver: (cartItemId: string, receiverId: string) => Promise<void>
+  copyReceiver: (productId: string | number, receiverId: string) => void
 }
 
-export const CopyReceiverIcon: React.FC<CopyReceiverButtonProps> = ({
+export const CopyReceiverIcon: React.FC<CopyReceiverIconProps> = ({
   cartItemId,
   receiverId,
   copyReceiver,
@@ -80,8 +90,8 @@ export const CopyReceiverIcon: React.FC<CopyReceiverButtonProps> = ({
   const [isPending, startTransition] = useTransition()
 
   const handleClick = () => {
-    startTransition(async () => {
-      await copyReceiver(cartItemId, receiverId)
+    startTransition(() => {
+      copyReceiver(cartItemId, receiverId)
     })
   }
 
@@ -98,9 +108,9 @@ export const CopyReceiverIcon: React.FC<CopyReceiverButtonProps> = ({
 }
 
 interface RemoveReceiverIconProps {
-  cartItemId: string
+  cartItemId: string | number // Changed from just string to string | number
   receiverId: string
-  removeReceiver: (cartItemId: string, receiverId: string) => Promise<void>
+  removeReceiver: (productId: string | number, receiverId: string) => void // Matches CartContext
 }
 
 export const RemoveReceiverIcon: React.FC<RemoveReceiverIconProps> = ({
@@ -111,8 +121,8 @@ export const RemoveReceiverIcon: React.FC<RemoveReceiverIconProps> = ({
   const [isPending, startTransition] = useTransition()
 
   const handleClick = () => {
-    startTransition(async () => {
-      await removeReceiver(cartItemId, receiverId)
+    startTransition(() => {
+      removeReceiver(cartItemId, receiverId)
     })
   }
 
@@ -129,19 +139,19 @@ export const RemoveReceiverIcon: React.FC<RemoveReceiverIconProps> = ({
 }
 
 interface RemoveProductButtonProps {
-  cartItemId: string
-  removeProduct: (cartItemId: string) => Promise<void>
+  cartItemId: string | number
 }
 
-export const RemoveProductButton: React.FC<RemoveProductButtonProps> = ({
-  cartItemId,
-  removeProduct,
-}) => {
+export const RemoveProductButton: React.FC<RemoveProductButtonProps> = ({ cartItemId }) => {
   const [isPending, startTransition] = useTransition()
+  const { removeProduct } = useCart()
+  const router = useRouter()
 
   const handleClick = () => {
-    startTransition(async () => {
-      await removeProduct(cartItemId)
+    startTransition(() => {
+      removeProduct(cartItemId)
+      router.refresh()
+      // router.push('/shop/cart')
     })
   }
 

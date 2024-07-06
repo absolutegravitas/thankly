@@ -30,26 +30,26 @@ export const Orders: CollectionConfig = {
           name: 'orderNumber',
           type: 'number',
           unique: true,
-          // hooks: {
-          //   beforeValidate: [
-          //     async ({ data, operation, req }) => {
-          //       if (operation === 'create') {
-          //         const lastOrder = await req.payload.find({
-          //           collection: 'orders',
-          //           sort: '-orderNumber',
-          //           limit: 1,
-          //         })
+          hooks: {
+            beforeValidate: [
+              async ({ data, operation, req }) => {
+                if (operation === 'create') {
+                  const lastOrder = await req.payload.find({
+                    collection: 'orders',
+                    sort: '-orderNumber',
+                    limit: 1,
+                  })
 
-          //         // console.log(lastOrder)
+                  console.log(lastOrder)
 
-          //         const lastOrderNumber = lastOrder.docs[0]?.orderNumber ?? 0
-          //         return lastOrderNumber > 0 ? lastOrderNumber + 1 : data?.orderNumber
-          //       }
+                  const lastOrderNumber = lastOrder.docs[0]?.orderNumber ?? 0
+                  return lastOrderNumber > 0 ? lastOrderNumber + 1 : data?.orderNumber
+                }
 
-          //       return data?.orderNumber
-          //     },
-          //   ],
-          // },
+                return data?.orderNumber
+              },
+            ],
+          },
         },
         {
           name: 'orderedBy',
