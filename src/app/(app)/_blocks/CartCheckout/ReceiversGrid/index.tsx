@@ -10,7 +10,7 @@ import Radar from 'radar-sdk-js'
 
 export const ReceiversGrid: React.FC<{ item: any }> = ({ item }) => {
   useEffect(() => {
-    Radar.initialize(process.env.NEXT_PUBLIC_RADAR_TEST_PUBLISHABLE_KEY as string, {
+    Radar.initialize(process.env.NEXT_PUBLIC_RADAR_PUBLISHABLE_KEY as string, {
       cacheLocationMinutes: 10,
       desiredAccuracy: 'medium',
     })
