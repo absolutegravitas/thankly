@@ -47,6 +47,7 @@ const policies = {
     'https://api.stripe.com',
     'https://maps.googleapis.com',
     'https://analytics.google.com',
+    'https://api.radar.io',
   ],
 }
 
