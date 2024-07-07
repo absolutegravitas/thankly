@@ -80,7 +80,7 @@ export const ReceiversGrid: React.FC<{ item: any }> = ({ item }) => {
           return (
             <div
               key={receiver.id}
-              className="relative flex flex-col justify-between rounded-sm border border-solid hover:scale-105 hover:bg-neutral-200 hover:delay-75 duration-150 p-6 aspect-square"
+              className="relative flex flex-col justify-between rounded-sm border border-solid hover:shadow-xl #hover:scale-105 #hover:bg-neutral-200 hover:delay-75 duration-150 p-6 aspect-square"
             >
               <div>
                 <div className="flex flex-row justify-between items-center pb-3">

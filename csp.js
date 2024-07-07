@@ -1,5 +1,5 @@
 const policies = {
-  'default-src': ["'self'", 'https://fonts.gstatic.com', 'https://fonts.googleapis.com'],
+  'default-src': ["'self'", 'https://fonts.googleapis.com', 'https://fonts.gstatic.com'],
   'script-src': [
     "'self'",
     "'unsafe-inline'",
@@ -11,6 +11,7 @@ const policies = {
     'https://fonts.googleapis.com',
     'https://fonts.gstatic.com',
     'http://cdn.jsdelivr.net',
+    'https://js.radar.com',
     'https://www.googletagmanager.com',
   ],
   'child-src': ["'self'", 'http://cdn.jsdelivr.net'],
@@ -20,6 +21,7 @@ const policies = {
     'https://fonts.googleapis.com',
     'https://fonts.gstatic.com',
     'http://cdn.jsdelivr.net',
+    'https://js.radar.com',
   ],
   'img-src': [
     "'self'",
@@ -47,6 +49,7 @@ const policies = {
     'https://api.stripe.com',
     'https://maps.googleapis.com',
     'https://analytics.google.com',
+    'https://js.radar.com',
     'https://api.radar.io',
   ],
 }
