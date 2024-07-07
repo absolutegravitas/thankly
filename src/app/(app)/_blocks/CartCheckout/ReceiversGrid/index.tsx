@@ -71,33 +71,6 @@ export const ReceiversGrid: React.FC<{ item: any }> = ({ item }) => {
     setDebugLogs((prev) => [...prev, `${new Date().toISOString()}: ${message}`].slice(-10)) // Keep last 10 logs
   }
 
-  addLog(`API key: ${process.env.NEXT_PUBLIC_RADAR_PUBLISHABLE_KEY?.substring(0, 5)}...`)
-  addLog(`Current origin: ${window.location.origin}`)
-
-  const fetchRadarAutocomplete = async (query: string) => {
-    const apiKey = process.env.NEXT_PUBLIC_RADAR_PUBLISHABLE_KEY
-    const url = `https://api.radar.io/v1/search/autocomplete?query=${encodeURIComponent(query)}&country=AU&limit=5`
-
-    try {
-      const response = await fetch(url, {
-        headers: {
-          Authorization: apiKey,
-        } as HeadersInit,
-      })
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
-      }
-
-      const data = await response.json()
-      addLog(`Direct fetch result: ${JSON.stringify(data)}`)
-      return data
-    } catch (error: any) {
-      addLog(`Direct fetch error: ${error.message}`)
-      throw error
-    }
-  }
-
   return (
     <>
       <div className="px-6 pt-6 grid grid-cols-1 lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-2 gap-4">
@@ -271,7 +244,7 @@ export const ReceiversGrid: React.FC<{ item: any }> = ({ item }) => {
                             })
                               .then((result) => {
                                 addLog(`Autocomplete results: ${result}`)
-                                const result2 = fetchRadarAutocomplete(value)
+
                                 if (result.addresses && result.addresses.length > 0) {
                                   setAutocompleteResults(result.addresses)
                                 } else {
