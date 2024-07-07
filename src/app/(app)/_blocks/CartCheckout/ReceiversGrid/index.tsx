@@ -7,6 +7,7 @@ import { debounce } from 'lodash'
 import { CircleAlert, MapPinIcon, MessageSquareTextIcon, SendIcon, UsersIcon } from 'lucide-react'
 import { AddReceiverButton, CopyReceiverIcon, RemoveReceiverIcon } from './ReceiverActions'
 import Radar from 'radar-sdk-js'
+// import 'react-app-polyfill/stable'
 
 export const ReceiversGrid: React.FC<{ item: any }> = ({ item }) => {
   useEffect(() => {
@@ -23,6 +24,7 @@ export const ReceiversGrid: React.FC<{ item: any }> = ({ item }) => {
   // console.log('cart item receivers --', JSON.stringify(item?.receivers || null))
   const [inputValues, setInputValues] = useState<{ [key: string]: string }>({})
   const [autocompleteResults, setAutocompleteResults] = useState<any[]>([])
+  const [debugLogs, setDebugLogs] = useState<string[]>([])
 
   const handleInputChange = useCallback(
     (productId: string, receiverId: string, field: string, value: string) => {
@@ -64,6 +66,11 @@ export const ReceiversGrid: React.FC<{ item: any }> = ({ item }) => {
     return isMobile
   }
   const isMobile = useIsMobile()
+
+  const addLog = (message: string) => {
+    setDebugLogs((prev) => [...prev, `${new Date().toISOString()}: ${message}`].slice(-10)) // Keep last 10 logs
+  }
+
   return (
     <>
       <div className="px-6 pt-6 grid grid-cols-1 lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-2 gap-4">
@@ -223,11 +230,12 @@ export const ReceiversGrid: React.FC<{ item: any }> = ({ item }) => {
                         }}
                         onChange={(e) => {
                           const value = e.target.value
-                          console.log('Input value changed:', value)
+                          addLog(`Input value changed: ${value}`)
                           setInputValues((prev) => ({ ...prev, [`${receiver.id}-address`]: value }))
 
                           if (value.length > 2) {
                             console.log('Initiating Radar autocomplete')
+                            addLog('Initiating Radar autocomplete')
                             setIsLoading((prev) => ({ ...prev, [receiver.id]: true }))
                             Radar.autocomplete({
                               query: value,
@@ -235,7 +243,8 @@ export const ReceiversGrid: React.FC<{ item: any }> = ({ item }) => {
                               limit: 5,
                             })
                               .then((result) => {
-                                console.log('Autocomplete results:', result)
+                                addLog(`Autocomplete results: ${result}`)
+
                                 if (result.addresses && result.addresses.length > 0) {
                                   setAutocompleteResults(result.addresses)
                                 } else {
@@ -244,7 +253,7 @@ export const ReceiversGrid: React.FC<{ item: any }> = ({ item }) => {
                                 setIsLoading((prev) => ({ ...prev, [receiver.id]: false }))
                               })
                               .catch((err) => {
-                                console.error('Radar autocomplete error:', err)
+                                addLog(`Radar autocomplete error: ${err.message}`)
                                 setAutocompleteResults([])
                                 setIsLoading((prev) => ({ ...prev, [receiver.id]: false }))
                               })
@@ -303,6 +312,16 @@ export const ReceiversGrid: React.FC<{ item: any }> = ({ item }) => {
                   {errors[`${receiver.id}-address`] && (
                     <p className="mt-2 text-sm text-red-600">{errors[`${receiver.id}-address`]}</p>
                   )}
+                  <div className="mt-8 p-4 bg-gray-100 rounded-md">
+                    <h3 className="text-lg font-semibold mb-2">Debug Logs</h3>
+                    <ul className="text-sm font-mono">
+                      {debugLogs.map((log, index) => (
+                        <li key={index} className="mb-1">
+                          {log}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 </div>
 
                 {/* shipping method */}
