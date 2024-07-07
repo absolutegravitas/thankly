@@ -54,6 +54,10 @@ const nextConfig = {
         protocol: 'https',
         hostname: '**google.com.au**',
       },
+      {
+        protocol: 'https',
+        hostname: '**api.radar.io**',
+      },
     ],
   },
   async headers() {

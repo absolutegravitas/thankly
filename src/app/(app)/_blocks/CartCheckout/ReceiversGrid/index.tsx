@@ -1,15 +1,18 @@
 'use client'
 
-import React, { useState, useEffect, useRef, useCallback } from 'react'
+import React, { useState, useEffect, useRef, useCallback, useTransition } from 'react'
 import { contentFormats } from '@app/_css/tailwindClasses'
 import { useCart } from '@app/_providers/Cart'
 import { debounce } from 'lodash'
 import { CircleAlert, MapPinIcon, MessageSquareTextIcon, SendIcon, UsersIcon } from 'lucide-react'
 import { AddReceiverButton, CopyReceiverIcon, RemoveReceiverIcon } from './ReceiverActions'
 import Radar from 'radar-sdk-js'
-// import 'react-app-polyfill/stable'
+import { addressAutocomplete } from './addressAutocomplete'
+// import 'react-app-polyfill/stable' // for IE11 support
 
 export const ReceiversGrid: React.FC<{ item: any }> = ({ item }) => {
+  const [addressSuggestions, setAddressSuggestions] = useState<any[]>([])
+
   useEffect(() => {
     Radar.initialize(process.env.NEXT_PUBLIC_RADAR_PUBLISHABLE_KEY as string, {
       cacheLocationMinutes: 10,
@@ -25,6 +28,16 @@ export const ReceiversGrid: React.FC<{ item: any }> = ({ item }) => {
   const [inputValues, setInputValues] = useState<{ [key: string]: string }>({})
   const [autocompleteResults, setAutocompleteResults] = useState<any[]>([])
   const [debugLogs, setDebugLogs] = useState<string[]>([])
+  const [isPending, startTransition] = useTransition()
+
+  const handleAddressInput = async (receiverId: string, value: string) => {
+    setInputValues((prev) => ({ ...prev, [`${receiverId}-address`]: value }))
+
+    startTransition(async () => {
+      const suggestions = await addressAutocomplete(value)
+      setAddressSuggestions(suggestions)
+    })
+  }
 
   const handleInputChange = useCallback(
     (productId: string, receiverId: string, field: string, value: string) => {
@@ -195,7 +208,7 @@ export const ReceiversGrid: React.FC<{ item: any }> = ({ item }) => {
                 </div>
 
                 {/* receiver address */}
-                <div className="mt-2">
+                {/* <div className="mt-2">
                   <div className="relative">
                     <div className="relative flex items-center">
                       <MapPinIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
@@ -233,7 +246,8 @@ export const ReceiversGrid: React.FC<{ item: any }> = ({ item }) => {
                           addLog(`Input value changed: ${value}`)
                           setInputValues((prev) => ({ ...prev, [`${receiver.id}-address`]: value }))
 
-                          if (value.length > 2) {
+                          if (value.length > 1) {
+                            // start searching after 2 characters are typed
                             console.log('Initiating Radar autocomplete')
                             addLog('Initiating Radar autocomplete')
                             setIsLoading((prev) => ({ ...prev, [receiver.id]: true }))
@@ -328,6 +342,46 @@ export const ReceiversGrid: React.FC<{ item: any }> = ({ item }) => {
                       ))}
                     </ul>
                   </div>
+                </div> */}
+
+                <div className="mt-2">
+                  <div className="relative">
+                    <MapPinIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 z-10" />
+                    <input
+                      type="text"
+                      value={inputValues[`${receiver.id}-address`] || ''}
+                      onChange={(e) => handleAddressInput(receiver.id, e.target.value)}
+                      placeholder="Enter address"
+                      className="peer block w-full border-0 bg-gray-50 py-1.5 pl-10 pr-3 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm sm:leading-6"
+                    />
+                  </div>
+                  {addressSuggestions.length > 0 && (
+                    <ul className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                      {addressSuggestions.map((suggestion, index) => (
+                        <li
+                          key={index}
+                          className="relative cursor-default select-none py-2 pl-3 pr-9 text-gray-900 hover:bg-indigo-600 hover:text-white"
+                          onClick={() => {
+                            const fullAddress = `${suggestion.addressLabel}, ${suggestion.city}, ${suggestion.state} ${suggestion.postalCode}`
+                            setInputValues((prev) => ({
+                              ...prev,
+                              [`${receiver.id}-address`]: fullAddress,
+                            }))
+                            updateReceiver(item.id, receiver.id, {
+                              addressLine1: suggestion.addressLabel,
+                              city: suggestion.city,
+                              state: suggestion.state,
+                              postcode: suggestion.postalCode,
+                            })
+                            setAddressSuggestions([])
+                          }}
+                        >
+                          {suggestion.addressLabel}, {suggestion.city}, {suggestion.state}{' '}
+                          {suggestion.postalCode}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
                 </div>
 
                 {/* shipping method */}
