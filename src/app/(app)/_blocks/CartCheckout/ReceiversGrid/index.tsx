@@ -47,6 +47,23 @@ export const ReceiversGrid: React.FC<{ item: any }> = ({ item }) => {
     return ''
   }
 
+  function useIsMobile() {
+    const [isMobile, setIsMobile] = useState(false)
+
+    useEffect(() => {
+      const checkIsMobile = () => {
+        setIsMobile(window.innerWidth <= 768) // Adjust this breakpoint as needed
+      }
+
+      checkIsMobile()
+      window.addEventListener('resize', checkIsMobile)
+
+      return () => window.removeEventListener('resize', checkIsMobile)
+    }, [])
+
+    return isMobile
+  }
+  const isMobile = useIsMobile()
   return (
     <>
       <div className="px-6 pt-6 grid grid-cols-1 lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-2 gap-4">
@@ -192,12 +209,25 @@ export const ReceiversGrid: React.FC<{ item: any }> = ({ item }) => {
                             ),
                           }))
                         }
+                        onFocus={() => {
+                          // Ensure the input is scrolled into view on mobile
+                          if (inputRef.current) {
+                            inputRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' })
+                          }
+                        }}
+                        onTouchStart={() => {
+                          // Ensure the input is focused on touch devices
+                          if (inputRef.current) {
+                            inputRef.current.focus()
+                          }
+                        }}
                         onChange={(e) => {
                           const value = e.target.value
+                          console.log('Input value changed:', value)
                           setInputValues((prev) => ({ ...prev, [`${receiver.id}-address`]: value }))
 
-                          if (value.length > 1) {
-                            // Only start autocomplete after 2 characters
+                          if (value.length > 2) {
+                            console.log('Initiating Radar autocomplete')
                             setIsLoading((prev) => ({ ...prev, [receiver.id]: true }))
                             Radar.autocomplete({
                               query: value,
@@ -222,7 +252,6 @@ export const ReceiversGrid: React.FC<{ item: any }> = ({ item }) => {
                             setAutocompleteResults([])
                           }
 
-                          // Call this after setting the input value
                           debouncedHandleInputChange(item.id, receiver.id, 'addressLine1', value)
                         }}
                       />
@@ -233,9 +262,11 @@ export const ReceiversGrid: React.FC<{ item: any }> = ({ item }) => {
                         </div>
                       )}
                     </div>
-                    {autocompleteResults.length > 0 && (
-                      <div className="relative">
-                        <div className="absolute z-10 left-0 right-0 bg-white shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm">
+                    {(autocompleteResults.length > 0 || isMobile) && (
+                      <div
+                        className={`relative z-50 ${isMobile ? 'fixed inset-x-0 bottom-0 bg-white' : ''}`}
+                      >
+                        <div className="absolute #z-10 left-0 right-0 bg-white shadow-lg max-h-60 rounded-md py-1 text-base ring-1 ring-black ring-opacity-5 overflow-auto focus:outline-none sm:text-sm">
                           {autocompleteResults.map((address, index) => (
                             <li
                               key={index}
