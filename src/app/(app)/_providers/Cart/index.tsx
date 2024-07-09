@@ -103,25 +103,12 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     [],
   )
 
-  const copyReceiver = useCallback(
-    (productId: number | string, receiverId: string) => {
-      console.log('copyReceiver called with:', { productId, receiverId })
-      console.log('Current cart state before copy:', cart)
-
-      dispatchCart({
-        type: 'COPY_RECEIVER',
-        payload: { productId, receiverId },
-      })
-
-      console.log('Dispatch completed')
-    },
-    [cart],
-  )
-
-  useEffect(() => {
-    console.log('Cart updated:', cart)
-    console.log('Cart items:', cart.items)
-  }, [cart])
+  const copyReceiver = useCallback((productId: number | string, receiverId: string) => {
+    dispatchCart({
+      type: 'COPY_RECEIVER',
+      payload: { productId, receiverId },
+    })
+  }, [])
 
   const updateReceiver = useCallback(
     (
@@ -224,22 +211,22 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const syncCartFromLocalStorage = async () => {
         try {
           const localCart = localStorage.getItem('cart')
-          console.log('CartProvider: Local cart data:', localCart)
+          // console.log('CartProvider: Local cart data:', localCart)
           const parsedCart = JSON.parse(localCart || '{}')
 
           if (parsedCart?.items && parsedCart.items.length > 0) {
-            console.log('CartProvider: Setting cart from local storage')
+            // console.log('CartProvider: Setting cart from local storage')
             dispatchCart({
               type: 'SET_CART',
               payload: parsedCart,
             })
           } else {
-            console.log('CartProvider: No items in local storage')
+            // console.log('CartProvider: No items in local storage')
           }
         } catch (error) {
-          console.error('CartProvider: Error initializing cart:', error)
+          // console.error('CartProvider: Error initializing cart:', error)
         } finally {
-          console.log('CartProvider: Setting hasInitialized to true')
+          // console.log('CartProvider: Setting hasInitialized to true')
           setHasInitialized(true)
         }
       }
@@ -248,10 +235,10 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, [])
 
-  useEffect(() => {
-    console.log('CartProvider: Cart updated', cart)
-    console.log('CartProvider: hasInitializedCart', hasInitializedCart)
-  }, [cart, hasInitializedCart])
+  // useEffect(() => {
+  //   console.log('CartProvider: Cart updated', cart)
+  //   console.log('CartProvider: hasInitializedCart', hasInitializedCart)
+  // }, [cart, hasInitializedCart])
 
   useEffect(() => {
     if (!hasInitialized.current) return

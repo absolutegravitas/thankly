@@ -10,12 +10,7 @@ import cn from '@/utilities/cn'
 import { useRouter } from 'next/navigation'
 
 export const CartSummary: React.FC<{ cart: Cart }> = ({ cart }) => {
-  useEffect(() => {
-    console.log('CartSummary: Received cart:', cart)
-  }, [cart])
-
   if (!cart || !cart.totals) {
-    console.log('CartSummary: Cart or cart.totals is null or undefined')
     return null // or return a loading state or placeholder
   }
 

@@ -12,12 +12,6 @@ import { CartSummary } from '@app/_blocks/CartCheckout/CartSummary'
 export default function CartPage() {
   const { cart, cartIsEmpty, hasInitializedCart } = useCart()
 
-  useEffect(() => {
-    console.log('CartPage: Cart:', cart)
-    console.log('CartPage: cartIsEmpty:', cartIsEmpty)
-    console.log('CartPage: hasInitializedCart:', hasInitializedCart)
-  }, [cart, cartIsEmpty, hasInitializedCart])
-
   // If we have cart data, render the content regardless of hasInitializedCart
   if (cart && cart.items && cart.items.length > 0) {
     return renderCartContent(cart, cartIsEmpty)

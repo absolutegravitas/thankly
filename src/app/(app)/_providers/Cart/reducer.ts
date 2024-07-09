@@ -14,6 +14,7 @@ type ShippingMethod =
 export type CartAction =
   | { type: 'SET_CART'; payload: Cart }
   | { type: 'MERGE_CART'; payload: Cart }
+  | { type: 'FORCE_UPDATE' }
   | {
       type: 'ADD_PRODUCT'
       payload: {
@@ -73,6 +74,26 @@ const getProductId = (product: CartItem['product']): string | number => {
 const calculateCartTotals = (items: CartItem[] | undefined): Cart['totals'] => {
   if (!items) return { cartTotal: 0, cartThanklys: 0, cartShipping: 0 }
 
+  items.forEach((item) => {
+    item.receivers?.forEach((receiver) => {
+      receiver.totals = {
+        receiverThankly: item.productPrice || 0,
+        // receiverShipping: 0,
+        receiverTotal: item.productPrice || 0,
+      }
+    })
+
+    item.totals = {
+      itemThanklys:
+        item.receivers?.reduce((sum, receiver) => sum + receiver.totals.receiverThankly, 0) || 0,
+      // itemShipping: item.receivers?.reduce((sum, receiver) => sum + receiver.totals.receiverShipping, 0) || 0,
+      itemTotal:
+        item.receivers?.reduce((sum, receiver) => sum + receiver.totals.receiverTotal, 0) || 0,
+    }
+
+    // item.totals.itemShipping = itemShipping
+  })
+
   return items.reduce(
     (totals, item) => ({
       cartTotal: totals.cartTotal + (item.totals?.itemTotal || 0),
@@ -88,6 +109,7 @@ export const cartReducer = (cart: Cart, action: CartAction): Cart => {
     case 'SET_CART': {
       return action.payload
     }
+
     case 'MERGE_CART': {
       const { payload: incomingCart } = action
       const mergedItems = [...(cart.items || []), ...(incomingCart.items || [])].reduce(
@@ -182,6 +204,19 @@ export const cartReducer = (cart: Cart, action: CartAction): Cart => {
       })
     }
 
+    case 'REMOVE_PRODUCT': {
+      const { productId } = action.payload
+      const updatedItems = cart.items?.filter(
+        (item) => getProductId(item.product) !== productId,
+      ) as CartItem[]
+
+      return {
+        ...cart,
+        items: updatedItems,
+        totals: calculateCartTotals(updatedItems),
+      }
+    }
+
     case 'ADD_RECEIVER': {
       const { productId, receiver } = action.payload
       const updatedItems =
@@ -211,22 +246,29 @@ export const cartReducer = (cart: Cart, action: CartAction): Cart => {
 
     case 'COPY_RECEIVER': {
       const { productId, receiverId } = action.payload
-      console.log('COPY_RECEIVER action received:', { productId, receiverId })
-      console.log('Current cart items:', cart.items)
 
+      console.log('FUCKING CART --', cart)
       const updatedItems =
         cart.items?.map((item) => {
+          // find matching product
+          // console.log('FIRST ITEM -- ', item)
+
+          console.log('FIRST ITEM -- ', getProductId(item.product))
+          console.log('FIRST ITEM -- ', productId)
+
           if (getProductId(item.product) === productId) {
-            console.log('Matching item found:', item)
+            console.log('product --', productId)
+            // find matching receiver
             const receiverToCopy = item.receivers?.find((r) => r.id === receiverId)
+            console.log('copiedreceiver --', receiverToCopy)
+            // receiver found
             if (receiverToCopy) {
-              console.log('Receiver to copy found:', receiverToCopy)
-              const newReceiver = {
+              const newReceiver: NonNullable<CartItem['receivers']>[number] = {
                 ...receiverToCopy,
-                id: Date.now().toString(), // Generate a new ID for the copied receiver
+                id: Date.now().toString(),
               }
-              console.log('New receiver created:', newReceiver)
-              const updatedItem = {
+
+              return {
                 ...item,
                 receivers: [...(item.receivers || []), newReceiver],
                 totals: {
@@ -238,24 +280,16 @@ export const cartReducer = (cart: Cart, action: CartAction): Cart => {
                     (item.totals?.itemShipping || 0) + (newReceiver.totals?.receiverShipping || 0),
                 },
               }
-              console.log('Updated item:', updatedItem)
-              return updatedItem
-            } else {
-              console.log('Receiver to copy not found')
             }
           }
           return item
         }) || []
 
-      console.log('Updated items:', updatedItems)
-
-      const newCart = {
+      return {
         ...cart,
         items: updatedItems,
         totals: calculateCartTotals(updatedItems),
       }
-      console.log('New cart state:', newCart)
-      return newCart
     }
 
     case 'UPDATE_RECEIVER': {
@@ -309,19 +343,6 @@ export const cartReducer = (cart: Cart, action: CartAction): Cart => {
         }
         return item
       }) as CartItem[]
-
-      return {
-        ...cart,
-        items: updatedItems,
-        totals: calculateCartTotals(updatedItems),
-      }
-    }
-
-    case 'REMOVE_PRODUCT': {
-      const { productId } = action.payload
-      const updatedItems = cart.items?.filter(
-        (item) => getProductId(item.product) !== productId,
-      ) as CartItem[]
 
       return {
         ...cart,

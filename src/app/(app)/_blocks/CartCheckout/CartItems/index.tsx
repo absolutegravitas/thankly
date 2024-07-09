@@ -6,25 +6,17 @@ import { contentFormats } from '@app/_css/tailwindClasses'
 import cn from '@/utilities/cn'
 import { ReceiversGrid } from '../ReceiversGrid'
 import { getImageAlt, getImageUrl } from '@/utilities/getmageUrl'
-import { RemoveProductButton } from '../ReceiversGrid/ReceiverActions'
+import { AddReceiverButton, RemoveProductButton } from '../ReceiversGrid/ReceiverActions'
 import { useCart } from '@app/_providers/Cart'
 
 export const CartItems: React.FC = () => {
   const { cart } = useCart()
   const { items: cartItems } = cart
 
-  useEffect(() => {
-    console.log('CartItems rendered with cart:', cart)
-  }, [cart])
-
   return (
     <div className="sm:py-8 py-10 divide-y">
       {cartItems?.map((item: any, index: any) => {
         const { product } = item
-
-        useEffect(() => {
-          console.log(`CartItem ${index} rendered with item:`, item)
-        }, [item, index])
 
         return (
           <div key={index} className="">
@@ -52,10 +44,13 @@ export const CartItems: React.FC = () => {
                     {product.meta.description}
                   </div>
                 </div>
-                <div className="flex justify-end items-center py-3 pr-3">
+                <div className="flex flex-col sm:flex-row justify-end items-center py-3 gap-3 pr-3">
+                  <AddReceiverButton productId={item.product.id} />
+
                   <RemoveProductButton cartItemId={item.product.id} />
                 </div>
               </div>
+              <div className=""></div>
               <ReceiversGrid item={item} />
             </div>
           </div>

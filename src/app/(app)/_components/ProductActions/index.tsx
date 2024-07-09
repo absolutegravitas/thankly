@@ -7,7 +7,6 @@ import { messages } from '@/utilities/refData'
 import { AddToCartButton } from './AddToCart'
 import { ViewInCartButton } from './ViewInCart'
 import { RemoveFromCartButton } from './RemoveFromCart'
-// import { isProductInCart } from '@app/_providers/Cart/cartItemsActions'
 import { useCart } from '@app/_providers/Cart'
 
 export function ProductActions({ product, hidePerks, hideRemove }: any) {

@@ -10,15 +10,12 @@ import { useRouter } from 'next/navigation'
 
 interface AddReceiverButtonProps {
   productId: number | string
-  addReceiver: (
-    productId: number | string,
-    receiver: NonNullable<CartItem['receivers']>[number],
-  ) => void
 }
 
-export const AddReceiverButton: React.FC<AddReceiverButtonProps> = ({ productId, addReceiver }) => {
+export const AddReceiverButton: React.FC<AddReceiverButtonProps> = ({ productId }) => {
   const [isPending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
+  const { addReceiver } = useCart()
 
   const handleClick = () => {
     startTransition(() => {
@@ -80,17 +77,20 @@ interface CopyReceiverIconProps {
   cartItemId: string | number
   receiverId: string
 }
-
 export const CopyReceiverIcon: React.FC<CopyReceiverIconProps> = ({ cartItemId, receiverId }) => {
   const [isPending, startTransition] = useTransition()
-  const [isCopied, setIsCopied] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const { copyReceiver } = useCart()
 
   const handleClick = () => {
     startTransition(() => {
-      copyReceiver(cartItemId, receiverId)
-      setIsCopied(true)
-      setTimeout(() => setIsCopied(false), 2000) // Reset the copied state after 2 seconds
+      try {
+        copyReceiver(cartItemId, receiverId)
+        setError(null)
+      } catch (error) {
+        console.error('Error copying receiver:', error)
+        setError('Failed to copy receiver. Please try again.')
+      }
     })
   }
 
@@ -99,16 +99,11 @@ export const CopyReceiverIcon: React.FC<CopyReceiverIconProps> = ({ cartItemId, 
       <CopyIcon
         className={`h-5 w-5 cursor-pointer hover:text-green transition-colors duration-200 ${
           isPending ? 'opacity-50' : ''
-        } ${isCopied ? 'text-green-500' : ''}`}
+        }`}
         aria-hidden="true"
         strokeWidth={1.4}
         onClick={handleClick}
       />
-      {isCopied && (
-        <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-green-500 text-white text-xs py-1 px-2 rounded shadow-md transition-opacity duration-200">
-          Copied!
-        </span>
-      )}
     </div>
   )
 }
