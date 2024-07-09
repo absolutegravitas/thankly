@@ -4,12 +4,12 @@ import { revalidatePath, unstable_cache } from 'next/cache'
 import { getPayloadHMR } from '@payloadcms/next/utilities'
 import configPromise from '@payload-config'
 import { Cart, Product } from '@payload-types'
-import { getCart } from '@app/_providers/Cart/cartActions'
+// import { getCart } from '@app/_providers/Cart/cartActions'
 import { headers, cookies } from 'next/headers'
 
 export const fetchProduct = async (slug: string): Promise<any | null> => {
-  let cart: any | null = null
-  cart = await getCart()
+  // let cart: any | null = null
+  // cart = await getCart()
 
   const cachedFetchProduct = unstable_cache(
     async (): Promise<any | null> => {
@@ -32,11 +32,11 @@ export const fetchProduct = async (slug: string): Promise<any | null> => {
         const inCart: boolean = false
         product = { ...product, inCart }
 
-        if (cart && product) {
-          product.inCart = cart?.items?.some((p: any) => p.product.id === product?.id)
-          // product = { ...product, inCart }
-          console.log('fetchProduct', product)
-        }
+        // if (cart && product) {
+        //   product.inCart = cart?.items?.some((p: any) => p.product.id === product?.id)
+        //   // product = { ...product, inCart }
+        //   console.log('fetchProduct', product)
+        // }
       } catch (error) {
         console.error(`Error fetching product: ${slug}`, error)
       } finally {

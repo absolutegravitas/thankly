@@ -79,31 +79,37 @@ export const AddReceiverButton: React.FC<AddReceiverButtonProps> = ({ productId,
 interface CopyReceiverIconProps {
   cartItemId: string | number
   receiverId: string
-  copyReceiver: (productId: string | number, receiverId: string) => void
 }
 
-export const CopyReceiverIcon: React.FC<CopyReceiverIconProps> = ({
-  cartItemId,
-  receiverId,
-  copyReceiver,
-}) => {
+export const CopyReceiverIcon: React.FC<CopyReceiverIconProps> = ({ cartItemId, receiverId }) => {
   const [isPending, startTransition] = useTransition()
+  const [isCopied, setIsCopied] = useState(false)
+  const { copyReceiver } = useCart()
 
   const handleClick = () => {
     startTransition(() => {
       copyReceiver(cartItemId, receiverId)
+      setIsCopied(true)
+      setTimeout(() => setIsCopied(false), 2000) // Reset the copied state after 2 seconds
     })
   }
 
   return (
-    <CopyIcon
-      className={`h-5 w-5 cursor-pointer hover:text-green hover:animate-pulse ${
-        isPending ? 'opacity-50' : ''
-      }`}
-      aria-hidden="true"
-      strokeWidth={1.4}
-      onClick={handleClick}
-    />
+    <div className="relative">
+      <CopyIcon
+        className={`h-5 w-5 cursor-pointer hover:text-green transition-colors duration-200 ${
+          isPending ? 'opacity-50' : ''
+        } ${isCopied ? 'text-green-500' : ''}`}
+        aria-hidden="true"
+        strokeWidth={1.4}
+        onClick={handleClick}
+      />
+      {isCopied && (
+        <span className="absolute -top-8 left-1/2 transform -translate-x-1/2 bg-green-500 text-white text-xs py-1 px-2 rounded shadow-md transition-opacity duration-200">
+          Copied!
+        </span>
+      )}
+    </div>
   )
 }
 

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { contentFormats } from '@app/_css/tailwindClasses'
 import { DollarSignIcon, ChevronUpIcon, MailWarningIcon } from 'lucide-react'
 import { CMSLink } from '@app/_components/CMSLink'
@@ -9,8 +9,13 @@ import Link from 'next/link'
 import cn from '@/utilities/cn'
 import { useRouter } from 'next/navigation'
 
-export const CartSummary: React.FC<any> = (cart) => {
+export const CartSummary: React.FC<{ cart: Cart }> = ({ cart }) => {
+  useEffect(() => {
+    console.log('CartSummary: Received cart:', cart)
+  }, [cart])
+
   if (!cart || !cart.totals) {
+    console.log('CartSummary: Cart or cart.totals is null or undefined')
     return null // or return a loading state or placeholder
   }
 

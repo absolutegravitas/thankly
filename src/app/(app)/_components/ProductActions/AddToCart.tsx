@@ -4,7 +4,6 @@ import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { CMSLink } from '@app/_components/CMSLink'
 import { PlusIcon, LoaderCircleIcon } from 'lucide-react'
-import { addProduct } from '@app/_providers/Cart/cartItemsActions'
 import { Product } from '@payload-types'
 import { useCart } from '@app/_providers/Cart'
 

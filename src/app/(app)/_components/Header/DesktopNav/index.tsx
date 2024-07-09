@@ -12,7 +12,6 @@ import { FullLogo } from '@app/_graphics/FullLogo'
 import { CMSLink } from '../../CMSLink'
 
 import classes from './index.module.scss'
-import ShoppingBagIcon from '@app/_icons/ShoppingBagIcon'
 import { MiniCart } from '../../CartMini'
 
 type DesktopNavType = Pick<Menu, 'tabs'> & { hideBackground?: boolean }

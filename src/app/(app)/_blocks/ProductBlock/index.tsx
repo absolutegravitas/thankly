@@ -11,13 +11,11 @@ import { getImageAlt, getImageUrl } from '@/utilities/getmageUrl'
 
 interface ProductBlockContentProps {
   product: Product
-  inCart: boolean
   selectedImageIndex?: number
 }
 
 const ProductBlockContent: React.FC<ProductBlockContentProps> = ({
   product,
-  inCart,
   selectedImageIndex = 0,
 }) => {
   const { title, price, promoPrice, meta, media } = product
@@ -125,22 +123,13 @@ const ProductBlockContent: React.FC<ProductBlockContentProps> = ({
 
 interface ProductBlockProps {
   product: Product
-  inCart: boolean
   selectedImageIndex?: number
 }
 
-export const ProductBlock: React.FC<ProductBlockProps> = ({
-  product,
-  inCart,
-  selectedImageIndex = 0,
-}) => {
+export const ProductBlock: React.FC<ProductBlockProps> = ({ product, selectedImageIndex = 0 }) => {
   return (
     <BlockWrapper settings={{ theme: 'light' }} className={getPaddingClasses('hero')}>
-      <ProductBlockContent
-        product={product}
-        inCart={inCart}
-        selectedImageIndex={selectedImageIndex}
-      />
+      <ProductBlockContent product={product} selectedImageIndex={selectedImageIndex} />
     </BlockWrapper>
   )
 }

@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { useStripe, useElements, PaymentElement, Elements } from '@stripe/react-stripe-js'
 import { loadStripe } from '@stripe/stripe-js'
 import { useRouter } from 'next/navigation'
-import { createOrder } from '@/app/(app)/_providers/Cart/orderActions'
+// import { createOrder } from '@/app/(app)/_providers/Cart/orderActions'
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
 
@@ -37,28 +37,28 @@ function CheckoutFormContent({ cartId }: { cartId: string }) {
     setIsLoading(true)
 
     // Create the order
-    const order = await createOrder(cartId)
+    // const order = await createOrder(cartId)
 
-    if (!order) {
-      setError('Failed to create order')
-      setIsLoading(false)
-      return
-    }
+    // if (!order) {
+    //   setError('Failed to create order')
+    //   setIsLoading(false)
+    //   return
+    // }
 
-    // Confirm the payment
-    const { error: stripeError } = await stripe.confirmPayment({
-      elements,
-      confirmParams: {
-        return_url: `${window.location.origin}/shop/order-confirmation/${order.id}`,
-      },
-    })
+    // // Confirm the payment
+    // const { error: stripeError } = await stripe.confirmPayment({
+    //   elements,
+    //   confirmParams: {
+    //     return_url: `${window.location.origin}/shop/order-confirmation/${order.id}`,
+    //   },
+    // })
 
-    if (stripeError) {
-      setError(stripeError.message || 'An unexpected error occurred.')
-    } else {
-      // Payment successful, redirect to order confirmation page
-      router.push(`/shop/order-confirmation/${order.id}`)
-    }
+    // if (stripeError) {
+    //   setError(stripeError.message || 'An unexpected error occurred.')
+    // } else {
+    //   // Payment successful, redirect to order confirmation page
+    //   router.push(`/shop/order-confirmation/${order.id}`)
+    // }
 
     setIsLoading(false)
   }

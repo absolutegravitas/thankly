@@ -11,21 +11,27 @@ import React, {
 import { Cart, Product } from '@/payload-types'
 import { CartItem, cartReducer, CartAction } from './reducer'
 import { debounce } from 'lodash'
-type ShippingMethod =
-  | 'free'
-  | 'standardMail'
-  | 'expressMail'
-  | 'standardParcel'
-  | 'expressParcel'
-  | null
+
+type ShippingMethod = 'standardMail' | 'expressMail' | 'standardParcel' | 'expressParcel' | null
 
 export type CartContext = {
   cart: Cart
+  cartIsEmpty: boolean
+  hasInitializedCart: boolean
+
+  isProductInCart: (productId: string | number) => boolean
+
+  // cartTotal: { formatted: string; raw: number }
+
   addProduct: (product: Product, productPrice: number) => void
+  removeProduct: (productId: number | string) => void
+  clearCart: () => void
+
   addReceiver: (
     productId: number | string,
     receiver: NonNullable<CartItem['receivers']>[number],
   ) => void
+
   updateReceiver: (
     productId: number | string,
     receiverId: string,
@@ -38,15 +44,6 @@ export type CartContext = {
     receiverId: string,
     shippingMethod: ShippingMethod,
   ) => void
-  removeProduct: (productId: number | string) => void
-  cartIsEmpty: boolean
-  clearCart: () => void
-  isProductInCart: (productId: string | number) => boolean
-  cartTotal: {
-    formatted: string
-    raw: number
-  }
-  hasInitializedCart: boolean
 }
 
 const Context = createContext<CartContext | undefined>(undefined)
@@ -106,12 +103,25 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     [],
   )
 
-  const copyReceiver = useCallback((productId: number | string, receiverId: string) => {
-    dispatchCart({
-      type: 'COPY_RECEIVER',
-      payload: { productId, receiverId },
-    })
-  }, [])
+  const copyReceiver = useCallback(
+    (productId: number | string, receiverId: string) => {
+      console.log('copyReceiver called with:', { productId, receiverId })
+      console.log('Current cart state before copy:', cart)
+
+      dispatchCart({
+        type: 'COPY_RECEIVER',
+        payload: { productId, receiverId },
+      })
+
+      console.log('Dispatch completed')
+    },
+    [cart],
+  )
+
+  useEffect(() => {
+    console.log('Cart updated:', cart)
+    console.log('Cart items:', cart.items)
+  }, [cart])
 
   const updateReceiver = useCallback(
     (
@@ -172,41 +182,76 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const cartIsEmpty = useMemo(() => cart.items?.length === 0, [cart.items])
 
-  const contextValue = {
-    cart,
-    addProduct,
-    addReceiver,
-    copyReceiver,
-    updateReceiver,
-    removeReceiver,
-    updateShippingMethod,
-    removeProduct,
-    cartIsEmpty,
-    clearCart,
-    isProductInCart,
-    cartTotal: total,
-    hasInitializedCart,
-  }
+  const contextValue = useMemo(
+    () => ({
+      cart,
+      addProduct,
+      addReceiver,
+      copyReceiver,
+      updateReceiver,
+      removeReceiver,
+      updateShippingMethod,
+      removeProduct,
+      cartIsEmpty,
+      clearCart,
+      isProductInCart,
+      cartTotal: total,
+      hasInitializedCart,
+    }),
+    [
+      cart,
+      addProduct,
+      addReceiver,
+      copyReceiver,
+      updateReceiver,
+      removeReceiver,
+      updateShippingMethod,
+      removeProduct,
+      cartIsEmpty,
+      clearCart,
+      isProductInCart,
+      total,
+      hasInitializedCart,
+    ],
+  )
 
   useEffect(() => {
+    // console.log('CartProvider: Initial render')
     if (!hasInitialized.current) {
+      // console.log('CartProvider: Initializing cart')
       hasInitialized.current = true
 
       const syncCartFromLocalStorage = async () => {
-        const localCart = localStorage.getItem('cart')
-        const parsedCart = JSON.parse(localCart || '{}')
+        try {
+          const localCart = localStorage.getItem('cart')
+          console.log('CartProvider: Local cart data:', localCart)
+          const parsedCart = JSON.parse(localCart || '{}')
 
-        if (parsedCart?.items && parsedCart.items.length > 0) {
-          dispatchCart({
-            type: 'SET_CART',
-            payload: parsedCart,
-          })
+          if (parsedCart?.items && parsedCart.items.length > 0) {
+            console.log('CartProvider: Setting cart from local storage')
+            dispatchCart({
+              type: 'SET_CART',
+              payload: parsedCart,
+            })
+          } else {
+            console.log('CartProvider: No items in local storage')
+          }
+        } catch (error) {
+          console.error('CartProvider: Error initializing cart:', error)
+        } finally {
+          console.log('CartProvider: Setting hasInitialized to true')
+          setHasInitialized(true)
         }
       }
 
       syncCartFromLocalStorage()
     }
   }, [])
+
+  useEffect(() => {
+    console.log('CartProvider: Cart updated', cart)
+    console.log('CartProvider: hasInitializedCart', hasInitializedCart)
+  }, [cart, hasInitializedCart])
 
   useEffect(() => {
     if (!hasInitialized.current) return

@@ -211,16 +211,22 @@ export const cartReducer = (cart: Cart, action: CartAction): Cart => {
 
     case 'COPY_RECEIVER': {
       const { productId, receiverId } = action.payload
+      console.log('COPY_RECEIVER action received:', { productId, receiverId })
+      console.log('Current cart items:', cart.items)
+
       const updatedItems =
         cart.items?.map((item) => {
           if (getProductId(item.product) === productId) {
+            console.log('Matching item found:', item)
             const receiverToCopy = item.receivers?.find((r) => r.id === receiverId)
             if (receiverToCopy) {
+              console.log('Receiver to copy found:', receiverToCopy)
               const newReceiver = {
                 ...receiverToCopy,
                 id: Date.now().toString(), // Generate a new ID for the copied receiver
               }
-              return {
+              console.log('New receiver created:', newReceiver)
+              const updatedItem = {
                 ...item,
                 receivers: [...(item.receivers || []), newReceiver],
                 totals: {
@@ -232,16 +238,24 @@ export const cartReducer = (cart: Cart, action: CartAction): Cart => {
                     (item.totals?.itemShipping || 0) + (newReceiver.totals?.receiverShipping || 0),
                 },
               }
+              console.log('Updated item:', updatedItem)
+              return updatedItem
+            } else {
+              console.log('Receiver to copy not found')
             }
           }
           return item
         }) || []
 
-      return {
+      console.log('Updated items:', updatedItems)
+
+      const newCart = {
         ...cart,
         items: updatedItems,
         totals: calculateCartTotals(updatedItems),
       }
+      console.log('New cart state:', newCart)
+      return newCart
     }
 
     case 'UPDATE_RECEIVER': {

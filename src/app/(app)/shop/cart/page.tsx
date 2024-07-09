@@ -1,73 +1,108 @@
 'use client'
-
-import React, { Suspense } from 'react'
+import React, { Suspense, useEffect } from 'react'
 import { BlockWrapper } from '@app/_components/BlockWrapper'
 import { Gutter } from '@app/_components/Gutter'
 import { CartEmpty } from '@app/_blocks/CartCheckout/CartEmpty'
 import { cartText } from '@/utilities/refData'
 import { contentFormats, getPaddingClasses } from '@app/_css/tailwindClasses'
 import { useCart } from '@app/_providers/Cart'
-
 import { CartItems } from '@app/_blocks/CartCheckout/CartItems'
 import { CartSummary } from '@app/_blocks/CartCheckout/CartSummary'
 
 export default function CartPage() {
   const { cart, cartIsEmpty, hasInitializedCart } = useCart()
 
-  if (cartIsEmpty) {
-    console.log('Cart not found or is empty...')
-    return (
-      <BlockWrapper className={getPaddingClasses('hero')}>
-        <CartEmpty />
-      </BlockWrapper>
-    )
+  useEffect(() => {
+    console.log('CartPage: Cart:', cart)
+    console.log('CartPage: cartIsEmpty:', cartIsEmpty)
+    console.log('CartPage: hasInitializedCart:', hasInitializedCart)
+  }, [cart, cartIsEmpty, hasInitializedCart])
+
+  // If we have cart data, render the content regardless of hasInitializedCart
+  if (cart && cart.items && cart.items.length > 0) {
+    return renderCartContent(cart, cartIsEmpty)
   }
 
+  // If we don't have cart data and hasInitializedCart is false, show loading
+  if (!hasInitializedCart) {
+    return <CartLoadingSkeleton />
+  }
+
+  // If we have initialized but the cart is empty, show empty cart
+  return <CartEmpty />
+}
+function renderCartContent(cart: any, cartIsEmpty: any) {
   return (
     <BlockWrapper className={getPaddingClasses('hero')}>
       <Gutter>
-        <div className="flex flex-col md:flex-row">
-          <div className="sm:basis-3/6 md:basis-3/6 lg:basis-4/6 flex align-middle items-center justify-middle pb-3 pt-6 sm:pt-0">
-            <React.Fragment>
-              <span
-                className={[
-                  contentFormats.global,
-                  contentFormats.p,
-                  'tracking-tighter sm:tracking-tight text-2xl sm:text-3xl font-medium',
-                ].join(' ')}
-              >
-                {'Your Cart'}
-              </span>
-            </React.Fragment>
-          </div>
-        </div>
-        <div
-          className={[
-            contentFormats.global,
-            contentFormats.p,
-            'tracking-tighter sm:tracking-tight #text-3xl font-semibold',
-          ].join(' ')}
-        >
-          {cartText.receiverMessage}
-        </div>
-
-        <div className="flex flex-col gap-6">
-          <div className="md:basis-auto lg:basis-3/4">
-            <Suspense fallback={<CartItemsSkeleton />}>
-              {cart && <CartItems cart={cart} />}
-            </Suspense>
-          </div>
-
-          <div className="md:basis-auto lg:basis-1/4">
-            <Suspense fallback={<CartSummarySkeleton />}>
-              {cart && <CartSummary cart={cart} />}
-            </Suspense>
-          </div>
-        </div>
+        {cartIsEmpty ? (
+          <CartEmpty />
+        ) : (
+          <>
+            <div className="flex flex-col md:flex-row">
+              <div className="sm:basis-3/6 md:basis-3/6 lg:basis-4/6 flex align-middle items-center justify-middle pb-3 pt-6 sm:pt-0">
+                <React.Fragment>
+                  <span
+                    className={[
+                      contentFormats.global,
+                      contentFormats.p,
+                      'tracking-tighter sm:tracking-tight text-2xl sm:text-3xl font-medium',
+                    ].join(' ')}
+                  >
+                    {'Your Cart'}
+                  </span>
+                </React.Fragment>
+              </div>
+            </div>
+            <div
+              className={[
+                contentFormats.global,
+                contentFormats.p,
+                'tracking-tighter sm:tracking-tight font-semibold mb-6',
+              ].join(' ')}
+            >
+              {cartText.receiverMessage}
+            </div>
+            <div className="flex flex-col lg:flex-row gap-6">
+              <div className="lg:basis-3/4">
+                <Suspense fallback={<CartItemsSkeleton />}>
+                  {cart && (
+                    <CartItems
+                    //  cart={cart}
+                    />
+                  )}
+                </Suspense>
+              </div>
+              <div className="lg:basis-1/4">
+                <Suspense fallback={<CartSummarySkeleton />}>
+                  {cart && <CartSummary cart={cart} />}
+                </Suspense>
+              </div>
+            </div>
+          </>
+        )}
       </Gutter>
     </BlockWrapper>
   )
 }
+const CartLoadingSkeleton = () => (
+  <BlockWrapper className={getPaddingClasses('hero')}>
+    <Gutter>
+      <div className="animate-pulse">
+        <div className="h-8 bg-gray-200 w-1/4 mb-6"></div>
+        <div className="h-4 bg-gray-200 w-3/4 mb-8"></div>
+        <div className="flex flex-col lg:flex-row gap-6">
+          <div className="lg:basis-3/4">
+            <CartItemsSkeleton />
+          </div>
+          <div className="lg:basis-1/4">
+            <CartSummarySkeleton />
+          </div>
+        </div>
+      </div>
+    </Gutter>
+  </BlockWrapper>
+)
 
 const CartItemsSkeleton: React.FC = () => {
   return (

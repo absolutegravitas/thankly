@@ -1,13 +1,10 @@
 import React, { CSSProperties } from 'react'
 
 import { BlockWrapper, PaddingProps } from '@app/_components/BlockWrapper'
-import { CMSLink } from '@app/_components/CMSLink'
-import { Gutter } from '@app/_components/Gutter'
 import { Product } from '@payload-types'
 
 import classes from './index.module.scss'
 import { ProductCard } from '@app/_components/ProductCard'
-import { getPaddingClasses } from '../../_css/tailwindClasses'
 
 export type ProductGridProps = {
   products: Product[]
