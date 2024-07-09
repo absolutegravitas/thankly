@@ -15,49 +15,26 @@ const nextConfig = {
     dangerouslyAllowSVG: true,
     contentDispositionType: 'attachment',
     contentSecurityPolicy: policies, //"default-src 'self'; script-src 'none'; sandbox; ",
-    minimumCacheTTL: 6000,
+    minimumCacheTTL: 60,
+    deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
+    imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
     remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: `${process.env.NEXT_PUBLIC_SERVER_URL}`,
-      },
-      {
-        // coz fucking nextjs is shite what is this bullshit syntax
-        protocol: 'http',
-        hostname: `localhost`,
-      },
-      {
-        protocol: 'https',
-        hostname: '**thankly.co**',
-      },
-      {
-        protocol: 'https',
-        hostname: '**thankly.com.au**',
-      },
-      {
-        protocol: 'https',
-        hostname: '**thankly.vercel.app**',
-      },
-      {
-        protocol: 'https',
-        hostname: '**tailwindui.com**',
-      },
-      {
-        protocol: 'https',
-        hostname: '**images.unsplash.com**',
-      },
-      {
-        protocol: 'https',
-        hostname: '**maps.gstatic.com**',
-      },
-      {
-        protocol: 'https',
-        hostname: '**google.com.au**',
-      },
-      {
-        protocol: 'https',
-        hostname: '**api.radar.io**',
-      },
+      { protocol: 'https', hostname: `${process.env.NEXT_PUBLIC_SERVER_URL}` },
+      { protocol: 'http', hostname: `localhost` },
+      { protocol: 'https', hostname: '**thankly.co**' },
+      { protocol: 'https', hostname: '**thankly.com.au**' },
+      { protocol: 'https', hostname: '**thankly.vercel.app**' },
+      { protocol: 'https', hostname: '**tailwindui.com**' },
+      // {
+      //   protocol: 'https',
+      //   hostname: '**images.unsplash.com**',
+      // },
+      // {
+      //   protocol: 'https',
+      //   hostname: '**maps.gstatic.com**',
+      // },
+      { protocol: 'https', hostname: '**google.com.au**' },
+      { protocol: 'https', hostname: '**api.radar.io**' },
     ],
   },
   async headers() {
