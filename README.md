@@ -28,10 +28,6 @@
 
 ## instructions
 
-ben thomas 2%
-tom spargos 35x
-rowan aurora 1.5%-2%
-
 ### local development
 
 - pull repo

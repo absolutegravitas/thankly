@@ -23,11 +23,11 @@ export const AddReceiverButton: React.FC<AddReceiverButtonProps> = ({ productId 
         id: `${Date.now()}`,
         name: 'John Smith',
         message: 'Add a message with your thankly here...',
-        addressLine1: 'Add delivery address here...',
-        addressLine2: null,
-        city: null,
-        state: null,
-        postcode: null,
+        address: {
+          addressLine1: null,
+          addressLine2: 'Add delivery address here...',
+        },
+
         shippingMethod: null,
         totals: {
           receiverTotal: 0,
@@ -97,7 +97,7 @@ export const CopyReceiverIcon: React.FC<CopyReceiverIconProps> = ({ cartItemId, 
   return (
     <div className="relative">
       <CopyIcon
-        className={`h-5 w-5 cursor-pointer hover:text-green transition-colors duration-200 ${
+        className={`h-8 w-8 sm:h-5 sm:w-5 cursor-pointer hover:text-green transition-colors duration-200 ${
           isPending ? 'opacity-50' : ''
         }`}
         aria-hidden="true"
@@ -129,7 +129,7 @@ export const RemoveReceiverIcon: React.FC<RemoveReceiverIconProps> = ({
 
   return (
     <XIcon
-      className={`h-5 w-5 cursor-pointer hover:text-green hover:animate-pulse ${
+      className={`h-8 w-8 sm:h-5 sm:w-5  cursor-pointer hover:text-green hover:animate-pulse ${
         isPending ? 'opacity-50' : ''
       }`}
       aria-hidden="true"

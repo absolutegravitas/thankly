@@ -294,12 +294,21 @@ export interface Cart {
           | {
               name?: string | null;
               message?: string | null;
-              addressLine1?: string | null;
-              addressLine2?: string | null;
-              city?: string | null;
-              state?: string | null;
-              postcode?: string | null;
-              shippingMethod?: ('free' | 'standardMail' | 'expressMail' | 'standardParcel' | 'expressParcel') | null;
+              shippingMethod?: ('standardMail' | 'expressMail' | 'standardParcel' | 'expressParcel') | null;
+              address?: {
+                formattedAddress?: string | null;
+                addressLine1?: string | null;
+                addressLine2?: string | null;
+                json?:
+                  | {
+                      [k: string]: unknown;
+                    }
+                  | unknown[]
+                  | string
+                  | number
+                  | boolean
+                  | null;
+              };
               totals: {
                 receiverTotal: number;
                 receiverThankly: number;

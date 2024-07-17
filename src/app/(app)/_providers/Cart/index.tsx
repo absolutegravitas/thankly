@@ -13,6 +13,7 @@ import { CartItem, cartReducer, CartAction } from './reducer'
 import { debounce } from 'lodash'
 
 type ShippingMethod = 'standardMail' | 'expressMail' | 'standardParcel' | 'expressParcel' | null
+type Receiver = NonNullable<CartItem['receivers']>[number]
 
 export type CartContext = {
   cart: Cart
@@ -35,7 +36,9 @@ export type CartContext = {
   updateReceiver: (
     productId: number | string,
     receiverId: string,
-    updatedFields: Partial<NonNullable<CartItem['receivers']>[number]>,
+    updatedFields: Partial<
+      Omit<Receiver, 'id' | 'totals' | `address.${keyof Receiver['address']}`>
+    >,
   ) => void
   removeReceiver: (productId: number | string, receiverId: string) => void
   copyReceiver: (productId: number | string, receiverId: string) => void
@@ -114,7 +117,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     (
       productId: number | string,
       receiverId: string,
-      updatedFields: Partial<NonNullable<CartItem['receivers']>[number]>,
+      updatedFields: Partial<Omit<Receiver, 'id' | 'totals'>>,
     ) => {
       dispatchCart({
         type: 'UPDATE_RECEIVER',

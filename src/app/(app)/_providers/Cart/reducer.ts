@@ -3,13 +3,8 @@ import type { Cart, Product } from '@/payload-types'
 export type CartItem = NonNullable<Cart['items']>[number]
 type CartType = Cart
 type ShippingMethod =
-  | 'free'
-  | 'standardMail'
-  | 'registeredMail'
-  | 'expressMail'
-  | 'standardParcel'
-  | 'expressParcel'
-  | null
+  // | 'free'
+  'standardMail' | 'registeredMail' | 'expressMail' | 'standardParcel' | 'expressParcel' | null
 
 export type CartAction =
   | { type: 'SET_CART'; payload: Cart }
@@ -188,11 +183,7 @@ export const cartReducer = (cart: Cart, action: CartAction): Cart => {
             id: Date.now().toString(),
             name: null,
             message: null,
-            addressLine1: null,
-            addressLine2: null,
-            city: null,
-            state: null,
-            postcode: null,
+            address: { addressLine1: null, addressLine2: null, formattedAddress: null, json: null },
             shippingMethod: null,
             totals: {
               receiverTotal: productPrice,
@@ -294,6 +285,8 @@ export const cartReducer = (cart: Cart, action: CartAction): Cart => {
 
     case 'UPDATE_RECEIVER': {
       const { productId, receiverId, updatedFields } = action.payload
+
+      console.log('payload ', action.payload)
       const updatedItems = cart.items?.map((item) => {
         if (getProductId(item.product) === productId) {
           const updatedReceivers = item.receivers?.map((receiver) =>
@@ -301,8 +294,10 @@ export const cartReducer = (cart: Cart, action: CartAction): Cart => {
           )
           return { ...item, receivers: updatedReceivers }
         }
+        console.log('item ', item)
         return item
       })
+      console.log('updatedItems - ', updatedItems)
 
       return {
         ...cart,

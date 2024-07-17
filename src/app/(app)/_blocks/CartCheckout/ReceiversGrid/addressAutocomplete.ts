@@ -3,7 +3,7 @@
 import { revalidatePath } from 'next/cache'
 
 export async function addressAutocomplete(query: string, countryCode: string = 'AU') {
-  if (!query || query.length < 3) {
+  if (!query || query.length < 2) {
     return []
   }
 

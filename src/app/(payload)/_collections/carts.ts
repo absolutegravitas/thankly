@@ -109,33 +109,33 @@ export const Carts: CollectionConfig = {
               fields: [{ name: 'message', type: 'textarea', admin: { width: '100%' } }],
             },
             {
-              type: 'row',
-              fields: [
-                { name: 'addressLine1', type: 'text', admin: { width: '50%' } },
-                { name: 'addressLine2', type: 'text', admin: { width: '50%' } },
-                { name: 'city', type: 'text', admin: { width: '40%' } },
-                { name: 'state', type: 'text', admin: { width: '40%' } },
-                { name: 'postcode', type: 'text', admin: { width: '10%' } },
+              name: 'shippingMethod',
+              type: 'select',
+              // defaultValue: 'free',
+              hasMany: false,
+              required: false,
+              admin: { width: '100%' },
+              options: [
+                // { label: 'FREE', value: 'free' },
+                { label: 'Standard Mail', value: 'standardMail' },
+                // { label: 'Registered Post', value: 'registeredMail' },
+                { label: 'Express Post', value: 'expressMail' },
+                { label: 'Standard Parcel', value: 'standardParcel' },
+                { label: 'Express Parcel', value: 'expressParcel' },
               ],
-              // call api to calculate postage here in future
             },
             {
-              type: 'row',
+              name: 'address',
+              type: 'group',
               fields: [
+                { name: 'formattedAddress', type: 'text', admin: { width: '100%' } },
                 {
-                  name: 'shippingMethod',
-                  type: 'select',
-                  defaultValue: 'free',
-                  hasMany: false,
-                  required: false,
-                  admin: { width: '100%' },
-                  options: [
-                    { label: 'FREE', value: 'free' },
-                    { label: 'Standard Mail', value: 'standardMail' },
-                    // { label: 'Registered Post', value: 'registeredMail' },
-                    { label: 'Express Post', value: 'expressMail' },
-                    { label: 'Standard Parcel', value: 'standardParcel' },
-                    { label: 'Express Parcel', value: 'expressParcel' },
+                  type: 'row',
+                  fields: [
+                    { name: 'addressLine1', type: 'text', admin: { width: '50%' } },
+                    { name: 'addressLine2', type: 'text', admin: { width: '50%' } },
+                    // whole address object
+                    { name: 'json', type: 'json', admin: { width: '100%' } },
                   ],
                 },
               ],
