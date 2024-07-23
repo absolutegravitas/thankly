@@ -51,34 +51,77 @@ export interface UserAuthOperations {
 export interface Order {
   id: number;
   orderNumber?: number | null;
-  orderedBy?: (number | null) | User;
+  billing?: {
+    orderedBy?: (number | null) | User;
+    name?: string | null;
+    email?: string | null;
+    contactNumber?: number | null;
+    orgName?: string | null;
+    orgId?: string | null;
+    billingAddress?: {
+      formattedAddress?: string | null;
+      addressLine1?: string | null;
+      addressLine2?: string | null;
+      json?:
+        | {
+            [k: string]: unknown;
+          }
+        | unknown[]
+        | string
+        | number
+        | boolean
+        | null;
+    };
+  };
   status?: ('pending' | 'processing' | 'completed' | 'cancelled' | 'onhold') | null;
   stripePaymentIntentID?: string | null;
-  orderSubtotal?: number | null;
-  orderShipping?: number | null;
-  orderTotal?: number | null;
+  totals: {
+    orderThanklys: number;
+    orderShipping: number;
+    orderTotal: number;
+  };
   items?:
     | {
+        productPrice?: number | null;
         product: number | Product;
-        itemPrice?: number | null;
-        itemTotalShipping?: number | null;
-        itemTotal?: number | null;
+        totals: {
+          itemTotal: number;
+          itemThanklys: number;
+          itemShipping?: number | null;
+        };
         receivers?:
           | {
-              firstName?: string | null;
-              lastName?: string | null;
+              name?: string | null;
               message?: string | null;
-              addressLine1?: string | null;
-              addressLine2?: string | null;
-              city?: string | null;
-              state?: string | null;
-              postcode?: string | null;
-              shippingMethod?:
-                | ('standardMail' | 'registeredMail' | 'expressMail' | 'standardParcel' | 'expressParcel')
+              shippingMethod?: ('standardMail' | 'expressMail' | 'standardParcel' | 'expressParcel') | null;
+              address?: {
+                formattedAddress?: string | null;
+                addressLine1?: string | null;
+                addressLine2?: string | null;
+                json?:
+                  | {
+                      [k: string]: unknown;
+                    }
+                  | unknown[]
+                  | string
+                  | number
+                  | boolean
+                  | null;
+              };
+              totals: {
+                receiverTotal: number;
+                receiverThankly: number;
+                receiverShipping?: number | null;
+              };
+              errors?:
+                | {
+                    [k: string]: unknown;
+                  }
+                | unknown[]
+                | string
+                | number
+                | boolean
                 | null;
-              receiverPrice?: number | null;
-              receiverShipping?: number | null;
-              receiverTotal?: number | null;
               id?: string | null;
             }[]
           | null;
@@ -280,6 +323,7 @@ export interface Cart {
     cartTotal: number;
     cartThanklys: number;
     cartShipping?: number | null;
+    cartShippingDiscount?: number | null;
   };
   items?:
     | {
@@ -314,6 +358,15 @@ export interface Cart {
                 receiverThankly: number;
                 receiverShipping?: number | null;
               };
+              errors?:
+                | {
+                    [k: string]: unknown;
+                  }
+                | unknown[]
+                | string
+                | number
+                | boolean
+                | null;
               id?: string | null;
             }[]
           | null;

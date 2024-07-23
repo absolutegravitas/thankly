@@ -7,6 +7,7 @@ import { CopyIcon, TrashIcon, UserPlusIcon, XIcon } from 'lucide-react'
 import { useCart } from '@app/_providers/Cart'
 import { CartItem } from '@/app/(app)/_providers/Cart/reducer'
 import { useRouter } from 'next/navigation'
+import { Product } from '@/payload-types'
 
 interface AddReceiverButtonProps {
   productId: number | string
@@ -15,20 +16,27 @@ interface AddReceiverButtonProps {
 export const AddReceiverButton: React.FC<AddReceiverButtonProps> = ({ productId }) => {
   const [isPending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
-  const { addReceiver } = useCart()
+  const { addReceiver, cart } = useCart()
 
   const handleClick = () => {
     startTransition(() => {
+      const cartItem = cart.items?.find(
+        (item) => typeof item.product === 'object' && item.product.id === productId,
+      )
+      const productType =
+        typeof cartItem?.product === 'object' ? cartItem.product.productType : null
+
+      const defaultShippingMethod =
+        productType === 'gift' ? 'standardParcel' : productType === 'card' ? 'standardMail' : null
+
       const newReceiver: NonNullable<CartItem['receivers']>[number] = {
         id: `${Date.now()}`,
-        name: 'John Smith',
-        message: 'Add a message with your thankly here...',
+        name: null,
+        message: null,
         address: {
           addressLine1: null,
-          addressLine2: 'Add delivery address here...',
         },
-
-        shippingMethod: null,
+        shippingMethod: defaultShippingMethod,
         totals: {
           receiverTotal: 0,
           receiverThankly: 0,
@@ -97,7 +105,7 @@ export const CopyReceiverIcon: React.FC<CopyReceiverIconProps> = ({ cartItemId, 
   return (
     <div className="relative">
       <CopyIcon
-        className={`h-8 w-8 sm:h-5 sm:w-5 cursor-pointer hover:text-green transition-colors duration-200 ${
+        className={`h-5 w-5 sm:h-5 sm:w-5 cursor-pointer hover:text-green transition-colors duration-200 ${
           isPending ? 'opacity-50' : ''
         }`}
         aria-hidden="true"
@@ -129,7 +137,7 @@ export const RemoveReceiverIcon: React.FC<RemoveReceiverIconProps> = ({
 
   return (
     <XIcon
-      className={`h-8 w-8 sm:h-5 sm:w-5  cursor-pointer hover:text-green hover:animate-pulse ${
+      className={`h-5 w-5 sm:h-5 sm:w-5  cursor-pointer hover:text-green hover:animate-pulse ${
         isPending ? 'opacity-50' : ''
       }`}
       aria-hidden="true"
@@ -159,7 +167,7 @@ export const RemoveProductButton: React.FC<RemoveProductButtonProps> = ({ cartIt
   return (
     <CMSLink
       data={{
-        label: 'Delete Thankly',
+        label: 'Remove Thankly',
       }}
       look={{
         theme: 'light',

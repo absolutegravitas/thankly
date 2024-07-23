@@ -14,17 +14,22 @@ export const CartItems: React.FC = () => {
   const { items: cartItems } = cart
 
   return (
-    <div className="sm:py-8 py-10 divide-y">
+    <div className="py-8 divide-y">
       {cartItems?.map((item: any, index: any) => {
         const { product } = item
-
+        const imageUrl =
+          product.media && product.media.length > 0
+            ? getImageUrl(product.media[0]?.mediaItem)
+            : null
+        const placeholderSVG = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='none' stroke='%23cccccc'%3E%3Crect width='100' height='100' rx='10' stroke-width='2' /%3E%3Cpath d='M20 80 L50 20 L80 80 Z' stroke-width='2' /%3E%3Ccircle cx='50' cy='50' r='20' stroke-width='2' /%3E%3C/svg%3E`
         return (
           <div key={index} className="">
             <div className="space-y-4 md:border md:border-solid md:border-neutral-300 pb-6">
-              <div className="flex sm:flex items-start sm:items-center sm:space-x-4 space-x-3 bg-neutral-200">
+              <div className="flex items-start sm:items-center sm:space-x-4 p-3 sm:p-0 space-x-3 bg-neutral-200">
                 <Image
-                  src={getImageUrl(product.media[0]?.mediaItem)}
-                  alt={getImageAlt(product.media[0]?.mediaItem)}
+                  src={imageUrl || placeholderSVG}
+                  // src={getImageUrl(product.media[0]?.mediaItem)}
+                  alt={''}
                   priority
                   width={100}
                   height={100}
@@ -44,13 +49,15 @@ export const CartItems: React.FC = () => {
                     {product.meta.description}
                   </div>
                 </div>
-                <div className="flex flex-col sm:flex-row justify-end items-center py-3 gap-3 pr-3">
+                <div className="hidden sm:flex flex-row justify-end items-center py-3 gap-3 pr-3">
                   <AddReceiverButton productId={item.product.id} />
-
                   <RemoveProductButton cartItemId={item.product.id} />
                 </div>
               </div>
-              <div className=""></div>
+              <div className="sm:hidden flex flex-row justify-center items-center gap-3">
+                <AddReceiverButton productId={item.product.id} />
+                <RemoveProductButton cartItemId={item.product.id} />
+              </div>
               <ReceiversGrid item={item} />
             </div>
           </div>

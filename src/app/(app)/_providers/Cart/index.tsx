@@ -19,10 +19,9 @@ export type CartContext = {
   cart: Cart
   cartIsEmpty: boolean
   hasInitializedCart: boolean
+  validateCart: () => boolean
 
   isProductInCart: (productId: string | number) => boolean
-
-  // cartTotal: { formatted: string; raw: number }
 
   addProduct: (product: Product, productPrice: number) => void
   removeProduct: (productId: number | string) => void
@@ -75,16 +74,29 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     createdAt: new Date().toISOString(),
   })
 
-  const [total, setTotal] = useState<{
-    formatted: string
-    raw: number
-  }>({
+  const [total, setTotal] = useState<{ formatted: string; raw: number }>({
     formatted: '0.00',
     raw: 0,
   })
 
   const hasInitialized = useRef(false)
   const [hasInitializedCart, setHasInitialized] = useState(false)
+
+  const validateCart = useCallback((): boolean => {
+    if (!cart.items || cart.items.length === 0) return false
+
+    return cart.items.every(
+      (item) =>
+        item.receivers &&
+        item.receivers.every(
+          (receiver) =>
+            receiver.name &&
+            receiver.message &&
+            receiver.address?.formattedAddress &&
+            receiver.shippingMethod,
+        ),
+    )
+  }, [cart])
 
   const addProduct = useCallback((product: Product | number, productPrice: number) => {
     dispatchCart({
@@ -174,51 +186,50 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const contextValue = useMemo(
     () => ({
-      cart,
       addProduct,
       addReceiver,
-      copyReceiver,
-      updateReceiver,
-      removeReceiver,
-      updateShippingMethod,
-      removeProduct,
+      cart,
       cartIsEmpty,
-      clearCart,
-      isProductInCart,
       cartTotal: total,
+      clearCart,
+      copyReceiver,
+
       hasInitializedCart,
+      isProductInCart,
+      removeProduct,
+      removeReceiver,
+      updateReceiver,
+      updateShippingMethod,
+      validateCart,
     }),
     [
-      cart,
       addProduct,
       addReceiver,
-      copyReceiver,
-      updateReceiver,
-      removeReceiver,
-      updateShippingMethod,
-      removeProduct,
+      cart,
       cartIsEmpty,
       clearCart,
-      isProductInCart,
-      total,
+      copyReceiver,
       hasInitializedCart,
+      isProductInCart,
+      removeProduct,
+      removeReceiver,
+      total,
+      updateReceiver,
+      updateShippingMethod,
+      validateCart,
     ],
   )
 
   useEffect(() => {
-    // console.log('CartProvider: Initial render')
     if (!hasInitialized.current) {
-      // console.log('CartProvider: Initializing cart')
       hasInitialized.current = true
 
       const syncCartFromLocalStorage = async () => {
         try {
           const localCart = localStorage.getItem('cart')
-          // console.log('CartProvider: Local cart data:', localCart)
           const parsedCart = JSON.parse(localCart || '{}')
 
           if (parsedCart?.items && parsedCart.items.length > 0) {
-            // console.log('CartProvider: Setting cart from local storage')
             dispatchCart({
               type: 'SET_CART',
               payload: parsedCart,
@@ -229,7 +240,6 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         } catch (error) {
           // console.error('CartProvider: Error initializing cart:', error)
         } finally {
-          // console.log('CartProvider: Setting hasInitialized to true')
           setHasInitialized(true)
         }
       }
@@ -237,11 +247,6 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       syncCartFromLocalStorage()
     }
   }, [])
-
-  // useEffect(() => {
-  //   console.log('CartProvider: Cart updated', cart)
-  //   console.log('CartProvider: hasInitializedCart', hasInitializedCart)
-  // }, [cart, hasInitializedCart])
 
   useEffect(() => {
     if (!hasInitialized.current) return

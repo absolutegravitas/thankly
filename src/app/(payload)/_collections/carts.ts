@@ -30,24 +30,10 @@ export const Carts: CollectionConfig = {
         {
           type: 'row',
           fields: [
-            {
-              name: 'cartTotal',
-              type: 'number',
-              required: true,
-              defaultValue: 0,
-            },
-            {
-              name: 'cartThanklys',
-              type: 'number',
-              required: true,
-              defaultValue: 0,
-            },
-            {
-              name: 'cartShipping',
-              type: 'number',
-              required: false,
-              // defaultValue: 0,
-            },
+            { name: 'cartTotal', type: 'number', required: true, defaultValue: 0 },
+            { name: 'cartThanklys', type: 'number', required: true, defaultValue: 0 },
+            { name: 'cartShipping', type: 'number', required: false },
+            { name: 'cartShippingDiscount', type: 'number', required: false },
           ],
         },
       ],
@@ -61,12 +47,7 @@ export const Carts: CollectionConfig = {
       // minRows: 1,
       fields: [
         { name: 'productPrice', type: 'number', defaultValue: 0, min: 0 },
-        {
-          name: 'product',
-          type: 'relationship',
-          relationTo: 'products',
-          required: true,
-        },
+        { name: 'product', type: 'relationship', relationTo: 'products', required: true },
         {
           name: 'totals',
           type: 'group',
@@ -74,24 +55,9 @@ export const Carts: CollectionConfig = {
             {
               type: 'row',
               fields: [
-                {
-                  name: 'itemTotal',
-                  type: 'number',
-                  required: true,
-                  defaultValue: 0,
-                },
-                {
-                  name: 'itemThanklys',
-                  type: 'number',
-                  required: true,
-                  defaultValue: 0,
-                },
-                {
-                  name: 'itemShipping',
-                  type: 'number',
-                  required: false,
-                  // defaultValue: 0,
-                },
+                { name: 'itemTotal', type: 'number', required: true, defaultValue: 0 },
+                { name: 'itemThanklys', type: 'number', required: true, defaultValue: 0 },
+                { name: 'itemShipping', type: 'number', required: false },
               ],
             },
           ],
@@ -103,7 +69,6 @@ export const Carts: CollectionConfig = {
           type: 'array',
           fields: [
             { name: 'name', type: 'text' },
-
             {
               type: 'row',
               fields: [{ name: 'message', type: 'textarea', admin: { width: '100%' } }],
@@ -111,14 +76,11 @@ export const Carts: CollectionConfig = {
             {
               name: 'shippingMethod',
               type: 'select',
-              // defaultValue: 'free',
               hasMany: false,
               required: false,
               admin: { width: '100%' },
               options: [
-                // { label: 'FREE', value: 'free' },
                 { label: 'Standard Mail', value: 'standardMail' },
-                // { label: 'Registered Post', value: 'registeredMail' },
                 { label: 'Express Post', value: 'expressMail' },
                 { label: 'Standard Parcel', value: 'standardParcel' },
                 { label: 'Express Parcel', value: 'expressParcel' },
@@ -134,8 +96,7 @@ export const Carts: CollectionConfig = {
                   fields: [
                     { name: 'addressLine1', type: 'text', admin: { width: '50%' } },
                     { name: 'addressLine2', type: 'text', admin: { width: '50%' } },
-                    // whole address object
-                    { name: 'json', type: 'json', admin: { width: '100%' } },
+                    { name: 'json', type: 'json', admin: { width: '100%' } }, // whole address object
                   ],
                 },
               ],
@@ -148,28 +109,14 @@ export const Carts: CollectionConfig = {
                 {
                   type: 'row',
                   fields: [
-                    {
-                      name: 'receiverTotal',
-                      type: 'number',
-                      required: true,
-                      defaultValue: 0,
-                    },
-                    {
-                      name: 'receiverThankly',
-                      type: 'number',
-                      required: true,
-                      defaultValue: 0,
-                    },
-                    {
-                      name: 'receiverShipping',
-                      type: 'number',
-                      required: false,
-                      // defaultValue: 0,
-                    },
+                    { name: 'receiverTotal', type: 'number', required: true, defaultValue: 0 },
+                    { name: 'receiverThankly', type: 'number', required: true, defaultValue: 0 },
+                    { name: 'receiverShipping', type: 'number', required: false },
                   ],
                 },
               ],
             },
+            { name: 'errors', type: 'json', admin: { width: '100%' } }, // errors for this receiver
           ],
         },
       ],

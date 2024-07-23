@@ -11,7 +11,7 @@ export const messages = {
 export const cartText = {
   leader: `Checkout`,
   heading: `Your Cart`,
-  receiverMessage: `Send thanklys to as many people as you like. Click / tap on the fields to edit your message, delivery address and other details.`,
+  // receiverMessage: `Send thanklys to as many people as you like. Each thankly can be sent to many people or you can send different thanklys one to each person.`,
   shippingMessage: `Allow VIC (5 business days), Interstate (6-8 business days) due to AusPost letter delivery changes. `,
   // sendTo: `Sending this thankly to:`,
 }
@@ -34,7 +34,7 @@ export const shippingPrices = {
 
   cards: {
     standardMail: 0,
-    registeredMail: 9, // "domestic letters from auspost medium @$6.65" https://auspost.com.au/sending/letters-australia/letter-tracking
+    expressMail: 9, // "domestic letters from auspost medium @$6.65" https://auspost.com.au/sending/letters-australia/letter-tracking
     // expressMail: 12, // medium c5 @ $8.85 https://auspost.com.au/sending/letters-australia/express-post
   },
 

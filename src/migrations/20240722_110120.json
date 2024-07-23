@@ -1,5 +1,5 @@
 {
-  "id": "11432aab-3794-4a28-8da4-bd38c1330281",
+  "id": "7728bbbd-a8de-4666-afc1-ab91dbfc6dd5",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "5",
   "dialect": "pg",
@@ -26,14 +26,8 @@
           "primaryKey": true,
           "notNull": true
         },
-        "first_name": {
-          "name": "first_name",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "last_name": {
-          "name": "last_name",
+        "name": {
+          "name": "name",
           "type": "varchar",
           "primaryKey": false,
           "notNull": false
@@ -44,57 +38,57 @@
           "primaryKey": false,
           "notNull": false
         },
-        "address_line1": {
-          "name": "address_line1",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "address_line2": {
-          "name": "address_line2",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "city": {
-          "name": "city",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "state": {
-          "name": "state",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "postcode": {
-          "name": "postcode",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
         "shippingMethod": {
           "name": "shippingMethod",
           "type": "enum_orders_items_receivers_shipping_method",
           "primaryKey": false,
           "notNull": false
         },
-        "receiver_price": {
-          "name": "receiver_price",
+        "address_formatted_address": {
+          "name": "address_formatted_address",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "address_address_line1": {
+          "name": "address_address_line1",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "address_address_line2": {
+          "name": "address_address_line2",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "address_json": {
+          "name": "address_json",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "totals_receiver_total": {
+          "name": "totals_receiver_total",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "totals_receiver_thankly": {
+          "name": "totals_receiver_thankly",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "totals_receiver_shipping": {
+          "name": "totals_receiver_shipping",
           "type": "numeric",
           "primaryKey": false,
           "notNull": false
         },
-        "receiver_shipping": {
-          "name": "receiver_shipping",
-          "type": "numeric",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "receiver_total": {
-          "name": "receiver_total",
-          "type": "numeric",
+        "errors": {
+          "name": "errors",
+          "type": "jsonb",
           "primaryKey": false,
           "notNull": false
         }
@@ -155,26 +149,32 @@
           "primaryKey": true,
           "notNull": true
         },
+        "product_price": {
+          "name": "product_price",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
         "product_id": {
           "name": "product_id",
           "type": "integer",
           "primaryKey": false,
           "notNull": true
         },
-        "item_price": {
-          "name": "item_price",
+        "totals_item_total": {
+          "name": "totals_item_total",
           "type": "numeric",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
-        "item_total_shipping": {
-          "name": "item_total_shipping",
+        "totals_item_thanklys": {
+          "name": "totals_item_thanklys",
           "type": "numeric",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
-        "item_total": {
-          "name": "item_total",
+        "totals_item_shipping": {
+          "name": "totals_item_shipping",
           "type": "numeric",
           "primaryKey": false,
           "notNull": false
@@ -243,9 +243,63 @@
           "primaryKey": false,
           "notNull": false
         },
-        "ordered_by_id": {
-          "name": "ordered_by_id",
+        "billing_ordered_by_id": {
+          "name": "billing_ordered_by_id",
           "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "billing_name": {
+          "name": "billing_name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "billing_email": {
+          "name": "billing_email",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "billing_contact_number": {
+          "name": "billing_contact_number",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "billing_org_name": {
+          "name": "billing_org_name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "billing_org_id": {
+          "name": "billing_org_id",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "billing_billing_address_formatted_address": {
+          "name": "billing_billing_address_formatted_address",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "billing_billing_address_address_line1": {
+          "name": "billing_billing_address_address_line1",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "billing_billing_address_address_line2": {
+          "name": "billing_billing_address_address_line2",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "billing_billing_address_json": {
+          "name": "billing_billing_address_json",
+          "type": "jsonb",
           "primaryKey": false,
           "notNull": false
         },
@@ -261,23 +315,23 @@
           "primaryKey": false,
           "notNull": false
         },
-        "order_subtotal": {
-          "name": "order_subtotal",
+        "totals_order_thanklys": {
+          "name": "totals_order_thanklys",
           "type": "numeric",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
-        "order_shipping": {
-          "name": "order_shipping",
+        "totals_order_shipping": {
+          "name": "totals_order_shipping",
           "type": "numeric",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
-        "order_total": {
-          "name": "order_total",
+        "totals_order_total": {
+          "name": "totals_order_total",
           "type": "numeric",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "updated_at": {
           "name": "updated_at",
@@ -311,12 +365,12 @@
         }
       },
       "foreignKeys": {
-        "orders_ordered_by_id_users_id_fk": {
-          "name": "orders_ordered_by_id_users_id_fk",
+        "orders_billing_ordered_by_id_users_id_fk": {
+          "name": "orders_billing_ordered_by_id_users_id_fk",
           "tableFrom": "orders",
           "tableTo": "users",
           "columnsFrom": [
-            "ordered_by_id"
+            "billing_ordered_by_id"
           ],
           "columnsTo": [
             "id"
@@ -1573,14 +1627,8 @@
           "primaryKey": true,
           "notNull": true
         },
-        "first_name": {
-          "name": "first_name",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "last_name": {
-          "name": "last_name",
+        "name": {
+          "name": "name",
           "type": "varchar",
           "primaryKey": false,
           "notNull": false
@@ -1591,39 +1639,33 @@
           "primaryKey": false,
           "notNull": false
         },
-        "address_line1": {
-          "name": "address_line1",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "address_line2": {
-          "name": "address_line2",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "city": {
-          "name": "city",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "state": {
-          "name": "state",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "postcode": {
-          "name": "postcode",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
         "shippingMethod": {
           "name": "shippingMethod",
           "type": "enum_carts_items_receivers_shipping_method",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "address_formatted_address": {
+          "name": "address_formatted_address",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "address_address_line1": {
+          "name": "address_address_line1",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "address_address_line2": {
+          "name": "address_address_line2",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "address_json": {
+          "name": "address_json",
+          "type": "jsonb",
           "primaryKey": false,
           "notNull": false
         },
@@ -1642,6 +1684,12 @@
         "totals_receiver_shipping": {
           "name": "totals_receiver_shipping",
           "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "errors": {
+          "name": "errors",
+          "type": "jsonb",
           "primaryKey": false,
           "notNull": false
         }
@@ -4439,7 +4487,6 @@
       "name": "enum_orders_items_receivers_shipping_method",
       "values": {
         "standardMail": "standardMail",
-        "registeredMail": "registeredMail",
         "expressMail": "expressMail",
         "standardParcel": "standardParcel",
         "expressParcel": "expressParcel"
@@ -4550,7 +4597,6 @@
     "enum_carts_items_receivers_shipping_method": {
       "name": "enum_carts_items_receivers_shipping_method",
       "values": {
-        "free": "free",
         "standardMail": "standardMail",
         "expressMail": "expressMail",
         "standardParcel": "standardParcel",

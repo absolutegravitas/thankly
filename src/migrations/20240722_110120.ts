@@ -9,7 +9,7 @@ EXCEPTION
 END $$;
 
 DO $$ BEGIN
- CREATE TYPE "enum_orders_items_receivers_shipping_method" AS ENUM('standardMail', 'registeredMail', 'expressMail', 'standardParcel', 'expressParcel');
+ CREATE TYPE "enum_orders_items_receivers_shipping_method" AS ENUM('standardMail', 'expressMail', 'standardParcel', 'expressParcel');
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -99,7 +99,7 @@ EXCEPTION
 END $$;
 
 DO $$ BEGIN
- CREATE TYPE "enum_carts_items_receivers_shipping_method" AS ENUM('free', 'standardMail', 'expressMail', 'standardParcel', 'expressParcel');
+ CREATE TYPE "enum_carts_items_receivers_shipping_method" AS ENUM('standardMail', 'expressMail', 'standardParcel', 'expressParcel');
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -180,39 +180,48 @@ CREATE TABLE IF NOT EXISTS "orders_items_receivers" (
 	"_order" integer NOT NULL,
 	"_parent_id" varchar NOT NULL,
 	"id" varchar PRIMARY KEY NOT NULL,
-	"first_name" varchar,
-	"last_name" varchar,
+	"name" varchar,
 	"message" varchar,
-	"address_line1" varchar,
-	"address_line2" varchar,
-	"city" varchar,
-	"state" varchar,
-	"postcode" varchar,
 	"shippingMethod" "enum_orders_items_receivers_shipping_method",
-	"receiver_price" numeric,
-	"receiver_shipping" numeric,
-	"receiver_total" numeric
+	"address_formatted_address" varchar,
+	"address_address_line1" varchar,
+	"address_address_line2" varchar,
+	"address_json" jsonb,
+	"totals_receiver_total" numeric NOT NULL,
+	"totals_receiver_thankly" numeric NOT NULL,
+	"totals_receiver_shipping" numeric,
+	"errors" jsonb
 );
 
 CREATE TABLE IF NOT EXISTS "orders_items" (
 	"_order" integer NOT NULL,
 	"_parent_id" integer NOT NULL,
 	"id" varchar PRIMARY KEY NOT NULL,
+	"product_price" numeric,
 	"product_id" integer NOT NULL,
-	"item_price" numeric,
-	"item_total_shipping" numeric,
-	"item_total" numeric
+	"totals_item_total" numeric NOT NULL,
+	"totals_item_thanklys" numeric NOT NULL,
+	"totals_item_shipping" numeric
 );
 
 CREATE TABLE IF NOT EXISTS "orders" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"order_number" numeric,
-	"ordered_by_id" integer,
+	"billing_ordered_by_id" integer,
+	"billing_name" varchar,
+	"billing_email" varchar,
+	"billing_contact_number" numeric,
+	"billing_org_name" varchar,
+	"billing_org_id" varchar,
+	"billing_billing_address_formatted_address" varchar,
+	"billing_billing_address_address_line1" varchar,
+	"billing_billing_address_address_line2" varchar,
+	"billing_billing_address_json" jsonb,
 	"status" "enum_orders_status",
 	"stripe_payment_intent_i_d" varchar,
-	"order_subtotal" numeric,
-	"order_shipping" numeric,
-	"order_total" numeric,
+	"totals_order_thanklys" numeric NOT NULL,
+	"totals_order_shipping" numeric NOT NULL,
+	"totals_order_total" numeric NOT NULL,
 	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
 	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
 );
@@ -367,18 +376,17 @@ CREATE TABLE IF NOT EXISTS "carts_items_receivers" (
 	"_order" integer NOT NULL,
 	"_parent_id" varchar NOT NULL,
 	"id" varchar PRIMARY KEY NOT NULL,
-	"first_name" varchar,
-	"last_name" varchar,
+	"name" varchar,
 	"message" varchar,
-	"address_line1" varchar,
-	"address_line2" varchar,
-	"city" varchar,
-	"state" varchar,
-	"postcode" varchar,
 	"shippingMethod" "enum_carts_items_receivers_shipping_method",
+	"address_formatted_address" varchar,
+	"address_address_line1" varchar,
+	"address_address_line2" varchar,
+	"address_json" jsonb,
 	"totals_receiver_total" numeric NOT NULL,
 	"totals_receiver_thankly" numeric NOT NULL,
-	"totals_receiver_shipping" numeric
+	"totals_receiver_shipping" numeric,
+	"errors" jsonb
 );
 
 CREATE TABLE IF NOT EXISTS "carts_items" (
@@ -809,7 +817,7 @@ EXCEPTION
 END $$;
 
 DO $$ BEGIN
- ALTER TABLE "orders" ADD CONSTRAINT "orders_ordered_by_id_users_id_fk" FOREIGN KEY ("ordered_by_id") REFERENCES "users"("id") ON DELETE set null ON UPDATE no action;
+ ALTER TABLE "orders" ADD CONSTRAINT "orders_billing_ordered_by_id_users_id_fk" FOREIGN KEY ("billing_ordered_by_id") REFERENCES "users"("id") ON DELETE set null ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;

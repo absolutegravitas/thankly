@@ -1,85 +1,128 @@
 'use client'
-import React, { Suspense, useEffect } from 'react'
+import React, { Suspense, useEffect, useState } from 'react'
 import { BlockWrapper } from '@app/_components/BlockWrapper'
 import { Gutter } from '@app/_components/Gutter'
 import { CartEmpty } from '@/app/(app)/_blocks/Cart/CartEmpty'
-import { cartText } from '@/utilities/refData'
 import { buttonLook, contentFormats, getPaddingClasses } from '@app/_css/tailwindClasses'
 import { useCart } from '@app/_providers/Cart'
-import { CartItems } from '@/app/(app)/_blocks/Cart/CartItems'
-import { CartSummary } from '@/app/(app)/_blocks/Cart/CartSummary'
-import { CMSLink } from '../../_components/CMSLink'
-import { DollarSignIcon } from 'lucide-react'
 import Link from 'next/link'
 import cn from '@/utilities/cn'
+import { CheckoutSummary } from '../../_blocks/Checkout/Summary'
+import { CheckoutForm } from '../../_blocks/Checkout/CheckoutForm'
+import { Elements } from '@stripe/react-stripe-js'
+import { loadStripe } from '@stripe/stripe-js'
+import { createPaymentIntent } from '../../_blocks/Checkout/CheckoutForm/createPaymentIntent'
+
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
 
 export default function CartPage() {
   const { cart, cartIsEmpty, hasInitializedCart } = useCart()
+  const [clientSecret, setClientSecret] = useState<string | null>(null)
 
-  // If we have cart data, render the content regardless of hasInitializedCart
+  useEffect(() => {
+    if (cart && cart.totals && cart.totals.cartTotal > 0) {
+      createPaymentIntent(cart.totals.cartTotal)
+        .then((result) => {
+          if (result.clientSecret) {
+            setClientSecret(result.clientSecret)
+          }
+        })
+        .catch((error) => console.error('Error creating PaymentIntent:', error))
+    }
+  }, [cart])
+
   if (cart && cart.items && cart.items.length > 0) {
-    return renderCartContent(cart, cartIsEmpty)
+    return renderCartContent(cart, cartIsEmpty, clientSecret)
   }
 
-  // If we don't have cart data and hasInitializedCart is false, show loading
   if (!hasInitializedCart) {
     return <CartLoadingSkeleton />
   }
 
-  // If we have initialized but the cart is empty, show empty cart
   return <CartEmpty />
 }
 
-function renderCartContent(cart: any, cartIsEmpty: any) {
+function renderCartContent(cart: any, cartIsEmpty: any, clientSecret: string | null) {
+  if (!clientSecret) {
+    return <div>Loading...</div>
+  }
+
+  const appearance = {
+    theme: 'stripe',
+    variables: {
+      colorPrimary: '#0570de',
+      colorBackground: '#ffffff',
+      colorText: '#30313d',
+      colorDanger: '#df1b41',
+      fontFamily: 'Ideal Sans, system-ui, sans-serif',
+      spacingUnit: '2px',
+      borderRadius: '4px',
+    },
+  }
+
+  const options = {
+    // clientSecret,
+    appearance,
+    mode: 'payment' as const,
+    currency: 'aud',
+    amount: cart.totals.cartTotal * 100, // amount in cents
+  }
+
   return (
     <BlockWrapper className={getPaddingClasses('hero')}>
       <Gutter>
         {cartIsEmpty ? (
           <CartEmpty />
         ) : (
-          <>
-            <div className="flex flex-row justify-between #gap-6">
+          <React.Fragment>
+            <div className="flex flex-row justify-between pb-6">
               <h1
-                className={[
+                className={cn(
                   contentFormats.global,
                   contentFormats.h3,
                   'tracking-tighter text-3xl sm:text-2xl font-medium my-2',
-                ].join(' ')}
+                )}
               >
-                {'Your Cart'}
+                {'Checkout'}
               </h1>
-
-              {/* <div className="hidden sm:flex w-1/6">
+              <div className="hidden sm:flex w-1/6">
                 <Link
-                  href="#summary-heading"
+                  href="/shop/cart"
                   scroll={true}
-                  className={[
+                  className={cn(
                     buttonLook.variants.base,
                     buttonLook.sizes.medium,
                     buttonLook.widths.full,
-                    `flex flex-row justify-between no-underline`,
-                  ].join(' ')}
+                    'flex flex-row justify-between no-underline',
+                  )}
                 >
-                  <span className={cn(contentFormats.global, contentFormats.p, '')}>
-                    {`Order Summary `}
+                  <span> &larr; </span>
+                  <span className={cn(contentFormats.global, contentFormats.p)}>
+                    {`Back to Cart`}
                   </span>
-                  <span> &darr; </span>
                 </Link>
-              </div> */}
+              </div>
             </div>
-            <div className="flex flex-col sm:flex-row gap-6">
-              <Suspense fallback={<CartItemsSkeleton />}>{cart && <CartItems />}</Suspense>
-
+            <div className="flex flex-col sm:flex-row gap-6 px-0 sm:px-8 sm:py-6">
+              <Suspense fallback={<CartItemsSkeleton />}>
+                {cart && (
+                  <Elements stripe={stripePromise} options={options}>
+                    <CheckoutForm />
+                  </Elements>
+                )}
+              </Suspense>
               <Suspense fallback={<CartSummarySkeleton />}>
-                {cart && <CartSummary cart={cart} />}
+                {cart && <CheckoutSummary cart={cart} />}
               </Suspense>
             </div>
-          </>
+          </React.Fragment>
         )}
       </Gutter>
     </BlockWrapper>
   )
 }
+
+// ... rest of the file remains the same
 
 const CartLoadingSkeleton = () => (
   <BlockWrapper className={getPaddingClasses('hero')}>
