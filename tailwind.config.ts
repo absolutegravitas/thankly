@@ -8,7 +8,7 @@ const config: Config = {
   // https://tailwindcss.com/docs/content-configuration#safelisting-classes
   // safelist: ['text-offwhite', 'text-lightbrown', 'text-lighterbrown'],
   presets: [], // allows you to specify your own custom base configuration instead of using Tailwind’s default base configuration.
-  darkMode: 'class', // or 'media'
+  // darkMode: 'class', // or 'media'
 
   theme: {
     // define your color palette, fonts, type scale, border sizes, breakpoints — anything related to the visual design of your site.
