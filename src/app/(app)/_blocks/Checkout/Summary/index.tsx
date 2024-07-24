@@ -80,10 +80,7 @@ export const CheckoutSummary: React.FC<{ cart: Cart }> = ({ cart }) => {
   }
 
   return (
-    <div
-      id="summary-heading"
-      className="scroll-py-28 scroll-mt-24 basis-1/3 order-first sm:order-last"
-    >
+    <div id="summary-heading" className="sm:basis-1/2 #order-first sm:order-last">
       <h2 className={`${contentFormats.global} ${contentFormats.h3} !my-0 pb-6`}>Order Summary</h2>
 
       <div className="space-y-4">
@@ -145,42 +142,26 @@ export const CheckoutSummary: React.FC<{ cart: Cart }> = ({ cart }) => {
           </div>
         )}
 
-        <div className="mt-4 lg:mt-8 p-0 lg:p-0 ">
-          <div className={cn(contentFormats.global, contentFormats.text, `!mt-0 text-sm py-4`)}>
-            <React.Fragment>
-              <MailWarningIcon className="mr-2" />
-              <span className="font-semibold">{`Thankly Cards: `}</span>
-              <span className={[contentFormats.text, `text-sm`].join(' ')}>
-                {cartText.shippingMessage}
-                <Link
-                  className={[contentFormats.global, contentFormats.a, `!text-sm`].join(' ')}
-                  href="https://auspost.com.au/about-us/supporting-communities/services-all-communities/our-future"
-                  target="_blank"
-                >
-                  Learn More
-                </Link>
-              </span>
-            </React.Fragment>
-          </div>
-        </div>
-
-        <div className="mt-6 sm:hidden">
-          <h2
-            onClick={() => setIsAccordionOpen(!isAccordionOpen)}
-            className={`${contentFormats.global} ${contentFormats.h3} w-full flex justify-between items-center !my-0 pb-6`}
-          >
-            Thanklys Ordered
-            {isAccordionOpen ? (
-              <ChevronUpIcon className="h-6 w-6" />
-            ) : (
-              <ChevronDownIcon className="h-6 w-6" />
-            )}
-          </h2>
-        </div>
-
         <h2 className={`${contentFormats.global} ${contentFormats.h3} mb-6 hidden sm:block`}>
           Thanklys Ordered
         </h2>
+
+        <div className="mt-6">
+          <React.Fragment>
+            <MailWarningIcon className="mr-2" />
+            <span className="font-semibold">{`Thankly Cards: `}</span>
+            <span className={[contentFormats.text, `text-sm`].join(' ')}>
+              {cartText.shippingMessage}
+              <Link
+                className={[contentFormats.global, contentFormats.a, `!text-sm`].join(' ')}
+                href="https://auspost.com.au/about-us/supporting-communities/services-all-communities/our-future"
+                target="_blank"
+              >
+                Learn More
+              </Link>
+            </span>
+          </React.Fragment>
+        </div>
 
         <div className={`space-y-4 ${isAccordionOpen ? 'block' : 'hidden'} sm:block`}>
           {cartItems?.map((item: any, index: any) => {

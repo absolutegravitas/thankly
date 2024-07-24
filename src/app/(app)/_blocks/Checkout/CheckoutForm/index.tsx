@@ -10,7 +10,7 @@ import {
 } from '@stripe/react-stripe-js'
 import { useCart } from '@app/_providers/Cart'
 import { Lock } from 'lucide-react'
-import { contentFormats } from '@app/_css/tailwindClasses'
+import { buttonLook, contentFormats } from '@app/_css/tailwindClasses'
 import cn from '@/utilities/cn'
 
 export const CheckoutForm: React.FC = () => {
@@ -45,34 +45,12 @@ export const CheckoutForm: React.FC = () => {
     setIsLoading(false)
   }
 
-  const handleExpressCheckout = async () => {
-    if (!stripe || !elements) {
-      setErrorMessage('Stripe has not been initialized.')
-      return
-    }
-
-    setIsLoading(true)
-    setErrorMessage(null)
-
-    const { error } = await stripe.confirmPayment({
-      elements,
-      confirmParams: {
-        return_url: `${window.location.origin}/shop/payment-confirmation`,
-      },
-    })
-
-    if (error) {
-      setErrorMessage(error.message ?? 'An unknown error occurred during Express Checkout.')
-    }
-
-    setIsLoading(false)
-  }
-
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 basis-2/3">
-      <PaymentElement />
+    <form onSubmit={handleSubmit} className="#space-y-6 sm:basis-1/2">
+      <h2 className={`${contentFormats.global} ${contentFormats.h3} !my-0 pb-6`}>Payment</h2>
 
-      <AddressElement options={{ mode: 'billing' }} />
+      <PaymentElement />
+      {/* <AddressElement options={{ mode: 'billing' }} /> */}
 
       {errorMessage && <div className="text-red-500 text-sm mt-2">{errorMessage}</div>}
 
@@ -80,9 +58,13 @@ export const CheckoutForm: React.FC = () => {
         type="submit"
         disabled={!stripe || isLoading}
         className={cn(
-          'w-full rounded-md border border-transparent bg-indigo-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50',
-          contentFormats.global,
-          contentFormats.p,
+          'w-full py-3 cursor-pointer border border-transparent bg-green px-4 text-sm font-medium text-white shadow-sm hover:bg-black hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50',
+          // contentFormats.global,
+          // contentFormats.p,
+          // buttonLook.base,
+          buttonLook.sizes.medium,
+          buttonLook.widths.full,
+          // buttonLook.variants.blocks,
         )}
       >
         {isLoading ? 'Processing...' : `Pay ${cart.totals.cartTotal.toFixed(2)} AUD`}

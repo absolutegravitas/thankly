@@ -23,13 +23,6 @@ import { loadStripe } from '@stripe/stripe-js'
 // Initialize Stripe
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '')
 
-const CheckoutSteps = {
-  SUMMARY: 'summary',
-  AUTHENTICATION: 'authentication',
-  PAYMENT: 'payment',
-  BILLING: 'billing',
-}
-
 export const CartSummary: React.FC<{ cart: Cart }> = ({ cart }) => {
   if (!cart || !cart.totals) {
     return null // or return a loading state or placeholder
@@ -40,7 +33,6 @@ export const CartSummary: React.FC<{ cart: Cart }> = ({ cart }) => {
   const [isValid, setIsValid] = useState(true)
   const [validationMessage, setValidationMessage] = useState('')
   const [isProcessing, setIsProcessing] = useState(false)
-  const [currentStep, setCurrentStep] = useState(CheckoutSteps.SUMMARY)
   const [isGuest, setIsGuest] = useState(false)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')

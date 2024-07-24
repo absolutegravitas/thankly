@@ -9,7 +9,7 @@ import Link from 'next/link'
 import cn from '@/utilities/cn'
 import { CheckoutSummary } from '../../_blocks/Checkout/Summary'
 import { CheckoutForm } from '../../_blocks/Checkout/CheckoutForm'
-import { Elements } from '@stripe/react-stripe-js'
+import { Elements, ExpressCheckoutElement } from '@stripe/react-stripe-js'
 import { loadStripe } from '@stripe/stripe-js'
 import { createPaymentIntent } from '../../_blocks/Checkout/CheckoutForm/createPaymentIntent'
 
@@ -88,17 +88,17 @@ function renderCartContent(cart: any, cartIsEmpty: any, clientSecret: string | n
   }
 
   const options = {
-    clientSecret,
+    // clientSecret,
     appearance,
-    // mode: 'payment' as const,
+    mode: 'payment' as const,
     layout: {
-      type: 'accordion',
+      type: 'accordion' as const,
       defaultCollapsed: false,
       radios: true,
       spacedAccordionItems: false,
     },
-    // currency: 'aud',
-    // amount: cart.totals.cartTotal * 100, // amount in cents
+    currency: 'aud',
+    amount: cart.totals.cartTotal * 100, // amount in cents
   }
 
   return (
@@ -136,19 +136,22 @@ function renderCartContent(cart: any, cartIsEmpty: any, clientSecret: string | n
                 </Link>
               </div>
             </div>
-            <div className="flex flex-col sm:flex-row gap-6 px-0 sm:px-8   #sm:py-6">
-              <Suspense fallback={<StripeElementsSkeleton />}>
-                {cart && clientSecret ? (
-                  <Elements stripe={stripePromise} options={options}>
-                    <CheckoutForm />
-                  </Elements>
-                ) : (
-                  <StripeElementsSkeleton />
-                )}
-              </Suspense>
-              <Suspense fallback={<CartSummarySkeleton />}>
-                {cart && <CheckoutSummary cart={cart} />}
-              </Suspense>
+            <div className="flex justify-center">
+              <div className="flex flex-col sm:flex-row gap-6 px-0 #max-w-6xl justify-center justify-items-center">
+                <Suspense fallback={<StripeElementsSkeleton />}>
+                  {cart && clientSecret ? (
+                    <Elements stripe={stripePromise} options={options}>
+                      {/* <ExpressCheckoutElement onConfirm={} /> */}
+                      <CheckoutForm />
+                    </Elements>
+                  ) : (
+                    <StripeElementsSkeleton />
+                  )}
+                </Suspense>
+                <Suspense fallback={<CartSummarySkeleton />}>
+                  {cart && <CheckoutSummary cart={cart} />}
+                </Suspense>
+              </div>
             </div>
           </React.Fragment>
         )}
