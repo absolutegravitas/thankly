@@ -35,8 +35,14 @@ const policies = {
     'http://cdn.jsdelivr.net',
     'https://maps.gstatic.com',
     'https://google.com.au',
+    'https://gravatar.com',
   ],
-  'font-src': ["'self'", 'https://fonts.googleapis.com', 'https://fonts.gstatic.com'],
+  'font-src': [
+    "'self'",
+    'https://fonts.googleapis.com',
+    'https://fonts.gstatic.com',
+    'https://cdn.jsdeliver.net',
+  ],
   'frame-src': [
     "'self'",
     'https://checkout.stripe.com',

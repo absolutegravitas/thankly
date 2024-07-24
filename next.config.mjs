@@ -25,14 +25,7 @@ const nextConfig = {
       { protocol: 'https', hostname: '**thankly.com.au**' },
       { protocol: 'https', hostname: '**thankly.vercel.app**' },
       { protocol: 'https', hostname: '**tailwindui.com**' },
-      // {
-      //   protocol: 'https',
-      //   hostname: '**images.unsplash.com**',
-      // },
-      // {
-      //   protocol: 'https',
-      //   hostname: '**maps.gstatic.com**',
-      // },
+      { protocol: 'https', hostname: '**gravatar.com**' },
       { protocol: 'https', hostname: '**google.com.au**' },
       { protocol: 'https', hostname: '**api.radar.io**' },
     ],
