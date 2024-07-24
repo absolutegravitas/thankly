@@ -19,6 +19,11 @@ export const CheckoutForm: React.FC = () => {
   const { cart } = useCart()
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
+  const paymentElementOptions = {
+    layout: 'accordion' as const,
+
+    spacedAccordionItems: false,
+  }
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault()
@@ -38,8 +43,15 @@ export const CheckoutForm: React.FC = () => {
       },
     })
 
-    if (error) {
+    // This point will only be reached if there is an immediate error when
+    // confirming the payment. Otherwise, your customer will be redirected to
+    // your `return_url`. For some payment methods like iDEAL, your customer will
+    // be redirected to an intermediate site first to authorize the payment, then
+    // redirected to the `return_url`.
+    if (error.type === 'card_error' || error.type === 'validation_error') {
       setErrorMessage(error.message ?? 'An unknown error occurred')
+    } else {
+      setErrorMessage('An unexpected error occured.')
     }
 
     setIsLoading(false)
@@ -49,7 +61,7 @@ export const CheckoutForm: React.FC = () => {
     <form onSubmit={handleSubmit} className="#space-y-6 sm:basis-1/2">
       <h2 className={`${contentFormats.global} ${contentFormats.h3} !my-0 pb-6`}>Payment</h2>
 
-      <PaymentElement />
+      <PaymentElement options={paymentElementOptions} />
       {/* <AddressElement options={{ mode: 'billing' }} /> */}
 
       {errorMessage && <div className="text-red-500 text-sm mt-2">{errorMessage}</div>}

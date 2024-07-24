@@ -91,12 +91,6 @@ function renderCartContent(cart: any, cartIsEmpty: any, clientSecret: string | n
     // clientSecret,
     appearance,
     mode: 'payment' as const,
-    layout: {
-      type: 'accordion' as const,
-      defaultCollapsed: false,
-      radios: true,
-      spacedAccordionItems: false,
-    },
     currency: 'aud',
     amount: cart.totals.cartTotal * 100, // amount in cents
   }
