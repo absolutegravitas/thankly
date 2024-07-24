@@ -137,7 +137,7 @@ function renderCartContent(cart: any, cartIsEmpty: any, clientSecret: string | n
               </div>
             </div>
             <div className="flex justify-center">
-              <div className="flex flex-col sm:flex-row gap-6 px-0 #max-w-6xl justify-center justify-items-center">
+              <div className="flex flex-col sm:flex-row md:shrink-0  gap-6 px-0 #max-w-6xl justify-center justify-items-center">
                 <Suspense fallback={<StripeElementsSkeleton />}>
                   {cart && clientSecret ? (
                     <Elements stripe={stripePromise} options={options}>

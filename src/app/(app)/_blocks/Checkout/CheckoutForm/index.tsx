@@ -58,7 +58,7 @@ export const CheckoutForm: React.FC = () => {
         type="submit"
         disabled={!stripe || isLoading}
         className={cn(
-          'w-full py-3 cursor-pointer border border-transparent bg-green px-4 text-sm font-medium text-white shadow-sm hover:bg-black hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50',
+          'w-full mt-6 py-3 cursor-pointer border border-transparent bg-green px-4 text-sm font-medium text-white shadow-sm hover:bg-black hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50',
           // contentFormats.global,
           // contentFormats.p,
           // buttonLook.base,

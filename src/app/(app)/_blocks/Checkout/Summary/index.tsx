@@ -142,9 +142,9 @@ export const CheckoutSummary: React.FC<{ cart: Cart }> = ({ cart }) => {
           </div>
         )}
 
-        <h2 className={`${contentFormats.global} ${contentFormats.h3} mb-6 hidden sm:block`}>
+        {/* <h2 className={`${contentFormats.global} ${contentFormats.h3} py-6 hidden sm:block`}>
           Thanklys Ordered
-        </h2>
+        </h2> */}
 
         <div className="mt-6">
           <React.Fragment>
@@ -163,7 +163,7 @@ export const CheckoutSummary: React.FC<{ cart: Cart }> = ({ cart }) => {
           </React.Fragment>
         </div>
 
-        <div className={`space-y-4 ${isAccordionOpen ? 'block' : 'hidden'} sm:block`}>
+        <div className={`space-y-4 #sm:block`}>
           {cartItems?.map((item: any, index: any) => {
             const { product } = item
             const imageUrl =
