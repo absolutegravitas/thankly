@@ -36,7 +36,7 @@ export default function CartPage() {
   }
 
   if (!hasInitializedCart) {
-    return <CartLoadingSkeleton />
+    return <CheckoutLoadingSkeleton />
   }
 
   return <CartEmpty />
@@ -44,28 +44,61 @@ export default function CartPage() {
 
 function renderCartContent(cart: any, cartIsEmpty: any, clientSecret: string | null) {
   if (!clientSecret) {
-    return <div>Loading...</div>
+    return <CheckoutLoadingSkeleton />
   }
 
   const appearance = {
-    theme: 'stripe',
+    theme: 'flat' as const,
     variables: {
-      colorPrimary: '#0570de',
-      colorBackground: '#ffffff',
-      colorText: '#30313d',
-      colorDanger: '#df1b41',
-      fontFamily: 'Ideal Sans, system-ui, sans-serif',
-      spacingUnit: '2px',
-      borderRadius: '4px',
+      colorPrimary: '#557755',
+      colorBackground: '#f9fafb', // Matches bg-gray-50
+      colorText: '#111827', // Matches text-gray-900
+      colorDanger: '#dc2626', // Matches text-red-600
+      fontFamily:
+        'ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
+      spacingUnit: '4px',
+      borderRadius: '0px',
+    },
+    rules: {
+      '.Input': {
+        border: 'none',
+        borderBottom: '1px solid #d1d5db', // Matches border-gray-300
+        boxShadow: 'none',
+        fontSize: '14px', // Matches text-sm
+        padding: '8px 4px', // Adjusted to match your input padding
+      },
+      '.Input:focus': {
+        border: 'none',
+        borderBottom: '2px solid #557755', // Matches focus:border-green/75
+        boxShadow: 'none',
+      },
+      '.Input::placeholder': {
+        color: '#9ca3af', // Matches placeholder-gray-400
+      },
+      '.Label': {
+        fontSize: '14px', // Matches text-sm
+        fontWeight: '500', // Matches font-medium
+        color: '#111827', // Matches text-gray-900
+      },
+      '.Error': {
+        color: '#dc2626', // Matches text-red-600
+        fontSize: '14px', // Matches text-sm
+      },
     },
   }
 
   const options = {
-    // clientSecret,
+    clientSecret,
     appearance,
-    mode: 'payment' as const,
-    currency: 'aud',
-    amount: cart.totals.cartTotal * 100, // amount in cents
+    // mode: 'payment' as const,
+    layout: {
+      type: 'accordion',
+      defaultCollapsed: false,
+      radios: true,
+      spacedAccordionItems: false,
+    },
+    // currency: 'aud',
+    // amount: cart.totals.cartTotal * 100, // amount in cents
   }
 
   return (
@@ -103,12 +136,14 @@ function renderCartContent(cart: any, cartIsEmpty: any, clientSecret: string | n
                 </Link>
               </div>
             </div>
-            <div className="flex flex-col sm:flex-row gap-6 px-0 sm:px-8 sm:py-6">
-              <Suspense fallback={<CartItemsSkeleton />}>
-                {cart && (
+            <div className="flex flex-col sm:flex-row gap-6 px-0 sm:px-8   #sm:py-6">
+              <Suspense fallback={<StripeElementsSkeleton />}>
+                {cart && clientSecret ? (
                   <Elements stripe={stripePromise} options={options}>
                     <CheckoutForm />
                   </Elements>
+                ) : (
+                  <StripeElementsSkeleton />
                 )}
               </Suspense>
               <Suspense fallback={<CartSummarySkeleton />}>
@@ -124,7 +159,7 @@ function renderCartContent(cart: any, cartIsEmpty: any, clientSecret: string | n
 
 // ... rest of the file remains the same
 
-const CartLoadingSkeleton = () => (
+const CheckoutLoadingSkeleton = () => (
   <BlockWrapper className={getPaddingClasses('hero')}>
     <Gutter>
       <div className="animate-pulse">
@@ -186,6 +221,20 @@ const CartSummarySkeleton: React.FC = () => {
           <div className="bg-gray-200 rounded h-4 w-20"></div>
         </div>
       </div>
+    </div>
+  )
+}
+
+const StripeElementsSkeleton: React.FC = () => {
+  return (
+    <div className="animate-pulse space-y-6 basis-2/3">
+      <div className="h-12 bg-gray-200 rounded"></div>
+      <div className="space-y-4">
+        <div className="h-10 bg-gray-200 rounded"></div>
+        <div className="h-10 bg-gray-200 rounded"></div>
+        <div className="h-10 bg-gray-200 rounded"></div>
+      </div>
+      <div className="h-12 bg-gray-200 rounded"></div>
     </div>
   )
 }
