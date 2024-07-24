@@ -9,7 +9,7 @@ import { RichText } from '@app/_blocks/RichText'
 import classes from './index.module.scss'
 
 import { ExtractBlockProps } from '@/utilities/extractBlockProps'
-import { getPaddingClasses } from '@/app/(app)/_css/tailwindClasses'
+import { getPaddingClasses } from '@app/_css/tailwindClasses'
 export type DefaultHeroProps = ExtractBlockProps<'fields'>
 
 export const DefaultHero: React.FC<DefaultHeroProps> = ({ description, theme }) => {

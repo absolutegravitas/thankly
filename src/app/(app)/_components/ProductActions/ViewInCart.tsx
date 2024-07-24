@@ -9,7 +9,7 @@ export function ViewInCartButton() {
   const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
 
-  const handleViewInCart = async () => {
+  const handleViewInOrder = async () => {
     setIsLoading(true)
     router.push('/shop/cart')
   }
@@ -37,7 +37,7 @@ export function ViewInCartButton() {
         },
       }}
       actions={{
-        onClick: handleViewInCart,
+        onClick: handleViewInOrder,
       }}
     />
   )

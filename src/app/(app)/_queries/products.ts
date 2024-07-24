@@ -3,13 +3,11 @@
 import { revalidatePath, unstable_cache } from 'next/cache'
 import { getPayloadHMR } from '@payloadcms/next/utilities'
 import configPromise from '@payload-config'
-import { Cart, Product } from '@payload-types'
-// import { getCart } from '@app/_providers/Cart/cartActions'
-import { headers, cookies } from 'next/headers'
+import { Order, Product } from '@payload-types'
 
 export const fetchProduct = async (slug: string): Promise<any | null> => {
-  // let cart: any | null = null
-  // cart = await getCart()
+  // let order: any | null = null
+  // order = await getCart()
 
   const cachedFetchProduct = unstable_cache(
     async (): Promise<any | null> => {
@@ -32,8 +30,8 @@ export const fetchProduct = async (slug: string): Promise<any | null> => {
         const inCart: boolean = false
         product = { ...product, inCart }
 
-        // if (cart && product) {
-        //   product.inCart = cart?.items?.some((p: any) => p.product.id === product?.id)
+        // if (order && product) {
+        //   product.inCart = order?.items?.some((p: any) => p.product.id === product?.id)
         //   // product = { ...product, inCart }
         //   console.log('fetchProduct', product)
         // }

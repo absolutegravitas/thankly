@@ -16,7 +16,6 @@ export interface Config {
     pages: Page;
     reusable: Reusable;
     media: Media;
-    carts: Cart;
     users: User;
     forms: Form;
     'form-submissions': FormSubmission;
@@ -51,8 +50,14 @@ export interface UserAuthOperations {
 export interface Order {
   id: number;
   orderNumber?: number | null;
-  status?: ('pending' | 'processing' | 'completed' | 'cancelled' | 'onhold') | null;
+  status: 'pending' | 'processing' | 'completed' | 'cancelled' | 'onhold';
   stripePaymentIntentID?: string | null;
+  totals: {
+    cost: number;
+    shipping?: number | null;
+    discount?: number | null;
+    total: number;
+  };
   billing?: {
     orderedBy?: (number | null) | User;
     name?: string | null;
@@ -60,7 +65,7 @@ export interface Order {
     contactNumber?: number | null;
     orgName?: string | null;
     orgId?: string | null;
-    billingAddress?: {
+    address?: {
       formattedAddress?: string | null;
       addressLine1?: string | null;
       addressLine2?: string | null;
@@ -75,43 +80,46 @@ export interface Order {
         | null;
     };
   };
-  totals: {
-    orderThanklys: number;
-    orderShipping: number;
-    orderTotal: number;
-  };
   items?:
     | {
         price?: number | null;
         product: number | Product;
         totals: {
-          itemCost: number;
-          shippingCost?: number | null;
-          subTotalCost: number;
+          cost: number;
+          shipping?: number | null;
+          subTotal: number;
+          discount?: number | null;
         };
         receivers?:
           | {
+              totals: {
+                cost: number;
+                shipping?: number | null;
+                subTotal: number;
+                discount?: number | null;
+              };
               name?: string | null;
               message?: string | null;
-              shippingMethod?: ('standardMail' | 'expressMail' | 'standardParcel' | 'expressParcel') | null;
-              address?: {
-                formattedAddress?: string | null;
-                addressLine1?: string | null;
-                addressLine2?: string | null;
-                json?:
-                  | {
-                      [k: string]: unknown;
-                    }
-                  | unknown[]
-                  | string
-                  | number
-                  | boolean
-                  | null;
-              };
-              totals: {
-                receiverTotal: number;
-                receiverThankly: number;
-                receiverShipping?: number | null;
+              delivery?: {
+                tracking?: {
+                  id?: string | null;
+                  link?: string | null;
+                };
+                shippingMethod?: ('standardMail' | 'expressMail' | 'standardParcel' | 'expressParcel') | null;
+                address?: {
+                  formattedAddress?: string | null;
+                  addressLine1?: string | null;
+                  addressLine2?: string | null;
+                  json?:
+                    | {
+                        [k: string]: unknown;
+                      }
+                    | unknown[]
+                    | string
+                    | number
+                    | boolean
+                    | null;
+                };
               };
               errors?:
                 | {
@@ -309,70 +317,6 @@ export interface Reusable {
     };
     [k: string]: unknown;
   } | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "carts".
- */
-export interface Cart {
-  id: number;
-  customer?: (number | null) | User;
-  totals: {
-    cartTotal: number;
-    cartThanklys: number;
-    cartShipping?: number | null;
-    cartShippingDiscount?: number | null;
-  };
-  items?:
-    | {
-        productPrice?: number | null;
-        product: number | Product;
-        totals: {
-          itemTotal: number;
-          itemThanklys: number;
-          itemShipping?: number | null;
-        };
-        receivers?:
-          | {
-              name?: string | null;
-              message?: string | null;
-              shippingMethod?: ('standardMail' | 'expressMail' | 'standardParcel' | 'expressParcel') | null;
-              address?: {
-                formattedAddress?: string | null;
-                addressLine1?: string | null;
-                addressLine2?: string | null;
-                json?:
-                  | {
-                      [k: string]: unknown;
-                    }
-                  | unknown[]
-                  | string
-                  | number
-                  | boolean
-                  | null;
-              };
-              totals: {
-                receiverTotal: number;
-                receiverThankly: number;
-                receiverShipping?: number | null;
-              };
-              errors?:
-                | {
-                    [k: string]: unknown;
-                  }
-                | unknown[]
-                | string
-                | number
-                | boolean
-                | null;
-              id?: string | null;
-            }[]
-          | null;
-        id?: string | null;
-      }[]
-    | null;
   updatedAt: string;
   createdAt: string;
 }

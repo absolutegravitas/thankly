@@ -2,14 +2,14 @@
 
 import React from 'react'
 import Link from 'next/link'
-import { useCart } from '@app/_providers/Cart'
+import { useOrder } from '@app/_providers/Order'
 import { CMSLink } from '../CMSLink'
 import { ShoppingCartIcon } from 'lucide-react'
 
-export const MiniCart: React.FC = () => {
-  const { cart } = useCart()
+export const OrderNotification: React.FC = () => {
+  const { order } = useOrder()
 
-  if (!cart) return null
+  if (!order) return null
 
   return (
     <div className="relative group">
@@ -30,9 +30,9 @@ export const MiniCart: React.FC = () => {
             <line x1="3" y1="6" x2="21" y2="6"></line>
             <path d="M16 10a4 4 0 0 1-8 0"></path>
           </svg>
-          {cart.items && (
+          {order.items && (
             <span className="absolute -top-2 -right-2 bg-green text-white rounded-full w-5 h-5 flex items-center justify-center text-xs">
-              {cart.items.length}
+              {order.items.length}
             </span>
           )}
         </span>
@@ -40,23 +40,23 @@ export const MiniCart: React.FC = () => {
       <div className="absolute top-3 right-0 mt-2 w-64 bg-neutral-100 border border-solid shadow-xl rounded-sm hidden group-hover:block">
         <div className="px-4 py-6">
           <span className="text-lg font-semibold mb-2">Cart Summary</span>
-          {cart.items?.slice(0, 3).map((item: any, index: number) => (
+          {order.items?.slice(0, 3).map((item: any, index: number) => (
             <div key={index} className="flex justify-between mb-2">
               <span>{item.product.title}</span>
               <span>
-                {item.totals.itemTotal.toLocaleString('en-AU', {
+                {item.totals.subTotal.toLocaleString('en-AU', {
                   style: 'currency',
                   currency: 'AUD',
                 })}
               </span>
             </div>
           ))}
-          {cart.items && cart.items?.length > 3 && (
-            <div className="text-sm text-gray-500">...and {cart.items?.length - 3} more items</div>
+          {order.items && order.items?.length > 3 && (
+            <div className="text-sm text-gray-500">...and {order.items?.length - 3} more items</div>
           )}
           <div className="my-4 font-semibold">
             Total:{' '}
-            {cart.totals.cartTotal.toLocaleString('en-AU', { style: 'currency', currency: 'AUD' })}
+            {order.totals.total.toLocaleString('en-AU', { style: 'currency', currency: 'AUD' })}
           </div>
 
           <CMSLink

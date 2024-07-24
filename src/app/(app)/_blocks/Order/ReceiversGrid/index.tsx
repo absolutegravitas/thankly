@@ -2,12 +2,12 @@
 
 import React, { useState, useEffect, useCallback, useTransition, useMemo } from 'react'
 import { contentFormats } from '@app/_css/tailwindClasses'
-import { useCart } from '@app/_providers/Cart'
+import { useOrder } from '@app/_providers/Order'
 import { MapPinIcon, MessageSquareTextIcon, SendIcon, UserIcon, UsersIcon } from 'lucide-react'
 import { AddReceiverButton, CopyReceiverIcon, RemoveReceiverIcon } from './ReceiverActions'
 import { addressAutocomplete } from './addressAutocomplete'
 import { debounce, update } from 'lodash'
-import { Cart, Product } from '@/payload-types'
+import { Order, Product } from '@/payload-types'
 import { Field, Label, Switch } from '@headlessui/react'
 import { Radio, RadioGroup } from '@headlessui/react'
 import cn from '@/utilities/cn'
@@ -23,30 +23,32 @@ interface Receiver {
   id: string
   message: string
   name: string
-  address?: {
-    formattedAddress?: string | null
-    addressLine1?: string | null
-    addressLine2?: string | null
-    json?:
-      | {
-          [k: string]: unknown
-        }
-      | unknown[]
-      | string
-      | number
-      | boolean
-      | null
+  delivery: {
+    address?: {
+      formattedAddress?: string | null
+      addressLine1?: string | null
+      addressLine2?: string | null
+      json?:
+        | {
+            [k: string]: unknown
+          }
+        | unknown[]
+        | string
+        | number
+        | boolean
+        | null
+    }
+    shippingMethod: ShippingMethod
   }
-  shippingMethod: ShippingMethod
   totals: {
-    receiverThankly: number
-    receiverShipping: number
-    receiverTotal: number
+    cost: number
+    shipping: number
+    subTotal: number
   }
   errors: JSON
 }
 
-interface CartItem {
+interface OrderItem {
   id: string
   product: Product
   receivers: Receiver[]
@@ -62,8 +64,8 @@ interface ValidationErrors {
 
 type ShippingMethod = 'standardMail' | 'expressMail' | 'standardParcel' | 'expressParcel' | null
 
-export const ReceiversGrid: React.FC<{ item: CartItem }> = ({ item }) => {
-  const { cart, updateReceiver, removeReceiver } = useCart()
+export const ReceiversGrid: React.FC<{ item: OrderItem }> = ({ item }) => {
+  const { order, updateReceiver, removeReceiver } = useOrder()
 
   const [isPending, startTransition] = useTransition()
   const [errors, setErrors] = useState<{ [key: string]: JSON }>({})
@@ -81,9 +83,9 @@ export const ReceiversGrid: React.FC<{ item: CartItem }> = ({ item }) => {
     const initialShipping: { [key: string]: (typeof shippingOptions)[0] } = {}
     item.receivers?.forEach((receiver) => {
       let selectedOption: (typeof shippingOptions)[0]
-      if (receiver.shippingMethod) {
+      if (receiver.delivery?.shippingMethod) {
         selectedOption =
-          shippingOptions.find((option) => option.value === receiver.shippingMethod) ||
+          shippingOptions.find((option) => option.value === receiver.delivery?.shippingMethod) ||
           shippingOptions[0]
       } else {
         selectedOption =
@@ -122,17 +124,17 @@ export const ReceiversGrid: React.FC<{ item: CartItem }> = ({ item }) => {
         errors.message = 'Message contains invalid characters'
       }
 
-      if (!receiver.address?.formattedAddress) {
+      if (!receiver.delivery?.address?.formattedAddress) {
         errors.formattedAddress = 'Address is required'
-      } else if (!receiver.address?.json) {
+      } else if (!receiver.delivery?.address?.json) {
         errors.formattedAddress = 'Please select an address from the suggestions'
       }
 
-      if (poBoxFlag && !receiver.address?.addressLine1) {
+      if (poBoxFlag && !receiver.delivery?.address?.addressLine1) {
         errors.addressLine1 = 'PO Box / Parcel Collect details are required'
       }
 
-      if (!receiver.shippingMethod) {
+      if (!receiver.delivery?.shippingMethod) {
         errors.shippingMethod = 'Shipping method is required'
       }
 
@@ -153,9 +155,9 @@ export const ReceiversGrid: React.FC<{ item: CartItem }> = ({ item }) => {
   }, [item.receivers, poBoxFlags, validateReceiver])
 
   useEffect(() => {
-    const currentItem = cart.items?.find((cartItem) => cartItem.id === item.id)
+    const currentItem = order.items?.find((orderItem) => orderItem.id === item.id)
     console.log('Current Item in Cart:', currentItem)
-  }, [cart, item.id])
+  }, [order, item.id])
 
   useEffect(() => {
     const initialErrors: { [key: string]: JSON } = {}
@@ -172,13 +174,13 @@ export const ReceiversGrid: React.FC<{ item: CartItem }> = ({ item }) => {
       initialErrors[receiver.id] = receiver.errors || {}
       initialNames[receiver.id] = receiver.name || ''
       initialMessages[receiver.id] = receiver.message || ''
-      initialLine1Addresses[receiver.id] = receiver.address?.addressLine1 || ''
-      initialFormattedAddresses[receiver.id] = receiver.address?.formattedAddress || ''
+      initialLine1Addresses[receiver.id] = receiver.delivery?.address?.addressLine1 || ''
+      initialFormattedAddresses[receiver.id] = receiver.delivery?.address?.formattedAddress || ''
 
       let selectedOption: (typeof shippingOptions)[0]
-      if (receiver.shippingMethod) {
+      if (receiver.delivery?.shippingMethod) {
         selectedOption =
-          shippingOptions.find((option) => option.value === receiver.shippingMethod) ||
+          shippingOptions.find((option) => option.value === receiver.delivery?.shippingMethod) ||
           shippingOptions[0]
       } else {
         selectedOption =
@@ -203,7 +205,7 @@ export const ReceiversGrid: React.FC<{ item: CartItem }> = ({ item }) => {
       if (Object.keys(prev).length === 0) {
         const initialPoBoxFlags: { [key: string]: boolean } = {}
         item.receivers?.forEach((receiver) => {
-          initialPoBoxFlags[receiver.id] = !!receiver.address?.addressLine1
+          initialPoBoxFlags[receiver.id] = !!receiver.delivery?.address?.addressLine1
         })
         return initialPoBoxFlags
       }
@@ -266,12 +268,12 @@ export const ReceiversGrid: React.FC<{ item: CartItem }> = ({ item }) => {
               </span>
               <div className="flex justify-end items-center gap-x-4 sm:gap-x-3">
                 <CopyReceiverIcon
-                  cartItemId={item.product.id}
+                  orderItemId={item.product.id}
                   receiverId={receiver.id}
                   // className="h-8 w-8 sm:h-6 sm:w-6"
                 />
                 <RemoveReceiverIcon
-                  cartItemId={item.product.id}
+                  orderItemId={item.product.id}
                   receiverId={receiver.id}
                   removeReceiver={removeReceiver}
                   // className="h-8 w-8 sm:h-6 sm:w-6"
@@ -385,9 +387,11 @@ export const ReceiversGrid: React.FC<{ item: CartItem }> = ({ item }) => {
                       setPoBoxFlags((prev) => {
                         const newState = { ...prev, [receiver.id]: !prev[receiver.id] }
                         updateReceiver(item.product.id, receiver.id, {
-                          address: {
-                            ...receiver.address,
-                            addressLine1: newState[receiver.id] ? '' : null,
+                          delivery: {
+                            address: {
+                              ...receiver.delivery?.address,
+                              addressLine1: newState[receiver.id] ? '' : null,
+                            },
                           },
                         })
                         return newState
@@ -420,9 +424,11 @@ export const ReceiversGrid: React.FC<{ item: CartItem }> = ({ item }) => {
                           [receiver.id]: newAddressLine1,
                         }))
                         updateReceiver(item.product.id, receiver.id, {
-                          address: {
-                            ...receiver.address,
-                            addressLine1: newAddressLine1,
+                          delivery: {
+                            address: {
+                              ...receiver.delivery?.address,
+                              addressLine1: newAddressLine1,
+                            },
                           },
                         })
                       }}
@@ -484,11 +490,13 @@ export const ReceiversGrid: React.FC<{ item: CartItem }> = ({ item }) => {
                           startTransition(() => {
                             try {
                               updateReceiver(item.product.id, receiver.id, {
-                                address: {
-                                  ...receiver.address,
-                                  addressLine2: suggestion.formattedAddress,
-                                  formattedAddress: suggestion.formattedAddress,
-                                  json: suggestion,
+                                delivery: {
+                                  address: {
+                                    ...receiver.delivery?.address,
+                                    addressLine2: suggestion.formattedAddress,
+                                    formattedAddress: suggestion.formattedAddress,
+                                    json: suggestion,
+                                  },
                                 },
                               })
                               setFormattedAddresses((prev) => ({
@@ -533,7 +541,9 @@ export const ReceiversGrid: React.FC<{ item: CartItem }> = ({ item }) => {
                       [receiver.id]: selected,
                     }))
                     updateReceiver(item.product.id, receiver.id, {
-                      ['shippingMethod']: selected.value as ShippingMethod,
+                      delivery: {
+                        shippingMethod: selected.value as ShippingMethod,
+                      },
                     })
                   }}
                   className={cn(
@@ -572,7 +582,7 @@ export const ReceiversGrid: React.FC<{ item: CartItem }> = ({ item }) => {
             <div>
               <span className={[contentFormats.global, contentFormats.text].join(' ')}>
                 {`Cost: ${
-                  receiver.totals.receiverThankly.toLocaleString('en-AU', {
+                  receiver.totals.cost.toLocaleString('en-AU', {
                     style: 'currency',
                     currency: 'AUD',
                     minimumFractionDigits: 0,
@@ -584,8 +594,8 @@ export const ReceiversGrid: React.FC<{ item: CartItem }> = ({ item }) => {
             <div>
               <span className={[contentFormats.global, contentFormats.text].join(' ')}>
                 {`Shipping: ${
-                  receiver.totals.receiverShipping
-                    ? receiver.totals.receiverShipping?.toLocaleString('en-AU', {
+                  receiver.totals.shipping
+                    ? receiver.totals.shipping?.toLocaleString('en-AU', {
                         style: 'currency',
                         currency: 'AUD',
                         minimumFractionDigits: 0,
@@ -597,7 +607,7 @@ export const ReceiversGrid: React.FC<{ item: CartItem }> = ({ item }) => {
             </div>
             <div className={[contentFormats.global, contentFormats.h6].join(' ')}>
               {`Subtotal: ${
-                receiver.totals.receiverTotal.toLocaleString('en-AU', {
+                receiver.totals.subTotal.toLocaleString('en-AU', {
                   style: 'currency',
                   currency: 'AUD',
                   minimumFractionDigits: 0,

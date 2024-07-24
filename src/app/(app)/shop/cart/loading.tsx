@@ -11,7 +11,7 @@ const Loading = () => {
             strokeWidth={1.25}
             aria-hidden="true"
           />
-          <div className="ml-2 text-sm text-gray-500">Loading your cart...please wait</div>
+          <div className="ml-2 text-sm text-gray-500">Loading your order...please wait</div>
         </div>
       </div>
     </div>

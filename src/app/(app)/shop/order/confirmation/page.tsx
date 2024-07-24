@@ -2,40 +2,40 @@
 import React, { Suspense, useEffect } from 'react'
 import { BlockWrapper } from '@app/_components/BlockWrapper'
 import { Gutter } from '@app/_components/Gutter'
-import { CartEmpty } from '@/app/(app)/_blocks/Cart/CartEmpty'
-import { cartText } from '@/utilities/refData'
+import { OrderEmpty } from '@app/_blocks/Order/OrderEmpty'
+import { orderText } from '@/utilities/refData'
 import { buttonLook, contentFormats, getPaddingClasses } from '@app/_css/tailwindClasses'
-import { useCart } from '@app/_providers/Cart'
-import { CartItems } from '@/app/(app)/_blocks/Cart/CartItems'
-import { CartSummary } from '@/app/(app)/_blocks/Cart/CartSummary'
+import { useOrder } from '@app/_providers/Order'
+import { OrderItems } from '@app/_blocks/Order/OrderItems'
+import { OrderSummary } from '@app/_blocks/Order/OrderSummary'
 import { CMSLink } from '@app/_components/CMSLink'
 import { DollarSignIcon } from 'lucide-react'
 import Link from 'next/link'
 import cn from '@/utilities/cn'
 
 export default function CartPage() {
-  const { cart, cartIsEmpty, hasInitializedCart } = useCart()
+  const { order, orderIsEmpty, hasInitializedOrder } = useOrder()
 
-  // If we have cart data, render the content regardless of hasInitializedCart
-  if (cart && cart.items && cart.items.length > 0) {
-    return renderCartContent(cart, cartIsEmpty)
+  // If we have order data, render the content regardless of hasInitializedOrder
+  if (order && order.items && order.items.length > 0) {
+    return renderCartContent(order, orderIsEmpty)
   }
 
-  // If we don't have cart data and hasInitializedCart is false, show loading
-  if (!hasInitializedCart) {
+  // If we don't have order data and hasInitializedOrder is false, show loading
+  if (!hasInitializedOrder) {
     return <CartLoadingSkeleton />
   }
 
-  // If we have initialized but the cart is empty, show empty cart
-  return <CartEmpty />
+  // If we have initialized but the order is empty, show empty order
+  return <OrderEmpty />
 }
 
-function renderCartContent(cart: any, cartIsEmpty: any) {
+function renderCartContent(order: any, orderIsEmpty: any) {
   return (
     <BlockWrapper className={getPaddingClasses('hero')}>
       <Gutter>
-        {cartIsEmpty ? (
-          <CartEmpty />
+        {orderIsEmpty ? (
+          <OrderEmpty />
         ) : (
           <>
             <div className="flex flex-row justify-between #gap-6">
@@ -68,10 +68,10 @@ function renderCartContent(cart: any, cartIsEmpty: any) {
               </div> */}
             </div>
             <div className="flex flex-col sm:flex-row gap-6">
-              <Suspense fallback={<CartItemsSkeleton />}>{cart && <CartItems />}</Suspense>
+              <Suspense fallback={<OrderItemsSkeleton />}>{order && <OrderItems />}</Suspense>
 
-              <Suspense fallback={<CartSummarySkeleton />}>
-                {cart && <CartSummary cart={cart} />}
+              <Suspense fallback={<OrderSummarySkeleton />}>
+                {order && <OrderSummary order={order} />}
               </Suspense>
             </div>
           </>
@@ -89,10 +89,10 @@ const CartLoadingSkeleton = () => (
         <div className="h-4 bg-gray-200 w-3/4 mb-8"></div>
         <div className="flex flex-col lg:flex-row gap-6">
           <div className="lg:basis-3/4">
-            <CartItemsSkeleton />
+            <OrderItemsSkeleton />
           </div>
           <div className="lg:basis-1/4">
-            <CartSummarySkeleton />
+            <OrderSummarySkeleton />
           </div>
         </div>
       </div>
@@ -100,7 +100,7 @@ const CartLoadingSkeleton = () => (
   </BlockWrapper>
 )
 
-const CartItemsSkeleton: React.FC = () => {
+const OrderItemsSkeleton: React.FC = () => {
   return (
     <div className="border border-solid border-gray-200/90 animate-pulse">
       <div className="flex flex-col gap-6 p-5 md:flex-row md:justify-between">
@@ -120,7 +120,7 @@ const CartItemsSkeleton: React.FC = () => {
   )
 }
 
-const CartSummarySkeleton: React.FC = () => {
+const OrderSummarySkeleton: React.FC = () => {
   return (
     <div className="animate-pulse">
       <div className="relative flex justify-between gap-4">

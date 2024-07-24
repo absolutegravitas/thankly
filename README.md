@@ -24,8 +24,10 @@ This project is based on a one-click deployment template of Payload on Vercel + 
 8. Site-specific Next.js config (hardcoded CSRF / CORS configs)
 9. Data pulled via payloadHMR / payload.find due to GraphQL and CORS issues
 10. E-commerce features (pending)
-    - localStorage + Cookies + Server Actions for cart management
-11. Vercel crons implemented (see [example](https://github.com/vercel/examples/blob/main/solutions/cron/vercel.json))
+
+## TO DO
+
+Vercel crons (see [example](https://github.com/vercel/examples/blob/main/solutions/cron/vercel.json))
 
 ## Instructions
 
@@ -65,6 +67,12 @@ pnpm generate:types && pnpm payload migrate:create && pnpm build && pnpm dev
 
 # Update types and run locally
 pnpm generate:types && pnpm dev
+```
+
+#### Connecting to PostgreSQL
+
+```bash
+psql -h localhost -p 5432 -U postgres -d payload
 ```
 
 #### Optional: Drop all tables in PostgreSQL

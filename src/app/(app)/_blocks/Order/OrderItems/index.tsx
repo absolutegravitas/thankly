@@ -7,15 +7,15 @@ import cn from '@/utilities/cn'
 import { ReceiversGrid } from '../ReceiversGrid'
 import { getImageAlt, getImageUrl } from '@/utilities/getmageUrl'
 import { AddReceiverButton, RemoveProductButton } from '../ReceiversGrid/ReceiverActions'
-import { useCart } from '@app/_providers/Cart'
+import { useOrder } from '@app/_providers/Order'
 
-export const CartItems: React.FC = () => {
-  const { cart } = useCart()
-  const { items: cartItems } = cart
+export const OrderItems: React.FC = () => {
+  const { order } = useOrder()
+  const { items: orderItems } = order
 
   return (
     <div className="py-8 divide-y">
-      {cartItems?.map((item: any, index: any) => {
+      {orderItems?.map((item: any, index: any) => {
         const { product } = item
         const imageUrl =
           product.media && product.media.length > 0
@@ -51,12 +51,12 @@ export const CartItems: React.FC = () => {
                 </div>
                 <div className="hidden sm:flex flex-row justify-end items-center py-3 gap-3 pr-3">
                   <AddReceiverButton productId={item.product.id} />
-                  <RemoveProductButton cartItemId={item.product.id} />
+                  <RemoveProductButton orderItemId={item.product.id} />
                 </div>
               </div>
               <div className="sm:hidden flex flex-row justify-center items-center gap-3">
                 <AddReceiverButton productId={item.product.id} />
-                <RemoveProductButton cartItemId={item.product.id} />
+                <RemoveProductButton orderItemId={item.product.id} />
               </div>
               <ReceiversGrid item={item} />
             </div>

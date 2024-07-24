@@ -13,7 +13,7 @@ import classes from './index.module.scss'
 
 import { ExtractBlockProps } from '@/utilities/extractBlockProps'
 import { ChevronRightIcon } from 'lucide-react'
-import { getPaddingClasses } from '@/app/(app)/_css/tailwindClasses'
+import { getPaddingClasses } from '@app/_css/tailwindClasses'
 export type ContentMediaHeroProps = ExtractBlockProps<'fields'>
 
 export const ContentMediaHero: React.FC<ContentMediaHeroProps> = ({

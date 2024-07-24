@@ -2,18 +2,18 @@
 // import { headers, cookies } from 'next/headers'
 // import { getPayloadHMR } from '@payloadcms/next/utilities'
 // import configPromise from '@payload-config'
-// import { Cart, Order } from '@/payload-types'
+// import { Order, Order } from '@/payload-types'
 // import { revalidatePath, revalidateTag } from 'next/cache'
 // import { getCart } from './cartActions'
 
 // //////////////////////////////////////////////////////////
-// export async function createOrder(cartId: string): Promise<Order | null> {
+// export async function createOrder(orderId: string): Promise<Order | null> {
 //   const config = await configPromise
 //   let payload: any = await getPayloadHMR({ config })
-//   let cart: Cart | null = await getCart(cartId)
+//   let order: Order | null = await getCart(orderId)
 
-//   if (!cart) {
-//     console.error('No cart found')
+//   if (!order) {
+//     console.error('No order found')
 //     return null
 //   }
 
@@ -22,28 +22,28 @@
 //       collection: 'orders',
 //       data: {
 //         orderNumber: Date.now(),
-//         orderedBy: cart.customer,
+//         orderedBy: order.customer,
 //         status: 'pending',
-//         orderSubtotal: cart.totals.cartThanklys,
-//         orderShipping: cart.totals.cartShipping,
-//         orderTotal: cart.totals.cartTotal,
-//         items: cart.items?.map((item) => ({
+//         orderSubtotal: order.totals.cost,
+//         orderShipping: order.totals.shipping,
+//         orderTotal: order.totals.total,
+//         items: order.items?.map((item) => ({
 //           product: item.product,
-//           itemPrice: item.productPrice,
-//           itemTotalShipping: item.totals.itemShipping,
-//           itemTotal: item.totals.itemTotal,
+//           itemPrice: item.price,
+//           subTotalShipping: item.totals.shipping,
+//           subTotal: item.totals.subTotal,
 //           receivers: item.receivers?.map((receiver) => ({
 //             name: receiver.name,
 //             message: receiver.message,
-//             addressLine1: receiver.addressLine1,
-//             addressLine2: receiver.addressLine2,
+//             addressLine1: receiver.delivery?.addressLine1,
+//             addressLine2: receiver.delivery?.addressLine2,
 //             city: receiver.city,
 //             state: receiver.state,
 //             postcode: receiver.postcode,
-//             shippingMethod: receiver.shippingMethod,
-//             receiverPrice: receiver.totals.receiverThankly,
-//             receiverShipping: receiver.totals.receiverShipping,
-//             receiverTotal: receiver.totals.receiverTotal,
+//             shippingMethod: receiver.delivery?.shippingMethod,
+//             receiverPrice: receiver.totals.cost,
+//             shipping: receiver.totals.shipping,
+//             subTotal: receiver.totals.subTotal,
 //           })),
 //         })),
 //       },
@@ -90,15 +90,15 @@
 
 // const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: '2024-06-20' })
 
-// export async function createPaymentIntent(cartId: string) {
+// export async function createPaymentIntent(orderId: string) {
 //   try {
-//     const cart = await getCart(cartId)
+//     const order = await getCart(orderId)
 
-//     if (!cart || !cart.totals || cart.totals.cartTotal <= 0) {
-//       throw new Error('Invalid cart or cart total')
+//     if (!order || !order.totals || order.totals.total <= 0) {
+//       throw new Error('Invalid order or order total')
 //     }
 
-//     const amount = Math.round(cart.totals.cartTotal * 100) // Convert to cents
+//     const amount = Math.round(order.totals.total * 100) // Convert to cents
 
 //     if (amount < 50) {
 //       // Stripe's minimum amount is 50 cents

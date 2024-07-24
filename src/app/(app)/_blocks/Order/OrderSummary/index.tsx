@@ -9,27 +9,22 @@ import {
   ArrowLeftIcon,
 } from 'lucide-react'
 import { CMSLink } from '@app/_components/CMSLink'
-import { Cart } from '@/payload-types'
-import { cartText } from '@/utilities/refData'
+import { Order } from '@/payload-types'
 import Link from 'next/link'
 import cn from '@/utilities/cn'
 import { useRouter } from 'next/navigation'
-import { useCart } from '@app/_providers/Cart'
+import { useOrder } from '@app/_providers/Order'
 import { LoaderCircleIcon } from 'lucide-react'
-import { FullLogo } from '@/app/(app)/_graphics/FullLogo'
-import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js'
-import { loadStripe } from '@stripe/stripe-js'
+import { FullLogo } from '@app/_graphics/FullLogo'
+import { orderText } from '@/utilities/refData'
 
-// Initialize Stripe
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '')
-
-export const CartSummary: React.FC<{ cart: Cart }> = ({ cart }) => {
-  if (!cart || !cart.totals) {
+export const OrderSummary: React.FC<{ order: Order }> = ({ order }) => {
+  if (!order || !order.totals) {
     return null // or return a loading state or placeholder
   }
 
   const router = useRouter()
-  const { validateCart } = useCart()
+  const { validateOrder } = useOrder()
   const [isValid, setIsValid] = useState(true)
   const [validationMessage, setValidationMessage] = useState('')
   const [isProcessing, setIsProcessing] = useState(false)
@@ -37,7 +32,7 @@ export const CartSummary: React.FC<{ cart: Cart }> = ({ cart }) => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [isPending, startTransition] = useTransition()
-  const { clearCart } = useCart()
+  const { clearOrder } = useOrder()
 
   const [billingAddress, setBillingAddress] = useState({
     formattedAddress: '',
@@ -46,12 +41,12 @@ export const CartSummary: React.FC<{ cart: Cart }> = ({ cart }) => {
   })
 
   useEffect(() => {
-    const cartValidity = validateCart()
-    setIsValid(cartValidity)
+    const orderValidity = validateOrder()
+    setIsValid(orderValidity)
     setValidationMessage(
-      cartValidity ? '' : 'Please complete all receiver details before proceeding to checkout.',
+      orderValidity ? '' : 'Please complete all receiver details before proceeding to checkout.',
     )
-  }, [cart, validateCart])
+  }, [order, validateOrder])
 
   const handleCheckout = async (event?: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     if (event) {
@@ -87,22 +82,19 @@ export const CartSummary: React.FC<{ cart: Cart }> = ({ cart }) => {
             {`Total (inc. taxes)`}
           </dt>
           <dd className={[contentFormats.global, contentFormats.text, `font-semibold`].join(' ')}>
-            {(cart.totals.cartTotal + (cart.totals.cartShippingDiscount || 0)).toLocaleString(
-              'en-AU',
-              {
-                style: 'currency',
-                currency: 'AUD',
-                minimumFractionDigits: 0,
-                maximumFractionDigits: 2,
-              },
-            )}
+            {(order.totals.total + (order.totals.discount || 0)).toLocaleString('en-AU', {
+              style: 'currency',
+              currency: 'AUD',
+              minimumFractionDigits: 0,
+              maximumFractionDigits: 2,
+            })}
           </dd>
         </div>
 
         <div className="flex items-center justify-between">
           <dt className={[contentFormats.global, contentFormats.text].join(' ')}>Thanklys</dt>
           <dd className={[contentFormats.global, contentFormats.text].join(' ')}>
-            {cart.totals.cartThanklys.toLocaleString('en-AU', {
+            {order.totals.cost.toLocaleString('en-AU', {
               style: 'currency',
               currency: 'AUD',
               minimumFractionDigits: 0,
@@ -114,7 +106,7 @@ export const CartSummary: React.FC<{ cart: Cart }> = ({ cart }) => {
         <div className="flex items-center justify-between">
           <dt className={[contentFormats.global, contentFormats.text].join(' ')}>{`+ Shipping`}</dt>
           <dd className={[contentFormats.global, contentFormats.text].join(' ')}>
-            {cart.totals.cartShipping?.toLocaleString('en-AU', {
+            {order.totals.shipping?.toLocaleString('en-AU', {
               style: 'currency',
               currency: 'AUD',
               minimumFractionDigits: 0,
@@ -123,14 +115,14 @@ export const CartSummary: React.FC<{ cart: Cart }> = ({ cart }) => {
           </dd>
         </div>
 
-        {(cart.totals.cartShippingDiscount || 0) < 0 && (
+        {(order.totals.discount || 0) < 0 && (
           <div className="flex items-center justify-between">
             <dt className={[contentFormats.global, contentFormats.text].join(' ')}>
               <SmileIcon />
               {` Your order is over $150 so Shipping is on us!`}
             </dt>
             <dd className={[contentFormats.global, contentFormats.text].join(' ')}>
-              {`(${cart.totals.cartShippingDiscount?.toLocaleString('en-AU', {
+              {`(${order.totals.discount?.toLocaleString('en-AU', {
                 style: 'currency',
                 currency: 'AUD',
                 minimumFractionDigits: 0,
@@ -150,7 +142,7 @@ export const CartSummary: React.FC<{ cart: Cart }> = ({ cart }) => {
             <MailWarningIcon className="mr-2" />
             <span className="font-semibold">{`Thankly Cards: `}</span>
             <span className={[contentFormats.text, `text-sm`].join(' ')}>
-              {cartText.shippingMessage}
+              {orderText.shippingMessage}
               <Link
                 className={[contentFormats.global, contentFormats.a, `!text-sm`].join(' ')}
                 href="https://auspost.com.au/about-us/supporting-communities/services-all-communities/our-future"
@@ -166,7 +158,7 @@ export const CartSummary: React.FC<{ cart: Cart }> = ({ cart }) => {
           data={{
             label: 'Checkout',
             type: 'custom',
-            url: `/shop/checkout?cartId=${cart.id}`,
+            url: `/shop/checkout`,
           }}
           look={{
             theme: 'dark',
@@ -204,7 +196,7 @@ export const CartSummary: React.FC<{ cart: Cart }> = ({ cart }) => {
             actions={{
               onClick: async () => {
                 startTransition(async () => {
-                  clearCart()
+                  clearOrder()
                   // revalidateCache({ path: '/shop' })
                   router.push('/shop')
                 })
@@ -247,7 +239,7 @@ export const CartSummary: React.FC<{ cart: Cart }> = ({ cart }) => {
             )}
           >
             {` Order Total: `}
-            {cart.totals.cartTotal.toLocaleString('en-AU', {
+            {order.totals.total.toLocaleString('en-AU', {
               style: 'currency',
               currency: 'AUD',
               minimumFractionDigits: 0,
@@ -265,7 +257,7 @@ export const CartSummary: React.FC<{ cart: Cart }> = ({ cart }) => {
           data={{
             label: 'Checkout',
             type: 'custom',
-            url: `/shop/checkout?cartId=${cart.id}`,
+            url: `/shop/checkout?orderId=${order.id}`,
           }}
           look={{
             theme: 'dark',

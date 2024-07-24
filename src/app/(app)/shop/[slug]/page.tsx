@@ -33,7 +33,7 @@ export default async function ProductPage({
     return notFound()
   }
 
-  // Use the isProductInCart function from the cart provider
+  // Use the isProductInOrder function from the order provider
 
   return (
     <React.Fragment>

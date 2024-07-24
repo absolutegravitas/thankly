@@ -8,7 +8,7 @@ import {
   AddressElement,
   ExpressCheckoutElement,
 } from '@stripe/react-stripe-js'
-import { useCart } from '@app/_providers/Cart'
+import { useOrder } from '@app/_providers/Order'
 import { Lock } from 'lucide-react'
 import { buttonLook, contentFormats } from '@app/_css/tailwindClasses'
 import cn from '@/utilities/cn'
@@ -16,7 +16,7 @@ import cn from '@/utilities/cn'
 export const CheckoutForm: React.FC = () => {
   const stripe = useStripe()
   const elements = useElements()
-  const { cart } = useCart()
+  const { order } = useOrder()
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const paymentElementOptions = {
@@ -79,7 +79,7 @@ export const CheckoutForm: React.FC = () => {
           // buttonLook.variants.blocks,
         )}
       >
-        {isLoading ? 'Processing...' : `Pay ${cart.totals.cartTotal.toFixed(2)} AUD`}
+        {isLoading ? 'Processing...' : `Pay ${order.totals.total.toFixed(2)} AUD`}
       </button>
 
       <p

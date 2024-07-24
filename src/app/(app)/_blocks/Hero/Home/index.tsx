@@ -18,7 +18,7 @@ import { RichText } from '@app/_blocks/RichText'
 import classes from './index.module.scss'
 
 import { ExtractBlockProps } from '@/utilities/extractBlockProps'
-import { getPaddingClasses } from '@/app/(app)/_css/tailwindClasses'
+import { getPaddingClasses } from '@app/_css/tailwindClasses'
 export type FormFieldsProps = ExtractBlockProps<'fields'>
 
 export const HomeHero: React.FC<

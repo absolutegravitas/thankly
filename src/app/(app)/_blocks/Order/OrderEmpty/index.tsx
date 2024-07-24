@@ -9,7 +9,7 @@ import { contentFormats, getPaddingClasses } from '@app/_css/tailwindClasses'
 import { useRouter } from 'next/navigation'
 import { ArrowRightIcon, HomeIcon, ShoppingCartIcon } from 'lucide-react'
 
-export const CartEmpty: React.FC<any> = () => {
+export const OrderEmpty: React.FC<any> = () => {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
 
@@ -25,7 +25,7 @@ export const CartEmpty: React.FC<any> = () => {
                 'font-normal tracking-tighter !text-left',
               ].join(' ')}
             >
-              Your cart is empty
+              Your order is empty
             </h2>
           </div>
           <div className="space-y-6 flex flex-col items-end justify-end justify-items-end flex-auto px-4 md:px-0 ">

@@ -7,14 +7,14 @@ import { messages } from '@/utilities/refData'
 import { AddToCartButton } from './AddToCart'
 import { ViewInCartButton } from './ViewInCart'
 import { RemoveFromCartButton } from './RemoveFromCart'
-import { useCart } from '@app/_providers/Cart'
+import { useOrder } from '@app/_providers/Order'
 
 export function ProductActions({ product, hidePerks, hideRemove }: any) {
   const { stockOnHand } = product
-  // const inCart = await isProductInCart(product.id)
+  // const inCart = await isProductInOrder(product.id)
 
-  const { isProductInCart } = useCart()
-  const inCart = isProductInCart(product.id)
+  const { isProductInOrder } = useOrder()
+  const inCart = isProductInOrder(product.id)
 
   if (stockOnHand === 0) {
     return (
@@ -48,7 +48,7 @@ export function ProductActions({ product, hidePerks, hideRemove }: any) {
               <ViewInCartButton />
             </div>
             <div className="flex-initial w-1/4">
-              <RemoveFromCartButton cartItemId={product.id} />
+              <RemoveFromCartButton orderItemId={product.id} />
             </div>
           </>
         )}

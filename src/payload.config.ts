@@ -23,13 +23,13 @@ import { Users } from '@cms/_collections/users'
 import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
 import generateBreadcrumbsUrl from '@/utilities/generateBreadcrumbsUrl'
-import { Carts } from './app/(payload)/_collections/carts'
+// import { Orders } from './app/(payload)/_collections/carts'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
 export default buildConfig({
-  collections: [Orders, Products, Pages, Reusable, Media, Carts, Users],
+  collections: [Orders, Products, Pages, Reusable, Media, Users],
   globals: [Settings],
   editor: lexicalEditor({}),
   db: postgresAdapter({ pool: { connectionString: process.env.POSTGRES_URL } }),

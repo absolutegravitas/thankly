@@ -79,7 +79,7 @@ export const upsertStripeProduct: CollectionBeforeChangeHook = async ({ req, dat
       // Find the default price if it exists
       const defaultPrice =
         data.prices.find((price: any) => price.default) ||
-        (data.prices.length === 1 ?? data.prices[0])
+        (data.prices.length === 1 ? data.prices[0] : undefined)
 
       // get prices from stripe
       const stripePrices = await stripe.prices.list({

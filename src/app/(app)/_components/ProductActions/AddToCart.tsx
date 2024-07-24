@@ -5,26 +5,25 @@ import { useRouter } from 'next/navigation'
 import { CMSLink } from '@app/_components/CMSLink'
 import { PlusIcon, LoaderCircleIcon } from 'lucide-react'
 import { Product } from '@payload-types'
-import { useCart } from '@app/_providers/Cart'
+import { useOrder } from '@app/_providers/Order'
 
 export function AddToCartButton({ product }: { product: Product }) {
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const router = useRouter()
-  const { addProduct } = useCart()
+  const { addProduct } = useOrder()
 
-  const handleAddToCart = async () => {
+  const handleAddToOrder = async () => {
     setIsLoading(true)
     setError(null)
     try {
-      // console.log('produt to add', product)
       addProduct(
         product,
         Math.max(0, Math.min(product.price ?? Infinity, product.promoPrice ?? Infinity)),
       )
       router.push('/shop/cart')
     } catch (e: any) {
-      setError(e.message || 'Failed to add product to cart. Please try again.')
+      setError(e.message || 'Failed to add product to order. Please try again.')
       setIsLoading(false)
     }
   }
@@ -56,7 +55,7 @@ export function AddToCartButton({ product }: { product: Product }) {
         },
       }}
       actions={{
-        onClick: handleAddToCart,
+        onClick: handleAddToOrder,
       }}
     />
   )

@@ -1,5 +1,5 @@
 {
-  "id": "0503e1fa-034b-4945-8b4b-369c40dfe5af",
+  "id": "bdfe0995-07cb-40d2-89ff-63ddc46cd93d",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "5",
   "dialect": "pg",
@@ -26,6 +26,30 @@
           "primaryKey": true,
           "notNull": true
         },
+        "totals_cost": {
+          "name": "totals_cost",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "totals_shipping": {
+          "name": "totals_shipping",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "totals_sub_total": {
+          "name": "totals_sub_total",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "totals_discount": {
+          "name": "totals_discount",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
         "name": {
           "name": "name",
           "type": "varchar",
@@ -38,51 +62,39 @@
           "primaryKey": false,
           "notNull": false
         },
-        "shippingMethod": {
-          "name": "shippingMethod",
-          "type": "enum_orders_items_receivers_shipping_method",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "address_formatted_address": {
-          "name": "address_formatted_address",
+        "delivery_tracking_link": {
+          "name": "delivery_tracking_link",
           "type": "varchar",
           "primaryKey": false,
           "notNull": false
         },
-        "address_address_line1": {
-          "name": "address_address_line1",
+        "delivery_shippingMethod": {
+          "name": "delivery_shippingMethod",
+          "type": "enum_orders_items_receivers_delivery_shipping_method",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "delivery_address_formatted_address": {
+          "name": "delivery_address_formatted_address",
           "type": "varchar",
           "primaryKey": false,
           "notNull": false
         },
-        "address_address_line2": {
-          "name": "address_address_line2",
+        "delivery_address_address_line1": {
+          "name": "delivery_address_address_line1",
           "type": "varchar",
           "primaryKey": false,
           "notNull": false
         },
-        "address_json": {
-          "name": "address_json",
+        "delivery_address_address_line2": {
+          "name": "delivery_address_address_line2",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "delivery_address_json": {
+          "name": "delivery_address_json",
           "type": "jsonb",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "totals_receiver_total": {
-          "name": "totals_receiver_total",
-          "type": "numeric",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "totals_receiver_thankly": {
-          "name": "totals_receiver_thankly",
-          "type": "numeric",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "totals_receiver_shipping": {
-          "name": "totals_receiver_shipping",
-          "type": "numeric",
           "primaryKey": false,
           "notNull": false
         },
@@ -149,8 +161,8 @@
           "primaryKey": true,
           "notNull": true
         },
-        "product_price": {
-          "name": "product_price",
+        "price": {
+          "name": "price",
           "type": "numeric",
           "primaryKey": false,
           "notNull": false
@@ -161,20 +173,26 @@
           "primaryKey": false,
           "notNull": true
         },
-        "totals_item_total": {
-          "name": "totals_item_total",
+        "totals_cost": {
+          "name": "totals_cost",
           "type": "numeric",
           "primaryKey": false,
           "notNull": true
         },
-        "totals_item_thanklys": {
-          "name": "totals_item_thanklys",
+        "totals_shipping": {
+          "name": "totals_shipping",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "totals_sub_total": {
+          "name": "totals_sub_total",
           "type": "numeric",
           "primaryKey": false,
           "notNull": true
         },
-        "totals_item_shipping": {
-          "name": "totals_item_shipping",
+        "totals_discount": {
+          "name": "totals_discount",
           "type": "numeric",
           "primaryKey": false,
           "notNull": false
@@ -243,6 +261,42 @@
           "primaryKey": false,
           "notNull": false
         },
+        "status": {
+          "name": "status",
+          "type": "enum_orders_status",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "stripe_payment_intent_i_d": {
+          "name": "stripe_payment_intent_i_d",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "totals_cost": {
+          "name": "totals_cost",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "totals_shipping": {
+          "name": "totals_shipping",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "totals_discount": {
+          "name": "totals_discount",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "totals_total": {
+          "name": "totals_total",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": true
+        },
         "billing_ordered_by_id": {
           "name": "billing_ordered_by_id",
           "type": "integer",
@@ -279,59 +333,29 @@
           "primaryKey": false,
           "notNull": false
         },
-        "billing_billing_address_formatted_address": {
-          "name": "billing_billing_address_formatted_address",
+        "billing_address_formatted_address": {
+          "name": "billing_address_formatted_address",
           "type": "varchar",
           "primaryKey": false,
           "notNull": false
         },
-        "billing_billing_address_address_line1": {
-          "name": "billing_billing_address_address_line1",
+        "billing_address_address_line1": {
+          "name": "billing_address_address_line1",
           "type": "varchar",
           "primaryKey": false,
           "notNull": false
         },
-        "billing_billing_address_address_line2": {
-          "name": "billing_billing_address_address_line2",
+        "billing_address_address_line2": {
+          "name": "billing_address_address_line2",
           "type": "varchar",
           "primaryKey": false,
           "notNull": false
         },
-        "billing_billing_address_json": {
-          "name": "billing_billing_address_json",
+        "billing_address_json": {
+          "name": "billing_address_json",
           "type": "jsonb",
           "primaryKey": false,
           "notNull": false
-        },
-        "status": {
-          "name": "status",
-          "type": "enum_orders_status",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "stripe_payment_intent_i_d": {
-          "name": "stripe_payment_intent_i_d",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "totals_order_thanklys": {
-          "name": "totals_order_thanklys",
-          "type": "numeric",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "totals_order_shipping": {
-          "name": "totals_order_shipping",
-          "type": "numeric",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "totals_order_total": {
-          "name": "totals_order_total",
-          "type": "numeric",
-          "primaryKey": false,
-          "notNull": true
         },
         "updated_at": {
           "name": "updated_at",
@@ -603,13 +627,6 @@
           "name": "products_created_at_idx",
           "columns": [
             "created_at"
-          ],
-          "isUnique": false
-        },
-        "products__status_idx": {
-          "name": "products__status_idx",
-          "columns": [
-            "_status"
           ],
           "isUnique": false
         }
@@ -886,13 +903,6 @@
           ],
           "isUnique": false
         },
-        "_products_v_version_version__status_idx": {
-          "name": "_products_v_version_version__status_idx",
-          "columns": [
-            "version__status"
-          ],
-          "isUnique": false
-        },
         "_products_v_created_at_idx": {
           "name": "_products_v_created_at_idx",
           "columns": [
@@ -1125,13 +1135,6 @@
           "name": "pages_created_at_idx",
           "columns": [
             "created_at"
-          ],
-          "isUnique": false
-        },
-        "pages__status_idx": {
-          "name": "pages__status_idx",
-          "columns": [
-            "_status"
           ],
           "isUnique": false
         }
@@ -1379,13 +1382,6 @@
           ],
           "isUnique": false
         },
-        "_pages_v_version_version__status_idx": {
-          "name": "_pages_v_version_version__status_idx",
-          "columns": [
-            "version__status"
-          ],
-          "isUnique": false
-        },
         "_pages_v_created_at_idx": {
           "name": "_pages_v_created_at_idx",
           "columns": [
@@ -1622,311 +1618,6 @@
           "tableTo": "media",
           "columnsFrom": [
             "dark_mode_fallback_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "set null",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
-    },
-    "carts_items_receivers": {
-      "name": "carts_items_receivers",
-      "schema": "",
-      "columns": {
-        "_order": {
-          "name": "_order",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "_parent_id": {
-          "name": "_parent_id",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "id": {
-          "name": "id",
-          "type": "varchar",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "name": {
-          "name": "name",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "message": {
-          "name": "message",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "shippingMethod": {
-          "name": "shippingMethod",
-          "type": "enum_carts_items_receivers_shipping_method",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "address_formatted_address": {
-          "name": "address_formatted_address",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "address_address_line1": {
-          "name": "address_address_line1",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "address_address_line2": {
-          "name": "address_address_line2",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "address_json": {
-          "name": "address_json",
-          "type": "jsonb",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "totals_receiver_total": {
-          "name": "totals_receiver_total",
-          "type": "numeric",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "totals_receiver_thankly": {
-          "name": "totals_receiver_thankly",
-          "type": "numeric",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "totals_receiver_shipping": {
-          "name": "totals_receiver_shipping",
-          "type": "numeric",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "errors": {
-          "name": "errors",
-          "type": "jsonb",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {
-        "carts_items_receivers_order_idx": {
-          "name": "carts_items_receivers_order_idx",
-          "columns": [
-            "_order"
-          ],
-          "isUnique": false
-        },
-        "carts_items_receivers_parent_id_idx": {
-          "name": "carts_items_receivers_parent_id_idx",
-          "columns": [
-            "_parent_id"
-          ],
-          "isUnique": false
-        }
-      },
-      "foreignKeys": {
-        "carts_items_receivers_parent_id_fk": {
-          "name": "carts_items_receivers_parent_id_fk",
-          "tableFrom": "carts_items_receivers",
-          "tableTo": "carts_items",
-          "columnsFrom": [
-            "_parent_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
-    },
-    "carts_items": {
-      "name": "carts_items",
-      "schema": "",
-      "columns": {
-        "_order": {
-          "name": "_order",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "_parent_id": {
-          "name": "_parent_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "id": {
-          "name": "id",
-          "type": "varchar",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "product_price": {
-          "name": "product_price",
-          "type": "numeric",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "product_id": {
-          "name": "product_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "totals_item_total": {
-          "name": "totals_item_total",
-          "type": "numeric",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "totals_item_thanklys": {
-          "name": "totals_item_thanklys",
-          "type": "numeric",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "totals_item_shipping": {
-          "name": "totals_item_shipping",
-          "type": "numeric",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {
-        "carts_items_order_idx": {
-          "name": "carts_items_order_idx",
-          "columns": [
-            "_order"
-          ],
-          "isUnique": false
-        },
-        "carts_items_parent_id_idx": {
-          "name": "carts_items_parent_id_idx",
-          "columns": [
-            "_parent_id"
-          ],
-          "isUnique": false
-        }
-      },
-      "foreignKeys": {
-        "carts_items_product_id_products_id_fk": {
-          "name": "carts_items_product_id_products_id_fk",
-          "tableFrom": "carts_items",
-          "tableTo": "products",
-          "columnsFrom": [
-            "product_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "set null",
-          "onUpdate": "no action"
-        },
-        "carts_items_parent_id_fk": {
-          "name": "carts_items_parent_id_fk",
-          "tableFrom": "carts_items",
-          "tableTo": "carts",
-          "columnsFrom": [
-            "_parent_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
-    },
-    "carts": {
-      "name": "carts",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "serial",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "customer_id": {
-          "name": "customer_id",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "totals_cart_total": {
-          "name": "totals_cart_total",
-          "type": "numeric",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "totals_cart_thanklys": {
-          "name": "totals_cart_thanklys",
-          "type": "numeric",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "totals_cart_shipping": {
-          "name": "totals_cart_shipping",
-          "type": "numeric",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "totals_cart_shipping_discount": {
-          "name": "totals_cart_shipping_discount",
-          "type": "numeric",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "updated_at": {
-          "name": "updated_at",
-          "type": "timestamp(3) with time zone",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp(3) with time zone",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        }
-      },
-      "indexes": {
-        "carts_created_at_idx": {
-          "name": "carts_created_at_idx",
-          "columns": [
-            "created_at"
-          ],
-          "isUnique": false
-        }
-      },
-      "foreignKeys": {
-        "carts_customer_id_users_id_fk": {
-          "name": "carts_customer_id_users_id_fk",
-          "tableFrom": "carts",
-          "tableTo": "users",
-          "columnsFrom": [
-            "customer_id"
           ],
           "columnsTo": [
             "id"
@@ -4517,8 +4208,8 @@
         "onhold": "onhold"
       }
     },
-    "enum_orders_items_receivers_shipping_method": {
-      "name": "enum_orders_items_receivers_shipping_method",
+    "enum_orders_items_receivers_delivery_shipping_method": {
+      "name": "enum_orders_items_receivers_delivery_shipping_method",
       "values": {
         "standardMail": "standardMail",
         "expressMail": "expressMail",
@@ -4626,15 +4317,6 @@
       "values": {
         "draft": "draft",
         "published": "published"
-      }
-    },
-    "enum_carts_items_receivers_shipping_method": {
-      "name": "enum_carts_items_receivers_shipping_method",
-      "values": {
-        "standardMail": "standardMail",
-        "expressMail": "expressMail",
-        "standardParcel": "standardParcel",
-        "expressParcel": "expressParcel"
       }
     },
     "enum_users_status": {

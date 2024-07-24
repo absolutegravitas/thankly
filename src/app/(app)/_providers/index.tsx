@@ -8,7 +8,7 @@ import { ModalContainer, ModalProvider } from '@faceless-ui/modal'
 import { MouseInfoProvider } from '@faceless-ui/mouse-info'
 import { ScrollInfoProvider } from '@faceless-ui/scroll-info'
 import { WindowInfoProvider } from '@faceless-ui/window-info'
-import { CartProvider } from '@app/_providers/Cart'
+import { OrderProvider } from '@app/_providers/Order'
 import { HeaderIntersectionObserver } from '@app/_providers/HeaderIntersectionObserver'
 import { AuthProvider } from './Auth'
 import { PageTransition } from './PageTransition'
@@ -20,7 +20,7 @@ export const Providers: React.FC<{
   return (
     <CookiesProvider>
       <AuthProvider>
-        <CartProvider>
+        <OrderProvider>
           <ScrollInfoProvider>
             <MouseInfoProvider>
               <WindowInfoProvider
@@ -89,7 +89,7 @@ export const Providers: React.FC<{
               </WindowInfoProvider>
             </MouseInfoProvider>
           </ScrollInfoProvider>
-        </CartProvider>
+        </OrderProvider>
       </AuthProvider>
     </CookiesProvider>
   )
