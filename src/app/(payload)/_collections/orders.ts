@@ -13,7 +13,8 @@ export const Orders: CollectionConfig = {
   },
 
   access: {
-    create: () => true,
+    // create: () => true,
+    create: adminsOnly,
     read: adminsAndUserOnly,
     update: adminsAndUserOnly,
     delete: adminsOnly,
@@ -23,6 +24,7 @@ export const Orders: CollectionConfig = {
     {
       type: 'row',
       fields: [
+        // global
         {
           name: 'orderNumber',
           type: 'number',
@@ -48,46 +50,6 @@ export const Orders: CollectionConfig = {
             ],
           },
         },
-
-        {
-          name: 'billing',
-          type: 'group',
-          fields: [
-            { name: 'orderedBy', type: 'relationship', relationTo: 'users', required: false },
-            { name: 'name', label: 'Name', type: 'text', admin: { width: '50%' } },
-            { name: 'email', label: 'Email', type: 'email', admin: { width: '50%' } },
-            {
-              name: 'contactNumber',
-              label: 'Contact Number',
-              type: 'number',
-              admin: { width: '50%' },
-            },
-            {
-              name: 'orgName',
-              label: 'Company or Organisation',
-              type: 'text',
-              admin: { width: '50%' },
-            },
-
-            { name: 'orgId', label: 'ABN / ACN', type: 'text', admin: { width: '50%' } },
-
-            {
-              name: 'billingAddress',
-              type: 'group',
-              fields: [
-                { name: 'formattedAddress', type: 'text', admin: { width: '100%' } },
-                {
-                  type: 'row',
-                  fields: [
-                    { name: 'addressLine1', type: 'text', admin: { width: '50%' } },
-                    { name: 'addressLine2', type: 'text', admin: { width: '50%' } },
-                    { name: 'json', type: 'json', admin: { width: '100%' } }, // whole address object for debug
-                  ],
-                },
-              ],
-            },
-          ],
-        },
         {
           name: 'status',
           type: 'select',
@@ -103,11 +65,50 @@ export const Orders: CollectionConfig = {
             { label: 'On Hold', value: 'onhold' },
           ],
         },
-        // required for traceability to stripe
         {
           name: 'stripePaymentIntentID',
           label: 'Stripe Payment Intent ID',
           type: 'text',
+        },
+      ],
+    },
+    // billing
+    {
+      name: 'billing',
+      type: 'group',
+      fields: [
+        { name: 'orderedBy', type: 'relationship', relationTo: 'users', required: false },
+        { name: 'name', label: 'Name', type: 'text', admin: { width: '50%' } },
+        { name: 'email', label: 'Email', type: 'email', admin: { width: '50%' } },
+        {
+          name: 'contactNumber',
+          label: 'Contact Number',
+          type: 'number',
+          admin: { width: '50%' },
+        },
+        {
+          name: 'orgName',
+          label: 'Company or Organisation',
+          type: 'text',
+          admin: { width: '50%' },
+        },
+
+        { name: 'orgId', label: 'ABN / ACN', type: 'text', admin: { width: '50%' } },
+
+        {
+          name: 'billingAddress',
+          type: 'group',
+          fields: [
+            { name: 'formattedAddress', type: 'text', admin: { width: '100%' } },
+            {
+              type: 'row',
+              fields: [
+                { name: 'addressLine1', type: 'text', admin: { width: '50%' } },
+                { name: 'addressLine2', type: 'text', admin: { width: '50%' } },
+                { name: 'json', type: 'json', admin: { width: '100%' } }, // whole address object for debug
+              ],
+            },
+          ],
         },
       ],
     },
@@ -127,6 +128,7 @@ export const Orders: CollectionConfig = {
       ],
     },
 
+    // order items
     {
       name: 'items',
       label: 'Items',
@@ -134,7 +136,7 @@ export const Orders: CollectionConfig = {
       // required: true, // doesn't export types as a proper array unless this is specified, but also fucks up cart creation in frontend
       // minRows: 1,
       fields: [
-        { name: 'productPrice', type: 'number', defaultValue: 0, min: 0 },
+        { name: 'price', type: 'number', defaultValue: 0, min: 0 },
         { name: 'product', type: 'relationship', relationTo: 'products', required: true },
         {
           name: 'totals',
@@ -143,9 +145,9 @@ export const Orders: CollectionConfig = {
             {
               type: 'row',
               fields: [
-                { name: 'itemTotal', type: 'number', required: true, defaultValue: 0 },
-                { name: 'itemThanklys', type: 'number', required: true, defaultValue: 0 },
-                { name: 'itemShipping', type: 'number', required: false },
+                { name: 'itemCost', type: 'number', required: true, defaultValue: 0 },
+                { name: 'shippingCost', type: 'number', required: false },
+                { name: 'subTotalCost', type: 'number', required: true, defaultValue: 0 },
               ],
             },
           ],
@@ -153,14 +155,11 @@ export const Orders: CollectionConfig = {
 
         {
           name: 'receivers',
-          labels: { singular: 'Receiver', plural: 'Receivers' },
           type: 'array',
           fields: [
             { name: 'name', type: 'text' },
-            {
-              type: 'row',
-              fields: [{ name: 'message', type: 'textarea', admin: { width: '100%' } }],
-            },
+            { name: 'message', type: 'textarea' },
+
             {
               name: 'shippingMethod',
               type: 'select',

@@ -23,9 +23,6 @@ export interface Config {
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
   };
-  db: {
-    defaultIDType: number;
-  };
   globals: {
     settings: Setting;
   };
@@ -39,15 +36,12 @@ export interface UserAuthOperations {
     email: string;
   };
   login: {
-    email: string;
     password: string;
+    email: string;
   };
   registerFirstUser: {
     email: string;
     password: string;
-  };
-  unlock: {
-    email: string;
   };
 }
 /**
@@ -57,6 +51,8 @@ export interface UserAuthOperations {
 export interface Order {
   id: number;
   orderNumber?: number | null;
+  status?: ('pending' | 'processing' | 'completed' | 'cancelled' | 'onhold') | null;
+  stripePaymentIntentID?: string | null;
   billing?: {
     orderedBy?: (number | null) | User;
     name?: string | null;
@@ -79,8 +75,6 @@ export interface Order {
         | null;
     };
   };
-  status?: ('pending' | 'processing' | 'completed' | 'cancelled' | 'onhold') | null;
-  stripePaymentIntentID?: string | null;
   totals: {
     orderThanklys: number;
     orderShipping: number;
@@ -88,12 +82,12 @@ export interface Order {
   };
   items?:
     | {
-        productPrice?: number | null;
+        price?: number | null;
         product: number | Product;
         totals: {
-          itemTotal: number;
-          itemThanklys: number;
-          itemShipping?: number | null;
+          itemCost: number;
+          shippingCost?: number | null;
+          subTotalCost: number;
         };
         receivers?:
           | {

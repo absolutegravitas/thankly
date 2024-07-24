@@ -1,5 +1,5 @@
 {
-  "id": "7728bbbd-a8de-4666-afc1-ab91dbfc6dd5",
+  "id": "0503e1fa-034b-4945-8b4b-369c40dfe5af",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "5",
   "dialect": "pg",
@@ -605,6 +605,13 @@
             "created_at"
           ],
           "isUnique": false
+        },
+        "products__status_idx": {
+          "name": "products__status_idx",
+          "columns": [
+            "_status"
+          ],
+          "isUnique": false
         }
       },
       "foreignKeys": {
@@ -879,6 +886,13 @@
           ],
           "isUnique": false
         },
+        "_products_v_version_version__status_idx": {
+          "name": "_products_v_version_version__status_idx",
+          "columns": [
+            "version__status"
+          ],
+          "isUnique": false
+        },
         "_products_v_created_at_idx": {
           "name": "_products_v_created_at_idx",
           "columns": [
@@ -1111,6 +1125,13 @@
           "name": "pages_created_at_idx",
           "columns": [
             "created_at"
+          ],
+          "isUnique": false
+        },
+        "pages__status_idx": {
+          "name": "pages__status_idx",
+          "columns": [
+            "_status"
           ],
           "isUnique": false
         }
@@ -1355,6 +1376,13 @@
           "name": "_pages_v_version_version_created_at_idx",
           "columns": [
             "version_created_at"
+          ],
+          "isUnique": false
+        },
+        "_pages_v_version_version__status_idx": {
+          "name": "_pages_v_version_version__status_idx",
+          "columns": [
+            "version__status"
           ],
           "isUnique": false
         },
@@ -1858,6 +1886,12 @@
         },
         "totals_cart_shipping": {
           "name": "totals_cart_shipping",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "totals_cart_shipping_discount": {
+          "name": "totals_cart_shipping_discount",
           "type": "numeric",
           "primaryKey": false,
           "notNull": false

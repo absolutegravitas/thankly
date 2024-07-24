@@ -9,15 +9,10 @@ import { MouseInfoProvider } from '@faceless-ui/mouse-info'
 import { ScrollInfoProvider } from '@faceless-ui/scroll-info'
 import { WindowInfoProvider } from '@faceless-ui/window-info'
 import { CartProvider } from '@app/_providers/Cart'
-
-import { InfoIcon } from '@app/_graphics/InfoIcon'
-import { CheckIcon } from '@app/_icons/CheckIcon'
-import { CloseIcon } from '@app/_icons/CloseIcon'
-import { ErrorIcon } from '@app/_icons/ErrorIcon'
 import { HeaderIntersectionObserver } from '@app/_providers/HeaderIntersectionObserver'
 import { AuthProvider } from './Auth'
 import { PageTransition } from './PageTransition'
-import { ThemePreferenceProvider } from './Theme'
+// import { ThemePreferenceProvider } from './Theme'
 
 export const Providers: React.FC<{
   children: React.ReactNode
@@ -35,38 +30,38 @@ export const Providers: React.FC<{
                   l: '(max-width: 1600px)',
                 }}
               >
-                <ThemePreferenceProvider>
-                  <GridProvider
-                    breakpoints={{
-                      s: 768,
-                      m: 1024,
-                      l: 1680,
-                    }}
-                    rowGap={{
-                      s: '1rem',
-                      m: '1rem',
-                      l: '2rem',
-                      xl: '4rem',
-                    }}
-                    colGap={{
-                      s: '1rem',
-                      m: '2rem',
-                      l: '2rem',
-                      xl: '3rem',
-                    }}
-                    cols={{
-                      s: 8,
-                      m: 8,
-                      l: 12,
-                      xl: 12,
-                    }}
-                  >
-                    <ModalProvider transTime={0} zIndex="var(--z-modal)">
-                      <PageTransition>
-                        <HeaderIntersectionObserver>
-                          {children}
-                          <ModalContainer />
-                          {/* <ToastContainer
+                {/* <ThemePreferenceProvider> */}
+                <GridProvider
+                  breakpoints={{
+                    s: 768,
+                    m: 1024,
+                    l: 1680,
+                  }}
+                  rowGap={{
+                    s: '1rem',
+                    m: '1rem',
+                    l: '2rem',
+                    xl: '4rem',
+                  }}
+                  colGap={{
+                    s: '1rem',
+                    m: '2rem',
+                    l: '2rem',
+                    xl: '3rem',
+                  }}
+                  cols={{
+                    s: 8,
+                    m: 8,
+                    l: 12,
+                    xl: 12,
+                  }}
+                >
+                  <ModalProvider transTime={0} zIndex="var(--z-modal)">
+                    <PageTransition>
+                      <HeaderIntersectionObserver>
+                        {children}
+                        <ModalContainer />
+                        {/* <ToastContainer
                             position="bottom-center"
                             transition={Slide}
                             // icon={false}
@@ -86,11 +81,11 @@ export const Providers: React.FC<{
                               }
                             }}
                           /> */}
-                        </HeaderIntersectionObserver>
-                      </PageTransition>
-                    </ModalProvider>
-                  </GridProvider>
-                </ThemePreferenceProvider>
+                      </HeaderIntersectionObserver>
+                    </PageTransition>
+                  </ModalProvider>
+                </GridProvider>
+                {/* </ThemePreferenceProvider> */}
               </WindowInfoProvider>
             </MouseInfoProvider>
           </ScrollInfoProvider>

@@ -5,7 +5,7 @@ import { notFound } from 'next/navigation'
 
 import type { Page } from '@payload-types'
 // import { staticHome } from '../../../payload/seed/home-static'
-import { fetchPage, fetchProductSlugs } from '@app/_queries/pages'
+import { fetchPage, fetchPageSlugs } from '@app/_queries/pages'
 
 import { generateMeta } from '@/utilities/generateMeta'
 import { PageTemplate } from './page.client'
@@ -16,6 +16,7 @@ export default async function Page({ params: { slug = 'home' } }) {
 
   try {
     page = await fetchPage(slug)
+    console.log('Fetched page:', page)
   } catch (error) {
     console.error('Failed to fetch page:', error)
     return notFound()
@@ -38,7 +39,7 @@ export default async function Page({ params: { slug = 'home' } }) {
 
 export async function generateStaticParams() {
   try {
-    const slugs = await fetchProductSlugs()
+    const slugs = await fetchPageSlugs()
 
     // Ensure 'home' is always included
     const homeSlug = { slug: 'home' }

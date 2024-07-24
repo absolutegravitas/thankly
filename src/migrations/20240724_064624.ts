@@ -406,6 +406,7 @@ CREATE TABLE IF NOT EXISTS "carts" (
 	"totals_cart_total" numeric NOT NULL,
 	"totals_cart_thanklys" numeric NOT NULL,
 	"totals_cart_shipping" numeric,
+	"totals_cart_shipping_discount" numeric,
 	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
 	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
 );
@@ -701,10 +702,12 @@ CREATE INDEX IF NOT EXISTS "products_media_order_idx" ON "products_media" ("_ord
 CREATE INDEX IF NOT EXISTS "products_media_parent_id_idx" ON "products_media" ("_parent_id");
 CREATE INDEX IF NOT EXISTS "products_slug_idx" ON "products" ("slug");
 CREATE INDEX IF NOT EXISTS "products_created_at_idx" ON "products" ("created_at");
+CREATE INDEX IF NOT EXISTS "products__status_idx" ON "products" ("_status");
 CREATE INDEX IF NOT EXISTS "_products_v_version_media_order_idx" ON "_products_v_version_media" ("_order");
 CREATE INDEX IF NOT EXISTS "_products_v_version_media_parent_id_idx" ON "_products_v_version_media" ("_parent_id");
 CREATE INDEX IF NOT EXISTS "_products_v_version_version_slug_idx" ON "_products_v" ("version_slug");
 CREATE INDEX IF NOT EXISTS "_products_v_version_version_created_at_idx" ON "_products_v" ("version_created_at");
+CREATE INDEX IF NOT EXISTS "_products_v_version_version__status_idx" ON "_products_v" ("version__status");
 CREATE INDEX IF NOT EXISTS "_products_v_created_at_idx" ON "_products_v" ("created_at");
 CREATE INDEX IF NOT EXISTS "_products_v_updated_at_idx" ON "_products_v" ("updated_at");
 CREATE INDEX IF NOT EXISTS "_products_v_latest_idx" ON "_products_v" ("latest");
@@ -712,10 +715,12 @@ CREATE INDEX IF NOT EXISTS "pages_breadcrumbs_order_idx" ON "pages_breadcrumbs" 
 CREATE INDEX IF NOT EXISTS "pages_breadcrumbs_parent_id_idx" ON "pages_breadcrumbs" ("_parent_id");
 CREATE INDEX IF NOT EXISTS "pages_slug_idx" ON "pages" ("slug");
 CREATE INDEX IF NOT EXISTS "pages_created_at_idx" ON "pages" ("created_at");
+CREATE INDEX IF NOT EXISTS "pages__status_idx" ON "pages" ("_status");
 CREATE INDEX IF NOT EXISTS "_pages_v_version_breadcrumbs_order_idx" ON "_pages_v_version_breadcrumbs" ("_order");
 CREATE INDEX IF NOT EXISTS "_pages_v_version_breadcrumbs_parent_id_idx" ON "_pages_v_version_breadcrumbs" ("_parent_id");
 CREATE INDEX IF NOT EXISTS "_pages_v_version_version_slug_idx" ON "_pages_v" ("version_slug");
 CREATE INDEX IF NOT EXISTS "_pages_v_version_version_created_at_idx" ON "_pages_v" ("version_created_at");
+CREATE INDEX IF NOT EXISTS "_pages_v_version_version__status_idx" ON "_pages_v" ("version__status");
 CREATE INDEX IF NOT EXISTS "_pages_v_created_at_idx" ON "_pages_v" ("created_at");
 CREATE INDEX IF NOT EXISTS "_pages_v_updated_at_idx" ON "_pages_v" ("updated_at");
 CREATE INDEX IF NOT EXISTS "_pages_v_latest_idx" ON "_pages_v" ("latest");

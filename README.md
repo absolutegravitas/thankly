@@ -84,6 +84,15 @@ BEGIN
 END $$;
 ```
 
+#### Check if there are any tables
+
+```sql
+SELECT table_schema, table_name
+FROM information_schema.tables
+WHERE table_schema NOT IN ('pg_catalog', 'information_schema')
+ORDER BY table_schema, table_name;
+```
+
 ### Production
 
 Run the following command every time the database structure changes to ensure proper builds on Vercel:

@@ -44,7 +44,7 @@ export const fetchPage = (slug: string): Promise<Page | null> => {
   return cachedFetchPage()
 }
 
-export const fetchProductSlugs = unstable_cache(
+export const fetchPageSlugs = unstable_cache(
   async (): Promise<{ slug: string }[]> => {
     const config = await configPromise
     let payload: any = await getPayloadHMR({ config })

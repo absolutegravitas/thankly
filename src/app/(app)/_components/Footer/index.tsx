@@ -12,9 +12,9 @@ import { usePathname, useRouter } from 'next/navigation'
 import { CMSLink } from '@app/_components/CMSLink'
 import { Gutter } from '@app/_components/Gutter'
 import { useHeaderObserver } from '@app/_providers/HeaderIntersectionObserver'
-import { useThemePreference } from '@app/_providers/Theme'
-import { getImplicitPreference, themeLocalStorageKey } from '@app/_providers/Theme/shared'
-import { Theme } from '@app/_providers/Theme/types'
+// import { useThemePreference } from '@app/_providers/Theme'
+// import { getImplicitPreference, themeLocalStorageKey } from '@app/_providers/Theme/shared'
+// import { Theme } from '@app/_providers/Theme/types'
 import { getCookie } from '@/utilities/get-cookie'
 
 import classes from './index.module.scss'
@@ -25,8 +25,8 @@ import Link from 'next/link'
 export const Footer: React.FC<FooterType> = (props) => {
   // console.log('footer props --', props)
   const { columns } = props
-  const { setTheme } = useThemePreference()
-  const { setHeaderTheme } = useHeaderObserver()
+  // const { setTheme } = useThemePreference()
+  // const { setHeaderTheme } = useHeaderObserver()
 
   const wrapperRef = React.useRef<HTMLElement>(null)
   const selectRef = React.useRef<HTMLSelectElement>(null)
@@ -59,24 +59,24 @@ export const Footer: React.FC<FooterType> = (props) => {
 
   const [error, setError] = React.useState<{ status?: string; message: string } | undefined>()
 
-  const onThemeChange = (themeToSet: Theme & 'auto') => {
-    if (themeToSet === 'auto') {
-      const implicitPreference = getImplicitPreference() ?? 'light'
-      setHeaderTheme(implicitPreference)
-      setTheme(implicitPreference)
-      if (selectRef.current) selectRef.current.value = 'auto'
-    } else {
-      setTheme(themeToSet)
-      setHeaderTheme(themeToSet)
-    }
-  }
+  // const onThemeChange = (themeToSet: Theme & 'auto') => {
+  //   if (themeToSet === 'auto') {
+  //     const implicitPreference = getImplicitPreference() ?? 'light'
+  //     setHeaderTheme(implicitPreference)
+  //     setTheme(implicitPreference)
+  //     if (selectRef.current) selectRef.current.value = 'auto'
+  //   } else {
+  //     setTheme(themeToSet)
+  //     setHeaderTheme(themeToSet)
+  //   }
+  // }
 
-  React.useEffect(() => {
-    const preference = window.localStorage.getItem(themeLocalStorageKey)
-    if (selectRef.current) {
-      selectRef.current.value = preference ?? 'auto'
-    }
-  }, [])
+  // React.useEffect(() => {
+  //   const preference = window.localStorage.getItem(themeLocalStorageKey)
+  //   if (selectRef.current) {
+  //     selectRef.current.value = preference ?? 'auto'
+  //   }
+  // }, [])
 
   const router = useRouter()
   const pathname = usePathname()
