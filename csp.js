@@ -35,7 +35,6 @@ const policies = {
     'http://cdn.jsdelivr.net',
     'https://maps.gstatic.com',
     'https://google.com.au',
-    'https://*gravatar.com',
     'https://www.gravatar.com',
   ],
   'font-src': [
