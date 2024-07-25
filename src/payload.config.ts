@@ -23,7 +23,7 @@ import { Users } from '@cms/_collections/users'
 import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
 import generateBreadcrumbsUrl from '@/utilities/generateBreadcrumbsUrl'
-// import { Orders } from './app/(payload)/_collections/carts'
+import { fieldsSelect } from '@payload-enchants/fields-select'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -74,6 +74,7 @@ export default buildConfig({
   ].filter(Boolean),
 
   plugins: [
+    fieldsSelect(), // temp plugin for selectively pulling in fields for localAPI
     seoPlugin({ collections: ['pages', 'products'], uploadsCollection: 'media' }),
     // redirectsPlugin({
     //   collections: ['pages', 'products'],

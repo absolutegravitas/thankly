@@ -67,6 +67,9 @@ pnpm generate:types && pnpm payload migrate:create && pnpm build && pnpm dev
 
 # Update types and run locally
 pnpm generate:types && pnpm dev
+
+# Update types, create DB migrations
+pnpm generate:types && pnpm payload migrate:create
 ```
 
 #### Connecting to PostgreSQL

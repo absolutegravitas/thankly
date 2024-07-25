@@ -22,6 +22,7 @@
     "@faceless-ui/window-info": "^2.1.2",
     "@headlessui/react": "^2.1.2",
     "@hookform/resolvers": "^3.9.0",
+    "@payload-enchants/fields-select": "^1.2.2",
     "@payloadcms/db-postgres": "beta",
     "@payloadcms/email-nodemailer": "beta",
     "@payloadcms/live-preview": "beta",

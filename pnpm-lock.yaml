@@ -38,6 +38,9 @@ importers:
       '@hookform/resolvers':
         specifier: ^3.9.0
         version: 3.9.0(react-hook-form@7.52.1(react@19.0.0-beta-26f2496093-20240514))
+      '@payload-enchants/fields-select':
+        specifier: ^1.2.2
+        version: 1.2.2(payload@3.0.0-beta.59(@swc/core@1.3.101(@swc/helpers@0.5.11))(@swc/types@0.1.9)(graphql@16.9.0)(typescript@5.5.3))
       '@payloadcms/db-postgres':
         specifier: beta
         version: 3.0.0-beta.59(@types/react@18.3.3)(payload@3.0.0-beta.59(@swc/core@1.3.101(@swc/helpers@0.5.11))(@swc/types@0.1.9)(graphql@16.9.0)(typescript@5.5.3))(react@19.0.0-beta-26f2496093-20240514)
@@ -1739,6 +1742,11 @@ packages:
 
   '@panva/hkdf@1.2.1':
     resolution: {integrity: sha512-6oclG6Y3PiDFcoyk8srjLfVKyMfVCKJ27JwNPViuXziFpmdz+MZnZN/aKY0JGXgYuO/VghU0jcOAZgWXZ1Dmrw==}
+
+  '@payload-enchants/fields-select@1.2.2':
+    resolution: {integrity: sha512-D4wejwqNIYrUedu9HXnhVKhDNYtFMhfGNZcSUe25r8rkbHwsKkbL0ahx+/911IdFf8BgKvHXfiqn0DPMMf8QUg==}
+    peerDependencies:
+      payload: ^3.0.0-beta.61
 
   '@payloadcms/db-postgres@3.0.0-beta.59':
     resolution: {integrity: sha512-LAJrfeV77PJUNxSD9XEmCKC2RZlCI4lmmh1BTd3Ll9O3sXZfhRP8V27JBcvFEEcCCtZaNciLsxnXe61HdVfUhg==}
@@ -7203,6 +7211,10 @@ snapshots:
   '@one-ini/wasm@0.1.1': {}
 
   '@panva/hkdf@1.2.1': {}
+
+  '@payload-enchants/fields-select@1.2.2(payload@3.0.0-beta.59(@swc/core@1.3.101(@swc/helpers@0.5.11))(@swc/types@0.1.9)(graphql@16.9.0)(typescript@5.5.3))':
+    dependencies:
+      payload: 3.0.0-beta.59(@swc/core@1.3.101(@swc/helpers@0.5.11))(@swc/types@0.1.9)(graphql@16.9.0)(typescript@5.5.3)
 
   '@payloadcms/db-postgres@3.0.0-beta.59(@types/react@18.3.3)(payload@3.0.0-beta.59(@swc/core@1.3.101(@swc/helpers@0.5.11))(@swc/types@0.1.9)(graphql@16.9.0)(typescript@5.5.3))(react@19.0.0-beta-26f2496093-20240514)':
     dependencies:
