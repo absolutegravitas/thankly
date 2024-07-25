@@ -13,15 +13,22 @@ export const deleteStripeProduct: CollectionAfterDeleteHook<Product> = async ({
   id, // id of document to delete
   doc, // deleted document
 }) => {
-  try {
-    // "deletes" or inactivates all prices below the product on stripe
-    const prices = await stripe.prices.list({ product: doc.stripeId || '' })
-    for (const price of prices.data) {
-      await stripe.prices.update(price.id, { active: false })
-    }
+  console.log('deleteStripeProduct', doc)
 
-    // "deletes" or inactivates the product on stripe
-    await stripe.products.update(doc.stripeId || '', { active: false })
+  try {
+    // just archive the product instead of fucking around with prices
+
+    if (doc.stripe?.productId && typeof doc.stripe.productId === 'string') {
+      // const prices = await stripe.prices.list({ product: doc.stripe.productId })
+      // console.log('prices to deactivate', prices)
+      // for (const price of prices.data) {
+      //   await stripe.prices.update(price.id, { active: false })
+      // }
+
+      await stripe.products.update(doc.stripe.productId, { active: false })
+    } else {
+      req.payload.logger.warn('No valid Stripe product ID found for deletion')
+    }
   } catch (error: unknown) {
     req.payload.logger.error(`Error deleting Stripe product: ${error}`)
   }

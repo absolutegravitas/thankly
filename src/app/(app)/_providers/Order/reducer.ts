@@ -93,7 +93,7 @@ const calculateOrderTotals = (items: OrderItem[] | undefined): Order['totals'] =
       if (
         product.productType &&
         receiver.delivery?.shippingMethod &&
-        product.shippingClass &&
+        product.shippingSize &&
         postalCode
       ) {
         if (product.productType === 'card') {
@@ -104,7 +104,7 @@ const calculateOrderTotals = (items: OrderItem[] | undefined): Order['totals'] =
         } else if (product.productType === 'gift') {
           shipping =
             shippingPrices.gifts.size[
-              product.shippingClass as keyof typeof shippingPrices.gifts.size
+              product.shippingSize as keyof typeof shippingPrices.gifts.size
             ] ?? null
 
           if (shipping !== null) {

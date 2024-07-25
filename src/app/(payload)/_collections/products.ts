@@ -31,7 +31,7 @@ export const Products: CollectionConfig = {
   },
   hooks: {
     beforeChange: [upsertStripeProduct],
-    afterChange: [revalidateProduct], // probably dont need this
+    // afterChange: [revalidateProduct], // probably dont need this
     // afterRead: [populateArchiveBlock],
     afterDelete: [deleteStripeProduct],
   },
@@ -49,7 +49,6 @@ export const Products: CollectionConfig = {
       type: 'row',
       fields: [
         { name: 'title', type: 'text', required: true },
-        slugField(),
         {
           name: 'productType',
           type: 'select',
@@ -61,7 +60,7 @@ export const Products: CollectionConfig = {
         },
         // basically product size/weight determines what the predefault base ship price is for a gift
         {
-          name: 'shippingClass',
+          name: 'shippingSize',
           type: 'select',
           defaultValue: 'medium',
           admin: { condition: (_, siblingData) => siblingData.productType === 'gift' },
@@ -74,90 +73,116 @@ export const Products: CollectionConfig = {
         },
       ],
     },
+    {
+      name: 'prices',
+      type: 'group',
+      fields: [
+        {
+          type: 'row',
+          fields: [
+            {
+              name: 'basePrice',
+              label: 'Price',
+              type: 'number',
+              required: true,
+              defaultValue: 0,
+            },
 
+            {
+              name: 'promoPrice',
+              label: 'Promotional Price',
+              type: 'number',
+              required: false,
+              // defaultValue: null,
+            },
+          ],
+        },
+      ],
+    },
     {
       type: 'tabs',
       tabs: [
+        {
+          label: 'Page Layout',
+          description: 'Product Page Layout',
+          fields: [layoutField()],
+        },
         {
           label: 'Basics',
           description: 'Basic Product Info',
           fields: [
             {
-              type: 'row',
+              name: 'stock',
+              type: 'group',
               fields: [
                 {
-                  name: 'stripeId',
-                  label: 'Stripe ID',
-                  type: 'text',
-                },
-                themeField,
-                {
-                  name: 'availability',
-                  type: 'select',
-                  defaultValue: 'available',
-                  hasMany: false,
-                  required: false,
-                  admin: { isClearable: false },
-                  options: [
-                    { label: 'Available', value: 'available' },
-                    { label: 'Unavailable', value: 'unavailable' },
+                  type: 'row',
+                  fields: [
+                    {
+                      name: 'availability',
+                      type: 'select',
+                      defaultValue: 'available',
+                      hasMany: false,
+                      required: false,
+                      admin: { isClearable: false },
+                      options: [
+                        { label: 'Available', value: 'available' },
+                        { label: 'Unavailable', value: 'unavailable' },
+                      ],
+                    },
+                    { name: 'stockOnHand', type: 'number', required: false },
+                    {
+                      name: 'lowStockThreshold',
+                      type: 'number',
+                      required: false,
+                      defaultValue: 5,
+                      min: 1,
+                    },
                   ],
                 },
               ],
             },
 
             {
-              type: 'row',
-              fields: [
-                {
-                  name: 'price',
-                  label: 'Price',
-                  type: 'number',
-                  required: true,
-                  defaultValue: 0,
-                },
-                { name: 'stripePriceId', type: 'text', required: false, hidden: false },
-
-                {
-                  name: 'promoPrice',
-                  label: 'Promotional Price',
-                  type: 'number',
-                  required: false,
-                  // defaultValue: null,
-                },
-                { name: 'stripePromoPriceId', type: 'text', required: false, hidden: false },
-              ],
-            },
-            {
-              type: 'row',
-              fields: [
-                { name: 'stockOnHand', type: 'number', required: false },
-                {
-                  name: 'lowStockThreshold',
-                  type: 'number',
-                  required: false,
-                  defaultValue: 5,
-                  min: 1,
-                },
-              ],
-            },
-          ],
-        },
-        {
-          label: 'Media',
-          description: 'Product Media',
-          fields: [
-            {
               name: 'media',
+              label: 'Images',
               type: 'array',
               fields: [{ name: 'mediaItem', type: 'upload', relationTo: 'media' }],
             },
           ],
         },
+        // {
+        //   label: 'Images',
+        //   description: 'Product Images',
+        //   fields: [],
+        // },
+
         {
-          label: 'Layout',
-          description: 'Product Page Layout',
-          fields: [layoutField()],
+          label: 'Tech Info',
+          fields: [
+            slugField(),
+
+            {
+              name: 'stripe',
+              type: 'group',
+              fields: [
+                { name: 'productId', label: 'Product ID', type: 'text' },
+                { name: 'basePriceId', label: 'Base Price ID', type: 'text' },
+                {
+                  name: 'promoPriceId',
+                  label: 'Promo Price ID',
+                  type: 'text',
+                  required: false,
+                  hidden: false,
+                },
+              ],
+            },
+            // {
+            //   name: 'stripe',
+            //   type: 'group',
+            //   fields: [],
+            // },
+          ],
         },
       ],
     },

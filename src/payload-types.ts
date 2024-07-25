@@ -176,24 +176,12 @@ export interface User {
 export interface Product {
   id: number;
   title: string;
-  slug?: string | null;
   productType?: ('card' | 'gift') | null;
-  shippingClass?: ('mini' | 'small' | 'medium' | 'large') | null;
-  stripeId?: string | null;
-  theme?: ('light' | 'dark') | null;
-  availability?: ('available' | 'unavailable') | null;
-  price: number;
-  stripePriceId?: string | null;
-  promoPrice?: number | null;
-  stripePromoPriceId?: string | null;
-  stockOnHand?: number | null;
-  lowStockThreshold?: number | null;
-  media?:
-    | {
-        mediaItem?: number | Media | null;
-        id?: string | null;
-      }[]
-    | null;
+  shippingSize?: ('mini' | 'small' | 'medium' | 'large') | null;
+  prices: {
+    basePrice: number;
+    promoPrice?: number | null;
+  };
   layout?: {
     root: {
       type: string;
@@ -209,6 +197,23 @@ export interface Product {
     };
     [k: string]: unknown;
   } | null;
+  stock?: {
+    availability?: ('available' | 'unavailable') | null;
+    stockOnHand?: number | null;
+    lowStockThreshold?: number | null;
+  };
+  media?:
+    | {
+        mediaItem?: number | Media | null;
+        id?: string | null;
+      }[]
+    | null;
+  slug?: string | null;
+  stripe?: {
+    productId?: string | null;
+    basePriceId?: string | null;
+    promoPriceId?: string | null;
+  };
   meta?: {
     title?: string | null;
     description?: string | null;

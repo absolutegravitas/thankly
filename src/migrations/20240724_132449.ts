@@ -1,7 +1,7 @@
 import { MigrateUpArgs, MigrateDownArgs, sql } from '@payloadcms/db-postgres'
 
 export async function up({ payload, req }: MigrateUpArgs): Promise<void> {
-await payload.db.drizzle.execute(sql`
+  await payload.db.drizzle.execute(sql`
  DO $$ BEGIN
  CREATE TYPE "enum_orders_status" AS ENUM('pending', 'processing', 'completed', 'cancelled', 'onhold');
 EXCEPTION
@@ -236,7 +236,7 @@ CREATE TABLE IF NOT EXISTS "products" (
 	"title" varchar,
 	"slug" varchar,
 	"productType" "enum_products_product_type",
-	"shippingClass" "enum_products_shipping_class",
+	"shippingSize" "enum_products_shipping_class",
 	"stripe_id" varchar,
 	"theme" "enum_products_theme",
 	"availability" "enum_products_availability",
@@ -269,7 +269,7 @@ CREATE TABLE IF NOT EXISTS "_products_v" (
 	"version_title" varchar,
 	"version_slug" varchar,
 	"version_productType" "enum__products_v_version_product_type",
-	"version_shippingClass" "enum__products_v_version_shipping_class",
+	"version_shippingSize" "enum__products_v_version_shipping_class",
 	"version_stripe_id" varchar,
 	"version_theme" "enum__products_v_version_theme",
 	"version_availability" "enum__products_v_version_availability",
@@ -1047,10 +1047,10 @@ EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
 `)
-};
+}
 
 export async function down({ payload, req }: MigrateDownArgs): Promise<void> {
-await payload.db.drizzle.execute(sql`
+  await payload.db.drizzle.execute(sql`
  DROP TABLE "orders_items_receivers";
 DROP TABLE "orders_items";
 DROP TABLE "orders";
@@ -1116,4 +1116,4 @@ ALTER TABLE "users" DROP COLUMN IF EXISTS "stripe_id";
 ALTER TABLE "users" DROP COLUMN IF EXISTS "enable_a_p_i_key";
 ALTER TABLE "users" DROP COLUMN IF EXISTS "api_key";
 ALTER TABLE "users" DROP COLUMN IF EXISTS "api_key_index";`)
-};
+}

@@ -6,9 +6,9 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
 })
 
 export const upsertStripeProduct: CollectionBeforeChangeHook = async ({ req, data, operation }) => {
-  if (operation === 'create' && !data.stripeId) {
+  if (operation === 'create') {
     try {
-      // console.log('upsertProduct data', data)
+      console.log('upsertProduct data', data)
 
       // Create a new product
       const product = await stripe.products.create({
@@ -19,104 +19,116 @@ export const upsertStripeProduct: CollectionBeforeChangeHook = async ({ req, dat
           stockOnHand: data.stockOnHand,
           lowStockThreshold: data.lowStockThreshold,
           type: data.type,
+          shippingSize: data.shippingSize,
         },
       })
 
-      // Create prices if they are provided
-      let stripePriceId
-      let stripePromoPriceId
+      console.log('stripe product ', product)
 
-      if (data.stripePriceId != 0) {
+      // Create prices if they are provided
+      let basePriceId
+      let promoPriceId
+
+      if (data.prices.basePrice !== 0 && data.prices.basePrice) {
         const stripePrice = await stripe.prices.create({
           product: product.id,
-          unit_amount: data.price * 100,
+          unit_amount: data.prices.basePrice * 100,
           currency: 'aud',
         })
         await stripe.products.update(product.id, {
           default_price: stripePrice.id,
         })
-        stripePriceId = stripePrice.id
+        basePriceId = stripePrice.id
       }
+      console.log('basePriceId', basePriceId)
 
-      if (data.stripePromoPriceId != 0) {
+      if (data.prices.promoPrice !== 0 && data.prices.promoPrice) {
         const stripePromoPrice = await stripe.prices.create({
           product: product.id,
-          unit_amount: data.promoPrice * 100,
+          unit_amount: data.prices.promoPrice * 100,
           currency: 'aud',
         })
-        stripePromoPriceId = stripePromoPrice.id
+        await stripe.products.update(product.id, {
+          default_price: stripePromoPrice.id,
+        })
+        promoPriceId = stripePromoPrice.id
       }
 
-      // Return the object with the latest stripePriceId and stripePromoPriceId
+      console.log('promoPriceId ', promoPriceId)
+
+      // Return the object with the latest priceId and promoPriceId
       return {
         ...data,
-        stripeId: product.id,
-        stripePriceId,
-        stripePromoPriceId,
+        stripe: {
+          productId: product.id,
+          basePriceId: basePriceId,
+          promoPriceId: promoPriceId,
+        },
       }
     } catch (error: unknown) {
       req.payload.logger.error(`Error creating Stripe product: ${error}`)
     }
   }
 
-  if (operation === 'update' && data.stripeId) {
+  if (operation === 'update' && data.stripe?.productId) {
     try {
-      // see if there are any prices
-      // console.log('upsertProduct data', data)
+      if (typeof data.stripe.productId !== 'string') {
+        throw new Error('Invalid Stripe product ID')
+      }
 
-      // Update the existing product
-      const product = await stripe.products.update(data.stripeId, {
+      const product = await stripe.products.update(data.stripe.productId, {
         name: data.title,
         description: data.shortDescription,
         metadata: {
           slug: data.slug,
-          stockOnHand: data.stockOnHand,
-          lowStockThreshold: data.lowStockThreshold,
-          type: data.type,
+          stockOnHand: data.stock?.stockOnHand,
+          lowStockThreshold: data.stock?.lowStockThreshold,
+          type: data.productType,
         },
       })
 
-      // Find the default price if it exists
-      const defaultPrice =
-        data.prices.find((price: any) => price.default) ||
-        (data.prices.length === 1 ? data.prices[0] : undefined)
+      let updatedBasePriceId = data.stripe.basePriceId
+      let updatedPromoPriceId = data.stripe.promoPriceId
 
-      // get prices from stripe
-      const stripePrices = await stripe.prices.list({
-        product: data.stripeId,
-      })
+      if (data.prices?.basePrice) {
+        if (updatedBasePriceId) {
+          await stripe.prices.update(updatedBasePriceId, {
+            active: true,
+            nickname: 'Base Price',
+          })
+        } else {
+          const newBasePrice = await stripe.prices.create({
+            product: data.stripe.productId,
+            unit_amount: data.prices.basePrice * 100,
+            currency: 'aud',
+          })
+          updatedBasePriceId = newBasePrice.id
+        }
+      }
 
-      const updatedPrices = await Promise.all(
-        data.prices.map(async (price: any) => {
-          if (price.stripeId) {
-            // stripe price exists, update labels if needed, can't change amount
-            // if it's not the default price, then make price inactive
-            if (price.id != defaultPrice.id) {
-              const stripePrice = await stripe.prices.update(price.stripeId, {
-                active: price.active,
-                nickname: price.label,
-              })
-            } else {
-              const stripePrice = await stripe.prices.update(price.stripeId, {
-                active: true,
-                nickname: price.label,
-              })
-            }
-          } else {
-            // no stripe id, so price is new, create it
-
-            const stripePrice = await stripe.prices.create({
-              product: data.stripeId,
-              unit_amount: price.amount * 100,
-              currency: 'aud',
-            })
-            return { ...price, stripeId: stripePrice.id }
-          }
-        }),
-      )
+      if (data.prices?.promoPrice) {
+        if (updatedPromoPriceId) {
+          await stripe.prices.update(updatedPromoPriceId, {
+            active: true,
+            nickname: 'Promo Price',
+          })
+        } else {
+          const newPromoPrice = await stripe.prices.create({
+            product: data.stripe.productId,
+            unit_amount: data.prices.promoPrice * 100,
+            currency: 'aud',
+          })
+          updatedPromoPriceId = newPromoPrice.id
+        }
+      }
 
       return {
         ...data,
+        stripe: {
+          ...data.stripe,
+          basePriceId: updatedBasePriceId,
+          promoPriceId: updatedPromoPriceId,
+        },
       }
     } catch (error: unknown) {
       req.payload.logger.error(`Error updating Stripe product: ${error}`)
