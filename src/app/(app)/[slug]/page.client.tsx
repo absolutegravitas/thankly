@@ -23,11 +23,12 @@ export const PageTemplate: React.FC<PageTemplateProps> = ({ page }) => {
 
   return (
     <React.Fragment>
-      <Blocks
+      TEST TEST
+      {/* <Blocks
         blocks={page?.layout?.root?.children}
         // locale="en"
         // disableTopPadding={!hero || hero?.type === 'none' || hero?.type === 'titleOnly'}
-      />
+      /> */}
     </React.Fragment>
   )
 }

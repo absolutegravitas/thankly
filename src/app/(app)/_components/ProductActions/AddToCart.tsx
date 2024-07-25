@@ -19,7 +19,10 @@ export function AddToCartButton({ product }: { product: Product }) {
     try {
       addProduct(
         product,
-        Math.max(0, Math.min(product.price ?? Infinity, product.promoPrice ?? Infinity)),
+        Math.max(
+          0,
+          Math.min(product.prices.basePrice ?? Infinity, product.prices.promoPrice ?? Infinity),
+        ),
       )
       router.push('/shop/cart')
     } catch (e: any) {

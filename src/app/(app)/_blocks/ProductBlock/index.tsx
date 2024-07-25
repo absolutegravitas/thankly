@@ -18,7 +18,12 @@ const ProductBlockContent: React.FC<ProductBlockContentProps> = ({
   product,
   selectedImageIndex = 0,
 }) => {
-  const { title, price, promoPrice, meta, media } = product
+  const {
+    title,
+    prices: { basePrice, promoPrice },
+    meta,
+    media,
+  } = product
 
   const formatPrice = (amount: number | null | undefined) => {
     if (amount == null) return 'Price not available'
@@ -30,7 +35,7 @@ const ProductBlockContent: React.FC<ProductBlockContentProps> = ({
     }).format(amount)
   }
 
-  const displayPrice = price ?? 0
+  const displayPrice = basePrice ?? 0
   const displayPromoPrice = promoPrice ?? 0
 
   return (

@@ -12,7 +12,7 @@ import { OrderProvider } from '@app/_providers/Order'
 import { HeaderIntersectionObserver } from '@app/_providers/HeaderIntersectionObserver'
 import { AuthProvider } from './Auth'
 import { PageTransition } from './PageTransition'
-// import { ThemePreferenceProvider } from './Theme'
+import { ThemePreferenceProvider } from './Theme'
 
 export const Providers: React.FC<{
   children: React.ReactNode
@@ -30,38 +30,38 @@ export const Providers: React.FC<{
                   l: '(max-width: 1600px)',
                 }}
               >
-                {/* <ThemePreferenceProvider> */}
-                <GridProvider
-                  breakpoints={{
-                    s: 768,
-                    m: 1024,
-                    l: 1680,
-                  }}
-                  rowGap={{
-                    s: '1rem',
-                    m: '1rem',
-                    l: '2rem',
-                    xl: '4rem',
-                  }}
-                  colGap={{
-                    s: '1rem',
-                    m: '2rem',
-                    l: '2rem',
-                    xl: '3rem',
-                  }}
-                  cols={{
-                    s: 8,
-                    m: 8,
-                    l: 12,
-                    xl: 12,
-                  }}
-                >
-                  <ModalProvider transTime={0} zIndex="var(--z-modal)">
-                    <PageTransition>
-                      <HeaderIntersectionObserver>
-                        {children}
-                        <ModalContainer />
-                        {/* <ToastContainer
+                <ThemePreferenceProvider>
+                  <GridProvider
+                    breakpoints={{
+                      s: 768,
+                      m: 1024,
+                      l: 1680,
+                    }}
+                    rowGap={{
+                      s: '1rem',
+                      m: '1rem',
+                      l: '2rem',
+                      xl: '4rem',
+                    }}
+                    colGap={{
+                      s: '1rem',
+                      m: '2rem',
+                      l: '2rem',
+                      xl: '3rem',
+                    }}
+                    cols={{
+                      s: 8,
+                      m: 8,
+                      l: 12,
+                      xl: 12,
+                    }}
+                  >
+                    <ModalProvider transTime={0} zIndex="var(--z-modal)">
+                      <PageTransition>
+                        <HeaderIntersectionObserver>
+                          {children}
+                          <ModalContainer />
+                          {/* <ToastContainer
                             position="bottom-center"
                             transition={Slide}
                             // icon={false}
@@ -81,11 +81,11 @@ export const Providers: React.FC<{
                               }
                             }}
                           /> */}
-                      </HeaderIntersectionObserver>
-                    </PageTransition>
-                  </ModalProvider>
-                </GridProvider>
-                {/* </ThemePreferenceProvider> */}
+                        </HeaderIntersectionObserver>
+                      </PageTransition>
+                    </ModalProvider>
+                  </GridProvider>
+                </ThemePreferenceProvider>
               </WindowInfoProvider>
             </MouseInfoProvider>
           </ScrollInfoProvider>

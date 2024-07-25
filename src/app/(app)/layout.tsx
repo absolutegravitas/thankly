@@ -13,7 +13,7 @@ import { fetchSettings } from '@app/_queries/settings'
 import { Header } from './_components/Header'
 import { Footer } from './_components/Footer'
 import Script from 'next/script'
-// import { defaultTheme, themeLocalStorageKey } from '@app/_providers/Theme/shared'
+import { defaultTheme, themeLocalStorageKey } from '@app/_providers/Theme/shared'
 import { inter, leaguespartan, raleway } from '@/utilities/fonts'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import { Analytics } from '@vercel/analytics/react'
@@ -44,7 +44,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           <link rel="preconnect" href="https://www.google-analytics.com" />
           <GoogleAnalytics />
           {/* <GoogleTagManager /> */}
-          {/* <Script
+          <Script
             id="theme-script"
             strategy="beforeInteractive"
             dangerouslySetInnerHTML={{
@@ -56,14 +56,14 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                 var hasImplicitPreference = typeof mql.matches === 'boolean'
 
                 if (hasImplicitPreference) {
-                  return mql.matches ? 'dark' : 'light'
+                  return mql.matches ? 'light' : 'light'
                 }
 
                 return null
               }
 
               function themeIsValid(theme) {
-                return theme === 'light' || theme === 'dark'
+                return theme === 'light' || theme === 'light'
               }
 
               var themeToSet = '${defaultTheme}'
@@ -82,7 +82,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               document.documentElement.setAttribute('data-theme', themeToSet)
             })()`,
             }}
-          /> */}
+          />
         </head>
         <body
           className={[
@@ -93,9 +93,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           ].join(' ')}
         >
           <Providers>
-            {settings && <Header {...settings} />}
+            {/* {settings && <Header {...settings} />} */}
             {children}
-            {settings?.footer && <Footer {...settings?.footer}></Footer>}
+            {/* {settings?.footer && <Footer {...settings?.footer}></Footer>} */}
             <PrivacyBanner />
             <Analytics />
             <SpeedInsights />
