@@ -36,6 +36,7 @@ const policies = {
     'https://maps.gstatic.com',
     'https://google.com.au',
     'https://*gravatar.com',
+    'https://www.gravatar.com',
   ],
   'font-src': [
     "'self'",
