@@ -1,7 +1,7 @@
 import { MigrateUpArgs, MigrateDownArgs, sql } from '@payloadcms/db-postgres'
 
 export async function up({ payload, req }: MigrateUpArgs): Promise<void> {
-  await payload.db.drizzle.execute(sql`
+await payload.db.drizzle.execute(sql`
  DO $$ BEGIN
  CREATE TYPE "enum_orders_status" AS ENUM('pending', 'processing', 'completed', 'cancelled', 'onhold');
 EXCEPTION
@@ -21,19 +21,13 @@ EXCEPTION
 END $$;
 
 DO $$ BEGIN
- CREATE TYPE "enum_products_shipping_class" AS ENUM('mini', 'small', 'medium', 'large');
+ CREATE TYPE "enum_products_shipping_size" AS ENUM('mini', 'small', 'medium', 'large');
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
 
 DO $$ BEGIN
- CREATE TYPE "enum_products_theme" AS ENUM('light', 'dark');
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
-
-DO $$ BEGIN
- CREATE TYPE "enum_products_availability" AS ENUM('available', 'unavailable');
+ CREATE TYPE "enum_products_stock_availability" AS ENUM('available', 'unavailable');
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -51,19 +45,13 @@ EXCEPTION
 END $$;
 
 DO $$ BEGIN
- CREATE TYPE "enum__products_v_version_shipping_class" AS ENUM('mini', 'small', 'medium', 'large');
+ CREATE TYPE "enum__products_v_version_shipping_size" AS ENUM('mini', 'small', 'medium', 'large');
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
 
 DO $$ BEGIN
- CREATE TYPE "enum__products_v_version_theme" AS ENUM('light', 'dark');
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
-
-DO $$ BEGIN
- CREATE TYPE "enum__products_v_version_availability" AS ENUM('available', 'unavailable');
+ CREATE TYPE "enum__products_v_version_stock_availability" AS ENUM('available', 'unavailable');
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -234,19 +222,18 @@ CREATE TABLE IF NOT EXISTS "products_media" (
 CREATE TABLE IF NOT EXISTS "products" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"title" varchar,
-	"slug" varchar,
 	"productType" "enum_products_product_type",
-	"shippingSize" "enum_products_shipping_class",
-	"stripe_id" varchar,
-	"theme" "enum_products_theme",
-	"availability" "enum_products_availability",
-	"price" numeric,
-	"stripe_price_id" varchar,
-	"promo_price" numeric,
-	"stripe_promo_price_id" varchar,
-	"stock_on_hand" numeric,
-	"low_stock_threshold" numeric,
+	"shippingSize" "enum_products_shipping_size",
+	"prices_base_price" numeric,
+	"prices_promo_price" numeric,
 	"layout" jsonb,
+	"stock_availability" "enum_products_stock_availability",
+	"stock_stock_on_hand" numeric,
+	"stock_low_stock_threshold" numeric,
+	"slug" varchar,
+	"stripe_product_id" varchar,
+	"stripe_base_price_id" varchar,
+	"stripe_promo_price_id" varchar,
 	"meta_title" varchar,
 	"meta_description" varchar,
 	"meta_image_id" integer,
@@ -267,19 +254,18 @@ CREATE TABLE IF NOT EXISTS "_products_v" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"parent_id" integer,
 	"version_title" varchar,
-	"version_slug" varchar,
 	"version_productType" "enum__products_v_version_product_type",
-	"version_shippingSize" "enum__products_v_version_shipping_class",
-	"version_stripe_id" varchar,
-	"version_theme" "enum__products_v_version_theme",
-	"version_availability" "enum__products_v_version_availability",
-	"version_price" numeric,
-	"version_stripe_price_id" varchar,
-	"version_promo_price" numeric,
-	"version_stripe_promo_price_id" varchar,
-	"version_stock_on_hand" numeric,
-	"version_low_stock_threshold" numeric,
+	"version_shippingSize" "enum__products_v_version_shipping_size",
+	"version_prices_base_price" numeric,
+	"version_prices_promo_price" numeric,
 	"version_layout" jsonb,
+	"version_stock_availability" "enum__products_v_version_stock_availability",
+	"version_stock_stock_on_hand" numeric,
+	"version_stock_low_stock_threshold" numeric,
+	"version_slug" varchar,
+	"version_stripe_product_id" varchar,
+	"version_stripe_base_price_id" varchar,
+	"version_stripe_promo_price_id" varchar,
 	"version_meta_title" varchar,
 	"version_meta_description" varchar,
 	"version_meta_image_id" integer,
@@ -1047,10 +1033,10 @@ EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
 `)
-}
+};
 
 export async function down({ payload, req }: MigrateDownArgs): Promise<void> {
-  await payload.db.drizzle.execute(sql`
+await payload.db.drizzle.execute(sql`
  DROP TABLE "orders_items_receivers";
 DROP TABLE "orders_items";
 DROP TABLE "orders";
@@ -1116,4 +1102,4 @@ ALTER TABLE "users" DROP COLUMN IF EXISTS "stripe_id";
 ALTER TABLE "users" DROP COLUMN IF EXISTS "enable_a_p_i_key";
 ALTER TABLE "users" DROP COLUMN IF EXISTS "api_key";
 ALTER TABLE "users" DROP COLUMN IF EXISTS "api_key_index";`)
-}
+};

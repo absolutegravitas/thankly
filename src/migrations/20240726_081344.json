@@ -1,5 +1,5 @@
 {
-  "id": "cc60de7a-a1e0-4953-a190-d37edc6be96f",
+  "id": "5a8060c7-7723-4825-95a0-4c2f6a4659cd",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "5",
   "dialect": "pg",
@@ -516,8 +516,8 @@
           "primaryKey": false,
           "notNull": false
         },
-        "prices_promo_price": {
-          "name": "prices_promo_price",
+        "prices_sale_price": {
+          "name": "prices_sale_price",
           "type": "numeric",
           "primaryKey": false,
           "notNull": false
@@ -564,8 +564,8 @@
           "primaryKey": false,
           "notNull": false
         },
-        "stripe_promo_price_id": {
-          "name": "stripe_promo_price_id",
+        "stripe_sale_price_id": {
+          "name": "stripe_sale_price_id",
           "type": "varchar",
           "primaryKey": false,
           "notNull": false
@@ -765,8 +765,8 @@
           "primaryKey": false,
           "notNull": false
         },
-        "version_prices_promo_price": {
-          "name": "version_prices_promo_price",
+        "version_prices_sale_price": {
+          "name": "version_prices_sale_price",
           "type": "numeric",
           "primaryKey": false,
           "notNull": false
@@ -813,8 +813,8 @@
           "primaryKey": false,
           "notNull": false
         },
-        "version_stripe_promo_price_id": {
-          "name": "version_stripe_promo_price_id",
+        "version_stripe_sale_price_id": {
+          "name": "version_stripe_sale_price_id",
           "type": "varchar",
           "primaryKey": false,
           "notNull": false
