@@ -88,6 +88,19 @@
 /////////////////////////////
 // GLOBAL STYLES
 /////////////////////////////
+@layer base {
+  a,
+  button {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    a,
+    button {
+      color: theme('colors.dark-text');
+    }
+  }
+}
 
 * {
   box-sizing: border-box;
