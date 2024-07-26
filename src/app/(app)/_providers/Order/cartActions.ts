@@ -73,7 +73,7 @@
 
 //       const cookieStore = cookies()
 //       cookieStore.set('orderId', order.id.toString(), { expires: expiryDate })
-//       console.log('cookie saved...orderId:', order.id)
+//       // console.log('cookie saved...orderId:', order.id)
 //       revalidatePath('/shop/order')
 //     }
 //   } catch (error: any) {

@@ -44,7 +44,7 @@ export const fetchHeader = unstable_cache(
     } catch (error) {
       console.error('Error fetching settings:', error)
     }
-    console.log('settings -- ', settings)
+    // console.log('settings -- ', settings)
     return settings
   },
   ['fetchHeader'],

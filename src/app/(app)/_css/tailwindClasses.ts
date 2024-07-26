@@ -78,8 +78,8 @@ export const buttonLook = {
   },
 
   variants: {
-    base: `no-underline hover:no-underline border border-solid border-neutral-500 rounded-sm transition hover:border-green hover:shadow-md duration-150 shadow-sm dark:hover:border-green`, // for buttons only
-    links: `underline underline-offset-2 decoration-neutral-800 text-neutral-800 dark:text-neutral-100 hover:font-medium`,
+    base: `no-underline hover:no-underline border border-solid border-neutral-500 rounded-sm transition hover:border-green hover:shadow-md duration-150 shadow-sm dark:hover:border-green dark:text-dark-text`,
+    links: `underline underline-offset-2 decoration-neutral-800 text-neutral-800 dark:text-dark-text hover:font-medium`,
 
     default: ``, // default look button
     blocks: `cursor-pointer bg-transparent no-underline inline-flex hover:border-green hover:shadow-md hover:bg-neutral-950 hover:text-white dark:hover:bg-green dark:hover:text-white dark:hover:border-green dark:hover:shadow-md`,
@@ -112,73 +112,172 @@ export const textColorVariants = {
   '#292929': 'text-slateblack', // slate black
   '#0d1317': 'text-black', // jet black
 }
-
 type PaddingBlock = {
   mobile: string
+  tablet: string
   desktop: string
   description: string
 }
 
 type ContentBlockTypes =
-  | 'standard'
-  | 'hero'
-  | 'compact'
-  | 'feature'
+  | 'banner'
+  | 'callout'
+  | 'cardGrid'
+  | 'content'
+  | 'contentGrid'
   | 'cta'
-  | 'footer'
-  | 'narrow'
-  | 'wide'
+  | 'form'
+  | 'hero'
+  | 'hoverCards'
+  | 'hoverHighlights'
+  | 'linkGrid'
+  | 'logoGrid'
+  | 'mediaBlock'
+  | 'mediaContent'
+  | 'mediaContentAccordion'
+  | 'reuse'
+  | 'richText'
+  | 'slider'
+  | 'steps'
+  | 'statement'
+  | 'stickyHighlights'
 
 type ContentBlockPadding = {
   [key in ContentBlockTypes]: PaddingBlock
 }
 
 const contentBlockPadding: ContentBlockPadding = {
-  standard: {
-    mobile: '#px-4 py-8',
-    desktop: '#md:px-8 md:py-16',
-    description: 'Standard content blocks',
+  banner: {
+    mobile: 'px-4 py-8',
+    tablet: 'sm:px-6 sm:py-12',
+    desktop: 'lg:px-8 lg:py-16',
+    description: 'Banner sections',
   },
-  hero: {
-    mobile: '#px-4 py-12',
-    desktop: '#md:px-8 md:py-24',
-    description: 'Hero sections',
-  },
-  compact: {
+  callout: {
     mobile: 'px-4 py-6',
-    desktop: 'md:px-6 md:py-8',
-    description: 'Compact content blocks',
+    tablet: 'sm:px-6 sm:py-8',
+    desktop: 'lg:px-8 lg:py-10',
+    description: 'Callout sections',
   },
-  feature: {
-    mobile: 'px-4 py-10',
-    desktop: 'md:px-8 md:py-20',
-    description: 'Feature sections',
+  cardGrid: {
+    mobile: 'px-4 py-8',
+    tablet: 'sm:px-6 sm:py-12',
+    desktop: 'lg:px-8 lg:py-16',
+    description: 'Card grid sections',
+  },
+  content: {
+    mobile: 'px-4 py-6',
+    tablet: 'sm:px-6 sm:py-8',
+    desktop: 'lg:px-8 lg:py-12',
+    description: 'Standard content sections',
+  },
+  contentGrid: {
+    mobile: 'px-4 py-8',
+    tablet: 'sm:px-6 sm:py-12',
+    desktop: 'lg:px-8 lg:py-16',
+    description: 'Content grid sections',
   },
   cta: {
     mobile: 'px-4 py-10',
-    desktop: 'md:px-8 md:py-16',
-    description: 'Call-to-Action blocks',
+    tablet: 'sm:px-6 sm:py-14',
+    desktop: 'lg:px-8 lg:py-20',
+    description: 'Call-to-Action sections',
   },
-  footer: {
+  form: {
     mobile: 'px-4 py-8',
-    desktop: 'md:px-8 md:py-12',
-    description: 'Footer section',
+    tablet: 'sm:px-6 sm:py-12',
+    desktop: 'lg:px-8 lg:py-16',
+    description: 'Form sections',
   },
-  narrow: {
-    mobile: 'px-2 py-4',
-    desktop: 'md:px-4 md:py-8',
-    description: 'Narrow content blocks',
-  },
-  wide: {
+  hero: {
     mobile: 'px-4 py-12',
-    desktop: 'md:px-12 md:py-24',
-    description: 'Wide content blocks',
+    tablet: 'sm:px-6 sm:py-16',
+    desktop: 'lg:px-8 lg:py-24',
+    description: 'Hero sections',
+  },
+  hoverCards: {
+    mobile: 'px-4 py-8',
+    tablet: 'sm:px-6 sm:py-12',
+    desktop: 'lg:px-8 lg:py-16',
+    description: 'Hover cards sections',
+  },
+  hoverHighlights: {
+    mobile: 'px-4 py-8',
+    tablet: 'sm:px-6 sm:py-12',
+    desktop: 'lg:px-8 lg:py-16',
+    description: 'Hover highlights sections',
+  },
+  linkGrid: {
+    mobile: 'px-4 py-6',
+    tablet: 'sm:px-6 sm:py-8',
+    desktop: 'lg:px-8 lg:py-12',
+    description: 'Link grid sections',
+  },
+  logoGrid: {
+    mobile: 'px-4 py-8',
+    tablet: 'sm:px-6 sm:py-12',
+    desktop: 'lg:px-8 lg:py-16',
+    description: 'Logo grid sections',
+  },
+  mediaBlock: {
+    mobile: 'px-4 py-8',
+    tablet: 'sm:px-6 sm:py-12',
+    desktop: 'lg:px-8 lg:py-16',
+    description: 'Media block sections',
+  },
+  mediaContent: {
+    mobile: 'px-4 py-8',
+    tablet: 'sm:px-6 sm:py-12',
+    desktop: 'lg:px-8 lg:py-16',
+    description: 'Media content sections',
+  },
+  mediaContentAccordion: {
+    mobile: 'px-4 py-8',
+    tablet: 'sm:px-6 sm:py-12',
+    desktop: 'lg:px-8 lg:py-16',
+    description: 'Media content accordion sections',
+  },
+  reuse: {
+    mobile: 'px-4 py-6',
+    tablet: 'sm:px-6 sm:py-8',
+    desktop: 'lg:px-8 lg:py-12',
+    description: 'Reusable sections',
+  },
+  richText: {
+    mobile: 'px-4 py-6',
+    tablet: 'sm:px-6 sm:py-8',
+    desktop: 'lg:px-8 lg:py-12',
+    description: 'Rich text sections',
+  },
+  slider: {
+    mobile: 'px-4 py-8',
+    tablet: 'sm:px-6 sm:py-12',
+    desktop: 'lg:px-8 lg:py-16',
+    description: 'Slider sections',
+  },
+  steps: {
+    mobile: 'px-4 py-8',
+    tablet: 'sm:px-6 sm:py-12',
+    desktop: 'lg:px-8 lg:py-16',
+    description: 'Steps sections',
+  },
+  statement: {
+    mobile: 'px-4 py-10',
+    tablet: 'sm:px-6 sm:py-14',
+    desktop: 'lg:px-8 lg:py-20',
+    description: 'Statement sections',
+  },
+  stickyHighlights: {
+    mobile: 'px-4 py-8',
+    tablet: 'sm:px-6 sm:py-12',
+    desktop: 'lg:px-8 lg:py-16',
+    description: 'Sticky highlights sections',
   },
 }
 
 const getPaddingClasses = (blockType: ContentBlockTypes): string => {
   const block = contentBlockPadding[blockType]
-  return `${block.mobile} ${block.desktop}`
+  return `${block.mobile} ${block.tablet} ${block.desktop}`
 }
 
 export { contentBlockPadding, getPaddingClasses }

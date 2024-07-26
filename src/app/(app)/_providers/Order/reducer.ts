@@ -296,10 +296,10 @@ export const orderReducer = (order: Order, action: OrderAction): Order => {
           // find matching product
 
           if (getProductId(item.product) === productId) {
-            console.log('product --', productId)
+            // console.log('product --', productId)
             // find matching receiver
             const receiverToCopy = item.receivers?.find((r) => r.id === receiverId)
-            console.log('copiedreceiver --', receiverToCopy)
+            // console.log('copiedreceiver --', receiverToCopy)
             // receiver found
             if (receiverToCopy) {
               const newReceiver: NonNullable<OrderItem['receivers']>[number] = {
@@ -331,7 +331,7 @@ export const orderReducer = (order: Order, action: OrderAction): Order => {
     case 'UPDATE_RECEIVER': {
       const { productId, receiverId, updatedFields } = action.payload
 
-      console.log('payload ', action.payload)
+      // console.log('payload ', action.payload)
       const updatedItems = order.items?.map((item) => {
         if (getProductId(item.product) === productId) {
           const updatedReceivers = item.receivers?.map((receiver) =>
@@ -339,10 +339,10 @@ export const orderReducer = (order: Order, action: OrderAction): Order => {
           )
           return { ...item, receivers: updatedReceivers }
         }
-        console.log('item ', item)
+        // console.log('item ', item)
         return item
       })
-      console.log('updatedItems - ', updatedItems)
+      // console.log('updatedItems - ', updatedItems)
 
       return {
         ...order,

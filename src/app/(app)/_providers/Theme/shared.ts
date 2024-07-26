@@ -1,4 +1,4 @@
-import type { Theme } from './types'
+import type { Theme } from './types.js'
 
 export const themeLocalStorageKey = 'payload-theme'
 
@@ -10,7 +10,7 @@ export const getImplicitPreference = (): Theme | null => {
   const hasImplicitPreference = typeof mql.matches === 'boolean'
 
   if (hasImplicitPreference) {
-    return mql.matches ? 'light' : 'light'
+    return mql.matches ? 'dark' : 'light'
   }
 
   return null

@@ -30,13 +30,14 @@ export const ProductCard: React.FC<any> = (product) => {
     title,
     media,
     meta: { image: metaImage, description },
-    price,
-    promoPrice,
+    prices: { basePrice, salePrice },
     productType,
     stockOnHand,
     lowStockThreshold,
     className,
   } = product
+
+  // console.log('product -- ', product)
 
   const imageUrl = media && media.length > 0 ? getImageUrl(media[0]?.mediaItem) : null
   const imageAlt = media && media.length > 0 ? getImageAlt(media[0]?.mediaItem) : 'Product image'
@@ -90,19 +91,19 @@ export const ProductCard: React.FC<any> = (product) => {
             >
               <span
                 className={cn('text-sm', {
-                  'line-through text-gray-500': +promoPrice !== 0 && +promoPrice < +price,
+                  'line-through text-gray-500': +salePrice !== 0 && +salePrice < +basePrice,
                 })}
               >
-                {price.toLocaleString('en-AU', {
+                {basePrice.toLocaleString('en-AU', {
                   style: 'currency',
                   currency: 'AUD',
                   minimumFractionDigits: 0,
                   maximumFractionDigits: 2,
                 })}
               </span>
-              {+promoPrice !== 0 && +promoPrice < +price && (
+              {+salePrice !== 0 && +salePrice < +basePrice && (
                 <span className="text-black font-semibold">
-                  {promoPrice.toLocaleString('en-AU', {
+                  {salePrice.toLocaleString('en-AU', {
                     style: 'currency',
                     currency: 'AUD',
                     minimumFractionDigits: 0,

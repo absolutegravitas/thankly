@@ -33,7 +33,7 @@ export const fetchProduct = async (slug: string): Promise<any | null> => {
         // if (order && product) {
         //   product.inCart = order?.items?.some((p: any) => p.product.id === product?.id)
         //   // product = { ...product, inCart }
-        //   console.log('fetchProduct', product)
+        //   // console.log('fetchProduct', product)
         // }
       } catch (error) {
         console.error(`Error fetching product: ${slug}`, error)
@@ -101,7 +101,7 @@ export const fetchShopList = async (): Promise<any[] | null> => {
     })
 
     if (docs?.length === 0) {
-      console.log('not found')
+      // console.log('not found')
       return null
     }
 
@@ -129,7 +129,7 @@ export const fetchProductSlugs = unstable_cache(
       // console.log('products docs', docs)
 
       if (!docs || docs.length === 0) {
-        console.log('not found')
+        // console.log('not found')
         return [] // Return an empty array instead of null
       }
 

@@ -32,6 +32,12 @@ export const ThemePreferenceProvider: React.FC<{ children?: React.ReactNode }> =
   }, [])
 
   useEffect(() => {
+    let themeToSet: Theme = 'light'
+    setThemeState(themeToSet)
+    document.documentElement.setAttribute('data-theme', themeToSet)
+  }, [])
+
+  useEffect(() => {
     let themeToSet: Theme = defaultTheme
     const preference = window.localStorage.getItem(themeLocalStorageKey)
 

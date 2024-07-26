@@ -21,7 +21,7 @@ export function AddToCartButton({ product }: { product: Product }) {
         product,
         Math.max(
           0,
-          Math.min(product.prices.basePrice ?? Infinity, product.prices.promoPrice ?? Infinity),
+          Math.min(product.prices.basePrice ?? Infinity, product.prices.salePrice ?? Infinity),
         ),
       )
       router.push('/shop/cart')
