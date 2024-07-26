@@ -11,6 +11,11 @@ This project is based on a one-click deployment template of Payload on Vercel + 
 - [Payload](https://github.com/payloadcms/payload) pre-installed into Next.js
 - PostgreSQL adapter configured for Neon
 - Cloud Storage plugin configured for [Vercel Blob Storage](https://vercel.com/docs/storage/vercel-blob)
+- ai-digest package that produces a single file for entire codebase to pipe into Claude / chatGPT project knowledge
+
+```bash
+npx ai-digest
+```
 
 ## Additional Modifications
 
