@@ -41,7 +41,7 @@ export const CardGrid: React.FC<CardGridProps> = (props) => {
   return (
     <BlockWrapper
       settings={settings}
-      className={[getPaddingClasses('standard'), classes.cardGrid].filter(Boolean).join(' ')}
+      className={[getPaddingClasses('cardGrid'), classes.cardGrid].filter(Boolean).join(' ')}
     >
       {/* <BackgroundGrid zIndex={1} /> */}
       <Gutter>

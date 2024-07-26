@@ -89,7 +89,7 @@ export const ContentBlock: React.FC<Props> = (props) => {
   // console.log(props)
   // return <React.Fragment></React.Fragment>
   return (
-    <BlockWrapper className={getPaddingClasses('standard')} settings={settings}>
+    <BlockWrapper className={getPaddingClasses('content')} settings={settings}>
       {/* <BackgroundGrid zIndex={0} /> */}
       <Gutter className={classes.contentBlock}>
         {useLeadingHeader && <RichText className={classes.leadingHeader} content={leadingHeader} />}

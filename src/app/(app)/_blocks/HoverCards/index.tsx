@@ -19,7 +19,7 @@ import classes from './index.module.scss'
 
 import { ExtractBlockProps } from '@/utilities/extractBlockProps'
 import { getPaddingClasses } from '../../_css/tailwindClasses'
-export type HoverCardsProps = ExtractBlockProps<'hoverCards'> & { padding: PaddingProps }
+export type HoverCardsProps = ExtractBlockProps<'hoverCards'> //& { padding: PaddingProps }
 
 const Card: React.FC<{
   leader: number
@@ -57,15 +57,13 @@ export const HoverCards: React.FC<HoverCardsProps> = (props) => {
   // console.log('hovercardsfoelds //', props)
 
   const [activeGradient, setActiveGradient] = useState(1)
-
   const gradients = [1, 2, 3, 4]
-
   const hasCards = Array.isArray(cards) && cards.length > 0
 
   return (
     <BlockWrapper
       settings={{ theme: 'light' }}
-      className={[getPaddingClasses('standard'), classes.wrapper].filter(Boolean).join(' ')}
+      className={[getPaddingClasses('hoverCards'), classes.wrapper].filter(Boolean).join(' ')}
     >
       <BackgroundGrid zIndex={1} />
       {/* <div className={classes.noiseWrapper}>

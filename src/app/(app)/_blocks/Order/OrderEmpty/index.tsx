@@ -25,7 +25,7 @@ export const OrderEmpty: React.FC<any> = () => {
                 'font-normal tracking-tighter !text-left',
               ].join(' ')}
             >
-              Your order is empty
+              {`Your cart is empty`}
             </h2>
           </div>
           <div className="space-y-6 flex flex-col items-end justify-end justify-items-end flex-auto px-4 md:px-0 ">

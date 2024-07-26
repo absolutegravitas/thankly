@@ -115,7 +115,7 @@ export const MediaContent: React.FC<MediaContentProps> = (props) => {
   const { settings } = props.mediaContentFields
 
   return (
-    <BlockWrapper className={getPaddingClasses('hero')} settings={settings}>
+    <BlockWrapper className={getPaddingClasses('mediaContent')} settings={settings}>
       {/* <BackgroundGrid zIndex={0} /> */}
       <div className={classes.wrapper}>
         <MediaContentBlock {...props} />

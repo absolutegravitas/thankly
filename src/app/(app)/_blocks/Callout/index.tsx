@@ -31,7 +31,7 @@ export const Callout: React.FC<CalloutProps> = (props) => {
   const hasImages = images?.length && images.length > 0
 
   return (
-    <BlockWrapper settings={settings} className={getPaddingClasses('standard')}>
+    <BlockWrapper settings={settings} className={getPaddingClasses('callout')}>
       {/* <BackgroundGrid className={classes.backgroundGrid} zIndex={0} /> */}
       <div className={classes.wrapper}>
         <Gutter>

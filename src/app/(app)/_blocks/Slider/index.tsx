@@ -41,7 +41,7 @@ export const SliderBlock: React.FC<Props> = (props) => {
   return (
     <BlockWrapper
       settings={settings}
-      className={[getPaddingClasses('standard'), classes.slider].filter(Boolean).join(' ')}
+      className={[getPaddingClasses('slider'), classes.slider].filter(Boolean).join(' ')}
     >
       {/* <BackgroundGrid zIndex={0} /> */}
 

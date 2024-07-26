@@ -30,7 +30,7 @@ export const GradientHero: React.FC<GradientHeroProps> = ({
   const theme = fullBackground ? 'dark' : themeFromProps
 
   return (
-    <BlockWrapper settings={{ theme }} className={getPaddingClasses('standard')}>
+    <BlockWrapper settings={{ theme }} className={getPaddingClasses('hero')}>
       {Boolean(fullBackground) && (
         <Media
           className={[classes.bgFull, enableBreadcrumbsBar ? classes.hasBreadcrumbsEnabled : '']

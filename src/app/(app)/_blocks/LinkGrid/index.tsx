@@ -61,7 +61,7 @@ export const LinkGrid: React.FC<
 
   return (
     <BlockWrapper
-      className={[getPaddingClasses('standard'), className, classes.linkGrid]
+      className={[getPaddingClasses('linkGrid'), className, classes.linkGrid]
         .filter(Boolean)
         .join(' ')}
       settings={linkGridFields?.settings}

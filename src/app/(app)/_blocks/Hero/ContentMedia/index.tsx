@@ -25,7 +25,7 @@ export const ContentMediaHero: React.FC<ContentMediaHeroProps> = ({
   firstContentBlock,
 }) => {
   return (
-    <BlockWrapper settings={{ theme }} className={getPaddingClasses('standard')}>
+    <BlockWrapper settings={{ theme }} className={getPaddingClasses('hero')}>
       {/* <BackgroundGrid zIndex={0} /> */}
       <Gutter>
         <div className={[classes.wrapper, 'grid'].filter(Boolean).join(' ')}>

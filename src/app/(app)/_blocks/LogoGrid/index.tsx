@@ -46,7 +46,6 @@ const getRandomPosition = (excludePositions: number[]) => {
 }
 
 export const LogoGrid: React.FC<LogoGridProps> = (props) => {
-  // console.log('logoGrid', logoGridFields)
   const {
     logoGridFields: { content, enableLink, link, logos, settings },
   } = props
@@ -110,7 +109,7 @@ export const LogoGrid: React.FC<LogoGridProps> = (props) => {
   return (
     <BlockWrapper
       settings={settings}
-      className={[getPaddingClasses('standard'), classes.logoGrid].filter(Boolean).join(' ')}
+      className={[getPaddingClasses('logoGrid'), classes.logoGrid].filter(Boolean).join(' ')}
     >
       <Gutter>
         <BackgroundGrid className={classes.backgroundGrid} zIndex={0} />

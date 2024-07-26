@@ -59,7 +59,7 @@ export const Pricing: React.FC<Props> = (props) => {
   return (
     <BlockWrapper
       settings={settings}
-      className={[getPaddingClasses('standard'), classes.pricingBlock].filter(Boolean).join(' ')}
+      className={[getPaddingClasses('content'), classes.pricingBlock].filter(Boolean).join(' ')}
     >
       <BackgroundGrid zIndex={1} />
       <Gutter className={classes.gutter}>

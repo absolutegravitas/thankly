@@ -38,7 +38,7 @@ export const StickyHighlights: React.FC<Props> = ({
   return (
     <BlockWrapper
       settings={settings}
-      className={[getPaddingClasses('standard'), classes.stickyHighlights, className]
+      className={[getPaddingClasses('stickyHighlights'), classes.stickyHighlights, className]
         .filter(Boolean)
         .join(' ')}
       id={id}

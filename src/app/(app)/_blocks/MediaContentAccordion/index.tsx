@@ -29,7 +29,7 @@ export const MediaContentAccordion: React.FC<MediaContentAccordionProps> = (prop
   return (
     <BlockWrapper
       settings={settings}
-      className={[getPaddingClasses('standard'), classes.mediaContentAccordion]
+      className={[getPaddingClasses('mediaContentAccordion'), classes.mediaContentAccordion]
         .filter(Boolean)
         .join(' ')}
     >

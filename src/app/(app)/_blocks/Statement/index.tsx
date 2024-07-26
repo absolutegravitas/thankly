@@ -46,7 +46,7 @@ export const Statement: React.FC<StatementProps> = (props) => {
         : 'cols-12 start-3 cols-m-8 start-m-1'
 
   return (
-    <BlockWrapper settings={settings} className={getPaddingClasses('standard')}>
+    <BlockWrapper settings={settings} className={getPaddingClasses('statement')}>
       {/* <BackgroundGrid zIndex={0} /> */}
       <Gutter className={classes.statementWrap}>
         <div className={['grid'].filter(Boolean).join(' ')}>

@@ -20,7 +20,7 @@ const ProductBlockContent: React.FC<ProductBlockContentProps> = ({
 }) => {
   const {
     title,
-    prices: { basePrice, promoPrice },
+    prices: { basePrice, salePrice },
     meta,
     media,
   } = product
@@ -36,7 +36,7 @@ const ProductBlockContent: React.FC<ProductBlockContentProps> = ({
   }
 
   const displayPrice = basePrice ?? 0
-  const displayPromoPrice = promoPrice ?? 0
+  const displaysalePrice = salePrice ?? 0
 
   return (
     <Gutter>
@@ -61,12 +61,12 @@ const ProductBlockContent: React.FC<ProductBlockContentProps> = ({
               )}
             >
               <span
-                className={`${displayPromoPrice !== 0 && displayPromoPrice < displayPrice ? 'line-through text-gray-500' : ''}`}
+                className={`${displaysalePrice !== 0 && displaysalePrice < displayPrice ? 'line-through text-gray-500' : ''}`}
               >
                 {formatPrice(displayPrice)}
               </span>
-              {displayPromoPrice !== 0 && displayPromoPrice < displayPrice && (
-                <span className="text-black ml-2 ">{formatPrice(displayPromoPrice)}</span>
+              {displaysalePrice !== 0 && displaysalePrice < displayPrice && (
+                <span className="text-black ml-2 ">{formatPrice(displaysalePrice)}</span>
               )}
             </div>
           </div>
@@ -133,7 +133,7 @@ interface ProductBlockProps {
 
 export const ProductBlock: React.FC<ProductBlockProps> = ({ product, selectedImageIndex = 0 }) => {
   return (
-    <BlockWrapper settings={{ theme: 'light' }} className={getPaddingClasses('hero')}>
+    <BlockWrapper settings={{ theme: 'light' }} className={getPaddingClasses('content')}>
       <ProductBlockContent product={product} selectedImageIndex={selectedImageIndex} />
     </BlockWrapper>
   )

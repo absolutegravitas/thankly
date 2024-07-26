@@ -156,7 +156,7 @@ export const ReceiversGrid: React.FC<{ item: OrderItem }> = ({ item }) => {
 
   useEffect(() => {
     const currentItem = order.items?.find((orderItem) => orderItem.id === item.id)
-    console.log('Current Item in Cart:', currentItem)
+    // console.log('Current Item in Cart:', currentItem)
   }, [order, item.id])
 
   useEffect(() => {
@@ -486,7 +486,7 @@ export const ReceiversGrid: React.FC<{ item: OrderItem }> = ({ item }) => {
                         key={index}
                         className="relative cursor-default select-none py-3 sm:py-2 px-4 sm:px-3 text-gray-900 hover:bg-green/75 hover:text-white"
                         onClick={debounce(() => {
-                          console.log('addressLine2 updated -- ', suggestion.formattedAddress)
+                          // console.log('addressLine2 updated -- ', suggestion.formattedAddress)
                           startTransition(() => {
                             try {
                               updateReceiver(item.product.id, receiver.id, {

@@ -62,7 +62,7 @@ export const CheckoutSummary: React.FC<{ order: Order }> = ({ order }) => {
 
     if (isValid) {
       setIsProcessing(true)
-      console.log(`Cart is valid, let's create a draft order...`)
+      // console.log(`Cart is valid, let's create a draft order...`)
 
       try {
         // Simulate API call or any async operation
@@ -74,7 +74,7 @@ export const CheckoutSummary: React.FC<{ order: Order }> = ({ order }) => {
         alert('An error occurred during checkout. Please try again.')
       }
     } else {
-      console.log('Cart is invalid, errors should be displayed')
+      // console.log('Cart is invalid, errors should be displayed')
       alert(validationMessage)
     }
   }

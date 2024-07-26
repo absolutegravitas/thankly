@@ -24,7 +24,7 @@ export const MediaBlock: React.FC<any & { disableGutter?: boolean; marginAdjustm
   if (typeof media === 'string') return null
 
   return (
-    <BlockWrapper settings={settings} className={getPaddingClasses('standard')}>
+    <BlockWrapper settings={settings} className={getPaddingClasses('mediaBlock')}>
       <div
         className={classes.mediaBlock}
         style={{

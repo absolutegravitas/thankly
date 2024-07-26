@@ -52,7 +52,7 @@ export const ContentGrid: React.FC<ContentGridProps> = (props) => {
   const style = styleFromProps ?? 'gridBelow'
 
   return (
-    <BlockWrapper settings={settings} className={getPaddingClasses('standard')}>
+    <BlockWrapper settings={settings} className={getPaddingClasses('contentGrid')}>
       {/* <BackgroundGrid zIndex={0} /> */}
       <Gutter className={[classes.wrapper, classes[style], 'grid'].filter(Boolean).join(' ')}>
         <div

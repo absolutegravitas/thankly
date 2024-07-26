@@ -44,7 +44,7 @@ export default Hero
 //   page: Page
 //   // firstContentBlock?: BlocksProp
 // }> = (props) => {
-//   // console.log('hero //', props)
+//    // console.log('hero //', props)
 //   const {
 //     page: {
 //       // hero,
