@@ -39,7 +39,7 @@ export const Orders: CollectionConfig = {
                     limit: 1,
                   })
 
-                  console.log(lastOrder)
+                  // console.log(lastOrder)
 
                   const lastOrderNumber = lastOrder.docs[0]?.orderNumber ?? 0
                   return lastOrderNumber > 0 ? lastOrderNumber + 1 : data?.orderNumber

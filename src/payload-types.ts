@@ -180,7 +180,7 @@ export interface Product {
   shippingSize?: ('mini' | 'small' | 'medium' | 'large') | null;
   prices: {
     basePrice: number;
-    promoPrice?: number | null;
+    salePrice?: number | null;
   };
   layout?: {
     root: {
@@ -212,7 +212,7 @@ export interface Product {
   stripe?: {
     productId?: string | null;
     basePriceId?: string | null;
-    promoPriceId?: string | null;
+    salePriceId?: string | null;
   };
   meta?: {
     title?: string | null;

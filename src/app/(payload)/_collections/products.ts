@@ -89,7 +89,7 @@ export const Products: CollectionConfig = {
             },
 
             {
-              name: 'promoPrice',
+              name: 'salePrice',
               label: 'Promotional Price',
               type: 'number',
               required: false,
@@ -169,7 +169,7 @@ export const Products: CollectionConfig = {
                 { name: 'productId', label: 'Product ID', type: 'text' },
                 { name: 'basePriceId', label: 'Base Price ID', type: 'text' },
                 {
-                  name: 'promoPriceId',
+                  name: 'salePriceId',
                   label: 'Promo Price ID',
                   type: 'text',
                   required: false,

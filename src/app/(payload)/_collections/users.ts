@@ -244,7 +244,7 @@ export const Users: CollectionConfig = {
 //             headers: response.headers,
 //           })
 //         } catch (error) {
-//           console.log(error)
+//           // console.log(error)
 //           return new Response(JSON.stringify({ message: 'Token refresh failed' }), { status: 401 })
 //         }
 //       },
