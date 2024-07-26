@@ -8,7 +8,7 @@ import { buttonLook, contentFormats, getPaddingClasses } from '@app/_css/tailwin
 import { useOrder } from '@app/_providers/Order'
 import { OrderItems } from '@app/_blocks/Order/OrderItems'
 import { OrderSummary } from '@app/_blocks/Order/OrderSummary'
-import { CMSLink } from '../../_components/CMSLink'
+import { CMSLink } from '../../../_components/CMSLink'
 import { DollarSignIcon } from 'lucide-react'
 import Link from 'next/link'
 import cn from '@/utilities/cn'

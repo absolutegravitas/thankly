@@ -1,10 +1,10 @@
 'use client'
 
 import { useTransition } from 'react'
-import { BlockWrapper } from './_components/BlockWrapper'
-import { CMSLink } from './_components/CMSLink'
-import { Gutter } from './_components/Gutter'
-import { contentFormats, getPaddingClasses } from './_css/tailwindClasses'
+import { BlockWrapper } from '@app/_components/BlockWrapper'
+import { CMSLink } from '@app/_components/CMSLink'
+import { Gutter } from '@app/_components/Gutter'
+import { contentFormats, getPaddingClasses } from '@app/_css/tailwindClasses'
 import { useRouter } from 'next/navigation'
 import { ArrowRightIcon, HomeIcon, ShoppingCartIcon } from 'lucide-react'
 

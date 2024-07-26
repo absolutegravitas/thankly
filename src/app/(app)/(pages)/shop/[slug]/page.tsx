@@ -3,8 +3,8 @@ import { draftMode } from 'next/headers'
 import { notFound } from 'next/navigation'
 import ProductBlock from '@app/_blocks/ProductBlock'
 import type { Product } from '@payload-types'
-import Blocks from '../../_blocks'
-import { fetchProduct } from '../../_queries/products'
+import Blocks from '../../../_blocks'
+import { fetchProduct } from '../../../_queries/products'
 
 export default async function ProductPage({
   params: { slug },

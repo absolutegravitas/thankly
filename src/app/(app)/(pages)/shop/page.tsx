@@ -4,9 +4,9 @@ import { fetchShopList } from '@app/_queries/products'
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import ProductGrid from '@app/_blocks/ProductGrid'
-import { BlockWrapper } from '../_components/BlockWrapper'
-import { contentFormats, getPaddingClasses } from '../_css/tailwindClasses'
-import { Gutter } from '../_components/Gutter'
+import { BlockWrapper } from '../../_components/BlockWrapper'
+import { contentFormats, getPaddingClasses } from '../../_css/tailwindClasses'
+import { Gutter } from '../../_components/Gutter'
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic'

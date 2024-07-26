@@ -150,7 +150,7 @@ export const layoutField: LayoutField = (
 //   // server side conversion of blocks to html
 
 //   converter({ node }) {
-//     console.log('blockType', node.fields.blockType)
+//     // console.log('blockType', node.fields.blockType)
 
 //     switch (node.fields.blockType) {
 //       case 'p5js':

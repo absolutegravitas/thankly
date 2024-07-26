@@ -7,11 +7,11 @@ import { buttonLook, contentFormats, getPaddingClasses } from '@app/_css/tailwin
 import { useOrder } from '@app/_providers/Order'
 import Link from 'next/link'
 import cn from '@/utilities/cn'
-import { CheckoutSummary } from '../../_blocks/Checkout/Summary'
-import { CheckoutForm } from '../../_blocks/Checkout/CheckoutForm'
+import { CheckoutSummary } from '../../../_blocks/Checkout/Summary'
+import { CheckoutForm } from '../../../_blocks/Checkout/CheckoutForm'
 import { Elements, ExpressCheckoutElement } from '@stripe/react-stripe-js'
 import { loadStripe } from '@stripe/stripe-js'
-import { createPaymentIntent } from '../../_blocks/Checkout/CheckoutForm/createPaymentIntent'
+import { createPaymentIntent } from '../../../_blocks/Checkout/CheckoutForm/createPaymentIntent'
 
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
 

@@ -1,7 +1,7 @@
 import React from 'react'
 import { BlockWrapper } from '@app/_components/BlockWrapper'
 import { Gutter } from '@app/_components/Gutter'
-import { getPaddingClasses } from '../../_css/tailwindClasses'
+import { getPaddingClasses } from '../../../_css/tailwindClasses'
 
 const ProductPageSkeleton = () => (
   <div className="flex space-x-4 animate-pulse">
