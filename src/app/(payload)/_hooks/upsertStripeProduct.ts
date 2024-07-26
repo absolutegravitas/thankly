@@ -8,7 +8,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || '', {
 export const upsertStripeProduct: CollectionBeforeChangeHook = async ({ req, data, operation }) => {
   if (operation === 'create') {
     try {
-      console.log('upsertProduct data', data)
+      // console.log('upsertProduct data', data)
 
       // Create a new product
       const product = await stripe.products.create({
@@ -23,11 +23,11 @@ export const upsertStripeProduct: CollectionBeforeChangeHook = async ({ req, dat
         },
       })
 
-      console.log('stripe product ', product)
+      // console.log('stripe product ', product)
 
       // Create prices if they are provided
       let basePriceId
-      let promoPriceId
+      let salePriceId
 
       if (data.prices.basePrice !== 0 && data.prices.basePrice) {
         const stripePrice = await stripe.prices.create({
@@ -40,29 +40,29 @@ export const upsertStripeProduct: CollectionBeforeChangeHook = async ({ req, dat
         })
         basePriceId = stripePrice.id
       }
-      console.log('basePriceId', basePriceId)
+      // console.log('basePriceId', basePriceId)
 
-      if (data.prices.promoPrice !== 0 && data.prices.promoPrice) {
-        const stripePromoPrice = await stripe.prices.create({
+      if (data.prices.salePrice !== 0 && data.prices.salePrice) {
+        const stripesalePrice = await stripe.prices.create({
           product: product.id,
-          unit_amount: data.prices.promoPrice * 100,
+          unit_amount: data.prices.salePrice * 100,
           currency: 'aud',
         })
         await stripe.products.update(product.id, {
-          default_price: stripePromoPrice.id,
+          default_price: stripesalePrice.id,
         })
-        promoPriceId = stripePromoPrice.id
+        salePriceId = stripesalePrice.id
       }
 
-      console.log('promoPriceId ', promoPriceId)
+      // console.log('salePriceId ', salePriceId)
 
-      // Return the object with the latest priceId and promoPriceId
+      // Return the object with the latest priceId and salePriceId
       return {
         ...data,
         stripe: {
           productId: product.id,
           basePriceId: basePriceId,
-          promoPriceId: promoPriceId,
+          salePriceId: salePriceId,
         },
       }
     } catch (error: unknown) {
@@ -88,7 +88,7 @@ export const upsertStripeProduct: CollectionBeforeChangeHook = async ({ req, dat
       })
 
       let updatedBasePriceId = data.stripe.basePriceId
-      let updatedPromoPriceId = data.stripe.promoPriceId
+      let updatedsalePriceId = data.stripe.salePriceId
 
       if (data.prices?.basePrice) {
         if (updatedBasePriceId) {
@@ -106,19 +106,19 @@ export const upsertStripeProduct: CollectionBeforeChangeHook = async ({ req, dat
         }
       }
 
-      if (data.prices?.promoPrice) {
-        if (updatedPromoPriceId) {
-          await stripe.prices.update(updatedPromoPriceId, {
+      if (data.prices?.salePrice) {
+        if (updatedsalePriceId) {
+          await stripe.prices.update(updatedsalePriceId, {
             active: true,
             nickname: 'Promo Price',
           })
         } else {
-          const newPromoPrice = await stripe.prices.create({
+          const newsalePrice = await stripe.prices.create({
             product: data.stripe.productId,
-            unit_amount: data.prices.promoPrice * 100,
+            unit_amount: data.prices.salePrice * 100,
             currency: 'aud',
           })
-          updatedPromoPriceId = newPromoPrice.id
+          updatedsalePriceId = newsalePrice.id
         }
       }
 
@@ -127,7 +127,7 @@ export const upsertStripeProduct: CollectionBeforeChangeHook = async ({ req, dat
         stripe: {
           ...data.stripe,
           basePriceId: updatedBasePriceId,
-          promoPriceId: updatedPromoPriceId,
+          salePriceId: updatedsalePriceId,
         },
       }
     } catch (error: unknown) {

@@ -13,14 +13,14 @@ export const deleteStripeProduct: CollectionAfterDeleteHook<Product> = async ({
   id, // id of document to delete
   doc, // deleted document
 }) => {
-  console.log('deleteStripeProduct', doc)
+  // console.log('deleteStripeProduct', doc)
 
   try {
     // just archive the product instead of fucking around with prices
 
     if (doc.stripe?.productId && typeof doc.stripe.productId === 'string') {
       // const prices = await stripe.prices.list({ product: doc.stripe.productId })
-      // console.log('prices to deactivate', prices)
+      // // console.log('prices to deactivate', prices)
       // for (const price of prices.data) {
       //   await stripe.prices.update(price.id, { active: false })
       // }
