@@ -71,7 +71,7 @@ export const buttonLook = {
   },
 
   widths: {
-    narrow: ``,
+    narrow: `w-1/3`, // quarter container width
     normal: `w-1/2`, // half container width, make sure there's a container
     wide: `w-full md:w-3/4`,
     full: `w-full`, // full width of containing element
@@ -190,9 +190,9 @@ const contentBlockPadding: ContentBlockPadding = {
     description: 'Form sections',
   },
   hero: {
-    mobile: 'px-4 py-12',
-    tablet: 'sm:px-6 sm:py-16',
-    desktop: 'lg:px-8 lg:py-24',
+    mobile: 'px-0 py-12',
+    tablet: 'sm:px-0 sm:py-16',
+    desktop: 'lg:px-0 lg:py-24',
     description: 'Hero sections',
   },
   hoverCards: {

@@ -1,26 +1,65 @@
 @use '../../../_css/common.scss' as *;
 
-.defaultHero {
-  position: relative;
+// .defaultHero {
+//   position: relative;
+// }
+
+// .label {
+//   margin-bottom: 2rem;
+
+//   @include mid-break {
+//     margin-bottom: 1rem;
+//   }
+
+//   label {
+//     margin-top: 0;
+//     margin-bottom: 0;
+//   }
+// }
+
+// .container {
+//   align-items: center;
+//   max-width: 100%;
+//   padding: 0px;
+// }
+
+.primaryButtons {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  max-width: 50%;
+  border-color: var(--theme-success-50);
+  max-width: 100%;
 }
 
-.label {
-  margin-bottom: 2rem;
-
-  @include mid-break {
-    margin-bottom: 1rem;
-  }
-
-  label {
-    margin-top: 0;
-    margin-bottom: 0;
-  }
+.primaryButton {
+  font-family: 'Quicksand', Helvetica, Arial, Lucida, sans-serif;
+  letter-spacing: 2.8px;
+  font-weight: bold;
+  margin-top: 1rem;
+  justify-content: center;
+  width: 180px;
 }
 
-.container {
-  align-items: center;
-
-  @include mid-break {
-    row-gap: 2rem;
-  }
+.richText h4 {
+  color: white;
+  margin-top: 10px;
+  margin-bottom: 5px;
+  letter-spacing: 2px;
 }
+
+.richText h2 {
+  margin-top: 5px;
+  margin-bottom: 10px;
+}
+
+.richText h2 strong {
+  font-family: "League Spartan", Helvetica, Arial, Lucida, sans-serif;
+  font-size: 50px;
+  color: #292929;
+
+}
+
+// img {
+//   max-width: none;
+// }

@@ -92,7 +92,7 @@ export const CMSLink: React.FC<CMSLinkType & { pending?: boolean }> = ({
           {look.icon.content}
         </span>
       )}
-      {!look?.icon && <span className="mr-2">{<ChevronRightIcon strokeWidth={1.25} />}</span>}
+      {/* {!look?.icon && <span className="mr-2">{<ChevronRightIcon strokeWidth={1.25} />}</span>} */}
     </>
   )
 
