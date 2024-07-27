@@ -12,7 +12,7 @@ import { PrivacyBanner } from '@app/_components/PrivacyBanner'
 import { PrivacyProvider } from '@app/_providers/Privacy'
 import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
 
-import { inter, leaguespartan, quicksand, raleway } from '@/utilities/fonts'
+import { inter, leaguespartan, raleway } from '@/utilities/fonts'
 
 import '@app/_css/app.scss'
 
@@ -67,7 +67,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             rel="stylesheet"
             href="https://fonts.googleapis.com/css2?family=League+Spartan:wght@400;700&display=swap"
           />
-                    <link
+          <link
             rel="stylesheet"
             href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap"
           />
