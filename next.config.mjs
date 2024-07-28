@@ -28,6 +28,7 @@ const nextConfig = {
       { protocol: 'https', hostname: '**gravatar.com**' },
       { protocol: 'https', hostname: '**google.com.au**' },
       { protocol: 'https', hostname: '**api.radar.io**' },
+      { protocol: 'https', hostname: '**placehold.co**' },
     ],
   },
   async headers() {

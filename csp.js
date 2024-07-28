@@ -36,6 +36,7 @@ const policies = {
     'https://maps.gstatic.com',
     'https://google.com.au',
     'https://www.gravatar.com',
+    'https://placehold.co/',
   ],
   'font-src': [
     "'self'",
