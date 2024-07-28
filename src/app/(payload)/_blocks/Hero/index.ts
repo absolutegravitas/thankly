@@ -67,8 +67,9 @@ export const Hero: Block = {
         name: 'primaryButtons',
         label: 'Primary Buttons',
         admin: {
-          condition: (_: any, { type }: any) => type === 'home',
+          condition: (_: any, { type }: any) => type === ['home', 'default'].includes(type),
         },
+        
       },
     }),
 
@@ -78,7 +79,7 @@ export const Hero: Block = {
       relationTo: 'media',
       required: true,
       admin: {
-        condition: (_: any, { type } = {}) => ['contentMedia', 'home'].includes(type),
+        condition: (_: any, { type } = {}) => ['contentMedia', 'home', 'default'].includes(type),
       },
     },
 
@@ -145,7 +146,7 @@ export const Hero: Block = {
           condition: (_: any, { type }: any = {}) =>
             [
               'contentMedia',
-              'default',
+              //'default',
               // 'livestream',
               'centeredContent',
               'gradient',

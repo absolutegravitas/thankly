@@ -127,18 +127,23 @@ export const HomeHero: React.FC<
               )}
             </div>
           </div>
+
           <div className={classes.contentWrapper} style={contentWrapperHeight}>
             <Gutter className={classes.content}>
               <div className={classes.primaryContentWrap} data-theme={theme}>
                 <div className={[classes.primaryContent, 'grid'].filter(Boolean).join(' ')}>
-                  <div className={['cols-8 start-1'].filter(Boolean).join(' ')}>
+                  <div className={['cols-14 start-1'].filter(Boolean).join(' ')}>
                     {enableAnnouncement && (
                       <div className={classes.announcementLink}>
                         <CMSLink {...announcementLink} />
                       </div>
                     )}
-                    <RichText className={classes.richTextHeading} content={content} />
-                    <RichText className={[classes.richTextDescription]} content={description} />
+                    {/* <RichText className={classes.richTextHeading} content={content} />
+                    <RichText className={[classes.richTextDescription]} content={description} /> */}
+                    <RichText
+                      className={[classes.richTextDescription, 'text-center']}
+                      content={description}
+                    />
                     {Array.isArray(primaryButtons) && (
                       <ul className={[classes.primaryButtons].filter(Boolean).join(' ')}>
                         {primaryButtons.map(({ link }, i) => {
@@ -162,15 +167,7 @@ export const HomeHero: React.FC<
                     <div
                       className={classes.mobileMediaWrapper}
                       style={{ height: mobileMediaWrapperHeight }}
-                    >
-                      {typeof media === 'object' && media !== null && (
-                        <Media
-                          ref={mobileLaptopMediaRef}
-                          resource={media}
-                          className={classes.laptopMedia}
-                        />
-                      )}
-                    </div>
+                    ></div>
                   </div>
                 </div>
               </div>

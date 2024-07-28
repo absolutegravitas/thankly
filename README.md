@@ -55,6 +55,7 @@ Houses PayloadCMS configuration and customizations:
 - stripe elements integration for frontend
 
 11. Comment generator script to comment code using ClaudeAPI, JSDoc compliant
+
 12. ai-digest added to create a single merged codebase file for LLMs
 
 ```bash
@@ -157,47 +158,93 @@ This script uses the Claude AI API to automatically generate comprehensive, JSDo
 
 ## Prerequisites
 
-Before using this script, ensure you have the following installed:
-
-- Node.js (version 12 or higher recommended)
-- npm (usually comes with Node.js)
-
-## Installation
-
-1. Clone this repository or download the script files.
-
-2. Navigate to the project directory and install the required dependencies:
-
-```bash
-npm install dotenv ora cli-progress
-```
-
-3. Create a `.env` file in the root directory of your project and add your Anthropic API key:
-
-```
-ANTHROPIC_API_KEY=your_api_key_here
-```
-
-Replace `your_api_key_here` with your actual Anthropic API key.
+`dotenv ora cli-progress`
+`ANTHROPIC_API_KEY=your_api_key_here`
 
 ## Usage
 
-### Processing a Single File
+## Usage
+
+### VSCode Task
+
+The project is already set up with a VSCode task for generating comments. Here's how to use it:
+
+1. Open your project in VSCode.
+2. The `.vscode/tasks.json` file in your project root should contain the following configuration:
+
+```json
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "process",
+      "command": "node",
+      "args": ["${workspaceFolder}/src/utilities/commentCode.js", "${fileDirname}/${fileBasename}"],
+      "problemMatcher": [],
+      "label": "Generate Comments for Current File",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "options": {
+        "cwd": "${workspaceFolder}"
+      }
+    }
+  ]
+}
+```
+
+3. To generate comments for the current file:
+
+   - Open the file you want to process in VSCode.
+   - Press `Ctrl+Shift+B` (or `Cmd+Shift+B` on macOS). This will run the default build task, which is set to generate comments for the current file.
+   - Alternatively, you can press `Ctrl+Shift+P` (or `Cmd+Shift+P` on macOS), type "Tasks: Run Build Task", and press Enter.
+
+4. To add a task for processing the entire project, you can modify the `tasks.json` file to include an additional task:
+
+```json
+{
+  "version": "2.0.0",
+  "tasks": [
+    // ... existing task ...
+    {
+      "type": "process",
+      "command": "node",
+      "args": ["${workspaceFolder}/src/utilities/commentCode.js"],
+      "problemMatcher": [],
+      "label": "Generate Comments for Entire Project",
+      "group": "build",
+      "options": {
+        "cwd": "${workspaceFolder}"
+      }
+    }
+  ]
+}
+```
+
+5. To run the task for the entire project:
+   - Press `Ctrl+Shift+P` (or `Cmd+Shift+P` on macOS), type "Tasks: Run Task", and select "Generate Comments for Entire Project".
+
+You can also bind these tasks to custom keyboard shortcuts for quicker access.
+
+### Command Line Usage
+
+#### Processing a Single File
 
 To generate comments for a single file, use the following command:
 
 ```bash
-node src/utilities/commentGenerator.js path/to/your/file.ts
+node src/utilities/commentCode.js path/to/your/file.ts
 ```
 
 Replace `path/to/your/file.ts` with the actual path to the file you want to process.
 
-### Processing an Entire Directory
+#### Processing an Entire Directory
 
 To generate comments for all supported files in a directory (including subdirectories), simply run the script without specifying a file:
 
 ```bash
-node src/utilities/commentGenerator.js
+node src/utilities/commentCode.js
 ```
 
 This will process all .js, .ts, .jsx, and .tsx files in the current directory and its subdirectories.
@@ -210,20 +257,6 @@ This will process all .js, .ts, .jsx, and .tsx files in the current directory an
 4. File-level JSDoc comments are added at the top of the file.
 5. Inline comments are inserted throughout the code, taking care not to break existing structure (especially in JSX).
 6. The updated content is written back to the original file.
-
-## Configuration
-
-You can modify the following aspects of the script:
-
-- `CLAUDE_API_URL`: The URL for the Claude AI API (in case it changes in the future).
-- `max_tokens`: Adjust this value in the API request body to control the length of the generated comments.
-- File extensions: Modify the script to include or exclude certain file types.
-
-## Troubleshooting
-
-- If you encounter "API key not found" errors, ensure your `.env` file is in the correct location and contains the correct API key.
-- For "File not found" errors, double-check the file path you're providing to the script.
-- If comments are not appearing as expected, review the Claude AI API response and adjust the parsing logic if necessary.
 
 # Production
 
