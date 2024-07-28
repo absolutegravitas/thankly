@@ -163,8 +163,6 @@ This script uses the Claude AI API to automatically generate comprehensive, JSDo
 
 ## Usage
 
-## Usage
-
 ### VSCode Task
 
 The project is already set up with a VSCode task for generating comments. Here's how to use it:

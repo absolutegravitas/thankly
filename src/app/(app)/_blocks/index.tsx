@@ -12,7 +12,6 @@
 'use client'
 
 import dynamic from 'next/dynamic'
-import classes from '@app/_blocks/RichText/index.module.scss' // Import styles for RichText component
 import React from 'react'
 
 // Dynamically import all block components to enable code-splitting and improve performance
@@ -83,13 +82,10 @@ const Blocks = ({ blocks, locale }: any) => {
           case 'paragraph':
             return (
               // Handle 'paragraph' type blocks by rendering them as RichText components
-              <RichText
-                key={ix}
-                content={{ root: { ...block } }}
-                className={`${classes.content} py-6`}
-              />
+              <RichText key={ix} content={{ root: { ...block } }} />
             )
           case 'block':
+            console.log('block -- ', JSON.stringify(block))
             if (block.fields && block.fields.blockType) {
               // Handle 'block' type blocks by dynamically selecting and rendering the appropriate component
               // @ts-ignore
