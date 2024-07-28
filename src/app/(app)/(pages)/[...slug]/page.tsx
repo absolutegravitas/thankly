@@ -49,11 +49,10 @@ const fetchPage = (slug: string): Promise<Page | null> => {
         return page
       }
     },
-    [`fetchPage-${slug}`], // Include the slug in the cache key
+    [`fetchPage-${slug}`],
     {
-      revalidate: 10, // 60 seconds
-      // revalidate: 60, // 60 seconds
-      tags: [`fetchPage-${slug}`], // Include the slug in the tags for easier invalidation
+      revalidate: 10,
+      tags: [`fetchPage-${slug}`],
     },
   )
 
@@ -87,11 +86,7 @@ export async function generateStaticParams() {
           },
         })
 
-        // console.log('Found pages list')
-        // console.log('fetchPageSlugs', docs)
-
         if (!docs || docs.length === 0) {
-          // console.log('No pages found')
           return []
         }
 

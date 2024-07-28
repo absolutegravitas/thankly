@@ -155,7 +155,6 @@ export const RemoveProductButton: React.FC<RemoveProductButtonProps> = ({ orderI
     startTransition(() => {
       removeProduct(orderItemId)
       router.refresh()
-      // router.push('/shop/cart')
     })
   }
 

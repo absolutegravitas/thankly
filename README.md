@@ -11,11 +11,6 @@ This project is based on a one-click deployment template of Payload on Vercel + 
 - [Payload](https://github.com/payloadcms/payload) pre-installed into Next.js
 - PostgreSQL adapter configured for Neon
 - Cloud Storage plugin configured for [Vercel Blob Storage](https://vercel.com/docs/storage/vercel-blob)
-- ai-digest package that produces a single file for entire codebase to pipe into Claude / chatGPT project knowledge
-
-```bash
-npx ai-digest
-```
 
 ## Project Structure
 
@@ -43,7 +38,7 @@ Houses PayloadCMS configuration and customizations:
 - Base payload page(s) and app entry logic (`/admin`)
 - Database migration scripts (`/migrations`)
 
-## Additional Modifications
+## Modifications / Features
 
 1. Integrated current (v2.x) payload-cms and payload-website components & code
 2. Some components & UI haven't been ported over (e.g., case study / statement)
@@ -53,9 +48,18 @@ Houses PayloadCMS configuration and customizations:
 6. Hero merged into a layout block
 7. Personal modifications to collections and folder structure
 8. Site-specific Next.js config (hardcoded CSRF / CORS configs)
-9. Data pulled via payloadHMR / payload.find due to GraphQL and CORS issues
+9. Data pulled via payloadHMR / payload.find
 10. E-commerce features (pending)
+
+- product and price sync with Stripe (basic)
+- stripe elements integration for frontend
+
 11. Comment generator script to comment code using ClaudeAPI, JSDoc compliant
+12. ai-digest added to create a single merged codebase file for LLMs
+
+```bash
+npx ai-digest
+```
 
 ## TO DO
 

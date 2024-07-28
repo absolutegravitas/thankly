@@ -20,7 +20,7 @@ import cn from '@/utilities/cn'
 import { generateHref } from '@/utilities/generateHref'
 
 import { buttonLook } from '@app/_css/tailwindClasses'
-import { ArrowRightIcon, ChevronRightIcon } from 'lucide-react'
+import { ArrowRightIcon, ChevronRightIcon, LoaderCircleIcon } from 'lucide-react'
 import classes from './index.module.scss'
 
 export type CMSLinkType = {
@@ -113,8 +113,11 @@ export const CMSLink: React.FC<CMSLinkType & { pending?: boolean }> = ({
   if ((look?.type === 'button' || look?.type === 'submit') && actions?.onClick) {
     return (
       <button className={classNames} onClick={handleClick} disabled={pending} {...newTabProps}>
-        {/* {renderContent()} */}
-        {pending ? 'processing...' : renderContent()}
+        {pending ? (
+          <LoaderCircleIcon className="animate-spin" strokeWidth={1.25} />
+        ) : (
+          renderContent()
+        )}
       </button>
     )
   } else {
