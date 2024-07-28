@@ -24,77 +24,63 @@ async function documentFile(filePath) {
     // Prepare the message for Claude AI
     spinner.text = 'Preparing message for Claude AI...'
     const fileExtension = path.extname(filePath)
-    const message = `Add JSDoc-compliant comments to this ${fileExtension} file. The project is currently using Next.js 14 code using App Router and server components. Return full code with comments. Preserve original structure and formatting.
+    const message = `Add TypeScript-friendly comments and type annotations to this ${fileExtension} file. The project is using Next.js 14 with App Router and server components. Return full code with comments and type annotations. Preserve original structure and formatting.
 
-1. File-level JSDoc block:
-   @file
-   @module [derive from filename]
-   @description [brief description]
-   @overview [A few sentences describing in plain english what this file does. Use business friendly language. List any performance issues, considerations or observations here as dot points and details for which functions or methods may be affected.]
+1. Use the most current TypeScript and React documentation best practices. Include a brief description of the code in plain English. Add a longer overview of a few sentences describing in plain English what this file does. Use business-friendly language. List any performance issues, considerations or observations as dot points and details for which functions or methods may be affected.
 
-2. For Next.js 14 App Router specific patterns:
-   @route for route handlers (e.g., page.tsx, layout.tsx, loading.tsx, error.tsx)
-   @layout for layout components
-   @template for template components
-   @error for error components
-   @loading for loading components
-   @notFound for not-found components
-   @serverAction for server actions
-   Mark server components with @server (default in App Router)
-   Mark client components with @client and note the 'use client' directive
+2. Prioritize TypeScript's built-in type system over comment-based type annotations where possible.
 
-3. For route handlers:
-   @function
-   @description
-   @param {NextRequest} request
-   @returns {NextResponse}
+3. For components, hooks, and functions:
+   - Use TypeScript interfaces or type aliases to define prop types, state types, and return types.
+   - Add concise descriptions for non-obvious props, state, or behavior.
 
-4. For PayloadCMS specific code:
-   @payloadField for field definitions
-   @payloadHook for hooks
-   @payloadEndpoint for custom API endpoints
+4. For Next.js specific patterns:
+   - Use the latest Next.js TypeScript patterns and decorators if available.
+   - Include comments for routing, data fetching, and rendering strategies.
 
-5. For functions (including arrow functions) and methods:
-   @function [or @const for const arrow functions]
-   @description
-   @param {type} name - description
-   @returns {type} description
+5. For complex logic or algorithms:
+   - Add brief explanations focusing on the 'why' rather than the 'what'.
 
-6. For React functional components (including arrow function components):
-   @component
-   @description
-   @param {Props} props - Infer and document Props type
-   @returns {JSX.Element}
+6. Performance considerations:
+   - Note any potential performance impacts or optimization opportunities.
 
-7. For hooks (built-in and custom):
-   @hook
-   @description
-   @param {type} name - description
-   @returns {type} description
+7. API integrations or data management:
+   - Document expected data structures and potential error states.
 
-8. For TypeScript specifics:
-   Document types and interfaces with @typedef and @interface
-   Use exact TypeScript types in param and return descriptions
+8. Accessibility (a11y) considerations:
+   - Note any specific accessibility features or requirements.
 
-9. For complex logic:
-   Brief explanations above relevant code blocks
+9. State management:
+   - Document key state variables and their purpose.
 
-10. Performance considerations, side effects, dependencies where you notice them:
-    @note above relevant code
+10. Side effects:
+    - Clearly indicate any side effects in functions or components.
 
-Use appropriate syntax. No nested comments. Avoid inline comments outside React fragments.
+11. Keep documentation DRY (Don't Repeat Yourself):
+    - Avoid redundant comments where TypeScript types are self-explanatory.
 
-Place comments above described code. Use clear, concise English. Maintain consistency with existing comments.
+12. Future compatibility:
+    - Where applicable, note any version-specific features or potential deprecations.
 
-For arrow functions and const declarations, place comments immediately above.
+Aim for a balance between comprehensive documentation and clean, readable code. Prefer TypeScript's static typing over excessive commenting where appropriate. Adapt to any new TypeScript or React documentation standards that may have emerged.
 
-Remove unnecessary whitespace to save tokens, but avoid syntax errors.
-IMPORTANT: Do not wrap the response in backticks. Return the raw, commented code only.
+IMPORTANT INSTRUCTIONS:
+1. Return the COMPLETE commented and type-annotated TypeScript code.
+2. DO NOT add any backticks (\`) at the start or end of the code.
+3. DO NOT wrap the code in any markdown formatting (e.g., \`\`\`tsx).
+4. DO NOT remove or paraphrase any existing code.
+5. Place comments above the described code.
+6. Use clear, concise English.
+7. Maintain consistency with existing comments.
+8. For arrow functions and const declarations, place comments immediately above.
+9. Remove unnecessary whitespace to save tokens, but avoid syntax errors.
+10. DO NOT add any explanations outside of the code comments.
 
-Code:
+Here's the code to comment and annotate:
+
 ${fileContent}
 
-Return only commented code, no explanations.`
+Return only the complete, commented code without any additional formatting or explanations.`
 
     spinner.succeed('Message prepared')
 

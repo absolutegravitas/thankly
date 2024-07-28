@@ -9,6 +9,9 @@
 /_icons
 /_graphics
 
+/_emails
+/_css
+
 # dependencies
 /node_modules
 /.pnp
@@ -49,110 +52,23 @@ yarn-error.log*
 next-env.d.ts
 ```
 
-# \_queries/token.ts
+# _queries/token.ts
 
 ```ts
 export const payloadToken = 'payload-token'
+
 ```
 
-# \_queries/settings.ts
+# _queries/products.ts
 
 ```ts
-import { revalidatePath, unstable_cache } from 'next/cache'
-import { getPayloadHMR } from '@payloadcms/next/utilities'
-import configPromise from '@payload-config'
-import { Setting } from '@payload-types'
+/**
+ * @file app/(app)/_queries/products.ts
+ * @module ProductQueries
+ * @description This module contains utility functions for fetching product data from the Payload CMS.
+ * @overview The module exports functions for fetching individual products, lists of products, and product slugs from the Payload CMS. It uses the `next/cache` utility for caching and revalidating the data.
+ */
 
-export const fetchSettings = unstable_cache(
-  async (): Promise<Setting | null> => {
-    const config = await configPromise
-    let payload: any = await getPayloadHMR({ config })
-    let settings = null
-
-    try {
-      settings = await payload.findGlobal({ slug: 'settings', depth: 1 })
-    } catch (error) {
-      console.error('Error fetching settings:', error)
-    }
-    // console.log('settings -- ', settings)
-    return settings
-  },
-  ['settings'],
-  {
-    revalidate: 60, // 60 seconds
-    // revalidate: 300, // 5 min
-    // revalidate: 3600, // 1 hour
-    // revalidate: 86400, // 1 day
-    // revalidate: 604800, // 1 week
-    // revalidate: 2592000, // 1 month
-    // revalidate: 31536000, // 1 year
-
-    tags: ['settings'],
-  },
-)
-
-export const fetchHeader = unstable_cache(
-  async (): Promise<Setting | null> => {
-    const config = await configPromise
-    let payload: any = await getPayloadHMR({ config })
-    let settings = null
-
-    try {
-      settings = await payload.findGlobal({ slug: 'settings', depth: 1 })
-      // set settings variable to be the menu key only
-      if (settings) settings = settings.menu
-    } catch (error) {
-      console.error('Error fetching settings:', error)
-    }
-    // console.log('settings -- ', settings)
-    return settings
-  },
-  ['fetchHeader'],
-  {
-    revalidate: 60, // 60 seconds
-    // revalidate: 300, // 5 min
-    // revalidate: 3600, // 1 hour
-    // revalidate: 86400, // 1 day
-    // revalidate: 604800, // 1 week
-    // revalidate: 2592000, // 1 month
-    // revalidate: 31536000, // 1 year
-
-    tags: ['fetchHeader'],
-  },
-)
-
-export const fetchFooter = unstable_cache(
-  async (): Promise<Setting | null> => {
-    const config = await configPromise
-    let payload: any = await getPayloadHMR({ config })
-    let settings = null
-
-    try {
-      settings = await payload.findGlobal({ slug: 'settings', depth: 1 })
-    } catch (error) {
-      console.error('Error fetching settings:', error)
-    }
-    // console.log('settings -- ', settings)
-    return settings
-  },
-  ['fetchFooter'],
-  {
-    revalidate: 60, // 60 seconds
-    // revalidate: 300, // 5 min
-    // revalidate: 3600, // 1 hour
-    // revalidate: 86400, // 1 day
-    // revalidate: 604800, // 1 week
-    // revalidate: 2592000, // 1 month
-    // revalidate: 31536000, // 1 year
-
-    tags: ['fetchFooter'],
-  },
-)
-```
-
-# \_queries/products.ts
-
-```ts
 // import 'server-only'
 
 import { revalidatePath, unstable_cache } from 'next/cache'
@@ -310,9 +226,10 @@ export const fetchProductSlugs = unstable_cache(
     tags: ['fetchProductSlugs'],
   },
 )
+
 ```
 
-# \_queries/fetchMe.ts
+# _queries/fetchMe.ts
 
 ```ts
 import { cookies } from 'next/headers'
@@ -362,16 +279,16 @@ export const fetchMe = async (args?: {
     token,
   }
 }
+
 ```
 
-# \_providers/index.tsx
+# _providers/index.tsx
 
 ```tsx
 'use client'
 
 import React from 'react'
 import { CookiesProvider } from 'react-cookie'
-// import { IconProps, Slide, ToastContainer } from 'react-toastify'
 import { GridProvider } from '@faceless-ui/css-grid'
 import { ModalContainer, ModalProvider } from '@faceless-ui/modal'
 import { MouseInfoProvider } from '@faceless-ui/mouse-info'
@@ -430,26 +347,6 @@ export const Providers: React.FC<{
                         <HeaderIntersectionObserver>
                           {children}
                           <ModalContainer />
-                          {/* <ToastContainer
-                            position="bottom-center"
-                            transition={Slide}
-                            // icon={false}
-                            // TODO: Redesign icons
-                            icon={({ type }: IconProps) => {
-                              switch (type) {
-                                case 'info':
-                                  return <InfoIcon />
-                                case 'success':
-                                  return <CheckIcon />
-                                case 'warning':
-                                  return <ErrorIcon />
-                                case 'error':
-                                  return <CloseIcon />
-                                default:
-                                  return null
-                              }
-                            }}
-                          /> */}
                         </HeaderIntersectionObserver>
                       </PageTransition>
                     </ModalProvider>
@@ -463,394 +360,10 @@ export const Providers: React.FC<{
     </CookiesProvider>
   )
 }
+
 ```
 
-# \_emails/reset-password.tsx
-
-```tsx
-import {
-  Body,
-  Button,
-  Column,
-  Container,
-  Font,
-  Head,
-  Heading,
-  Img,
-  Preview,
-  Row,
-  Section,
-  Tailwind,
-  Text,
-} from '@react-email/components'
-
-interface ResetPasswordEmailProps {
-  appName?: string
-  userFirstname: string
-  resetPasswordLink: string
-}
-
-const baseUrl = process.env.NODE_ENV === 'production' ? process.env.NEXT_PUBLIC_SITE_URL : ''
-
-export default function Email({
-  appName = 'Payload',
-  userFirstname,
-  resetPasswordLink,
-}: ResetPasswordEmailProps) {
-  return (
-    <Tailwind>
-      <Head>
-        <Font
-          fontFamily="Inter"
-          fallbackFontFamily="Verdana"
-          webFont={{
-            url: 'https://fonts.gstatic.com/s/inter/v13/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuLyfAZ9hiJ-Ek-_EeA.woff2',
-            format: 'woff2',
-          }}
-          fontWeight={400}
-          fontStyle="normal"
-        />
-      </Head>
-      <Preview>{appName} reset your password</Preview>
-      <Body className="bg-zinc-900 text-zinc-300">
-        <Container className="rounded-lg border border-solid border-white/[0.03] bg-zinc-800 p-12">
-          <Row>
-            <Column className="w-[80px]">
-              <Img src={`${baseUrl}/icon.png`} width="60" height="60" alt={`${appName} logo`} />
-            </Column>
-            <Column>
-              <Heading as="h2" className="text-2xl font-bold text-white">
-                Reset Passoword
-              </Heading>
-            </Column>
-          </Row>
-          <Section>
-            <Text className="dark:text-zinc-300">Hi {userFirstname},</Text>
-            <Text className="dark:text-zinc-300">
-              Someone recently requested a password change for your {appName} account. If this was
-              you, you can set a new password here:
-            </Text>
-            <Button
-              className="cursor-pointer rounded-md border border-solid border-blue-700 bg-blue-600 px-4 py-2 text-white"
-              href={resetPasswordLink}
-            >
-              Reset password
-            </Button>
-            <Text className="dark:text-zinc-300">
-              If you don&apos;t want to change your password or didn&apos;t request this, just
-              ignore and delete this message.
-            </Text>
-          </Section>
-        </Container>
-      </Body>
-    </Tailwind>
-  )
-}
-```
-
-# \_css/tailwindClasses.ts
-
-```ts
-import cn from '@/utilities/cn'
-
-export const blockFormats = {
-  headerMenu: `antialiased font-title font-medium no-underline tracking-tight`,
-  footerMenu: `antialiased font-title font-normal no-underline tracking-tight text-sm leading-snug ml-0 pl-0`,
-  blockWidth: ` mx-auto max-w-screen-xl px-5`,
-  blockPadding: ` py-16 sm:py-16 #mt-10`,
-  shortVerticalPadding: `py-8 sm:py-8`,
-}
-
-export const contentFormats = {
-  global: `antialiased`,
-
-  alignLeft: ``,
-  alignRight: ``,
-  alignCenter: ``,
-  alignJustify: ``,
-
-  // gen text
-  text: `#text-justify font-body font-light tracking-tight leading-snug prose-em:font-extrabold`,
-  smallText: `text-sm text-left #text-justify font-body font-light tracking-tight leading-snug prose-em:font-extrabold #prose-em:text-neutral-700`,
-
-  h1: `font-title font-semibold text-5xl tracking-tight`,
-  h2: `font-title font-semibold text-2xl tracking-tight`,
-  h3: `font-title font-semibold text-xl tracking-tighter`,
-  h4: `font-title font-semibold text-lg tracking-tighter`,
-  h5: `font-title font-semibold text-base tracking-tighter`,
-  h6: `font-title font-semibold text-base tracking-tighter`,
-
-  p: `font-body font-light tracking-tight lg:tracking-tighter`,
-  blockquote: `font-body font-light tracking-tight lg:tracking-tighter`,
-  pre: `font-body font-light tracking-tight lg:tracking-tighter`,
-  code: `font-body font-light tracking-tight lg:tracking-tighter`,
-  a: `font-body  font-light underline underline-offset-4 decoration-dotted decoration-neutral-800 hover:font-medium`,
-  strong: `font-bold text-neutral-700`,
-
-  em: 'font-bold text-neutral-700',
-  italic: `italic`,
-  ul: 'font-title font-light tracking-tight lg:tracking-tighter prose-ul:list-disc marker:text-neutral-700',
-  li: 'font-title font-light tracking-tight lg:tracking-tighter  marker:text-neutral-700',
-  ol: 'font-title font-light tracking-tight lg:tracking-tighter prose-ol:list-decimal marker:text-neutral-700',
-
-  error: 'rounded-sm font-medium text-white bg-red-700 px-4 py-3',
-  success: 'rounded-sm font-medium text-offwhite bg-lime-600 px-4 py-3',
-  warning: 'rounded-sm font-medium  bg-amber-400 px-4 py-3',
-
-  // order status
-  orderProcessing: `text-neutral-600 bg-neutral-50 ring-neutral-500/10`,
-
-  orderCompleted: `text-green-700 bg-green-50 ring-green-600/20`,
-  orderCancelled: `text-red-600 bg-neutral-50 ring-neutral-500/10`,
-  orderReturned: `text-neutral-600 bg-neutral-50 ring-neutral-500/10`,
-
-  // order line item status
-  lineItemProcessing: `text-neutral-600 bg-neutral-50 ring-neutral-500/10`, // when just created
-  lineItemShipped: `text-neutral-600 bg-neutral-50 ring-neutral-500/10`, // when fulfilled
-
-  lineItemCompleted: `text-green-700 bg-green-50 ring-green-600/20`,
-  lineItemCancelled: `text-neutral-600 bg-neutral-50 ring-neutral-500/10`,
-  lineItemReturned: `text-neutral-600 bg-neutral-50 ring-neutral-500/10`,
-}
-
-export const buttonLook = {
-  base: `cursor-pointer antialiased font-body font-light tracking-tight items-center animate-fade-in transition justify-between`,
-
-  sizes: {
-    extrasmall: `text-xs px-2 py-2`,
-    small: `text-sm px-3 py-2`,
-    medium: `text-sm px-4 py-4`,
-    large: `text-lg px-5 py-5 `,
-  },
-
-  widths: {
-    narrow: ``,
-    normal: `w-1/2`, // half container width, make sure there's a container
-    wide: `w-full md:w-3/4`,
-    full: `w-full`, // full width of containing element
-  },
-
-  variants: {
-    base: `no-underline hover:no-underline border border-solid border-neutral-500 rounded-sm transition hover:border-green hover:shadow-md duration-150 shadow-sm dark:hover:border-green dark:text-dark-text`,
-    links: `underline underline-offset-2 decoration-neutral-800 text-neutral-800 dark:text-dark-text hover:font-medium`,
-
-    default: ``, // default look button
-    blocks: `cursor-pointer bg-transparent no-underline inline-flex hover:border-green hover:shadow-md hover:bg-neutral-950 hover:text-white dark:hover:bg-green dark:hover:text-white dark:hover:border-green dark:hover:shadow-md`,
-  },
-
-  actions: {
-    submit: `cursor-pointer`,
-    submitting: `cursor-wait`,
-    submitted: `cursor-auto`,
-    disabled: `cursor-not-allowed opacity-75`,
-  },
-} as const
-
-export const tailwindColorMatch = {
-  '#ffffff': 'bg-white', // white
-  '#c2c0ae': 'bg-lightkhaki', // light khaki
-  '#dfded9': 'bg-lighterkhaki', // lighter khaki
-  '#cbd5e1': 'bg-neutral-300', // slate gray
-  '#557755': 'bg-green', // thankly green (dark)
-  '#374151': 'bg-neutral-700', // slate black
-  '#030712': 'bg-neutral-900', // jet black
-}
-
-export const textColorVariants = {
-  '#557755': 'text-green', // thankly green (dark)
-  '#c2c0ae': 'text-lightkhaki', // light khaki
-  '#dfded9': 'text-lighterkhaki', // lighter khaki
-  '#e7ecef': 'text-offwhite', // off-white
-  '#d9d9d9': 'text-slategray', // slate gray
-  '#292929': 'text-slateblack', // slate black
-  '#0d1317': 'text-black', // jet black
-}
-type PaddingBlock = {
-  mobile: string
-  tablet: string
-  desktop: string
-  description: string
-}
-
-type ContentBlockTypes =
-  | 'banner'
-  | 'callout'
-  | 'cardGrid'
-  | 'content'
-  | 'contentGrid'
-  | 'cta'
-  | 'form'
-  | 'hero'
-  | 'hoverCards'
-  | 'hoverHighlights'
-  | 'linkGrid'
-  | 'logoGrid'
-  | 'mediaBlock'
-  | 'mediaContent'
-  | 'mediaContentAccordion'
-  | 'reuse'
-  | 'richText'
-  | 'slider'
-  | 'steps'
-  | 'statement'
-  | 'stickyHighlights'
-
-type ContentBlockPadding = {
-  [key in ContentBlockTypes]: PaddingBlock
-}
-
-const contentBlockPadding: ContentBlockPadding = {
-  banner: {
-    mobile: 'px-4 py-8',
-    tablet: 'sm:px-6 sm:py-12',
-    desktop: 'lg:px-8 lg:py-16',
-    description: 'Banner sections',
-  },
-  callout: {
-    mobile: 'px-4 py-6',
-    tablet: 'sm:px-6 sm:py-8',
-    desktop: 'lg:px-8 lg:py-10',
-    description: 'Callout sections',
-  },
-  cardGrid: {
-    mobile: 'px-4 py-8',
-    tablet: 'sm:px-6 sm:py-12',
-    desktop: 'lg:px-8 lg:py-16',
-    description: 'Card grid sections',
-  },
-  content: {
-    mobile: 'px-4 py-6',
-    tablet: 'sm:px-6 sm:py-8',
-    desktop: 'lg:px-8 lg:py-12',
-    description: 'Standard content sections',
-  },
-  contentGrid: {
-    mobile: 'px-4 py-8',
-    tablet: 'sm:px-6 sm:py-12',
-    desktop: 'lg:px-8 lg:py-16',
-    description: 'Content grid sections',
-  },
-  cta: {
-    mobile: 'px-4 py-10',
-    tablet: 'sm:px-6 sm:py-14',
-    desktop: 'lg:px-8 lg:py-20',
-    description: 'Call-to-Action sections',
-  },
-  form: {
-    mobile: 'px-4 py-8',
-    tablet: 'sm:px-6 sm:py-12',
-    desktop: 'lg:px-8 lg:py-16',
-    description: 'Form sections',
-  },
-  hero: {
-    mobile: 'px-4 py-12',
-    tablet: 'sm:px-6 sm:py-16',
-    desktop: 'lg:px-8 lg:py-24',
-    description: 'Hero sections',
-  },
-  hoverCards: {
-    mobile: 'px-4 py-8',
-    tablet: 'sm:px-6 sm:py-12',
-    desktop: 'lg:px-8 lg:py-16',
-    description: 'Hover cards sections',
-  },
-  hoverHighlights: {
-    mobile: 'px-4 py-8',
-    tablet: 'sm:px-6 sm:py-12',
-    desktop: 'lg:px-8 lg:py-16',
-    description: 'Hover highlights sections',
-  },
-  linkGrid: {
-    mobile: 'px-4 py-6',
-    tablet: 'sm:px-6 sm:py-8',
-    desktop: 'lg:px-8 lg:py-12',
-    description: 'Link grid sections',
-  },
-  logoGrid: {
-    mobile: 'px-4 py-8',
-    tablet: 'sm:px-6 sm:py-12',
-    desktop: 'lg:px-8 lg:py-16',
-    description: 'Logo grid sections',
-  },
-  mediaBlock: {
-    mobile: 'px-4 py-8',
-    tablet: 'sm:px-6 sm:py-12',
-    desktop: 'lg:px-8 lg:py-16',
-    description: 'Media block sections',
-  },
-  mediaContent: {
-    mobile: 'px-4 py-8',
-    tablet: 'sm:px-6 sm:py-12',
-    desktop: 'lg:px-8 lg:py-16',
-    description: 'Media content sections',
-  },
-  mediaContentAccordion: {
-    mobile: 'px-4 py-8',
-    tablet: 'sm:px-6 sm:py-12',
-    desktop: 'lg:px-8 lg:py-16',
-    description: 'Media content accordion sections',
-  },
-  reuse: {
-    mobile: 'px-4 py-6',
-    tablet: 'sm:px-6 sm:py-8',
-    desktop: 'lg:px-8 lg:py-12',
-    description: 'Reusable sections',
-  },
-  richText: {
-    mobile: 'px-4 py-6',
-    tablet: 'sm:px-6 sm:py-8',
-    desktop: 'lg:px-8 lg:py-12',
-    description: 'Rich text sections',
-  },
-  slider: {
-    mobile: 'px-4 py-8',
-    tablet: 'sm:px-6 sm:py-12',
-    desktop: 'lg:px-8 lg:py-16',
-    description: 'Slider sections',
-  },
-  steps: {
-    mobile: 'px-4 py-8',
-    tablet: 'sm:px-6 sm:py-12',
-    desktop: 'lg:px-8 lg:py-16',
-    description: 'Steps sections',
-  },
-  statement: {
-    mobile: 'px-4 py-10',
-    tablet: 'sm:px-6 sm:py-14',
-    desktop: 'lg:px-8 lg:py-20',
-    description: 'Statement sections',
-  },
-  stickyHighlights: {
-    mobile: 'px-4 py-8',
-    tablet: 'sm:px-6 sm:py-12',
-    desktop: 'lg:px-8 lg:py-16',
-    description: 'Sticky highlights sections',
-  },
-}
-
-const getPaddingClasses = (blockType: ContentBlockTypes): string => {
-  const block = contentBlockPadding[blockType]
-  return `${block.mobile} ${block.tablet} ${block.desktop}`
-}
-
-export { contentBlockPadding, getPaddingClasses }
-export type { ContentBlockTypes }
-```
-
-# \_css/cssVariables.js
-
-```js
-// @app/_css/cssVariables.js
-const breakpoints = {
-  s: 768,
-  m: 1024,
-  l: 1440,
-}
-
-export { breakpoints }
-```
-
-# \_components/index.tsx
+# _components/index.tsx
 
 ```tsx
 import React from 'react'
@@ -902,9 +415,10 @@ export const BackgroundGrid: React.FC<Props> = ({
     </div>
   )
 }
+
 ```
 
-# \_components/FormWrapper.tsx
+# _components/FormWrapper.tsx
 
 ```tsx
 type FormWrapperProps = React.ComponentPropsWithoutRef<'div'> & {
@@ -932,9 +446,10 @@ export default function FormWrapper({
     </div>
   )
 }
+
 ```
 
-# \_components/Container.tsx
+# _components/Container.tsx
 
 ```tsx
 import cn from '@/utilities/cn'
@@ -947,17 +462,29 @@ const Container = ({ children, className }: ComponentPropsWithoutRef<'div'>) => 
 }
 
 export default Container
+
 ```
 
-# \_blocks/index.tsx
+# _blocks/index.tsx
 
 ```tsx
+/**
+ * @file Blocks.js
+ * @description Dynamic block rendering component for a NextJS application
+ * @overview This file defines a Blocks component that dynamically renders various content blocks based on their type. It uses Next.js's dynamic import feature to load block components on demand, improving initial load time and performance.
+ *
+ * The main Blocks component takes an array of block objects and a locale string as props. It then maps through these blocks, rendering either a RichText component for paragraph types or a specific block component based on the blockType field.
+ *
+ * @requires next/dynamic
+ * @requires react
+ */
+
 'use client'
 
 import dynamic from 'next/dynamic'
-import classes from '@app/_blocks/RichText/index.module.scss'
 import React from 'react'
 
+// Dynamically import all block components to enable code-splitting and improve performance
 const Banner = dynamic(() => import('./Banner'))
 const Callout = dynamic(() => import('./Callout'))
 const CallToAction = dynamic(() => import('./CallToAction'))
@@ -978,15 +505,16 @@ const Reusable = dynamic(() => import('./Reusable'))
 const RichText = dynamic(() => import('./RichText'))
 const Slider = dynamic(() => import('./Slider'))
 const Statement = dynamic(() => import('./Statement'))
-
 const Steps = dynamic(() => import('./Steps'))
 const StickyHighlights = dynamic(() => import('./StickyHighlights'))
 
+// Define additional props that will be passed to each block component
 export type AdditionalBlockProps = {
   blockIndex: number
   locale: string
 }
 
+// Object mapping block types to their corresponding components
 const blockComponents = {
   // pricing: Pricing,
   banner: Banner,
@@ -1012,21 +540,24 @@ const blockComponents = {
   stickyHighlights: StickyHighlights,
 }
 
+// Main Blocks component that renders an array of content blocks
 const Blocks = ({ blocks, locale }: any) => {
   return (
     <React.Fragment>
       {blocks?.map((block: any, ix: number) => {
-        switch (block.type) {
+        // Map through each block in the blocks array
+        switch (
+          block.type // Switch statement to handle different block types
+        ) {
           case 'paragraph':
             return (
-              <RichText
-                key={ix}
-                content={{ root: { ...block } }}
-                className={`${classes.content} py-6`}
-              />
+              // Handle 'paragraph' type blocks by rendering them as RichText components
+              <RichText key={ix} content={{ root: { ...block } }} />
             )
           case 'block':
+            console.log('block -- ', JSON.stringify(block))
             if (block.fields && block.fields.blockType) {
+              // Handle 'block' type blocks by dynamically selecting and rendering the appropriate component
               // @ts-ignore
               const BlockComponent = blockComponents[block.fields.blockType] ?? null
               return BlockComponent ? (
@@ -1035,7 +566,7 @@ const Blocks = ({ blocks, locale }: any) => {
             }
             break
           default:
-            break
+            break // Default case to handle any unrecognized block types
         }
       })}
     </React.Fragment>
@@ -1043,6 +574,7 @@ const Blocks = ({ blocks, locale }: any) => {
 }
 
 export default Blocks
+
 ```
 
 # (pages)/page.tsx
@@ -1054,6 +586,7 @@ import { generateMetadata } from './[...slug]/page'
 export default PageTemplate
 
 export { generateMetadata }
+
 ```
 
 # (pages)/not-found.tsx
@@ -1146,11 +679,78 @@ export default function NotFound() {
     </BlockWrapper>
   )
 }
+
+```
+
+# (pages)/loading.tsx
+
+```tsx
+import React from 'react'
+import { BlockWrapper } from '@app/_components/BlockWrapper'
+import { Gutter } from '@app/_components/Gutter'
+import { getPaddingClasses } from '@app/_css/tailwindClasses'
+
+const HeroSkeleton = () => <div className="animate-pulse bg-gray-200 h-96 w-full mb-12"></div>
+
+const FeaturedSectionSkeleton = () => (
+  <div className="mb-16">
+    <div className="bg-gray-300 h-8 w-1/3 mb-6 rounded"></div>
+    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      {[...Array(3)].map((_, index) => (
+        <div key={index} className="bg-gray-200 h-64 rounded-lg"></div>
+      ))}
+    </div>
+  </div>
+)
+
+const ContentBlockSkeleton = () => (
+  <div className="mb-16">
+    <div className="bg-gray-300 h-6 w-1/4 mb-4 rounded"></div>
+    <div className="bg-gray-200 h-4 w-full mb-2 rounded"></div>
+    <div className="bg-gray-200 h-4 w-5/6 mb-2 rounded"></div>
+    <div className="bg-gray-200 h-4 w-4/5 rounded"></div>
+  </div>
+)
+
+export default function LoadingHomePage() {
+  return (
+    <div className="bg-white">
+      <BlockWrapper
+        settings={{ settings: { theme: 'light' } }}
+        className={getPaddingClasses('hero')}
+      >
+        <Gutter>
+          <HeroSkeleton />
+          <FeaturedSectionSkeleton />
+          <ContentBlockSkeleton />
+          <FeaturedSectionSkeleton />
+        </Gutter>
+      </BlockWrapper>
+    </div>
+  )
+}
+
 ```
 
 # (pages)/layout.tsx
 
 ```tsx
+/**
+@file layout.tsx
+@module RootLayout
+@description This module serves as the root layout for the Next.js application and handles various aspects of the application, including providers, analytics, theme settings, and global components.
+@overview
+The RootLayout module is a React component that serves as the root layout for the Next.js application. It sets up the application's structure, providers, and global components. Additionally, it handles analytics tracking, theme settings, and fetches global settings from the PayloadCMS.
+
+The component renders an HTML structure with a head and body section. The head section includes various meta tags, links, and scripts for favicon, Google Analytics, Google Tag Manager, and theme initialization. The body section wraps the application's content with the necessary providers, header, footer, and privacy banner components.
+
+The fetchSettings function is responsible for fetching the global settings from the PayloadCMS. It utilizes the Next.js cache to improve performance and cache the settings for a specified duration.
+
+The RootLayout component renders the application's content within the Providers component, which sets up the global state and context providers. The Header and Footer components are rendered based on the fetched settings. The PrivacyBanner component is always rendered, and the Analytics and SpeedInsights components are included for tracking and performance monitoring purposes.
+
+The metadata export object sets the base URL, Twitter card settings, and open graph metadata for the application.
+*/
+
 import React from 'react'
 import { Providers } from '@app/_providers/'
 import { defaultTheme, themeLocalStorageKey } from '@app/_providers/Theme/shared'
@@ -1175,31 +775,41 @@ import configPromise from '@payload-config'
 
 import { Header } from '@app/_components/Header'
 import { Footer } from '@app/_components/Footer'
-import { Setting } from '@payload-types'
+import { Menu, Setting } from '@payload-types'
 
-export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const settings: any = await unstable_cache(
+const fetchSettings = (): Promise<Setting | null> => {
+  const cachedSettings = unstable_cache(
     async (): Promise<Setting | null> => {
       const config = await configPromise
       let payload: any = await getPayloadHMR({ config })
       let settings = null
 
+      // console.log('settings -- ', JSON.stringify(settings))
+
       try {
-        settings = await payload.findGlobal({ slug: 'settings', depth: 1 })
+        settings = await payload.findGlobal({
+          slug: 'settings',
+          depth: 1,
+        })
       } catch (error) {
-        console.error('Error fetching settings:', error)
+        console.error(`Error fetching settings`, error)
       }
-      // console.log('settings -- ', settings)
       return settings
     },
     ['settings'],
     {
-      revalidate: 60, // 60 seconds
+      revalidate: 10, // 60 seconds
+
+      // revalidate: 60, // 60 seconds
       tags: ['settings'],
     },
   )
 
-  // console.log('settings found', settings.footer)
+  return cachedSettings()
+}
+
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const settings = await fetchSettings()
 
   return (
     <html lang="en" suppressHydrationWarning>
@@ -1216,35 +826,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             dangerouslySetInnerHTML={{
               __html: `
             (function () {
-              function getImplicitPreference() {
-                var mediaQuery = '(prefers-color-scheme: dark)'
-                var mql = window.matchMedia(mediaQuery)
-                var hasImplicitPreference = typeof mql.matches === 'boolean'
-
-                if (hasImplicitPreference) {
-                  return mql.matches ? 'dark' : 'light'
-                }
-
-                return null
-              }
-
-              function themeIsValid(theme) {
-                return theme === 'light' || theme === 'dark'
-              }
-
-              var themeToSet = '${defaultTheme}'
-              var preference = window.localStorage.getItem('${themeLocalStorageKey}')
-
-              if (themeIsValid(preference)) {
-                themeToSet = preference
-              } else {
-                var implicitPreference = getImplicitPreference()
-
-                if (implicitPreference) {
-                  themeToSet = implicitPreference
-                }
-              }
-
+             var themeToSet = 'light';
              document.documentElement.setAttribute('data-theme', themeToSet);
              document.documentElement.classList.add(themeToSet);
             })()`,
@@ -1276,9 +858,10 @@ export const metadata: Metadata = {
   },
   openGraph: mergeOpenGraph(),
 }
+
 ```
 
-# \_providers/Theme/types.ts
+# _providers/Theme/types.ts
 
 ```ts
 export type Theme = 'light' | 'dark'
@@ -1291,12 +874,13 @@ export interface ThemePreferenceContextType {
 export function themeIsValid(string: string | null): string is Theme {
   return string ? ['light', 'dark'].includes(string) : false
 }
+
 ```
 
-# \_providers/Theme/shared.ts
+# _providers/Theme/shared.ts
 
 ```ts
-import type { Theme } from './types'
+import type { Theme } from './types.js'
 
 export const themeLocalStorageKey = 'payload-theme'
 
@@ -1308,14 +892,15 @@ export const getImplicitPreference = (): Theme | null => {
   const hasImplicitPreference = typeof mql.matches === 'boolean'
 
   if (hasImplicitPreference) {
-    return mql.matches ? 'light' : 'light'
+    return mql.matches ? 'dark' : 'light'
   }
 
   return null
 }
+
 ```
 
-# \_providers/Theme/index.tsx
+# _providers/Theme/index.tsx
 
 ```tsx
 'use client'
@@ -1352,6 +937,12 @@ export const ThemePreferenceProvider: React.FC<{ children?: React.ReactNode }> =
   }, [])
 
   useEffect(() => {
+    let themeToSet: Theme = 'light'
+    setThemeState(themeToSet)
+    document.documentElement.setAttribute('data-theme', themeToSet)
+  }, [])
+
+  useEffect(() => {
     let themeToSet: Theme = defaultTheme
     const preference = window.localStorage.getItem(themeLocalStorageKey)
 
@@ -1378,9 +969,10 @@ export const ThemePreferenceProvider: React.FC<{ children?: React.ReactNode }> =
 
 export const useThemePreference = (): ThemePreferenceContextType =>
   useContext(ThemePreferenceContext)
+
 ```
 
-# \_providers/Privacy/index.tsx
+# _providers/Privacy/index.tsx
 
 ```tsx
 'use client'
@@ -1499,9 +1091,10 @@ const PrivacyProvider: React.FC<PrivacyProviderProps> = (props) => {
 const usePrivacy = (): Privacy => useContext(Context)
 
 export { PrivacyProvider, usePrivacy }
+
 ```
 
-# \_providers/PageTransition/index.tsx
+# _providers/PageTransition/index.tsx
 
 ```tsx
 'use client'
@@ -1559,9 +1152,10 @@ export const PageTransition: React.FC<{
 
   return <div ref={nodeRef}>{children}</div>
 }
+
 ```
 
-# \_providers/Order/reducer.ts
+# _providers/Order/reducer.ts
 
 ```ts
 import type { Order, Product } from '@/payload-types'
@@ -2084,9 +1678,10 @@ function isRegionalPostcode(postcode: string): boolean {
 function isRemotePostcode(postcode: string): boolean {
   return isInRange(postcode, remotePostcodeRanges)
 }
+
 ```
 
-# \_providers/Order/orderActions.ts
+# _providers/Order/orderActions.ts
 
 ```ts
 // 'use server'
@@ -2210,11 +1805,20 @@ function isRemotePostcode(postcode: string): boolean {
 //     return { error: err.message }
 //   }
 // }
+
 ```
 
-# \_providers/Order/index.tsx
+# _providers/Order/index.tsx
 
 ```tsx
+/**
+ * @file index.tsx
+ * @module OrderProvider
+ * @description Order management system for an e-commerce application
+ * @overview
+ * This file implements a custom order management system using React's Context API. It provides a centralized state management solution for handling orders in an e-commerce application. The OrderProvider component manages the order state, including adding/removing products, managing receivers, updating shipping methods, and synchronizing with local storage. It uses a reducer pattern for state updates and exposes various utility functions through the OrderContext.
+ */
+
 import React, {
   createContext,
   useContext,
@@ -2484,9 +2088,10 @@ export const OrderProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   return <Context.Provider value={contextValue}>{children}</Context.Provider>
 }
+
 ```
 
-# \_providers/Order/cartActions.ts
+# _providers/Order/cartActions.ts
 
 ```ts
 // 'use server'
@@ -2605,9 +2210,10 @@ export const OrderProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
 //   return order || null
 // }
+
 ```
 
-# \_providers/HeaderIntersectionObserver/index.tsx
+# _providers/HeaderIntersectionObserver/index.tsx
 
 ```tsx
 'use client'
@@ -2729,9 +2335,10 @@ export const HeaderIntersectionObserver: React.FC<HeaderIntersectionObserverProp
     </Context.Provider>
   )
 }
+
 ```
 
-# \_providers/ComputedCSSValues/index.tsx
+# _providers/ComputedCSSValues/index.tsx
 
 ```tsx
 import * as React from 'react'
@@ -2769,9 +2376,10 @@ export const ComputedCSSValuesProvider: React.FC<Props> = ({ children }) => {
     </Context.Provider>
   )
 }
+
 ```
 
-# \_providers/Auth/index.tsx
+# _providers/Auth/index.tsx
 
 ```tsx
 'use client'
@@ -2992,13 +2600,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 type UseAuth<T = User> = () => AuthContext // eslint-disable-line no-unused-vars
 
 export const useAuth: UseAuth = () => useContext(Context)
+
 ```
 
-# \_emails/static/icon.png
-
-This is a binary file of the type: Image
-
-# \_components/forms/validations.ts
+# _components/forms/validations.ts
 
 ```ts
 import type { Validate } from './types'
@@ -3029,9 +2634,10 @@ export const validateDomain: Validate = (domainValue: any | string) => {
 
   return true
 }
+
 ```
 
-# \_components/forms/types.ts
+# _components/forms/types.ts
 
 ```ts
 import type React from 'react'
@@ -3132,9 +2738,45 @@ export interface IFormContext {
   }>
   submissionError?: string
 }
+
 ```
 
-# \_components/cards/types.ts
+# _components/UniversalTruth/index.tsx
+
+```tsx
+'use client'
+
+import { useEffect, useRef } from 'react'
+import { useSearchParams } from 'next/navigation'
+
+import classes from './index.module.scss'
+
+export const UniversalTruth = () => {
+  const universalTruth = useSearchParams().get('universaltruth') === 'pls'
+  const cursorRef = useRef<HTMLDivElement>(null)
+
+  const handleMouseMove = (e: MouseEvent) => {
+    const cursor = cursorRef.current
+    if (cursor) {
+      cursor.style.top = e.clientY + 10 + 'px'
+      cursor.style.left = e.clientX + 10 + 'px'
+    }
+  }
+
+  useEffect(() => {
+    window.addEventListener('mousemove', handleMouseMove)
+
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove)
+    }
+  }, [])
+
+  return universalTruth ? <div className={classes.cursor} ref={cursorRef} /> : null
+}
+
+```
+
+# _components/cards/types.ts
 
 ```ts
 import type { CMSLinkType } from '@app/_components/CMSLink'
@@ -3175,43 +2817,10 @@ export interface DefaultCardProps extends SharedProps {
   href?: string
   onClick?: () => void
 }
+
 ```
 
-# \_components/UniversalTruth/index.tsx
-
-```tsx
-'use client'
-
-import { useEffect, useRef } from 'react'
-import { useSearchParams } from 'next/navigation'
-
-import classes from './index.module.scss'
-
-export const UniversalTruth = () => {
-  const universalTruth = useSearchParams().get('universaltruth') === 'pls'
-  const cursorRef = useRef<HTMLDivElement>(null)
-
-  const handleMouseMove = (e: MouseEvent) => {
-    const cursor = cursorRef.current
-    if (cursor) {
-      cursor.style.top = e.clientY + 10 + 'px'
-      cursor.style.left = e.clientX + 10 + 'px'
-    }
-  }
-
-  useEffect(() => {
-    window.addEventListener('mousemove', handleMouseMove)
-
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove)
-    }
-  }, [])
-
-  return universalTruth ? <div className={classes.cursor} ref={cursorRef} /> : null
-}
-```
-
-# \_components/TopBar/index.tsx
+# _components/TopBar/index.tsx
 
 ```tsx
 'use client'
@@ -3248,9 +2857,10 @@ export const TopBar: React.FC<TopBarType> = (props) => {
     </React.Fragment>
   )
 }
+
 ```
 
-# \_components/Tooltip/index.tsx
+# _components/Tooltip/index.tsx
 
 ```tsx
 import * as React from 'react'
@@ -3320,18 +2930,20 @@ export const Tooltip: React.FC<TooltipProps> = ({
     </button>
   )
 }
+
 ```
 
-# \_components/SpotlightAnimation/types.ts
+# _components/SpotlightAnimation/types.ts
 
 ```ts
 export type AllowedElements = Extract<
   keyof JSX.IntrinsicElements,
   'p' | 'span' | 'h1' | 'h2' | 'h3'
 >
+
 ```
 
-# \_components/SpotlightAnimation/index.tsx
+# _components/SpotlightAnimation/index.tsx
 
 ```tsx
 'use client'
@@ -3455,9 +3067,10 @@ const SpotlightAnimation: React.FC<Props> = ({ children, richTextChildren, as = 
 }
 
 export default SpotlightAnimation
+
 ```
 
-# \_components/SplitAnimate/index.tsx
+# _components/SplitAnimate/index.tsx
 
 ```tsx
 'use client'
@@ -3529,9 +3142,10 @@ const SplitAnimate: React.FC<Props> = ({
 }
 
 export default SplitAnimate
+
 ```
 
-# \_components/RenderParams/index.tsx
+# _components/RenderParams/index.tsx
 
 ```tsx
 import { Suspense } from 'react'
@@ -3542,16 +3156,17 @@ import { Props, RenderParamsComponent } from './Component'
 // To fix this, we wrap the component in a `Suspense` component
 // See https://nextjs.org/docs/messages/deopted-into-client-rendering for more info
 
-export const RenderParams: React.FC<Props> = (props) => {
+export const RenderParams: React.FC<Props> = props => {
   return (
     <Suspense fallback={null}>
       <RenderParamsComponent {...props} />
     </Suspense>
   )
 }
+
 ```
 
-# \_components/RenderParams/Component.tsx
+# _components/RenderParams/Component.tsx
 
 ```tsx
 'use client'
@@ -3576,7 +3191,7 @@ export const RenderParamsComponent: React.FC<Props> = ({
   onParams,
 }) => {
   const searchParams = useSearchParams()
-  const paramValues = params.map((param) => searchParams?.get(param))
+  const paramValues = params.map(param => searchParams?.get(param))
 
   useEffect(() => {
     if (paramValues.length && onParams) {
@@ -3606,9 +3221,10 @@ export const RenderParamsComponent: React.FC<Props> = ({
 
   return null
 }
+
 ```
 
-# \_components/RenderBlocks/utilities.ts
+# _components/RenderBlocks/utilities.ts
 
 ```ts
 import type { BlocksProp } from '@app/_components/RenderBlocks'
@@ -3627,11 +3243,23 @@ export function getFieldsKeyFromBlock(block: BlocksProp): string {
 
   return key ?? ''
 }
+
 ```
 
-# \_components/RenderBlocks/index.tsx
+# _components/RenderBlocks/index.tsx
 
 ```tsx
+/**
+ * @file index.tsx
+ * @module RenderBlocks
+ * @description Renders dynamic content blocks for a responsive ecommerce website
+ * @overview
+ * This file contains the RenderBlocks component, which is responsible for rendering various content blocks
+ * in a Next.js 14 and PayloadCMS-based ecommerce website. It imports and manages different block components,
+ * handles theme-based padding, and provides a flexible structure for rendering content. The component
+ * uses TypeScript for type safety and implements server-side rendering for optimal performance.
+ */
+
 'use client'
 
 import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
@@ -3800,12 +3428,7 @@ export const RenderBlocks: React.FC<Props> = (props) => {
         bottom: bottomPadding ?? undefined,
       }
     },
-    [
-      themeState,
-      // heroTheme,
-      blocks,
-      paddingExceptions,
-    ],
+    [themeState, blocks, paddingExceptions],
   )
 
   React.useEffect(() => {
@@ -3856,157 +3479,510 @@ export const RenderBlocks: React.FC<Props> = (props) => {
 
   return null
 }
+
 ```
 
-# \_components/ProductCard/index.tsx
+# _components/ProductCard/index.tsx
 
 ```tsx
-import React from 'react'
+/** @file
+ * @module ProductCard
+ * @description Product card component for displaying product details
+ */
+
+'use client'
+
+import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { ChevronRightIcon } from 'lucide-react'
+import { ChevronRightIcon, FrownIcon } from 'lucide-react'
 import cn from '@/utilities/cn'
 import { contentFormats } from '@app/_css/tailwindClasses'
 import { ProductActions } from '@app/_components/ProductActions'
 import { messages } from '@/utilities/refData'
-import { Media } from '@/payload-types'
-import { getImageAlt, getImageUrl } from '@/utilities/getmageUrl'
+import { Product } from '@/payload-types'
+import { getImageUrl } from '@/utilities/getImageDetails'
+import { useOrder } from '@app/_providers/Order'
+import { AddToCartButton } from '../ProductActions/AddToCart'
+import { ViewInCartButton } from '../ProductActions/ViewInCart'
+import { RemoveFromCartButton } from '../ProductActions/RemoveFromCart'
 
-const GenericProductSVG = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 100 100"
-    fill="none"
-    stroke="currentColor"
-    className="w-full h-full text-gray-300"
-  >
-    <rect width="100" height="100" rx="10" stroke-width="2" />
-    <path d="M20 80 L50 20 L80 80 Z" stroke-width="2" />
-    <circle cx="50" cy="50" r="20" stroke-width="2" />
-  </svg>
-)
+/** @component
+ * @description Renders a product card
+ * @param {Product} product - The product data
+ * @returns {JSX.Element}
+ */
+export const ProductCard: React.FC<any> = (product: Product) => {
+  const { isProductInOrder, order } = useOrder()
+  const [inCart, setInCart] = useState(isProductInOrder(product.id))
 
-export const ProductCard: React.FC<any> = (product) => {
+  useEffect(() => {
+    setInCart(isProductInOrder(product.id))
+  }, [order, product.id, isProductInOrder])
+
   const {
-    slug,
-    id,
-    title,
-    media,
-    meta: { image: metaImage, description },
-    price,
-    salePrice,
-    productType,
-    stockOnHand,
-    lowStockThreshold,
-    className,
+    prices: { salePrice, basePrice },
   } = product
 
-  const imageUrl = media && media.length > 0 ? getImageUrl(media[0]?.mediaItem) : null
-  const imageAlt = media && media.length > 0 ? getImageAlt(media[0]?.mediaItem) : 'Product image'
-  const placeholderSVG = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='none' stroke='%23cccccc'%3E%3Crect width='100' height='100' rx='10' stroke-width='2' /%3E%3Cpath d='M20 80 L50 20 L80 80 Z' stroke-width='2' /%3E%3Ccircle cx='50' cy='50' r='20' stroke-width='2' /%3E%3C/svg%3E`
+  const onSale =
+    salePrice !== null && salePrice !== undefined && salePrice !== 0 && salePrice < basePrice
+
+  const outOfStock =
+    product.stock?.stockOnHand === 0 ||
+    product.stock?.stockOnHand === null ||
+    product.stock?.stockOnHand === undefined
+
+  const lowStock =
+    product.stock?.stockOnHand &&
+    product.stock?.lowStockThreshold &&
+    product.stock?.stockOnHand <= product.stock?.lowStockThreshold
 
   return (
-    <div className={cn('relative', 'w-full', 'max-w-sm', 'mx-auto', className)}>
-      <Link href={`/shop/${slug}`} className="relative no-underline hover:no-underline block">
-        <div className="aspect-square relative overflow-hidden rounded-sm shadow-md">
-          {(stockOnHand === 0 || stockOnHand === null || stockOnHand === undefined) && (
-            <div className="absolute left-0 top-0 z-10 flex w-full items-center justify-center bg-gray-900/50 p-2 font-body font-semibold uppercase tracking-wider text-white !no-underline">
-              <span className="text-base uppercase">{messages.outOfStock}</span>
+    <React.Fragment>
+      <div key={product.slug} className="group ">
+        <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md #bg-gray-200 xl:aspect-h-8 xl:aspect-w-7 hover:delay-75 duration-150 hover:-translate-y-1">
+          <Link
+            href={`/shop/${product.slug}`}
+            className="cursor-pointer no-underline hover:no-underline "
+          >
+            <div className="aspect-square relative overflow-hidden rounded-sm shadow-md">
+              {lowStock && !outOfStock && (
+                <div className="absolute left-0 top-0 z-10 flex w-full items-center justify-center bg-gray-900/50 p-2 font-body font-semibold uppercase tracking-wider text-white !no-underline">
+                  <span className="text-base">{messages.lowStock}</span>
+                </div>
+              )}
+              {product.meta?.image ? (
+                <Image
+                  src={`${getImageUrl(product.meta.image)}`}
+                  alt={''}
+                  width={600}
+                  height={600}
+                  sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                  className="aspect-square h-full w-full object-cover object-center group-hover:opacity-75"
+                />
+              ) : (
+                <img
+                  src={`https://placehold.co/600x600?text=No\nImage`}
+                  alt={''}
+                  className="aspect-square h-full w-full object-cover object-center group-hover:opacity-75"
+                />
+              )}
+              {outOfStock ? (
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <span className="flex w-full font-body text-white bg-black bg-opacity-50 px-4 py-2 items-center justify-between">
+                    <FrownIcon
+                      className="h-7 w-7 flex-shrink-0 text-white"
+                      strokeWidth={1.25}
+                      aria-hidden="true"
+                    />
+                    {`Out of Stock`}
+                  </span>
+                </div>
+              ) : (
+                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300 ease-in-out">
+                  <span className="font-body  text-white bg-black bg-opacity-50 px-4 py-2 ">
+                    {`View Details`}
+                    <ChevronRightIcon className="inline-block w-4 h-4 ml-2" />
+                  </span>
+                </div>
+              )}
             </div>
-          )}
-
-          {stockOnHand <= lowStockThreshold && stockOnHand > 0 && (
-            <div className="absolute left-0 top-0 z-10 flex w-full items-center justify-center bg-gray-900/50 p-2 font-body font-semibold uppercase tracking-wider text-white !no-underline">
-              <span className="text-base">{messages.lowStock}</span>
-            </div>
-          )}
-
-          <Image
-            src={imageUrl || placeholderSVG}
-            alt={imageAlt}
-            fill
-            sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-            className="object-cover object-center"
-            placeholder="blur"
-            blurDataURL={placeholderSVG}
-          />
+          </Link>
         </div>
-
-        {title && (
-          <div className="mt-4 flex items-center justify-between">
-            <h3
-              className={cn(
-                contentFormats.global,
-                contentFormats.h4,
-                'text-lg font-semibold truncate flex-grow',
-              )}
+        <div className="#mt-4 flex items-center justify-between">
+          <h3
+            className={cn(contentFormats.global, 'mt-2 text-lg font-semibold truncate flex-grow')}
+          >
+            {product.title}
+          </h3>
+          <div
+            className={cn('flex flex-col items-end ml-2', contentFormats.global, contentFormats.h4)}
+          >
+            <span
+              className={`text-black font-semibold ${onSale === true && 'text-sm !line-through text-gray-700'}`}
             >
-              {title}
-            </h3>
-
-            <div
-              className={cn(
-                'flex flex-col items-end ml-2',
-                contentFormats.global,
-                contentFormats.h4,
-              )}
-            >
-              <span
-                className={cn('text-sm', {
-                  'line-through text-gray-500': +salePrice !== 0 && +salePrice < +price,
-                })}
-              >
-                {basePrice.toLocaleString('en-AU', {
+              {basePrice?.toLocaleString('en-AU', {
+                style: 'currency',
+                currency: 'AUD',
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 2,
+              })}
+            </span>
+            {onSale && (
+              <span className={''}>
+                {`${salePrice.toLocaleString('en-AU', {
                   style: 'currency',
                   currency: 'AUD',
                   minimumFractionDigits: 0,
                   maximumFractionDigits: 2,
-                })}
+                })}`}
               </span>
-              {+salePrice !== 0 && +salePrice < +price && (
-                <span className="text-black font-semibold">
-                  {salePrice.toLocaleString('en-AU', {
-                    style: 'currency',
-                    currency: 'AUD',
-                    minimumFractionDigits: 0,
-                    maximumFractionDigits: 2,
-                  })}
-                </span>
-              )}
-            </div>
-          </div>
-        )}
-      </Link>
-      {description && (
-        <React.Fragment>
-          <div
-            className={cn(
-              contentFormats.global,
-              contentFormats.text,
-              'mt-2 text-sm text-gray-600 line-clamp-3',
             )}
-          >
-            {description.replace(/\s/g, ' ')}
           </div>
-          <Link
-            href={`/shop/${slug}`}
-            className="mt-2 inline-flex items-center text-sm font-medium  hover:underline"
-          >
-            Details
-            <ChevronRightIcon className="ml-1 h-4 w-4" />
-          </Link>
-        </React.Fragment>
-      )}
+        </div>
 
-      <div className="mt-4">
-        <ProductActions product={product} hidePerks={true} hideRemove={true} />
+        <p className={cn('my-3', contentFormats.global, contentFormats.p)}>
+          {product.meta && product.meta.description && product.meta.description.replace(/\s/g, ' ')}
+        </p>
+
+        <div className="flex flex-row items-center justify-between">
+          {!outOfStock && !inCart && (
+            <div className="w-full flex pb-2">
+              <AddToCartButton product={product} />
+            </div>
+          )}
+
+          {inCart && (
+            <div className="w-full flex pb-2 gap-2">
+              <div className="flex-auto w-3/4">
+                <ViewInCartButton />
+              </div>
+              <div className="flex-initial w-1/4">
+                <RemoveFromCartButton orderItemId={product.id} />
+              </div>
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </React.Fragment>
   )
 }
+
 ```
 
-# \_components/PrivacyBanner/index.tsx
+# _components/ProductActions/index.tsx
+
+```tsx
+/**
+ * @file ProductActions.tsx
+ * @description Contains the ProductActions component which displays action buttons and messages based on the product's stock and cart status.
+ * @overview The ProductActions component takes in a product object and optional flags to hide certain elements. It determines whether the product is in stock and in the user's cart, and renders appropriate action buttons (Add to Cart, View in Cart, Remove from Cart) and informational messages accordingly.
+ * @component
+ * @param {object} product - The product object.
+ * @param {boolean} [hidePerks] - Optional flag to hide the shipping and stock perks.
+ * @param {boolean} [hideRemove] - Optional flag to hide the remove from cart message.
+ */
+
+'use client'
+
+import React from 'react' // The ProductActions component uses the useOrder hook to access the order context and determine if the product is already in the user's cart.
+import { CheckIcon, FrownIcon, MessageCircleWarningIcon, SendHorizonalIcon } from 'lucide-react'
+import Link from 'next/link'
+import { messages } from '@/utilities/refData'
+import { AddToCartButton } from './AddToCart'
+import { ViewInCartButton } from './ViewInCart' // If the product is out of stock, a message is displayed with a link back to the shop.
+import { RemoveFromCartButton } from './RemoveFromCart'
+import { useOrder } from '@app/_providers/Order'
+
+export function ProductActions({ product, hidePerks, hideRemove }: any) {
+  const {
+    stock: { stockOnHand },
+  } = product
+  const { isProductInOrder } = useOrder()
+  const inCart = isProductInOrder(product.id)
+
+  if (stockOnHand === 0) {
+    return (
+      <div className="sm:flex pt-2 items-center justify-center space-x-2">
+        <div className="py-1 sm:py-2 flex items-center">
+          <FrownIcon
+            className="h-8 w-8 flex-shrink-0 text-green"
+            strokeWidth={1.25}
+            aria-hidden="true" // If the product is not in the cart, the AddToCartButton is rendered. If it is in the cart, the ViewInCartButton and RemoveFromCartButton are rendered.
+          />
+          <div className="ml-2 text-sm text-gray-500">
+            {`We're Sorry! This thankly is currently out of stock. `}
+            <br className="sm:block hidden" />
+            <Link href="/shop">{`Back to Shop`} &#8594;</Link>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <>
+      <div className="py-4 sm:py-4 flex gap-1">
+        {!inCart ? (
+          <div className="flex-auto w-full">
+            {/* If the product is in the cart and hideRemove is not set, a message is displayed confirming the product's presence in the cart. */}
+            <AddToCartButton product={product} />
+          </div>
+        ) : (
+          <>
+            <div className="flex-auto w-3/4">
+              <ViewInCartButton />
+            </div>
+            <div className="flex-initial w-1/4">
+              <RemoveFromCartButton orderItemId={product.id} />
+            </div>
+          </>
+        )}
+      </div>
+
+      {inCart && !hideRemove && (
+        <div className="sm:flex pt-2 items-center justify-center space-x-2">
+          <div className="py-4 sm:py-4 flex items-center">
+            {/* If the product is in the cart and hideRemove is not set, a warning message is displayed regarding removing the product from the cart. */}
+            <CheckIcon
+              className="h-8 w-8 flex-shrink-0 text-green"
+              strokeWidth={1.25}
+              aria-hidden="true"
+            />
+            <div className="ml-2 text-sm text-gray-500">
+              {messages.removeProductBase}
+              {messages.removeProductExtra}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {inCart && !hideRemove && (
+        <div className="sm:flex pt-2 items-center justify-center space-x-2">
+          <div className="py-1 sm:py-2 flex items-center">
+            <MessageCircleWarningIcon
+              className="h-8 w-8 flex-shrink-0 text-green"
+              strokeWidth={1.25}
+              aria-hidden="true"
+            />
+            <div className="ml-2 text-sm text-gray-500">{messages.removeProductWarning}</div>
+          </div>
+        </div>
+      )}
+
+      {/* {!hidePerks && (
+        <div className="#hidden sm:flex pt-2 items-center justify-center space-x-2">
+          <div className="py-1 sm:py-2 flex items-center">
+            <SendHorizonalIcon className="h-5 w-5 flex-shrink-0 text-green" aria-hidden="true" />
+            <div className="ml-2 text-sm text-gray-500">{messages.shippingFreeMessage}</div>
+          </div>
+          <div className="py-1 sm:py-2 flex items-center">
+            <CheckIcon className="h-5 w-5 flex-shrink-0 text-green-500" aria-hidden="true" />
+            <div className="ml-2 text-sm text-gray-500">{messages.inStock}</div>
+          </div>
+        </div>
+      )} */}
+    </>
+  )
+}
+
+```
+
+# _components/ProductActions/ViewInCart.tsx
+
+```tsx
+/**
+ * @file
+ * @module components/ViewInCartButton
+ * @description Component for displaying a button to view the cart
+ */
+
+'use client'
+
+import React, { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { CMSLink } from '@app/_components/CMSLink'
+import { ChevronsRightIcon, LoaderCircleIcon } from 'lucide-react'
+
+/**
+ * @component
+ * @description Renders a button to view the cart
+ * @returns {JSX.Element}
+ */
+export function ViewInCartButton() {
+  const [isLoading, setIsLoading] = useState(false)
+  const router = useRouter()
+
+  /**
+   * @function
+   * @description Handles click event on the "View in Cart" button
+   */
+  const handleViewInOrder = async () => {
+    setIsLoading(true)
+    router.push('/shop/cart')
+  }
+
+  return (
+    <CMSLink
+      data={{
+        label: isLoading ? 'Loading...' : 'View in Cart',
+        type: 'custom',
+        url: '#',
+      }}
+      look={{
+        theme: 'light',
+        type: 'button',
+        size: 'medium',
+        width: 'full',
+        variant: 'blocks',
+        icon: {
+          content: isLoading ? (
+            <LoaderCircleIcon className="animate-spin" strokeWidth={1.25} />
+          ) : (
+            <ChevronsRightIcon strokeWidth={1.25} />
+          ),
+          iconPosition: 'right',
+        },
+      }}
+      actions={{
+        onClick: handleViewInOrder,
+      }}
+    />
+  )
+}
+
+```
+
+# _components/ProductActions/RemoveFromCart.tsx
+
+```tsx
+// The 'use client' directive indicates that this file is a client-side React component.
+/**
+ * @file RemoveFromCartButton.tsx
+ * @description Defines the RemoveFromCartButton component for removing an item from the shopping cart.
+ * @overview The RemoveFromCartButton component is a client-side React component that allows users to remove a product from their shopping cart. It utilizes the useOrder hook to manage the order state and the useRouter hook from Next.js for client-side navigation. The component handles the removal of the product and refreshes the page upon successful removal. It also displays an error message if the removal process encounters an error.
+ * @component
+ * @param {number} orderItemId - The ID of the order item to be removed from the cart.
+ */
+// The RemoveFromCartButton component is exported as a named export.
+
+'use client'
+// The component utilizes the useTransition hook from React for managing pending states during the removal process.
+
+// The error state is managed using the useState hook to display error messages, if any.
+import React, { useState, useTransition } from 'react'
+// The useOrder hook is used to access the removeProduct function for removing the product from the cart.
+import { CMSLink } from '@app/_components/CMSLink'
+// The useRouter hook from Next.js is used for client-side navigation and refreshing the page.
+import { XIcon, LoaderCircleIcon, TrashIcon } from 'lucide-react'
+import { useOrder } from '../../_providers/Order'
+// The handleClick function is called when the remove button is clicked. It starts a transition, sets the error state to null, removes the product using the removeProduct function from the useOrder hook, and refreshes the page using the router.
+import { useRouter } from 'next/navigation'
+
+export function RemoveFromCartButton({ orderItemId }: { orderItemId: number }) {
+  const [isPending, startTransition] = useTransition()
+  const [error, setError] = useState<string | null>(null)
+  const { removeProduct } = useOrder()
+  const router = useRouter()
+
+  // If an error occurs during the removal process, an error message is displayed.
+  const handleClick = () => {
+    startTransition(() => {
+      setError(null)
+      removeProduct(orderItemId)
+      router.refresh()
+      // The CMSLink component is rendered as the remove button. It is conditionally styled based on the pending state (isPending) and triggers the handleClick function when clicked. The button displays a loading icon when the removal is pending and a trash icon otherwise.
+    })
+  }
+
+  if (error) {
+    return <div className="text-red-500">{error}</div>
+  }
+
+  return (
+    <CMSLink
+      data={{
+        label: '',
+        type: 'custom',
+        url: '/shop',
+      }}
+      look={{
+        theme: 'light',
+        type: 'button',
+        size: 'medium',
+        width: 'full',
+        variant: 'blocks',
+        icon: {
+          content: isPending ? (
+            <LoaderCircleIcon className="animate-spin" strokeWidth={1.25} />
+          ) : (
+            <TrashIcon className="!ml-0 justify-center" strokeWidth={1.25} />
+          ),
+          iconPosition: 'right',
+        },
+      }}
+      actions={{
+        onClick: handleClick,
+      }}
+      pending={isPending}
+    />
+  )
+}
+
+```
+
+# _components/ProductActions/AddToCart.tsx
+
+```tsx
+'use client'
+
+import React, { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { CMSLink } from '@app/_components/CMSLink'
+import { PlusIcon, LoaderCircleIcon } from 'lucide-react'
+import { Product } from '@payload-types'
+import { useOrder } from '@app/_providers/Order'
+
+export function AddToCartButton({ product }: { product: Product }) {
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  const router = useRouter()
+  const { addProduct } = useOrder()
+
+  const handleAddToOrder = async () => {
+    setIsLoading(true)
+    setError(null)
+    try {
+      addProduct(
+        product,
+        Math.max(
+          0,
+          Math.min(product.prices.basePrice ?? Infinity, product.prices.salePrice ?? Infinity),
+        ),
+      )
+      router.push('/shop/cart')
+    } catch (e: any) {
+      setError(e.message || 'Failed to add product to order. Please try again.')
+      setIsLoading(false)
+    }
+  }
+
+  if (error) {
+    return <div className="text-red-500">{error}</div>
+  }
+
+  return (
+    <CMSLink
+      data={{
+        label: isLoading ? 'Adding...' : 'Add to Cart',
+        type: 'custom',
+        url: '/shop/cart',
+      }}
+      look={{
+        theme: 'light',
+        type: 'button',
+        size: 'medium',
+        width: 'full',
+        variant: 'blocks',
+        icon: {
+          content: isLoading ? (
+            <LoaderCircleIcon className="animate-spin" strokeWidth={1.25} />
+          ) : (
+            <PlusIcon strokeWidth={1.25} />
+          ),
+          iconPosition: 'right',
+        },
+      }}
+      actions={{
+        onClick: handleAddToOrder,
+      }}
+    />
+  )
+}
+
+```
+
+# _components/PrivacyBanner/index.tsx
 
 ```tsx
 'use client'
@@ -4118,9 +4094,10 @@ export const PrivacyBanner: React.FC = () => {
     </React.Fragment>
   )
 }
+
 ```
 
-# \_components/PricingCard/index.tsx
+# _components/PricingCard/index.tsx
 
 ```tsx
 import React from 'react'
@@ -4147,299 +4124,10 @@ export const PricingCard: React.FC<PricingCardProps> = (props) => {
     </div>
   )
 }
+
 ```
 
-# \_components/ProductActions/index.tsx
-
-```tsx
-'use client'
-
-import React from 'react'
-import { CheckIcon, FrownIcon, MessageCircleWarningIcon, SendHorizonalIcon } from 'lucide-react'
-import Link from 'next/link'
-import { messages } from '@/utilities/refData'
-import { AddToCartButton } from './AddToCart'
-import { ViewInCartButton } from './ViewInCart'
-import { RemoveFromCartButton } from './RemoveFromCart'
-import { useOrder } from '@app/_providers/Order'
-
-export function ProductActions({ product, hidePerks, hideRemove }: any) {
-  const { stockOnHand } = product
-  // const inCart = await isProductInOrder(product.id)
-
-  const { isProductInOrder } = useOrder()
-  const inCart = isProductInOrder(product.id)
-
-  if (stockOnHand === 0) {
-    return (
-      <div className="sm:flex pt-2 items-center justify-center space-x-2">
-        <div className="py-1 sm:py-2 flex items-center">
-          <FrownIcon
-            className="h-8 w-8 flex-shrink-0 text-green"
-            strokeWidth={1.25}
-            aria-hidden="true"
-          />
-          <div className="ml-2 text-sm text-gray-500">
-            {`We're Sorry! This thankly is currently out of stock. `}
-            <br className="sm:block hidden" />
-            <Link href="/shop">{`Back to Shop`} &#8594;</Link>
-          </div>
-        </div>
-      </div>
-    )
-  }
-
-  return (
-    <>
-      <div className="py-4 sm:py-4 flex gap-1">
-        {!inCart ? (
-          <div className="flex-auto w-full">
-            <AddToCartButton product={product} />
-          </div>
-        ) : (
-          <>
-            <div className="flex-auto w-3/4">
-              <ViewInCartButton />
-            </div>
-            <div className="flex-initial w-1/4">
-              <RemoveFromCartButton orderItemId={product.id} />
-            </div>
-          </>
-        )}
-      </div>
-
-      {inCart && !hideRemove && (
-        <div className="sm:flex pt-2 items-center justify-center space-x-2">
-          <div className="py-4 sm:py-4 flex items-center">
-            <CheckIcon
-              className="h-8 w-8 flex-shrink-0 text-green"
-              strokeWidth={1.25}
-              aria-hidden="true"
-            />
-            <div className="ml-2 text-sm text-gray-500">
-              {messages.removeProductBase}
-              {messages.removeProductExtra}
-            </div>
-          </div>
-        </div>
-      )}
-
-      {inCart && !hideRemove && (
-        <div className="sm:flex pt-2 items-center justify-center space-x-2">
-          <div className="py-1 sm:py-2 flex items-center">
-            <MessageCircleWarningIcon
-              className="h-8 w-8 flex-shrink-0 text-green"
-              strokeWidth={1.25}
-              aria-hidden="true"
-            />
-            <div className="ml-2 text-sm text-gray-500">{messages.removeProductWarning}</div>
-          </div>
-        </div>
-      )}
-
-      {!hidePerks && (
-        <div className="#hidden sm:flex pt-2 items-center justify-center space-x-2">
-          <div className="py-1 sm:py-2 flex items-center">
-            <SendHorizonalIcon className="h-5 w-5 flex-shrink-0 text-green" aria-hidden="true" />
-            <div className="ml-2 text-sm text-gray-500">{messages.shippingFreeMessage}</div>
-          </div>
-          <div className="py-1 sm:py-2 flex items-center">
-            <CheckIcon className="h-5 w-5 flex-shrink-0 text-green-500" aria-hidden="true" />
-            <div className="ml-2 text-sm text-gray-500">{messages.inStock}</div>
-          </div>
-        </div>
-      )}
-    </>
-  )
-}
-```
-
-# \_components/ProductActions/ViewInCart.tsx
-
-```tsx
-'use client'
-
-import React, { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { CMSLink } from '@app/_components/CMSLink'
-import { ChevronsRightIcon, LoaderCircleIcon } from 'lucide-react'
-
-export function ViewInCartButton() {
-  const [isLoading, setIsLoading] = useState(false)
-  const router = useRouter()
-
-  const handleViewInOrder = async () => {
-    setIsLoading(true)
-    router.push('/shop/cart')
-  }
-
-  return (
-    <CMSLink
-      data={{
-        label: isLoading ? 'Loading...' : 'View in Cart',
-        type: 'custom',
-        url: '#',
-      }}
-      look={{
-        theme: 'light',
-        type: 'button',
-        size: 'medium',
-        width: 'full',
-        variant: 'blocks',
-        icon: {
-          content: isLoading ? (
-            <LoaderCircleIcon className="animate-spin" strokeWidth={1.25} />
-          ) : (
-            <ChevronsRightIcon strokeWidth={1.25} />
-          ),
-          iconPosition: 'right',
-        },
-      }}
-      actions={{
-        onClick: handleViewInOrder,
-      }}
-    />
-  )
-}
-```
-
-# \_components/ProductActions/RemoveFromCart.tsx
-
-```tsx
-'use client'
-
-import React, { useState } from 'react'
-import { CMSLink } from '@app/_components/CMSLink'
-import { XIcon, LoaderCircleIcon } from 'lucide-react'
-// import { removeProduct } from '@app/_providers/Cart/orderItemsActions'
-import { useOrder } from '../../_providers/Order'
-import { useRouter } from 'next/navigation'
-
-export function RemoveFromCartButton({ orderItemId }: { orderItemId: string }) {
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const { removeProduct } = useOrder()
-  const router = useRouter()
-
-  const handleRemoveFromOrder = async () => {
-    setIsLoading(true)
-    setError(null)
-    removeProduct(orderItemId)
-    // try {
-    //   await
-    //   window.location.reload() // Refresh the page to reflect the changes
-    // } catch (e: any) {
-    //   setError(e.message || 'Failed to remove product from order. Please try again.')
-    setIsLoading(false)
-    router.refresh()
-    // }
-  }
-
-  if (error) {
-    return <div className="text-red-500">{error}</div>
-  }
-
-  return (
-    <CMSLink
-      data={{
-        label: '',
-        type: 'custom',
-        url: '/shop',
-      }}
-      look={{
-        theme: 'light',
-        type: 'button',
-        size: 'medium',
-        width: 'full',
-        variant: 'blocks',
-        icon: {
-          content: isLoading ? (
-            <LoaderCircleIcon className="animate-spin" strokeWidth={1.25} />
-          ) : (
-            <XIcon className="!ml-0" strokeWidth={1.25} />
-          ),
-          iconPosition: 'right',
-        },
-      }}
-      actions={{
-        onClick: handleRemoveFromOrder,
-      }}
-    />
-  )
-}
-```
-
-# \_components/ProductActions/AddToCart.tsx
-
-```tsx
-'use client'
-
-import React, { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { CMSLink } from '@app/_components/CMSLink'
-import { PlusIcon, LoaderCircleIcon } from 'lucide-react'
-import { Product } from '@payload-types'
-import { useOrder } from '@app/_providers/Order'
-
-export function AddToCartButton({ product }: { product: Product }) {
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const router = useRouter()
-  const { addProduct } = useOrder()
-
-  const handleAddToOrder = async () => {
-    setIsLoading(true)
-    setError(null)
-    try {
-      addProduct(
-        product,
-        Math.max(
-          0,
-          Math.min(product.prices.basePrice ?? Infinity, product.prices.salePrice ?? Infinity),
-        ),
-      )
-      router.push('/shop/cart')
-    } catch (e: any) {
-      setError(e.message || 'Failed to add product to order. Please try again.')
-      setIsLoading(false)
-    }
-  }
-
-  if (error) {
-    return <div className="text-red-500">{error}</div>
-  }
-
-  return (
-    <CMSLink
-      data={{
-        label: isLoading ? 'Adding...' : 'Add to Cart',
-        type: 'custom',
-        url: '/shop/cart',
-      }}
-      look={{
-        theme: 'light',
-        type: 'button',
-        size: 'medium',
-        width: 'full',
-        variant: 'blocks',
-        icon: {
-          content: isLoading ? (
-            <LoaderCircleIcon className="animate-spin" strokeWidth={1.25} />
-          ) : (
-            <PlusIcon strokeWidth={1.25} />
-          ),
-          iconPosition: 'right',
-        },
-      }}
-      actions={{
-        onClick: handleAddToOrder,
-      }}
-    />
-  )
-}
-```
-
-# \_components/PixelBackground/index.tsx
+# _components/PixelBackground/index.tsx
 
 ```tsx
 import * as React from 'react'
@@ -4448,13 +4136,14 @@ import classes from './index.module.scss'
 
 export const PixelBackground: React.FC<{
   className?: string
-}> = (props) => {
+}> = props => {
   const { className } = props
   return <div className={[classes.pixelBackground, className].filter(Boolean).join(' ')} />
 }
+
 ```
 
-# \_components/Pill/index.tsx
+# _components/Pill/index.tsx
 
 ```tsx
 import * as React from 'react'
@@ -4476,9 +4165,10 @@ export const Pill: React.FC<{
     </div>
   )
 }
+
 ```
 
-# \_components/Pagination/index.tsx
+# _components/Pagination/index.tsx
 
 ```tsx
 import * as React from 'react'
@@ -4603,9 +4293,10 @@ export const Pagination: React.FC<{
     </div>
   )
 }
+
 ```
 
-# \_components/OrderNotification/index.tsx
+# _components/OrderNotification/index.tsx
 
 ```tsx
 'use client'
@@ -4698,62 +4389,10 @@ export const OrderNotification: React.FC = () => {
     </div>
   )
 }
+
 ```
 
-# \_components/Message/index.tsx
-
-```tsx
-import React from 'react'
-
-import classes from './index.module.scss'
-
-// const icons = {
-//   error: () => <div>!</div>,
-//   success: CheckmarkIcon,
-//   warning: () => <div>!</div>,
-// }
-
-export const Message: React.FC<{
-  message?: React.ReactNode
-  success?: React.ReactNode
-  error?: React.ReactNode
-  warning?: React.ReactNode
-  className?: string
-  margin?: boolean
-}> = ({ error, success, warning, message, className, margin }) => {
-  // const type = error ? 'error' : success ? 'success' : 'warning'
-  // const Icon = icons[type]
-
-  const label = error || success || warning || message
-
-  if (label) {
-    return (
-      <div
-        className={[
-          classes.message,
-          error && classes.error,
-          success && classes.success,
-          warning && classes.warning,
-          className,
-          margin === false && classes.noMargin,
-        ]
-          .filter(Boolean)
-          .join(' ')}
-      >
-        {/* {Icon && (
-          <div className={classes.icon}>
-            <Icon />
-          </div>
-        )} */}
-        <p className={classes.label}>{label}</p>
-      </div>
-    )
-  }
-  return null
-}
-```
-
-# \_components/MediaParallax/index.tsx
+# _components/MediaParallax/index.tsx
 
 ```tsx
 import React from 'react'
@@ -4827,9 +4466,64 @@ const MediaParallax: React.FC<ParallaxProps> = ({ media, className, ...mediaProp
 }
 
 export default MediaParallax
+
 ```
 
-# \_components/Media/types.ts
+# _components/Message/index.tsx
+
+```tsx
+import React from 'react'
+
+import classes from './index.module.scss'
+
+// const icons = {
+//   error: () => <div>!</div>,
+//   success: CheckmarkIcon,
+//   warning: () => <div>!</div>,
+// }
+
+export const Message: React.FC<{
+  message?: React.ReactNode
+  success?: React.ReactNode
+  error?: React.ReactNode
+  warning?: React.ReactNode
+  className?: string
+  margin?: boolean
+}> = ({ error, success, warning, message, className, margin }) => {
+  // const type = error ? 'error' : success ? 'success' : 'warning'
+  // const Icon = icons[type]
+
+  const label = error || success || warning || message
+
+  if (label) {
+    return (
+      <div
+        className={[
+          classes.message,
+          error && classes.error,
+          success && classes.success,
+          warning && classes.warning,
+          className,
+          margin === false && classes.noMargin,
+        ]
+          .filter(Boolean)
+          .join(' ')}
+      >
+        {/* {Icon && (
+          <div className={classes.icon}>
+            <Icon />
+          </div>
+        )} */}
+        <p className={classes.label}>{label}</p>
+      </div>
+    )
+  }
+  return null
+}
+
+```
+
+# _components/Media/types.ts
 
 ```ts
 import type { ElementType, Ref } from 'react'
@@ -4854,9 +4548,10 @@ export interface Props {
   width?: number | null
   height?: number | null
 }
+
 ```
 
-# \_components/Media/index.tsx
+# _components/Media/index.tsx
 
 ```tsx
 import React, { ElementType, forwardRef, Fragment } from 'react'
@@ -4887,9 +4582,10 @@ export const Media = forwardRef<HTMLDivElement | HTMLImageElement | HTMLVideoEle
     )
   },
 )
+
 ```
 
-# \_components/Logos/index.tsx
+# _components/Logos/index.tsx
 
 ```tsx
 import Image from 'next/image'
@@ -4918,9 +4614,10 @@ export const Logos = () => {
     </div>
   )
 }
+
 ```
 
-# \_components/LoadingShimmer/index.tsx
+# _components/LoadingShimmer/index.tsx
 
 ```tsx
 import React from 'react'
@@ -4930,7 +4627,7 @@ import classes from './index.module.scss'
 export const LoadingShimmer: React.FC<{
   number?: number
   height?: number // in `base` units
-}> = (props) => {
+}> = props => {
   const arrayFromNumber = Array.from(Array(props.number || 1).keys())
 
   return (
@@ -4941,9 +4638,10 @@ export const LoadingShimmer: React.FC<{
     </div>
   )
 }
+
 ```
 
-# \_components/LineDraw/index.tsx
+# _components/LineDraw/index.tsx
 
 ```tsx
 'use client'
@@ -4971,11 +4669,19 @@ export const LineDraw: React.FC<{
     />
   )
 }
+
 ```
 
-# \_components/LexicalContent/index.tsx
+# _components/LexicalContent/index.tsx
 
 ```tsx
+/**
+ * @file
+ * @module LexicalContent
+ * @description Renders serialized Lexical nodes as React components.
+ * @overview This file contains utility functions and components for rendering Lexical rich text content in a React application. It handles various node types such as text, links, lists, headings, quotes, and images. The main component is `LexicalContent`, which recursively renders child nodes based on their types.
+ */
+
 /* eslint-disable react/no-children-prop */
 import ensurePath from '@/utilities/ensurePath'
 import clsx from 'clsx'
@@ -4991,7 +4697,28 @@ import {
   IS_SUPERSCRIPT,
   IS_UNDERLINE,
 } from './RichTextNodeFormat'
+import {
+  IS_ALIGN_LEFT,
+  IS_ALIGN_CENTER,
+  IS_ALIGN_RIGHT,
+  IS_ALIGN_JUSTIFY,
+  IS_ALIGN_START,
+  IS_ALIGN_END,
+} from './RichTextNodeFormat'
 
+/**
+ * @typedef {Object} SerializedLexicalNode
+ * @property {SerializedLexicalNode[]} [children] - Child nodes
+ * @property {string} direction - Text direction
+ * @property {number} format - Format flags
+ * @property {(string|number)} [indent] - Indentation level
+ * @property {string} type - Node type
+ * @property {number} version - Version number
+ * @property {string} [style] - Inline styles
+ * @property {string} [mode] - Mode
+ * @property {string} [text] - Text content
+ * @property {any} [other] - Other properties
+ */
 type SerializedLexicalNode = {
   children?: SerializedLexicalNode[]
   direction: string
@@ -5005,21 +4732,47 @@ type SerializedLexicalNode = {
   [other: string]: any
 }
 
+/**
+ * @typedef {Object} TextComponentProps
+ * @property {ReactElement|string} children - Child elements or text
+ * @property {number} format - Format flags
+ */
 type TextComponentProps = {
   children: ReactElement | string
   format: number
 }
 
+/**
+ * @function
+ * @description Gets the link for a document based on its path and locale.
+ * @param {any} doc - The document object
+ * @param {string} [locale] - The locale
+ * @returns {string} The link URL
+ */
 const getLinkForDocument = (doc: any, locale?: string): string => {
   let path = doc?.path
   if (!path || path.startsWith('/home') || path === '/' || path === '') path = '/'
   return ensurePath(`/${locale}${path}`)
 }
 
+/**
+ * @function
+ * @description Calculates the greatest common divisor of two numbers.
+ * @param {number} a - The first number
+ * @param {number} b - The second number
+ * @returns {number} The greatest common divisor
+ */
 function gcd(a: number, b: number): number {
   return b === 0 ? a : gcd(b, a % b)
 }
 
+/**
+ * @function
+ * @description Calculates the aspect ratio of a given width and height as a string.
+ * @param {number} width - The width
+ * @param {number} height - The height
+ * @returns {string} The aspect ratio as a string (e.g., "4x3")
+ */
 function calculateAspectRatio(width: number, height: number): string {
   const divisor = gcd(width, height)
   const simplifiedWidth = width / divisor
@@ -5028,6 +4781,14 @@ function calculateAspectRatio(width: number, height: number): string {
   return `${simplifiedWidth}x${simplifiedHeight}`
 }
 
+/**
+ * @component
+ * @description Renders formatted text with different styles (bold, italic, etc.).
+ * @param {TextComponentProps} props - The component props
+ * @param {ReactElement|string} props.children - The child elements or text
+ * @param {number} props.format - The format flags
+ * @returns {JSX.Element}
+ */
 const TextComponent: FC<TextComponentProps> = ({ children, format }) => {
   const formatFunctions: { [key: number]: (child: ReactElement | string) => ReactElement } = {
     [IS_BOLD]: (child) => <strong>{child}</strong>,
@@ -5049,6 +4810,15 @@ const TextComponent: FC<TextComponentProps> = ({ children, format }) => {
   return <React.Fragment>{formattedText}</React.Fragment>
 }
 
+/**
+ * @component
+ * @description Renders a link component with a custom URL or a document path.
+ * @param {Object} props - The component props
+ * @param {SerializedLexicalNode} props.node - The serialized Lexical node
+ * @param {string} props.locale - The locale
+ * @param {JSX.Element|null} props.children - The child elements
+ * @returns {JSX.Element}
+ */
 const SerializedLink: React.FC<{
   node: SerializedLexicalNode
   locale: string
@@ -5066,16 +4836,44 @@ const SerializedLink: React.FC<{
   )
 }
 
+/**
+ * @function
+ * @description Gets the class names and styles for a serialized Lexical node.
+ * @param {SerializedLexicalNode} node - The serialized Lexical node
+ * @returns {Record<string, any>} An object containing class names and styles
+ */
+
 const getNodeClassNames = (node: SerializedLexicalNode) => {
   const attributes: Record<string, any> = {}
   if (!node) return attributes
 
   let classNames = ''
-  if (String(node?.format).toString()?.includes('left') && node.direction !== 'ltr')
-    classNames += 'text-left '
-  if (String(node?.format).toString()?.includes('center')) classNames += 'text-center '
-  if (String(node?.format).toString()?.includes('right') && node.direction !== 'rtl')
-    classNames += 'text-right '
+
+  if (typeof node.format === 'number') {
+    switch (node.format) {
+      case IS_ALIGN_LEFT:
+        classNames += 'text-left '
+        break
+      case IS_ALIGN_CENTER:
+        classNames += 'text-center '
+        break
+      case IS_ALIGN_RIGHT:
+        classNames += 'text-right '
+        break
+      case IS_ALIGN_JUSTIFY:
+        classNames += 'text-justify '
+        break
+      case IS_ALIGN_START:
+        classNames += node.direction === 'rtl' ? 'text-right ' : 'text-left '
+        break
+      case IS_ALIGN_END:
+        classNames += node.direction === 'rtl' ? 'text-left ' : 'text-right '
+        break
+      default:
+        // Default to left alignment if no alignment is specified
+        classNames += 'text-left '
+    }
+  }
 
   if (classNames.length > 0) attributes.className = classNames.trim()
 
@@ -5088,6 +4886,16 @@ const getNodeClassNames = (node: SerializedLexicalNode) => {
   return attributes
 }
 
+/**
+ * @component
+ * @description Renders serialized Lexical nodes as React components.
+ * @param {Object} props - The component props
+ * @param {SerializedLexicalNode[]} props.childrenNodes - The array of child nodes
+ * @param {string} props.locale - The locale
+ * @param {string} [props.className] - The additional class names
+ * @param {boolean} [props.lazyLoadImages=false] - Whether to lazy load images
+ * @returns {JSX.Element|null}
+ */
 const LexicalContent: React.FC<{
   childrenNodes: SerializedLexicalNode[]
   locale: string
@@ -5189,9 +4997,10 @@ const LexicalContent: React.FC<{
 }
 
 export default LexicalContent
+
 ```
 
-# \_components/LexicalContent/RichTextNodeFormat.ts
+# _components/LexicalContent/RichTextNodeFormat.ts
 
 ```ts
 //This copy-and-pasted from somewhere in lexical here: https://github.com/facebook/lexical/blob/c2ceee223f46543d12c574e62155e619f9a18a5d/packages/lexical/src/LexicalConstants.ts
@@ -5260,9 +5069,10 @@ export type TextFormatType =
   | 'code'
   | 'subscript'
   | 'superscript'
+
 ```
 
-# \_components/LargeBody/index.tsx
+# _components/LargeBody/index.tsx
 
 ```tsx
 import React from 'react'
@@ -5272,9 +5082,10 @@ import classes from './index.module.scss'
 export const LargeBody: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return <p className={classes.largeBody}>{children}</p>
 }
+
 ```
 
-# \_components/Label/index.tsx
+# _components/Label/index.tsx
 
 ```tsx
 import React from 'react'
@@ -5287,9 +5098,10 @@ export const Label: React.FC<{ children: React.ReactNode; className?: string }> 
 }) => {
   return <p className={[classes.label, className].filter(Boolean).join(' ')}>{children}</p>
 }
+
 ```
 
-# \_components/Highlight/index.tsx
+# _components/Highlight/index.tsx
 
 ```tsx
 'use client'
@@ -5385,9 +5197,10 @@ export const Highlight: React.FC<{
 
   return null
 }
+
 ```
 
-# \_components/Heading/index.tsx
+# _components/Heading/index.tsx
 
 ```tsx
 import React from 'react'
@@ -5409,7 +5222,7 @@ type Props = {
   className?: string
 }
 
-const HeadingElement: React.FC<Partial<Props>> = (props) => {
+const HeadingElement: React.FC<Partial<Props>> = props => {
   const { element: Element = 'h1', children, id, className = [], margin } = props
 
   return (
@@ -5422,7 +5235,7 @@ const HeadingElement: React.FC<Partial<Props>> = (props) => {
   )
 }
 
-export const Heading: React.FC<Props> = (props) => {
+export const Heading: React.FC<Props> = props => {
   const { element: el = 'h1', as = el, margin, marginTop, marginBottom, className } = props
 
   const classList = [
@@ -5445,9 +5258,10 @@ export const Heading: React.FC<Props> = (props) => {
     </Link>
   )
 }
+
 ```
 
-# \_components/Header/index.tsx
+# _components/Header/index.tsx
 
 ```tsx
 'use client'
@@ -5465,7 +5279,7 @@ import { MobileNav, modalSlug as mobileNavModalSlug } from './MobileNav'
 
 import classes from './index.module.scss'
 
-export const Header: React.FC<Menu> = ({ menu, topBar }: any) => {
+export const Header: React.FC<any> = ({ menu, topBar }: any) => {
   const { isModalOpen } = useModal()
   const isMobileNavOpen = isModalOpen(mobileNavModalSlug)
   const { headerTheme } = useHeaderObserver()
@@ -5515,9 +5329,10 @@ export const Header: React.FC<Menu> = ({ menu, topBar }: any) => {
     </div>
   )
 }
+
 ```
 
-# \_components/Gutter/index.tsx
+# _components/Gutter/index.tsx
 
 ```tsx
 import React from 'react'
@@ -5559,39 +5374,10 @@ export const Gutter: React.FC<Props> = ({
     </div>
   )
 }
+
 ```
 
-# \_components/GoogleMapsScriptLoader/index.tsx
-
-```tsx
-// components/GoogleMapsScriptLoader.tsx
-import React, { useEffect } from 'react'
-
-interface GoogleMapsScriptLoaderProps {
-  onLoad: () => void
-}
-
-const GoogleMapsScriptLoader: React.FC<GoogleMapsScriptLoaderProps> = ({ onLoad }) => {
-  useEffect(() => {
-    const script = document.createElement('script')
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_GOOGLE_PLACES}&libraries=places`
-    script.async = true
-    script.defer = true
-    script.onload = onLoad
-    document.head.appendChild(script)
-
-    return () => {
-      document.head.removeChild(script)
-    }
-  }, [onLoad])
-
-  return null
-}
-
-export default GoogleMapsScriptLoader
-```
-
-# \_components/Footer/index.tsx
+# _components/Footer/index.tsx
 
 ```tsx
 'use client'
@@ -5608,9 +5394,9 @@ import { usePathname, useRouter } from 'next/navigation'
 import { CMSLink } from '@app/_components/CMSLink'
 import { Gutter } from '@app/_components/Gutter'
 import { useHeaderObserver } from '@app/_providers/HeaderIntersectionObserver'
-// import { useThemePreference } from '@app/_providers/Theme'
-// import { getImplicitPreference, themeLocalStorageKey } from '@app/_providers/Theme/shared'
-// import { Theme } from '@app/_providers/Theme/types'
+import { useThemePreference } from '@app/_providers/Theme'
+import { getImplicitPreference, themeLocalStorageKey } from '@app/_providers/Theme/shared'
+import { Theme } from '@app/_providers/Theme/types'
 import { getCookie } from '@/utilities/get-cookie'
 
 import classes from './index.module.scss'
@@ -5621,8 +5407,8 @@ import Link from 'next/link'
 export const Footer: React.FC<FooterType> = (props) => {
   // console.log('footer props --', props)
   const { columns } = props
-  // const { setTheme } = useThemePreference()
-  // const { setHeaderTheme } = useHeaderObserver()
+  const { setTheme } = useThemePreference()
+  const { setHeaderTheme } = useHeaderObserver()
 
   const wrapperRef = React.useRef<HTMLElement>(null)
   const selectRef = React.useRef<HTMLSelectElement>(null)
@@ -5655,24 +5441,24 @@ export const Footer: React.FC<FooterType> = (props) => {
 
   const [error, setError] = React.useState<{ status?: string; message: string } | undefined>()
 
-  // const onThemeChange = (themeToSet: Theme & 'auto') => {
-  //   if (themeToSet === 'auto') {
-  //     const implicitPreference = getImplicitPreference() ?? 'light'
-  //     setHeaderTheme(implicitPreference)
-  //     setTheme(implicitPreference)
-  //     if (selectRef.current) selectRef.current.value = 'auto'
-  //   } else {
-  //     setTheme(themeToSet)
-  //     setHeaderTheme(themeToSet)
-  //   }
-  // }
+  const onThemeChange = (themeToSet: Theme & 'auto') => {
+    if (themeToSet === 'auto') {
+      const implicitPreference = getImplicitPreference() ?? 'light'
+      setHeaderTheme(implicitPreference)
+      setTheme(implicitPreference)
+      if (selectRef.current) selectRef.current.value = 'auto'
+    } else {
+      setTheme(themeToSet)
+      setHeaderTheme(themeToSet)
+    }
+  }
 
-  // React.useEffect(() => {
-  //   const preference = window.localStorage.getItem(themeLocalStorageKey)
-  //   if (selectRef.current) {
-  //     selectRef.current.value = preference ?? 'auto'
-  //   }
-  // }, [])
+  React.useEffect(() => {
+    const preference = window.localStorage.getItem(themeLocalStorageKey)
+    if (selectRef.current) {
+      selectRef.current.value = preference ?? 'auto'
+    }
+  }, [])
 
   const router = useRouter()
   const pathname = usePathname()
@@ -5891,9 +5677,10 @@ export const Footer: React.FC<FooterType> = (props) => {
     </React.Fragment>
   )
 }
+
 ```
 
-# \_components/ErrorMessage/index.tsx
+# _components/ErrorMessage/index.tsx
 
 ```tsx
 'use client'
@@ -6092,70 +5879,10 @@ export const ErrorMessage: React.FC<{ error?: string }> = ({ error }) => {
     </React.Fragment>
   )
 }
+
 ```
 
-# \_components/CopyToClipboard/index.tsx
-
-```tsx
-import * as React from 'react'
-
-import { Tooltip } from '@app/_components/Tooltip'
-import { CopyIcon } from '@app/_icons/CopyIcon'
-
-import classes from './index.module.scss'
-
-type CopyToClipboardProps = {
-  value: (() => Promise<string | null>) | string | null
-  className?: string
-  hoverText?: string
-}
-export const CopyToClipboard: React.FC<CopyToClipboardProps> = ({
-  value,
-  className,
-  hoverText,
-}) => {
-  const [copied, setCopied] = React.useState(false)
-  const [showTooltip, setShowTooltip] = React.useState(false)
-  const ref = React.useRef<any>(null)
-
-  const copy = React.useCallback(async () => {
-    if (ref && ref.current && value) {
-      const copyValue = typeof value === 'string' ? value : await value()
-      if (!copyValue) return
-
-      ref.current.value = copyValue
-      ref.current.select()
-      ref.current.setSelectionRange(0, copyValue.length + 1)
-      document.execCommand('copy')
-
-      setCopied(true)
-    }
-  }, [value])
-
-  React.useEffect(() => {
-    if (copied && !showTooltip) {
-      setTimeout(() => {
-        setCopied(false)
-      }, 500)
-    }
-  }, [copied, showTooltip])
-
-  return (
-    <Tooltip
-      onClick={copy}
-      text={copied ? 'Copied!' : hoverText || 'Copy'}
-      setIsVisible={setShowTooltip}
-      isVisible={showTooltip || copied}
-      className={className}
-    >
-      <CopyIcon size="large" />
-      <textarea className={classes.copyTextarea} tabIndex={-1} readOnly ref={ref} />
-    </Tooltip>
-  )
-}
-```
-
-# \_components/CircleIconButton/index.tsx
+# _components/CircleIconButton/index.tsx
 
 ```tsx
 import React from 'react'
@@ -6193,11 +5920,64 @@ export const CircleIconButton: React.FC<{
     </button>
   )
 }
+
 ```
 
-# \_components/CMSLink/index.tsx
+# _components/ChangeHeaderTheme/index.tsx
 
 ```tsx
+import * as React from 'react'
+
+import { useHeaderObserver } from '@app/_providers/HeaderIntersectionObserver'
+import { Theme } from '@app/_providers/Theme/types'
+
+import classes from './index.module.scss'
+
+type ThemeHeaderProps = {
+  children?: React.ReactNode
+  theme: Theme
+}
+export const ChangeHeaderTheme: React.FC<ThemeHeaderProps> = ({ children, theme }) => {
+  const observableRef = React.useRef<HTMLDivElement>(null)
+  const { addObservable, debug } = useHeaderObserver()
+
+  React.useEffect(() => {
+    const observableElement = observableRef?.current
+    if (observableElement) {
+      addObservable(observableElement, true)
+    }
+  }, [addObservable])
+
+  return (
+    <div className={[classes.headerObserver, debug && classes.debug].filter(Boolean).join(' ')}>
+      {children && children}
+
+      <div className={[classes.observerContainer].filter(Boolean).join(' ')}>
+        <div ref={observableRef} className={classes.stickyObserver} data-theme={theme} />
+      </div>
+    </div>
+  )
+}
+
+```
+
+# _components/CMSLink/index.tsx
+
+```tsx
+/**
+ * @file index.tsx
+ * @module CMSLink
+ * @description This module provides a reusable component for rendering links with various styles and behaviors.
+ * @overview
+ * The `CMSLink` component is a React functional component that renders either a `<Link>` or `<button>` element based on the provided props. It accepts various configuration options such as label, URL, reference, theme, size, variant, icon, and event handlers.
+ *
+ * The component is designed to handle different types of links (custom, reference, or URL) and can render icons, handle click events, and open links in new tabs. It uses utility functions like `generateHref` to generate the appropriate link URL based on the provided data.
+ *
+ * The component also utilizes Tailwind CSS utility classes for styling, with custom classes defined in the `buttonLook` object. The component's appearance can be customized by passing in different props for theme, size, width, variant, and icon position.
+ *
+ * Overall, this module provides a flexible and reusable way to create links with various styles and behaviors across the application.
+ */
+
 import React from 'react'
 import Link from 'next/link'
 import { Page, Product } from '@/payload-types'
@@ -6206,7 +5986,7 @@ import cn from '@/utilities/cn'
 import { generateHref } from '@/utilities/generateHref'
 
 import { buttonLook } from '@app/_css/tailwindClasses'
-import { ArrowRightIcon, ChevronRightIcon } from 'lucide-react'
+import { ArrowRightIcon, ChevronRightIcon, LoaderCircleIcon } from 'lucide-react'
 import classes from './index.module.scss'
 
 export type CMSLinkType = {
@@ -6292,15 +6072,18 @@ export const CMSLink: React.FC<CMSLinkType & { pending?: boolean }> = ({
           {look.icon.content}
         </span>
       )}
-      {!look?.icon && <span className="mr-2">{<ChevronRightIcon strokeWidth={1.25} />}</span>}
+      {/* {!look?.icon && <span className="mr-2">{<ChevronRightIcon strokeWidth={1.25} />}</span>} */}
     </>
   )
 
   if ((look?.type === 'button' || look?.type === 'submit') && actions?.onClick) {
     return (
       <button className={classNames} onClick={handleClick} disabled={pending} {...newTabProps}>
-        {/* {renderContent()} */}
-        {pending ? 'processing...' : renderContent()}
+        {pending ? (
+          <LoaderCircleIcon className="animate-spin" strokeWidth={1.25} />
+        ) : (
+          renderContent()
+        )}
       </button>
     )
   } else {
@@ -6311,46 +6094,10 @@ export const CMSLink: React.FC<CMSLinkType & { pending?: boolean }> = ({
     )
   }
 }
+
 ```
 
-# \_components/ChangeHeaderTheme/index.tsx
-
-```tsx
-import * as React from 'react'
-
-import { useHeaderObserver } from '@app/_providers/HeaderIntersectionObserver'
-import { Theme } from '@app/_providers/Theme/types'
-
-import classes from './index.module.scss'
-
-type ThemeHeaderProps = {
-  children?: React.ReactNode
-  theme: Theme
-}
-export const ChangeHeaderTheme: React.FC<ThemeHeaderProps> = ({ children, theme }) => {
-  const observableRef = React.useRef<HTMLDivElement>(null)
-  const { addObservable, debug } = useHeaderObserver()
-
-  React.useEffect(() => {
-    const observableElement = observableRef?.current
-    if (observableElement) {
-      addObservable(observableElement, true)
-    }
-  }, [addObservable])
-
-  return (
-    <div className={[classes.headerObserver, debug && classes.debug].filter(Boolean).join(' ')}>
-      {children && children}
-
-      <div className={[classes.observerContainer].filter(Boolean).join(' ')}>
-        <div ref={observableRef} className={classes.stickyObserver} data-theme={theme} />
-      </div>
-    </div>
-  )
-}
-```
-
-# \_components/CMSForm/index.tsx
+# _components/CMSForm/index.tsx
 
 ```tsx
 'use client'
@@ -6555,9 +6302,10 @@ export const CMSForm: React.FC<{
 
   return <RenderForm form={form} />
 }
+
 ```
 
-# \_components/CMSForm/fields.tsx
+# _components/CMSForm/fields.tsx
 
 ```tsx
 import { NumberInput } from '@app/_components/forms/fields/Number'
@@ -6597,9 +6345,10 @@ export const fields = {
   },
   number: NumberInput,
 }
+
 ```
 
-# \_components/Breadcrumbs/index.tsx
+# _components/Breadcrumbs/index.tsx
 
 ```tsx
 import * as React from 'react'
@@ -6661,9 +6410,10 @@ export const Breadcrumbs: React.FC<Props> = ({ items, ellipsis = true, className
     </nav>
   )
 }
+
 ```
 
-# \_components/BlockWrapper/index.tsx
+# _components/BlockWrapper/index.tsx
 
 ```tsx
 'use client'
@@ -6708,16 +6458,16 @@ export const BlockWrapper: React.FC<Props> = ({
   setPadding = true,
   ...rest
 }) => {
-  const [themeState, setThemeState] = useState<Page['theme']>(settings?.theme)
-  const { theme: themeFromContext } = useThemePreference()
-  const theme = settings?.theme
+  // const [themeState, setThemeState] = useState<Page['theme']>(settings?.theme)
+  // const { theme: themeFromContext } = useThemePreference()
+  // const theme = settings?.theme
 
-  useEffect(() => {
-    if (settings?.theme) setThemeState(settings.theme)
-    else {
-      if (themeFromContext) setThemeState(themeFromContext)
-    }
-  }, [settings, themeFromContext])
+  // useEffect(() => {
+  //   if (settings?.theme) setThemeState(settings.theme)
+  //   else {
+  //     if (themeFromContext) setThemeState(themeFromContext)
+  //   }
+  // }, [settings, themeFromContext])
 
   const appliedPadding = {
     top: padding?.top || defaultPadding.top,
@@ -6727,11 +6477,11 @@ export const BlockWrapper: React.FC<Props> = ({
   const paddingClasses = [`py-content-${appliedPadding.top}`, `pb-content-${appliedPadding.bottom}`]
 
   return (
-    <ChangeHeaderTheme theme={themeState ?? 'light'}>
+    <ChangeHeaderTheme theme={'light'}>
       <div
         className={[
           classes.blockWrapper,
-          theme && classes[`theme-${theme}`],
+          // theme && classes[`theme-${theme}`],
           ...paddingClasses,
           setPadding && classes.setPadding,
           className,
@@ -6739,16 +6489,17 @@ export const BlockWrapper: React.FC<Props> = ({
           .filter(Boolean)
           .join(' ')}
         {...rest}
-        {...(theme ? { 'data-theme': theme } : {})}
+        // {...(theme ? { 'data-theme': theme } : {})}
       >
         {children}
       </div>
     </ChangeHeaderTheme>
   )
 }
+
 ```
 
-# \_components/BlockSpacing/index.tsx
+# _components/BlockSpacing/index.tsx
 
 ```tsx
 import React from 'react'
@@ -6781,9 +6532,10 @@ export const BlockSpacing: React.FC<Props> = ({
     </div>
   )
 }
+
 ```
 
-# \_components/BigThree/index.tsx
+# _components/BigThree/index.tsx
 
 ```tsx
 import classes from './index.module.scss'
@@ -6792,7 +6544,7 @@ interface BigThreeProps {
   className?: string
 }
 
-const BigThree: React.FC<BigThreeProps> = (props) => {
+const BigThree: React.FC<BigThreeProps> = props => {
   const { className } = props
 
   return (
@@ -6813,9 +6565,10 @@ const BigThree: React.FC<BigThreeProps> = (props) => {
 }
 
 export default BigThree
+
 ```
 
-# \_components/Banner/index.tsx
+# _components/Banner/index.tsx
 
 ```tsx
 import * as React from 'react'
@@ -6872,9 +6625,10 @@ export const Banner: React.FC<Props> = ({
     </div>
   )
 }
+
 ```
 
-# \_components/BackgroundScanline/index.tsx
+# _components/BackgroundScanline/index.tsx
 
 ```tsx
 import React from 'react'
@@ -6947,9 +6701,10 @@ export const BackgroundScanline: React.FC<Props> = ({
     </div>
   )
 }
+
 ```
 
-# \_components/BackgroundGrid/index.tsx
+# _components/BackgroundGrid/index.tsx
 
 ```tsx
 import React from 'react'
@@ -7001,9 +6756,10 @@ export const BackgroundGrid: React.FC<Props> = ({
     </div>
   )
 }
+
 ```
 
-# \_components/Background/index.tsx
+# _components/Background/index.tsx
 
 ```tsx
 import styles from './styles.module.scss'
@@ -7022,9 +6778,10 @@ export const Background = () => {
     </div>
   )
 }
+
 ```
 
-# \_components/Avatar/index.tsx
+# _components/Avatar/index.tsx
 
 ```tsx
 import * as React from 'react'
@@ -7063,9 +6820,10 @@ export const Avatar: React.FC<{ className?: string }> = ({ className }) => {
     </div>
   )
 }
+
 ```
 
-# \_components/Analytics/analytics.ts
+# _components/Analytics/analytics.ts
 
 ```ts
 const gaMeasurementID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID
@@ -7080,8 +6838,8 @@ export function analyticsEvent(event: string, value?: unknown): void {
 
   if (pixelID) {
     import('react-facebook-pixel')
-      .then((x) => x.default)
-      .then((ReactPixel) => {
+      .then(x => x.default)
+      .then(ReactPixel => {
         if (event === 'page_view') {
           ReactPixel.pageView()
         } else {
@@ -7090,9 +6848,10 @@ export function analyticsEvent(event: string, value?: unknown): void {
       })
   }
 }
+
 ```
 
-# \_components/Accordion/index.tsx
+# _components/Accordion/index.tsx
 
 ```tsx
 'use client'
@@ -7187,9 +6946,10 @@ export const Accordion: React.FC<AccordionProps> = ({
     </Collapsible>
   )
 }
+
 ```
 
-# \_blocks/StickyHighlights/index.tsx
+# _blocks/StickyHighlights/index.tsx
 
 ```tsx
 import React, { useId } from 'react'
@@ -7232,7 +6992,7 @@ export const StickyHighlights: React.FC<Props> = ({
   return (
     <BlockWrapper
       settings={settings}
-      className={[getPaddingClasses('standard'), classes.stickyHighlights, className]
+      className={[getPaddingClasses('stickyHighlights'), classes.stickyHighlights, className]
         .filter(Boolean)
         .join(' ')}
       id={id}
@@ -7248,9 +7008,10 @@ export const StickyHighlights: React.FC<Props> = ({
 }
 
 export default StickyHighlights
+
 ```
 
-# \_blocks/Steps/index.tsx
+# _blocks/Steps/index.tsx
 
 ```tsx
 import React from 'react'
@@ -7278,9 +7039,10 @@ export const Steps: React.FC<Props> = ({ stepsFields }) => {
 }
 
 export default Steps
+
 ```
 
-# \_blocks/Statement/index.tsx
+# _blocks/Statement/index.tsx
 
 ```tsx
 'use client'
@@ -7331,7 +7093,7 @@ export const Statement: React.FC<StatementProps> = (props) => {
         : 'cols-12 start-3 cols-m-8 start-m-1'
 
   return (
-    <BlockWrapper settings={settings} className={getPaddingClasses('standard')}>
+    <BlockWrapper settings={settings} className={getPaddingClasses('statement')}>
       {/* <BackgroundGrid zIndex={0} /> */}
       <Gutter className={classes.statementWrap}>
         <div className={['grid'].filter(Boolean).join(' ')}>
@@ -7405,9 +7167,10 @@ export const Statement: React.FC<StatementProps> = (props) => {
 }
 
 export default Statement
+
 ```
 
-# \_blocks/Slider/index.tsx
+# _blocks/Slider/index.tsx
 
 ```tsx
 import * as React from 'react'
@@ -7453,7 +7216,7 @@ export const SliderBlock: React.FC<Props> = (props) => {
   return (
     <BlockWrapper
       settings={settings}
-      className={[getPaddingClasses('standard'), classes.slider].filter(Boolean).join(' ')}
+      className={[getPaddingClasses('slider'), classes.slider].filter(Boolean).join(' ')}
     >
       {/* <BackgroundGrid zIndex={0} /> */}
 
@@ -7534,41 +7297,36 @@ export const Slider: React.FC<any> = (props) => {
 }
 
 export default Slider
+
 ```
 
-# \_blocks/RichText/index.tsx
+# _blocks/RichText/index.tsx
 
 ```tsx
 import type { AdditionalBlockProps } from '@app/_blocks'
-import { BlockWrapper } from '@app/_components/BlockWrapper'
 import LexicalContent from '@app/_components/LexicalContent'
 // import type { RichTextBlock } from '@payload-types'
-import classes from './index.module.scss'
 
 export function RichText({ content, locale, className }: any & AdditionalBlockProps) {
   if (content?.root?.children?.length === 0) return null
   // console.log('richtext content to show // ', content.root)
 
   return (
-    <div className={[classes.richText, className].filter(Boolean).join(' ')}>
-      {/* <BlockWrapper> */}
-      {/* <div className="prose dark:prose-invert md:prose-lg"> */}
-      {/* @ts-ignore */}
+    <div>
       <LexicalContent
         childrenNodes={content?.root?.children}
         locale={locale}
         lazyLoadImages={false}
       />
-      {/* </div> */}
-      {/* </BlockWrapper> */}
     </div>
   )
 }
 
 export default RichText
+
 ```
 
-# \_blocks/Reusable/index.tsx
+# _blocks/Reusable/index.tsx
 
 ```tsx
 import React from 'react'
@@ -7596,70 +7354,54 @@ export const ReusableContentBlock: React.FC<Props> = ({ reuseBlockFields }) => {
 }
 
 export default ReusableContentBlock
+
 ```
 
-# \_blocks/ProductGrid/index.tsx
+# _blocks/ProductGrid/index.tsx
 
 ```tsx
-import React, { CSSProperties } from 'react'
+/**
+ * @file index.tsx
+ * @module ProductGrid
+ * @description This module renders a grid of product cards on the ecommerce website.
+ * @overview
+ * The ProductGrid component is a React functional component that takes an array of products as a prop.
+ * It renders a section element with a grid layout, where each grid item is a ProductCard component displaying
+ * details of a specific product. This component is responsible for displaying all available products in a
+ * visually appealing grid format, making it easy for users to browse and view different products.
+ */
 
-import { BlockWrapper, PaddingProps } from '@app/_components/BlockWrapper'
+import React from 'react'
 import { Product } from '@payload-types'
-
-import classes from './index.module.scss'
 import { ProductCard } from '@app/_components/ProductCard'
 
-export type ProductGridProps = {
-  products: Product[]
-  padding?: PaddingProps
-}
+export type ProductGridProps = { products: Product[] }
 
 export const ProductGrid: React.FC<ProductGridProps> = ({ products }) => {
-  // console.log('productGrid', products)
-
-  const productLength = products?.length ?? 0
-  const hasProducts = Array.isArray(products) && productLength > 0
-  const excessLength = productLength > 4 ? 8 - productLength : 4 - productLength
-
-  const wrapperStyle: CSSProperties = {
-    '--excess-length-large': excessLength,
-    '--excess-length-mid': productLength % 2 === 0 ? 0 : 1,
-  } as CSSProperties
-
   return (
     <React.Fragment>
-      {/* <BlockWrapper
-        settings={{ settings: { theme: 'light' } }}
-        className={[getPaddingClasses('hero'), 'py-16', classes.ProductGrid]
-          .filter(Boolean)
-          .join(' ')}
+      <section
+        aria-labelledby="products-heading"
+        className="mx-auto max-w-2xl px-4 pb-16 pt-12 sm:px-6 sm:pb-24 sm:pt-16 lg:max-w-7xl lg:px-8"
       >
-        <Gutter> */}
-      {hasProducts && (
-        <div className={classes.cards}>
-          <div
-            className={['grid', classes.cardsWrapper].filter(Boolean).join(' ')}
-            style={wrapperStyle}
-          >
-            {products?.map((product, index) => {
-              return (
-                <div key={index} className={'cols-4 cols-s-8'}>
-                  <ProductCard className={classes.card} {...product} />
-                </div>
-              )
-            })}
-          </div>
+        <h2 id="products-heading" className="sr-only">
+          Products
+        </h2>
+        <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 xl:gap-x-8">
+          {products?.map((product, index) => {
+            return <ProductCard key={index} {...product} />
+          })}
         </div>
-      )}
-      {/* </Gutter>
-      </BlockWrapper> */}
+      </section>
     </React.Fragment>
   )
 }
+
 export default ProductGrid
+
 ```
 
-# \_blocks/ProductBlock/index.tsx
+# _blocks/ProductBlock/index.tsx
 
 ```tsx
 import React from 'react'
@@ -7671,7 +7413,7 @@ import { ProductActions } from '@app/_components/ProductActions'
 import { Product, Media } from '@payload-types'
 import { contentFormats, getPaddingClasses } from '@app/_css/tailwindClasses'
 import cn from '@/utilities/cn'
-import { getImageAlt, getImageUrl } from '@/utilities/getmageUrl'
+import { getImageAlt, getImageUrl } from '@/utilities/getImageDetails'
 
 interface ProductBlockContentProps {
   product: Product
@@ -7797,16 +7539,17 @@ interface ProductBlockProps {
 
 export const ProductBlock: React.FC<ProductBlockProps> = ({ product, selectedImageIndex = 0 }) => {
   return (
-    <BlockWrapper settings={{ theme: 'light' }} className={getPaddingClasses('hero')}>
+    <BlockWrapper settings={{ theme: 'light' }} className={getPaddingClasses('content')}>
       <ProductBlockContent product={product} selectedImageIndex={selectedImageIndex} />
     </BlockWrapper>
   )
 }
 
 export default ProductBlock
+
 ```
 
-# \_blocks/Pricing/index.tsx
+# _blocks/Pricing/index.tsx
 
 ```tsx
 import React from 'react'
@@ -7870,7 +7613,7 @@ export const Pricing: React.FC<Props> = (props) => {
   return (
     <BlockWrapper
       settings={settings}
-      className={[getPaddingClasses('standard'), classes.pricingBlock].filter(Boolean).join(' ')}
+      className={[getPaddingClasses('content'), classes.pricingBlock].filter(Boolean).join(' ')}
     >
       <BackgroundGrid zIndex={1} />
       <Gutter className={classes.gutter}>
@@ -7983,9 +7726,10 @@ export const Pricing: React.FC<Props> = (props) => {
   )
 }
 export default Pricing
+
 ```
 
-# \_blocks/MediaContentAccordion/index.tsx
+# _blocks/MediaContentAccordion/index.tsx
 
 ```tsx
 import React from 'react'
@@ -8019,7 +7763,7 @@ export const MediaContentAccordion: React.FC<MediaContentAccordionProps> = (prop
   return (
     <BlockWrapper
       settings={settings}
-      className={[getPaddingClasses('standard'), classes.mediaContentAccordion]
+      className={[getPaddingClasses('mediaContentAccordion'), classes.mediaContentAccordion]
         .filter(Boolean)
         .join(' ')}
     >
@@ -8040,9 +7784,10 @@ export const MediaContentAccordion: React.FC<MediaContentAccordionProps> = (prop
   )
 }
 export default MediaContentAccordion
+
 ```
 
-# \_blocks/MediaContent/index.tsx
+# _blocks/MediaContent/index.tsx
 
 ```tsx
 import * as React from 'react'
@@ -8162,7 +7907,7 @@ export const MediaContent: React.FC<MediaContentProps> = (props) => {
   const { settings } = props.mediaContentFields
 
   return (
-    <BlockWrapper className={getPaddingClasses('hero')} settings={settings}>
+    <BlockWrapper className={getPaddingClasses('mediaContent')} settings={settings}>
       {/* <BackgroundGrid zIndex={0} /> */}
       <div className={classes.wrapper}>
         <MediaContentBlock {...props} />
@@ -8172,9 +7917,10 @@ export const MediaContent: React.FC<MediaContentProps> = (props) => {
   )
 }
 export default MediaContent
+
 ```
 
-# \_blocks/MediaBlock/index.tsx
+# _blocks/MediaBlock/index.tsx
 
 ```tsx
 import React from 'react'
@@ -8203,7 +7949,7 @@ export const MediaBlock: React.FC<any & { disableGutter?: boolean; marginAdjustm
   if (typeof media === 'string') return null
 
   return (
-    <BlockWrapper settings={settings} className={getPaddingClasses('standard')}>
+    <BlockWrapper settings={settings} className={getPaddingClasses('mediaBlock')}>
       <div
         className={classes.mediaBlock}
         style={{
@@ -8247,9 +7993,10 @@ export const MediaBlock: React.FC<any & { disableGutter?: boolean; marginAdjustm
   )
 }
 export default MediaBlock
+
 ```
 
-# \_blocks/LogoGrid/index.tsx
+# _blocks/LogoGrid/index.tsx
 
 ```tsx
 'use client'
@@ -8363,7 +8110,7 @@ export const LogoGrid: React.FC<LogoGridProps> = (props) => {
   return (
     <BlockWrapper
       settings={settings}
-      className={[getPaddingClasses('standard'), classes.logoGrid].filter(Boolean).join(' ')}
+      className={[getPaddingClasses('logoGrid'), classes.logoGrid].filter(Boolean).join(' ')}
     >
       <Gutter>
         <BackgroundGrid className={classes.backgroundGrid} zIndex={0} />
@@ -8474,9 +8221,10 @@ export const LogoGrid: React.FC<LogoGridProps> = (props) => {
   )
 }
 export default LogoGrid
+
 ```
 
-# \_blocks/LinkGrid/index.tsx
+# _blocks/LinkGrid/index.tsx
 
 ```tsx
 'use client'
@@ -8542,7 +8290,7 @@ export const LinkGrid: React.FC<
 
   return (
     <BlockWrapper
-      className={[getPaddingClasses('standard'), className, classes.linkGrid]
+      className={[getPaddingClasses('linkGrid'), className, classes.linkGrid]
         .filter(Boolean)
         .join(' ')}
       settings={linkGridFields?.settings}
@@ -8568,9 +8316,10 @@ export const LinkGrid: React.FC<
   )
 }
 export default LinkGrid
+
 ```
 
-# \_blocks/HoverHighlights/index.tsx
+# _blocks/HoverHighlights/index.tsx
 
 ```tsx
 import React from 'react'
@@ -8636,9 +8385,10 @@ export const HoverHighlights: React.FC<HoverHighlightProps> = (props) => {
 }
 
 export default HoverHighlights
+
 ```
 
-# \_blocks/HoverCards/index.tsx
+# _blocks/HoverCards/index.tsx
 
 ```tsx
 'use client'
@@ -8662,7 +8412,7 @@ import classes from './index.module.scss'
 
 import { ExtractBlockProps } from '@/utilities/extractBlockProps'
 import { getPaddingClasses } from '../../_css/tailwindClasses'
-export type HoverCardsProps = ExtractBlockProps<'hoverCards'> & { padding: PaddingProps }
+export type HoverCardsProps = ExtractBlockProps<'hoverCards'> //& { padding: PaddingProps }
 
 const Card: React.FC<{
   leader: number
@@ -8700,15 +8450,13 @@ export const HoverCards: React.FC<HoverCardsProps> = (props) => {
   // console.log('hovercardsfoelds //', props)
 
   const [activeGradient, setActiveGradient] = useState(1)
-
   const gradients = [1, 2, 3, 4]
-
   const hasCards = Array.isArray(cards) && cards.length > 0
 
   return (
     <BlockWrapper
       settings={{ theme: 'light' }}
-      className={[getPaddingClasses('standard'), classes.wrapper].filter(Boolean).join(' ')}
+      className={[getPaddingClasses('hoverCards'), classes.wrapper].filter(Boolean).join(' ')}
     >
       <BackgroundGrid zIndex={1} />
       {/* <div className={classes.noiseWrapper}>
@@ -8756,9 +8504,10 @@ export const HoverCards: React.FC<HoverCardsProps> = (props) => {
   )
 }
 export default HoverCards
+
 ```
 
-# \_blocks/Hero/index.tsx
+# _blocks/Hero/index.tsx
 
 ```tsx
 import React from 'react'
@@ -8835,9 +8584,131 @@ export default Hero
 
 //   return null
 // }
+
 ```
 
-# \_blocks/FormBlock/index.tsx
+# _blocks/ContentGrid/index.tsx
+
+```tsx
+import * as React from 'react'
+
+import { BackgroundGrid } from '@app/_components/BackgroundGrid'
+import { BlockWrapper, PaddingProps } from '@app/_components/BlockWrapper'
+import { CMSLink } from '@app/_components/CMSLink'
+import { Gutter } from '@app/_components/Gutter'
+import { RichText } from '@app/_blocks/RichText'
+import { Page } from '@payload-types'
+
+import classes from './index.module.scss'
+
+import { ExtractBlockProps } from '@/utilities/extractBlockProps'
+import { getPaddingClasses } from '../../_css/tailwindClasses'
+export type ContentGridProps = ExtractBlockProps<'contentGrid'> & { padding: PaddingProps }
+
+type CellsProps = ContentGridProps['contentGridFields'] & {
+  className?: string
+}
+
+const Cells: React.FC<CellsProps> = ({ cells, className, showNumbers, style: styleFromProps }) => {
+  const style = styleFromProps ?? 'gridBelow'
+
+  return (
+    <div
+      className={[classes.cellGrid, 'grid', style === 'gridBelow' ? 'cols-16 cols-m-8' : 'cols-8']
+        .filter(Boolean)
+        .join(' ')}
+    >
+      {cells?.map((cell: any, i: any) => {
+        return (
+          <div
+            className={[classes.cell, style === 'sideBySide' ? 'cols-8' : 'cols-4 cols-s-8']
+              .filter(Boolean)
+              .join(' ')}
+            key={i}
+          >
+            {showNumbers && <p className={classes.leader}>0{++i}</p>}
+            <RichText className={classes.cellRichText} content={cell.content} />
+          </div>
+        )
+      })}
+    </div>
+  )
+}
+
+export const ContentGrid: React.FC<ContentGridProps> = (props) => {
+  const {
+    contentGridFields: { settings, style: styleFromProps, content, links },
+  } = props || {}
+
+  const hasLinks = Array.isArray(links) && links.length > 0
+  const style = styleFromProps ?? 'gridBelow'
+
+  return (
+    <BlockWrapper settings={settings} className={getPaddingClasses('contentGrid')}>
+      {/* <BackgroundGrid zIndex={0} /> */}
+      <Gutter className={[classes.wrapper, classes[style], 'grid'].filter(Boolean).join(' ')}>
+        <div
+          className={[
+            classes.topContent,
+            classes[style],
+            'grid',
+            style === 'sideBySide' ? 'cols-8 ' : 'cols-16 cols-m-8',
+          ]
+            .filter(Boolean)
+            .join(' ')}
+        >
+          {content && (
+            <RichText
+              className={[
+                classes.richText,
+                style === 'sideBySide' ? 'cols-12 flex flex-col' : 'cols-8',
+              ]
+                .filter(Boolean)
+                .join(' ')}
+              content={content}
+            />
+          )}
+
+          {hasLinks && (
+            <div
+              className={[
+                classes.linksWrapper,
+                style === 'sideBySide'
+                  ? 'flex flex-row gap-3 cols-8'
+                  : 'flex flex-row gap-3 px-4 md:px-8 #cols-4 items-end justify-end justify-items-end md:col-span-7 #start-12 #cols-l-4 cols-m-8 #start-m-1',
+              ]
+                .filter(Boolean)
+                .join(' ')}
+            >
+              {links.map(({ link }, index) => {
+                return (
+                  <CMSLink
+                    key={index}
+                    data={{ ...link }}
+                    look={{
+                      theme: 'light',
+                      type: 'button',
+                      size: 'medium',
+                      width: 'normal',
+                      variant: 'blocks',
+                    }}
+                  />
+                )
+              })}
+            </div>
+          )}
+        </div>
+
+        <Cells {...props.contentGridFields} />
+      </Gutter>
+    </BlockWrapper>
+  )
+}
+export default ContentGrid
+
+```
+
+# _blocks/FormBlock/index.tsx
 
 ```tsx
 'use client'
@@ -8974,129 +8845,10 @@ export const FormBlock: React.FC<FormBlockProps> = (props) => {
 }
 
 export default FormBlock
+
 ```
 
-# \_blocks/ContentGrid/index.tsx
-
-```tsx
-import * as React from 'react'
-
-import { BackgroundGrid } from '@app/_components/BackgroundGrid'
-import { BlockWrapper, PaddingProps } from '@app/_components/BlockWrapper'
-import { CMSLink } from '@app/_components/CMSLink'
-import { Gutter } from '@app/_components/Gutter'
-import { RichText } from '@app/_blocks/RichText'
-import { Page } from '@payload-types'
-
-import classes from './index.module.scss'
-
-import { ExtractBlockProps } from '@/utilities/extractBlockProps'
-import { getPaddingClasses } from '../../_css/tailwindClasses'
-export type ContentGridProps = ExtractBlockProps<'contentGrid'> & { padding: PaddingProps }
-
-type CellsProps = ContentGridProps['contentGridFields'] & {
-  className?: string
-}
-
-const Cells: React.FC<CellsProps> = ({ cells, className, showNumbers, style: styleFromProps }) => {
-  const style = styleFromProps ?? 'gridBelow'
-
-  return (
-    <div
-      className={[classes.cellGrid, 'grid', style === 'gridBelow' ? 'cols-16 cols-m-8' : 'cols-8']
-        .filter(Boolean)
-        .join(' ')}
-    >
-      {cells?.map((cell: any, i: any) => {
-        return (
-          <div
-            className={[classes.cell, style === 'sideBySide' ? 'cols-8' : 'cols-4 cols-s-8']
-              .filter(Boolean)
-              .join(' ')}
-            key={i}
-          >
-            {showNumbers && <p className={classes.leader}>0{++i}</p>}
-            <RichText className={classes.cellRichText} content={cell.content} />
-          </div>
-        )
-      })}
-    </div>
-  )
-}
-
-export const ContentGrid: React.FC<ContentGridProps> = (props) => {
-  const {
-    contentGridFields: { settings, style: styleFromProps, content, links },
-  } = props || {}
-
-  const hasLinks = Array.isArray(links) && links.length > 0
-  const style = styleFromProps ?? 'gridBelow'
-
-  return (
-    <BlockWrapper settings={settings} className={getPaddingClasses('standard')}>
-      {/* <BackgroundGrid zIndex={0} /> */}
-      <Gutter className={[classes.wrapper, classes[style], 'grid'].filter(Boolean).join(' ')}>
-        <div
-          className={[
-            classes.topContent,
-            classes[style],
-            'grid',
-            style === 'sideBySide' ? 'cols-8 ' : 'cols-16 cols-m-8',
-          ]
-            .filter(Boolean)
-            .join(' ')}
-        >
-          {content && (
-            <RichText
-              className={[
-                classes.richText,
-                style === 'sideBySide' ? 'cols-12 flex flex-col' : 'cols-8',
-              ]
-                .filter(Boolean)
-                .join(' ')}
-              content={content}
-            />
-          )}
-
-          {hasLinks && (
-            <div
-              className={[
-                classes.linksWrapper,
-                style === 'sideBySide'
-                  ? 'flex flex-row gap-3 cols-8'
-                  : 'flex flex-row gap-3 px-4 md:px-8 #cols-4 items-end justify-end justify-items-end md:col-span-7 #start-12 #cols-l-4 cols-m-8 #start-m-1',
-              ]
-                .filter(Boolean)
-                .join(' ')}
-            >
-              {links.map(({ link }, index) => {
-                return (
-                  <CMSLink
-                    key={index}
-                    data={{ ...link }}
-                    look={{
-                      theme: 'light',
-                      type: 'button',
-                      size: 'medium',
-                      width: 'normal',
-                      variant: 'blocks',
-                    }}
-                  />
-                )
-              })}
-            </div>
-          )}
-        </div>
-
-        <Cells {...props.contentGridFields} />
-      </Gutter>
-    </BlockWrapper>
-  )
-}
-export default ContentGrid
-```
-
-# \_blocks/Content/index.tsx
+# _blocks/Content/index.tsx
 
 ```tsx
 import React from 'react'
@@ -9190,7 +8942,7 @@ export const ContentBlock: React.FC<Props> = (props) => {
   // console.log(props)
   // return <React.Fragment></React.Fragment>
   return (
-    <BlockWrapper className={getPaddingClasses('standard')} settings={settings}>
+    <BlockWrapper className={getPaddingClasses('content')} settings={settings}>
       {/* <BackgroundGrid zIndex={0} /> */}
       <Gutter className={classes.contentBlock}>
         {useLeadingHeader && <RichText className={classes.leadingHeader} content={leadingHeader} />}
@@ -9202,9 +8954,10 @@ export const ContentBlock: React.FC<Props> = (props) => {
   )
 }
 export default ContentBlock
+
 ```
 
-# \_blocks/CardGrid/index.tsx
+# _blocks/CardGrid/index.tsx
 
 ```tsx
 'use client'
@@ -9250,7 +9003,7 @@ export const CardGrid: React.FC<CardGridProps> = (props) => {
   return (
     <BlockWrapper
       settings={settings}
-      className={[getPaddingClasses('standard'), classes.cardGrid].filter(Boolean).join(' ')}
+      className={[getPaddingClasses('cardGrid'), classes.cardGrid].filter(Boolean).join(' ')}
     >
       {/* <BackgroundGrid zIndex={1} /> */}
       <Gutter>
@@ -9357,9 +9110,10 @@ export const CardGrid: React.FC<CardGridProps> = (props) => {
   )
 }
 export default CardGrid
+
 ```
 
-# \_blocks/Callout/index.tsx
+# _blocks/Callout/index.tsx
 
 ```tsx
 import React, { Fragment } from 'react'
@@ -9395,7 +9149,7 @@ export const Callout: React.FC<CalloutProps> = (props) => {
   const hasImages = images?.length && images.length > 0
 
   return (
-    <BlockWrapper settings={settings} className={getPaddingClasses('standard')}>
+    <BlockWrapper settings={settings} className={getPaddingClasses('callout')}>
       {/* <BackgroundGrid className={classes.backgroundGrid} zIndex={0} /> */}
       <div className={classes.wrapper}>
         <Gutter>
@@ -9438,9 +9192,10 @@ export const Callout: React.FC<CalloutProps> = (props) => {
   )
 }
 export default Callout
+
 ```
 
-# \_blocks/CallToAction/index.tsx
+# _blocks/CallToAction/index.tsx
 
 ```tsx
 'use client'
@@ -9492,9 +9247,10 @@ export const CallToAction: React.FC<CallToActionProps> = (props) => {
   )
 }
 export default CallToAction
+
 ```
 
-# \_blocks/Banner/index.tsx
+# _blocks/Banner/index.tsx
 
 ```tsx
 import React from 'react'
@@ -9540,35 +9296,75 @@ export const BannerBlock: React.FC<{
 }
 
 export default BannerBlock
+
 ```
 
 # (pages)/shop/page.tsx
 
 ```tsx
+/**
+ * @file page.tsx
+ * @module ShopPage
+ * @description Renders the Thankly shop page with a list of available products.
+ * @overview
+ * This file exports two main components: the `ShopPage` component and the `generateMetadata` function. The `ShopPage` component is responsible for fetching and displaying a list of available products from the PayloadCMS backend. If no products are available, it displays a message informing the user. The `generateMetadata` function is a Next.js utility function that generates metadata for the page, including the title, description, and open graph data.
+ *
+ * The `ShopPage` component uses the `fetchProductsList` function to fetch the list of products from the PayloadCMS backend. The `fetchProductsList` function utilizes Next.js's `unstable_cache` to cache the fetched data and improve performance. If the cached data is not available or has expired, it fetches fresh data from the backend and caches the result.
+ *
+ * Once the product data is fetched, the `ShopPage` component checks if there are any products available. If no products are found, it renders a message informing the user that there are no products in the shop. Otherwise, it renders the `ProductGrid` component, passing the fetched products as a prop.
+ *
+ * The `generateMetadata` function generates static metadata for the page, including the title, description, and open graph data. This metadata is used by search engines and social media platforms to display preview information about the page.
+ */
+
 import React from 'react'
 import { draftMode } from 'next/headers'
-import { fetchShopList } from '@app/_queries/products'
 import { Metadata } from 'next'
-import { notFound } from 'next/navigation'
 import ProductGrid from '@app/_blocks/ProductGrid'
 import { BlockWrapper } from '../../_components/BlockWrapper'
 import { contentFormats, getPaddingClasses } from '../../_css/tailwindClasses'
 import { Gutter } from '../../_components/Gutter'
+import { unstable_cache } from 'next/cache'
+import { getPayloadHMR } from '@payloadcms/next/utilities'
+import configPromise from '@payload-config'
+import { Product } from '@/payload-types'
 
-// Force dynamic rendering
-export const dynamic = 'force-dynamic'
+const fetchProductsList = (): Promise<Product[] | null> => {
+  const cachedFetchProductsList = unstable_cache(
+    async (): Promise<Product[] | null> => {
+      const config = await configPromise
+      let payload: any = await getPayloadHMR({ config })
+      let products = null
+      try {
+        const { docs } = await payload.find({
+          collection: 'products',
+          depth: 1,
+          pagination: false,
+          context: {
+            select: ['id', 'slug', 'title', 'media', 'prices', 'productType', 'stock', 'meta'],
+          },
+        })
+
+        products = docs
+      } catch (error) {
+        console.error(`Error fetching products...`, error)
+      } finally {
+        return products
+      }
+    },
+    [`fetchProductsList`],
+    {
+      revalidate: 10,
+      tags: [`fetchProductsList`],
+    },
+  )
+
+  return cachedFetchProductsList()
+}
 
 export default async function ShopPage() {
-  const { isEnabled: isDraftMode } = draftMode()
-  let products = null
+  const products: Product[] | null = await fetchProductsList()
 
-  try {
-    products = await fetchShopList()
-  } catch (error) {
-    console.error('Failed to fetch products:', error)
-    return notFound()
-  }
-
+  // console.log('fetchedProducts -- ', products)
   if (!products || products.length === 0) {
     return (
       <BlockWrapper className={getPaddingClasses('hero')}>
@@ -9585,9 +9381,6 @@ export default async function ShopPage() {
                 Thankly Shop
               </span>
             </div>
-            <div className="sm:basis-1/2 md:basis-1/2 lg:basis-2/6 flex items-center justify-end pb-3 gap-4">
-              {/* <CartButtons /> */}
-            </div>
           </div>
           <p className="mt-4 text-gray-500">There are no products in the shop.</p>
         </Gutter>
@@ -9598,27 +9391,39 @@ export default async function ShopPage() {
   return (
     <BlockWrapper className={getPaddingClasses('hero')}>
       <Gutter>
-        <div className="flex flex-col md:flex-row">
-          <div className="sm:basis-3/6 md:basis-3/6 lg:basis-4/6 flex align-middle items-center justify-middle pb-6 pt-6 sm:pt-0">
-            <span
-              className={[
-                contentFormats.global,
-                contentFormats.p,
-                'tracking-tighter sm:tracking-tight text-2xl sm:text-3xl font-medium',
-              ].join(' ')}
-            >
-              Thankly Shop
-            </span>
-          </div>
-          <div className="sm:basis-1/2 md:basis-1/2 lg:basis-2/6 flex items-center justify-end pb-3 gap-4">
-            {/* <CartButtons /> */}
-          </div>
-        </div>
-        <ProductGrid products={products} />
+        <h1 className={[contentFormats.global, contentFormats.h1].join(' ')}>Thankly Shop</h1>
+        <p className={[contentFormats.global, contentFormats.text].join(' ')}>
+          {`Our full range of currently available Thankly Gifts and Cards.`}
+        </p>
+
+        {products && products.length > 0 && <ProductGrid products={products} />}
       </Gutter>
     </BlockWrapper>
   )
 }
+
+// export basic ShopPage metadata
+export async function generateMetadata(): Promise<Metadata> {
+  // Static metadata values
+  const defaultTitle = 'thankly shop'
+  const defaultDescription = 'Our full range of currently available Thankly Gifts and Cards.'
+  const defaultImageURL = `${process.env.NEXT_PUBLIC_SERVER_URL}images/og-image.png`
+  return {
+    title: defaultTitle,
+    description: defaultDescription,
+    openGraph: {
+      title: defaultTitle,
+      description: defaultDescription,
+      url: '/',
+      images: [
+        {
+          url: defaultImageURL,
+        },
+      ],
+    },
+  }
+}
+
 ```
 
 # (pages)/shop/loading.tsx
@@ -9665,11 +9470,29 @@ export default function LoadingShop() {
     </div>
   )
 }
+
 ```
 
 # (pages)/[...slug]/page.tsx
 
 ```tsx
+/**
+ * @file page.tsx
+ * @module PageModule
+ * @description Handles rendering and generation of individual pages in the application.
+ * @overview
+ * This file is responsible for fetching and rendering the content of individual pages in the application using data from the PayloadCMS. It utilizes the Next.js framework for server-side rendering (SSR) and static site generation (SSG) for optimal performance.
+ *
+ * The main functionality of this file includes:
+ *
+ * 1. Fetching page data from the PayloadCMS based on the provided slug (URL path).
+ * 2. Rendering the page content using the `Blocks` component, which assembles the page layout using reusable content blocks.
+ * 3. Generating static parameters (page slugs) for the pages during the build process, enabling SSG.
+ * 4. Generating metadata (title, description, open graph data) for each page based on the fetched content.
+ *
+ * The file leverages various Next.js features such as `unstable_cache` for caching and revalidation, `notFound` for handling non-existent pages, and `generateStaticParams` for generating static parameters during the build process. It also integrates with the PayloadCMS through the `@payloadcms/next/utilities` library.
+ */
+
 import React, { Suspense } from 'react'
 import { Metadata } from 'next'
 import { draftMode } from 'next/headers'
@@ -9678,7 +9501,6 @@ import type { Page } from '@payload-types'
 import { unstable_cache } from 'next/cache'
 import { getPayloadHMR } from '@payloadcms/next/utilities'
 import configPromise from '@payload-config'
-// import { fetchPage } from '@app/_queries/pages'
 import { generateMeta } from '@/utilities/generateMeta'
 import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
 import Blocks from '@app/_blocks'
@@ -9702,13 +9524,13 @@ const fetchPage = (slug: string): Promise<Page | null> => {
       } catch (error) {
         console.error(`Error fetching page: ${slug}`, error)
       } finally {
-        return page || null
+        return page
       }
     },
-    [`fetchPage-${slug}`], // Include the slug in the cache key
+    [`fetchPage-${slug}`],
     {
-      revalidate: 60, // 60 seconds
-      tags: [`fetchPage-${slug}`], // Include the slug in the tags for easier invalidation
+      revalidate: 10,
+      tags: [`fetchPage-${slug}`],
     },
   )
 
@@ -9716,8 +9538,6 @@ const fetchPage = (slug: string): Promise<Page | null> => {
 }
 
 const Page = async ({ params: { slug = 'home' } }) => {
-  const { isEnabled: isDraftMode } = draftMode()
-
   const page: Page | null = await fetchPage(slug || 'home') //, isDraftMode)
 
   if (!page) return notFound()
@@ -9740,27 +9560,11 @@ export async function generateStaticParams() {
           depth: 0,
           pagination: false,
           context: {
-            /**
-             * Selects:
-             * top level id, title fields
-             * text field from "nestedGroup" group field
-             * all fields from "nestedArray" field
-             * "title" field from populated relationship document
-             **/
-            //     select: ['id', 'title', 'nestedGroup.text', 'nestedArray', 'relationship.title
             select: ['slug', 'title', 'meta'],
-            // sort: {
-            //   field:'slug',
-            //   order: 'asc',
-            // },
           },
         })
 
-        // console.log('Found pages list')
-        // console.log('fetchPageSlugs', docs)
-
         if (!docs || docs.length === 0) {
-          // console.log('No pages found')
           return []
         }
 
@@ -9820,9 +9624,64 @@ export async function generateMetadata({
     }),
   }
 }
+
 ```
 
-# \_components/forms/useFormField/types.ts
+# (pages)/[...slug]/loading.tsx
+
+```tsx
+import React from 'react'
+import { BlockWrapper } from '@app/_components/BlockWrapper'
+import { Gutter } from '@app/_components/Gutter'
+import { getPaddingClasses } from '@app/_css/tailwindClasses'
+
+const SubPageHeaderSkeleton = () => (
+  <div className="mb-12">
+    <div className="bg-gray-300 h-10 w-2/3 mb-4 rounded"></div>
+    <div className="bg-gray-200 h-4 w-full mb-2 rounded"></div>
+    <div className="bg-gray-200 h-4 w-5/6 rounded"></div>
+  </div>
+)
+
+const ContentSkeleton = () => (
+  <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+    <div className="md:col-span-2">
+      <div className="bg-gray-300 h-6 w-1/3 mb-4 rounded"></div>
+      {[...Array(4)].map((_, index) => (
+        <div key={index} className="bg-gray-200 h-4 w-full mb-2 rounded"></div>
+      ))}
+      <div className="bg-gray-200 h-48 w-full my-6 rounded"></div>
+      {[...Array(3)].map((_, index) => (
+        <div key={index} className="bg-gray-200 h-4 w-full mb-2 rounded"></div>
+      ))}
+    </div>
+    <div>
+      <div className="bg-gray-300 h-6 w-1/2 mb-4 rounded"></div>
+      <div className="bg-gray-200 h-32 w-full mb-4 rounded"></div>
+      <div className="bg-gray-200 h-10 w-full rounded"></div>
+    </div>
+  </div>
+)
+
+export default function LoadingSubPage() {
+  return (
+    <div className="bg-white">
+      <BlockWrapper
+        settings={{ settings: { theme: 'light' } }}
+        className={getPaddingClasses('hero')}
+      >
+        <Gutter>
+          <SubPageHeaderSkeleton />
+          <ContentSkeleton />
+        </Gutter>
+      </BlockWrapper>
+    </div>
+  )
+}
+
+```
+
+# _components/forms/useFormField/types.ts
 
 ```ts
 import type { Validate, Value } from '../types'
@@ -9843,9 +9702,10 @@ export interface FormField<FieldValue> {
   formProcessing: boolean
   setValue: SetValue
 }
+
 ```
 
-# \_components/forms/useFormField/index.tsx
+# _components/forms/useFormField/index.tsx
 
 ```tsx
 'use client'
@@ -9980,33 +9840,10 @@ export const useFormField = <T extends Value>(options: any): FormField<T> => {
     setValue,
   }
 }
+
 ```
 
-# \_components/forms/fields/types.ts
-
-```ts
-import type { Validate } from '../types'
-
-export interface FieldProps<T> {
-  path?: string
-  name?: string
-  required?: boolean
-  validate?: Validate
-  label?: string | React.ReactNode
-  placeholder?: string
-  onChange?: (value: T) => void // eslint-disable-line no-unused-vars
-  initialValue?: T
-  className?: string
-  disabled?: boolean
-  description?: string
-  showError?: boolean
-  icon?: React.ReactNode
-  fullWidth?: boolean
-  onClick?: () => void
-}
-```
-
-# \_components/forms/Submit/index.tsx
+# _components/forms/Submit/index.tsx
 
 ```tsx
 // 'use client'
@@ -10112,69 +9949,35 @@ const Submit = forwardRef<HTMLButtonElement, SubmitProps>((props, ref) => {
 })
 
 export default Submit
+
 ```
 
-# \_components/forms/Label/types.ts
+# _components/forms/fields/types.ts
 
 ```ts
-import type { HTMLAttributes } from 'react'
+import type { Validate } from '../types'
 
-export interface Props extends HTMLAttributes<HTMLLabelElement> {
-  label?: string | React.ReactNode
+export interface FieldProps<T> {
+  path?: string
+  name?: string
   required?: boolean
-  actionsSlot?: React.ReactNode
-  htmlFor?: string
-  margin?: boolean
+  validate?: Validate
+  label?: string | React.ReactNode
+  placeholder?: string
+  onChange?: (value: T) => void // eslint-disable-line no-unused-vars
+  initialValue?: T
+  className?: string
+  disabled?: boolean
+  description?: string
+  showError?: boolean
+  icon?: React.ReactNode
+  fullWidth?: boolean
+  onClick?: () => void
 }
+
 ```
 
-# \_components/forms/Label/index.tsx
-
-```tsx
-import React from 'react'
-
-import { Props } from './types'
-
-import classes from './index.module.scss'
-
-const LabelOnly: React.FC<Props> = (props) => {
-  const { htmlFor, required, label, className, margin } = props
-
-  return (
-    <label htmlFor={htmlFor} className={[classes.label, className].filter(Boolean).join(' ')}>
-      {label}
-      {required && <span className={classes.required}>*</span>}
-    </label>
-  )
-}
-
-const Label: React.FC<Props> = (props) => {
-  const { label, actionsSlot, margin } = props
-
-  if (label) {
-    if (actionsSlot) {
-      return (
-        <div
-          className={[classes.labelWithActions, margin === false && classes.noMargin]
-            .filter(Boolean)
-            .join(' ')}
-        >
-          <LabelOnly {...props} />
-          <div className={classes.actions}>{actionsSlot}</div>
-        </div>
-      )
-    }
-
-    return <LabelOnly {...props} />
-  }
-
-  return null
-}
-
-export default Label
-```
-
-# \_components/forms/FormSubmissionError/index.tsx
+# _components/forms/FormSubmissionError/index.tsx
 
 ```tsx
 import React from 'react'
@@ -10202,9 +10005,72 @@ const FormSubmissionError: React.FC<{
 }
 
 export default FormSubmissionError
+
 ```
 
-# \_components/forms/FormProcessing/index.tsx
+# _components/forms/Label/types.ts
+
+```ts
+import type { HTMLAttributes } from 'react'
+
+export interface Props extends HTMLAttributes<HTMLLabelElement> {
+  label?: string | React.ReactNode
+  required?: boolean
+  actionsSlot?: React.ReactNode
+  htmlFor?: string
+  margin?: boolean
+}
+
+```
+
+# _components/forms/Label/index.tsx
+
+```tsx
+import React from 'react'
+
+import { Props } from './types'
+
+import classes from './index.module.scss'
+
+const LabelOnly: React.FC<Props> = props => {
+  const { htmlFor, required, label, className, margin } = props
+
+  return (
+    <label htmlFor={htmlFor} className={[classes.label, className].filter(Boolean).join(' ')}>
+      {label}
+      {required && <span className={classes.required}>*</span>}
+    </label>
+  )
+}
+
+const Label: React.FC<Props> = props => {
+  const { label, actionsSlot, margin } = props
+
+  if (label) {
+    if (actionsSlot) {
+      return (
+        <div
+          className={[classes.labelWithActions, margin === false && classes.noMargin]
+            .filter(Boolean)
+            .join(' ')}
+        >
+          <LabelOnly {...props} />
+          <div className={classes.actions}>{actionsSlot}</div>
+        </div>
+      )
+    }
+
+    return <LabelOnly {...props} />
+  }
+
+  return null
+}
+
+export default Label
+
+```
+
+# _components/forms/FormProcessing/index.tsx
 
 ```tsx
 import React from 'react'
@@ -10230,9 +10096,10 @@ const FormProcessing: React.FC<{
 }
 
 export default FormProcessing
+
 ```
 
-# \_components/forms/Form/reducer.ts
+# _components/forms/Form/reducer.ts
 
 ```ts
 import type { Action, Field, Fields } from '../types'
@@ -10271,7 +10138,7 @@ const unflattenRowsFromState = (
   // Loop over all keys from state
   // If the key begins with the name of the parent field,
   // Add value to rowsFromStateObject and delete it from remaining state
-  Object.keys(state).forEach((key) => {
+  Object.keys(state).forEach(key => {
     if (key.indexOf(`${path}.`) === 0) {
       const name = key.replace(pathPrefixToRemove, '')
       rowsFromStateObject[name] = state[key]
@@ -10325,7 +10192,7 @@ function fieldReducer(state: Fields, action: Action): Fields {
 
       const newState = { ...state }
 
-      fields.forEach((field) => {
+      fields.forEach(field => {
         newState[field.path] = {
           ...(newState[field.path] || {}),
           initialValue: field.initialValue,
@@ -10345,9 +10212,10 @@ function fieldReducer(state: Fields, action: Action): Fields {
 }
 
 export default fieldReducer
+
 ```
 
-# \_components/forms/Form/reduceFieldsToValues.ts
+# _components/forms/Form/reduceFieldsToValues.ts
 
 ```ts
 // no declaration file for flatley, and no @types either, so require instead of import
@@ -10425,9 +10293,10 @@ const unflatten = (data: Record<string, any>): Record<string, any> => {
   }
   return result
 }
+
 ```
 
-# \_components/forms/Form/initialContext.ts
+# _components/forms/Form/initialContext.ts
 
 ```ts
 import type { IFormContext } from '../types'
@@ -10445,9 +10314,10 @@ const initialContext: IFormContext = {
 }
 
 export default initialContext
+
 ```
 
-# \_components/forms/Form/index.tsx
+# _components/forms/Form/index.tsx
 
 ```tsx
 'use client'
@@ -10624,9 +10494,10 @@ const Form = forwardRef<HTMLFormElement, FormProps>((props, ref) => {
 })
 
 export default Form
+
 ```
 
-# \_components/forms/Form/context.ts
+# _components/forms/Form/context.ts
 
 ```ts
 'use client'
@@ -10660,9 +10531,10 @@ export {
   useFormProcessing,
   useFormSubmitted,
 }
+
 ```
 
-# \_components/forms/Error/types.ts
+# _components/forms/Error/types.ts
 
 ```ts
 import type { HTMLAttributes } from 'react'
@@ -10671,9 +10543,10 @@ export interface Props extends HTMLAttributes<HTMLParagraphElement> {
   showError: boolean
   message: string | undefined
 }
+
 ```
 
-# \_components/forms/Error/index.tsx
+# _components/forms/Error/index.tsx
 
 ```tsx
 import React from 'react'
@@ -10682,7 +10555,7 @@ import { Props } from './types'
 
 import classes from './index.module.scss'
 
-const Error: React.FC<Props> = (props) => {
+const Error: React.FC<Props> = props => {
   const { showError, message, className } = props
 
   if (showError) {
@@ -10693,9 +10566,10 @@ const Error: React.FC<Props> = (props) => {
 }
 
 export default Error
+
 ```
 
-# \_components/cards/SquareCard/index.tsx
+# _components/cards/SquareCard/index.tsx
 
 ```tsx
 import React from 'react'
@@ -10771,9 +10645,10 @@ export const SquareCard: React.FC<SquareCardProps> = (props) => {
     </div>
   )
 }
+
 ```
 
-# \_components/cards/DefaultCard/index.tsx
+# _components/cards/DefaultCard/index.tsx
 
 ```tsx
 import * as React from 'react'
@@ -10826,9 +10701,10 @@ export const DefaultCard: React.FC<DefaultCardProps> = (props) => {
     </Link>
   )
 }
+
 ```
 
-# \_components/cards/ContentMediaCard/index.tsx
+# _components/cards/ContentMediaCard/index.tsx
 
 ```tsx
 import * as React from 'react'
@@ -10879,9 +10755,10 @@ export const ContentMediaCard: React.FC<ContentMediaCardProps> = (props) => {
     </Link>
   )
 }
+
 ```
 
-# \_components/Tooltip/TooltipContent/index.tsx
+# _components/Tooltip/TooltipContent/index.tsx
 
 ```tsx
 import React from 'react'
@@ -10903,9 +10780,10 @@ export const TooltipContent: React.FC<Props> = ({ children, className }) => {
     </aside>
   )
 }
+
 ```
 
-# \_components/Media/Video/index.tsx
+# _components/Media/Video/index.tsx
 
 ```tsx
 'use client'
@@ -10951,9 +10829,10 @@ export const Video: React.FC<Props> = (props) => {
 
   return null
 }
+
 ```
 
-# \_components/Media/Image/index.tsx
+# _components/Media/Image/index.tsx
 
 ```tsx
 'use client'
@@ -10988,11 +10867,12 @@ export const ImageComponent: React.FC<Props> = (props) => {
   let alt = altFromProps
   let src: StaticImageData | string | undefined | null = srcFromProps
 
-  const hasDarkModeFallback =
-    resource?.darkModeFallback &&
-    typeof resource.darkModeFallback === 'object' &&
-    resource.darkModeFallback !== null &&
-    typeof resource.darkModeFallback.filename === 'string'
+  // removed field in Image content schema
+  // const hasDarkModeFallback =
+  //   resource?.darkModeFallback &&
+  //   typeof resource.darkModeFallback === 'object' &&
+  //   resource.darkModeFallback !== null &&
+  //   typeof resource.darkModeFallback.filename === 'string'
 
   if (!src && resource && typeof resource !== 'string') {
     width = resource.width
@@ -11012,7 +10892,7 @@ export const ImageComponent: React.FC<Props> = (props) => {
     isLoading && classes.placeholder,
     classes.image,
     imgClassName,
-    hasDarkModeFallback && classes.hasDarkModeFallback,
+    // hasDarkModeFallback && classes.hasDarkModeFallback,
   ]
     .filter(Boolean)
     .join(' ')
@@ -11036,7 +10916,8 @@ export const ImageComponent: React.FC<Props> = (props) => {
         sizes={sizes}
         priority={priority}
       />
-      {hasDarkModeFallback &&
+      {/* // removed field in Image content schema */}
+      {/* {hasDarkModeFallback &&
         typeof resource.darkModeFallback === 'object' &&
         resource.darkModeFallback !== null && (
           <Image
@@ -11056,13 +10937,14 @@ export const ImageComponent: React.FC<Props> = (props) => {
             sizes={sizes}
             priority={priority}
           />
-        )}
+        )} */}
     </React.Fragment>
   )
 }
+
 ```
 
-# \_components/Header/MobileNav/index.tsx
+# _components/Header/MobileNav/index.tsx
 
 ```tsx
 import * as React from 'react'
@@ -11361,9 +11243,10 @@ export const MobileNav: React.FC<NavItems> = (props) => {
     </div>
   )
 }
+
 ```
 
-# \_components/Header/DesktopNav/index.tsx
+# _components/Header/DesktopNav/index.tsx
 
 ```tsx
 import * as React from 'react'
@@ -11644,9 +11527,10 @@ export const DesktopNav: React.FC<DesktopNavType> = ({ tabs, hideBackground }) =
     </div>
   )
 }
+
 ```
 
-# \_components/Footer/SubFooter/index.tsx
+# _components/Footer/SubFooter/index.tsx
 
 ```tsx
 'use client'
@@ -11739,9 +11623,30 @@ export const SubFooter = () => {
     </Gutter>
   )
 }
+
 ```
 
-# \_components/CMSForm/Submit/index.tsx
+# _components/CMSForm/Width/index.tsx
+
+```tsx
+import * as React from 'react'
+
+import classes from './index.module.scss'
+
+export const Width: React.FC<{ width?: number | null; children: React.ReactNode }> = ({
+  width,
+  children,
+}) => {
+  return (
+    <div className={classes.width} style={{ width: width ? `${width}%` : undefined }}>
+      {children}
+    </div>
+  )
+}
+
+```
+
+# _components/CMSForm/Submit/index.tsx
 
 ```tsx
 // 'use client'
@@ -11854,28 +11759,10 @@ const Submit = forwardRef<HTMLButtonElement, SubmitProps>((props, ref) => {
 })
 
 export default Submit
+
 ```
 
-# \_components/CMSForm/Width/index.tsx
-
-```tsx
-import * as React from 'react'
-
-import classes from './index.module.scss'
-
-export const Width: React.FC<{ width?: number | null; children: React.ReactNode }> = ({
-  width,
-  children,
-}) => {
-  return (
-    <div className={classes.width} style={{ width: width ? `${width}%` : undefined }}>
-      {children}
-    </div>
-  )
-}
-```
-
-# \_components/CMSForm/Label/types.ts
+# _components/CMSForm/Label/types.ts
 
 ```ts
 import type { HTMLAttributes } from 'react'
@@ -11888,9 +11775,10 @@ export interface Props extends HTMLAttributes<HTMLLabelElement> {
   htmlFor?: string
   margin?: boolean
 }
+
 ```
 
-# \_components/CMSForm/Label/index.tsx
+# _components/CMSForm/Label/index.tsx
 
 ```tsx
 import React from 'react'
@@ -11899,7 +11787,7 @@ import { Props } from './types'
 
 import classes from './index.module.scss'
 
-const LabelOnly: React.FC<Props> = (props) => {
+const LabelOnly: React.FC<Props> = props => {
   const { htmlFor, required, label, className } = props
 
   return (
@@ -11910,7 +11798,7 @@ const LabelOnly: React.FC<Props> = (props) => {
   )
 }
 
-const Label: React.FC<Props> = (props) => {
+const Label: React.FC<Props> = props => {
   const { actionsClassName, label, actionsSlot, margin } = props
 
   if (label) {
@@ -11938,9 +11826,10 @@ const Label: React.FC<Props> = (props) => {
 }
 
 export default Label
+
 ```
 
-# \_components/Avatar/DropdownMenu/index.tsx
+# _components/Avatar/DropdownMenu/index.tsx
 
 ```tsx
 import * as React from 'react'
@@ -12010,9 +11899,10 @@ export const DropdownMenu: React.FC<{
 
   return null
 }
+
 ```
 
-# \_components/Analytics/GoogleTagManager/index.tsx
+# _components/Analytics/GoogleTagManager/index.tsx
 
 ```tsx
 'use client'
@@ -12057,9 +11947,10 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
     </React.Fragment>
   )
 }
+
 ```
 
-# \_components/Analytics/GoogleAnalytics/index.tsx
+# _components/Analytics/GoogleAnalytics/index.tsx
 
 ```tsx
 'use client'
@@ -12106,9 +11997,10 @@ export const GoogleAnalytics: React.FC = () => {
     </React.Fragment>
   )
 }
+
 ```
 
-# \_blocks/StickyHighlights/Highlight/index.tsx
+# _blocks/StickyHighlights/Highlight/index.tsx
 
 ```tsx
 import React, { Fragment, useEffect, useRef, useState } from 'react'
@@ -12316,9 +12208,10 @@ export const StickyHighlight: React.FC<Props> = React.memo((props) => {
     // </CodeBlip.Provider>
   )
 })
+
 ```
 
-# \_blocks/Steps/Step/index.tsx
+# _blocks/Steps/Step/index.tsx
 
 ```tsx
 import React, { useEffect, useRef, useState } from 'react'
@@ -12365,9 +12258,10 @@ export const Step: React.FC<Props> = ({ layout, i }) => {
 
   return null
 }
+
 ```
 
-# \_blocks/Slider/QuoteCard/index.tsx
+# _blocks/Slider/QuoteCard/index.tsx
 
 ```tsx
 import * as React from 'react'
@@ -12407,9 +12301,1235 @@ export const QuoteCard: React.FC<Props> = ({ quote, leader, author, role, isActi
     </div>
   )
 }
+
 ```
 
-# \_blocks/MediaContentAccordion/Mobile/index.tsx
+# _blocks/Order/ReceiversGrid/index.tsx
+
+```tsx
+'use client'
+
+import React, { useState, useEffect, useCallback, useTransition, useMemo } from 'react'
+import { contentFormats } from '@app/_css/tailwindClasses'
+import { useOrder } from '@app/_providers/Order'
+import { MapPinIcon, MessageSquareTextIcon, SendIcon, UserIcon, UsersIcon } from 'lucide-react'
+import { AddReceiverButton, CopyReceiverIcon, RemoveReceiverIcon } from './ReceiverActions'
+import { addressAutocomplete } from './addressAutocomplete'
+import { debounce, update } from 'lodash'
+import { Order, Product } from '@/payload-types'
+import { Field, Label, Switch } from '@headlessui/react'
+import { Radio, RadioGroup } from '@headlessui/react'
+import cn from '@/utilities/cn'
+
+const shippingOptions = [
+  { name: 'Standard Mail', value: 'standardMail', productType: 'card', cost: true },
+  { name: 'Express Mail', value: 'expressMail', productType: 'card', cost: true },
+  { name: 'Standard Parcel', value: 'standardParcel', productType: 'gift', cost: true },
+  { name: 'Express Parcel', value: 'expressParcel', productType: 'gift', cost: true },
+]
+
+interface Receiver {
+  id: string
+  message: string
+  name: string
+  delivery: {
+    address?: {
+      formattedAddress?: string | null
+      addressLine1?: string | null
+      addressLine2?: string | null
+      json?:
+        | {
+            [k: string]: unknown
+          }
+        | unknown[]
+        | string
+        | number
+        | boolean
+        | null
+    }
+    shippingMethod: ShippingMethod
+  }
+  totals: {
+    cost: number
+    shipping: number
+    subTotal: number
+  }
+  errors: JSON
+}
+
+interface OrderItem {
+  id: string
+  product: Product
+  receivers: Receiver[]
+}
+
+interface ValidationErrors {
+  name?: string
+  message?: string
+  formattedAddress?: string
+  addressLine1?: string
+  shippingMethod?: string
+}
+
+type ShippingMethod = 'standardMail' | 'expressMail' | 'standardParcel' | 'expressParcel' | null
+
+export const ReceiversGrid: React.FC<{ item: OrderItem }> = ({ item }) => {
+  const { order, updateReceiver, removeReceiver } = useOrder()
+
+  const [isPending, startTransition] = useTransition()
+  const [errors, setErrors] = useState<{ [key: string]: JSON }>({})
+  const [names, setNames] = useState<{ [key: string]: string }>({})
+  const [messages, setMessages] = useState<{ [key: string]: string }>({})
+  const [poBoxFlags, setPoBoxFlags] = useState<{ [key: string]: boolean }>({})
+  const [addressesLine1, setLine1Addresses] = useState<{ [key: string]: string }>({})
+  const [formattedAddresses, setFormattedAddresses] = useState<{ [key: string]: string }>({})
+  const [addressSuggestions, setAddressSuggestions] = useState<{ [key: string]: any[] }>({})
+  const [validationErrors, setValidationErrors] = useState<{ [key: string]: ValidationErrors }>({})
+
+  const [selectedShipping, setSelectedShipping] = useState<{
+    [key: string]: (typeof shippingOptions)[0]
+  }>(() => {
+    const initialShipping: { [key: string]: (typeof shippingOptions)[0] } = {}
+    item.receivers?.forEach((receiver) => {
+      let selectedOption: (typeof shippingOptions)[0]
+      if (receiver.delivery?.shippingMethod) {
+        selectedOption =
+          shippingOptions.find((option) => option.value === receiver.delivery?.shippingMethod) ||
+          shippingOptions[0]
+      } else {
+        selectedOption =
+          item.product.productType === 'gift'
+            ? shippingOptions.find((option) => option.value === 'standardParcel') ||
+              shippingOptions[2]
+            : shippingOptions.find((option) => option.value === 'standardMail') ||
+              shippingOptions[0]
+      }
+      initialShipping[receiver.id] = selectedOption
+    })
+    return initialShipping
+  })
+
+  const validateReceiver = useCallback(
+    (receiver: Receiver, poBoxFlag: boolean): ValidationErrors => {
+      const errors: ValidationErrors = {}
+
+      if (!receiver.name) {
+        errors.name = 'Name is required'
+      } else if (receiver.name.length < 2) {
+        errors.name = 'Name must be at least 2 characters long'
+      } else if (receiver.name.length > 100) {
+        errors.name = 'Name must be at most 100 characters long'
+      } else if (!/^[a-zA-Z\s'-]+$/.test(receiver.name)) {
+        errors.name = 'Name contains invalid characters'
+      }
+
+      if (!receiver.message) {
+        errors.message = 'Message is required'
+      }
+      //  else if (receiver.message.split(/\s+/).length < 60) {
+      //   errors.message = 'Message must be at least 60 words'
+      // }
+      else if (!/^[a-zA-Z0-9\s.,!?'-]+$/.test(receiver.message)) {
+        errors.message = 'Message contains invalid characters'
+      }
+
+      if (!receiver.delivery?.address?.formattedAddress) {
+        errors.formattedAddress = 'Address is required'
+      } else if (!receiver.delivery?.address?.json) {
+        errors.formattedAddress = 'Please select an address from the suggestions'
+      }
+
+      if (poBoxFlag && !receiver.delivery?.address?.addressLine1) {
+        errors.addressLine1 = 'PO Box / Parcel Collect details are required'
+      }
+
+      if (!receiver.delivery?.shippingMethod) {
+        errors.shippingMethod = 'Shipping method is required'
+      }
+
+      return errors
+    },
+    [],
+  )
+
+  useEffect(() => {
+    const newValidationErrors: { [key: string]: ValidationErrors } = {}
+    item.receivers?.forEach((receiver) => {
+      newValidationErrors[receiver.id] = validateReceiver(
+        receiver,
+        poBoxFlags[receiver.id] || false,
+      )
+    })
+    setValidationErrors(newValidationErrors)
+  }, [item.receivers, poBoxFlags, validateReceiver])
+
+  useEffect(() => {
+    const currentItem = order.items?.find((orderItem) => orderItem.id === item.id)
+    // console.log('Current Item in Cart:', currentItem)
+  }, [order, item.id])
+
+  useEffect(() => {
+    const initialErrors: { [key: string]: JSON } = {}
+    const initialNames: { [key: string]: string } = {}
+    const initialMessages: { [key: string]: string } = {}
+
+    const initialPoBoxFlags: { [key: string]: boolean } = {}
+    const initialLine1Addresses: { [key: string]: string } = {}
+    const initialFormattedAddresses: { [key: string]: string } = {}
+
+    const initialShipping: { [key: string]: (typeof shippingOptions)[0] } = {}
+
+    item.receivers?.forEach((receiver) => {
+      initialErrors[receiver.id] = receiver.errors || {}
+      initialNames[receiver.id] = receiver.name || ''
+      initialMessages[receiver.id] = receiver.message || ''
+      initialLine1Addresses[receiver.id] = receiver.delivery?.address?.addressLine1 || ''
+      initialFormattedAddresses[receiver.id] = receiver.delivery?.address?.formattedAddress || ''
+
+      let selectedOption: (typeof shippingOptions)[0]
+      if (receiver.delivery?.shippingMethod) {
+        selectedOption =
+          shippingOptions.find((option) => option.value === receiver.delivery?.shippingMethod) ||
+          shippingOptions[0]
+      } else {
+        selectedOption =
+          item.product.productType === 'gift'
+            ? shippingOptions.find((option) => option.value === 'standardParcel') ||
+              shippingOptions[2]
+            : shippingOptions.find((option) => option.value === 'standardMail') ||
+              shippingOptions[0]
+      }
+      initialShipping[receiver.id] = selectedOption
+    })
+
+    setErrors(initialErrors)
+    setNames(initialNames)
+    setMessages(initialMessages)
+    setLine1Addresses(initialLine1Addresses)
+    setFormattedAddresses(initialFormattedAddresses)
+    setSelectedShipping(initialShipping)
+
+    // Initialize poBoxFlags only if it's empty
+    setPoBoxFlags((prev) => {
+      if (Object.keys(prev).length === 0) {
+        const initialPoBoxFlags: { [key: string]: boolean } = {}
+        item.receivers?.forEach((receiver) => {
+          initialPoBoxFlags[receiver.id] = !!receiver.delivery?.address?.addressLine1
+        })
+        return initialPoBoxFlags
+      }
+      return prev
+    })
+  }, [item.receivers, item.product.productType])
+
+  const debouncedAddressInput = useCallback(
+    debounce(async (receiverId: string, value: string) => {
+      try {
+        const suggestions = await addressAutocomplete(value)
+        setAddressSuggestions((prev) => ({ ...prev, [receiverId]: suggestions }))
+      } catch (error) {
+        console.error('Error fetching address suggestions:', error)
+        setAddressSuggestions((prev) => ({ ...prev, [receiverId]: [] }))
+      }
+    }, 300),
+    [],
+  )
+
+  const handleNameChange = (receiverId: string, value: string) => {
+    setNames((prev) => ({ ...prev, [receiverId]: value }))
+    updateReceiver(item.product.id, receiverId, { name: value })
+  }
+
+  const handleMessageChange = (receiverId: string, value: string) => {
+    setMessages((prev) => ({ ...prev, [receiverId]: value }))
+    updateReceiver(item.product.id, receiverId, { message: value })
+  }
+
+  const handleFormattedAddressChange = (receiverId: string, value: string) => {
+    setFormattedAddresses((prev) => ({
+      ...prev,
+      [receiverId]: value,
+    }))
+    debouncedAddressInput(receiverId, value)
+  }
+
+  const clearSuggestionsForReceiver = (receiverId: string) => {
+    setAddressSuggestions((prev) => ({
+      ...prev,
+      [receiverId]: [],
+    }))
+  }
+
+  if (!item) return null
+
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-4 px-3 pt-6 sm:px-6 md:px-6">
+      {item.receivers?.map((receiver: Receiver, index: number) => (
+        <div
+          key={receiver.id}
+          className="relative flex flex-col justify-between rounded-sm border border-solid hover:shadow-xl hover:delay-75 duration-150 p-6 aspect-square"
+        >
+          <div className="space-y-8 sm:space-y-10">
+            {/* heading / title / actions */}
+            <div className="flex flex-row justify-between items-center">
+              <span className={[contentFormats.p, 'font-semibold basis-3/4'].join(' ')}>
+                {`#${(index + 1).toString().padStart(2, '0')}`}
+              </span>
+              <div className="flex justify-end items-center gap-x-4 sm:gap-x-3">
+                <CopyReceiverIcon
+                  orderItemId={item.product.id}
+                  receiverId={receiver.id}
+                  // className="h-8 w-8 sm:h-6 sm:w-6"
+                />
+                <RemoveReceiverIcon
+                  orderItemId={item.product.id}
+                  receiverId={receiver.id}
+                  removeReceiver={removeReceiver}
+                  // className="h-8 w-8 sm:h-6 sm:w-6"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-6 sm:space-y-8">
+              {/* receiver */}
+              <div>
+                <label
+                  htmlFor={`name-${receiver.id}`}
+                  className="block text-sm font-medium text-gray-900"
+                >
+                  <UserIcon className="inline-block mr-1 h-5 w-5 text-gray-400" strokeWidth={1.2} />
+                  Name
+                </label>
+                <span className="block mt-1 text-xs text-gray-500">
+                  {`A full name and any business name helps with delivery`}
+                </span>
+                <input
+                  id={`name-${receiver.id}`}
+                  name="name"
+                  type="text"
+                  placeholder="Jane Smith"
+                  value={names[receiver.id] || ''}
+                  className={cn(
+                    'mt-2 peer block w-full border-0 focus:outline-none border-b focus:border-b-2 border-gray-300 bg-gray-50 py-2 px-1 text-gray-900 placeholder-gray-400 focus:border-green/75 focus:ring-0 text-base sm:text-sm',
+                    validationErrors[receiver.id]?.name && 'border-red-500',
+                  )}
+                  onChange={(e) => handleNameChange(receiver.id, e.target.value)}
+                  aria-invalid={!!validationErrors[receiver.id]?.name}
+                  aria-describedby={
+                    validationErrors[receiver.id]?.name ? `name-error-${receiver.id}` : undefined
+                  }
+                />
+                {validationErrors[receiver.id]?.name && (
+                  <span
+                    className="block mt-1 text-sm text-red-600"
+                    id={`name-error-${receiver.id}`}
+                  >
+                    {validationErrors[receiver.id].name}
+                  </span>
+                )}
+              </div>
+
+              {/* message */}
+              <div>
+                <label
+                  htmlFor={`message-${receiver.id}`}
+                  className="block text-sm font-medium text-gray-900"
+                >
+                  <MessageSquareTextIcon
+                    className="inline-block mr-1 h-5 w-5 text-gray-400"
+                    strokeWidth={1.2}
+                  />
+                  Message
+                </label>
+                <span className="block mt-1 text-xs text-gray-500">
+                  {`Write a personal message for the recipient (60-100 words)`}
+                </span>
+                <textarea
+                  id={`message-${receiver.id}`}
+                  name="message"
+                  value={messages[receiver.id] || ''}
+                  maxLength={400}
+                  rows={5}
+                  placeholder="Add a message with your thankly here..."
+                  className={cn(
+                    'font-body mt-2 peer block w-full border-0 focus:outline-none border-b focus:border-b-2 border-gray-300 bg-gray-50 py-2 px-1 text-gray-900 placeholder-gray-400 focus:border-green/75 focus:ring-0 text-base sm:text-sm',
+                    validationErrors[receiver.id]?.message && 'border-red-500',
+                  )}
+                  onChange={(e) => handleMessageChange(receiver.id, e.target.value)}
+                  aria-invalid={!!validationErrors[receiver.id]?.message}
+                  aria-describedby={
+                    validationErrors[receiver.id]?.message
+                      ? `message-error-${receiver.id}`
+                      : undefined
+                  }
+                />
+                {validationErrors[receiver.id]?.message && (
+                  <span
+                    className="block mt-1 text-sm text-red-600"
+                    id={`message-error-${receiver.id}`}
+                  >
+                    {validationErrors[receiver.id].message}
+                  </span>
+                )}
+              </div>
+
+              {/* address */}
+              <div>
+                <label
+                  htmlFor={`address-${receiver.id}`}
+                  className="block text-sm font-medium text-gray-900"
+                >
+                  <MapPinIcon
+                    className="inline-block mr-1 h-5 w-5 text-gray-400"
+                    strokeWidth={1.2}
+                  />
+                  Address
+                </label>
+                <span className="block mt-1 text-xs text-gray-500">
+                  {`Provide the complete shipping address. `}
+                </span>
+
+                <Field className="flex items-center py-2">
+                  <Switch
+                    checked={poBoxFlags[receiver.id] ?? false}
+                    onChange={() => {
+                      setPoBoxFlags((prev) => {
+                        const newState = { ...prev, [receiver.id]: !prev[receiver.id] }
+                        updateReceiver(item.product.id, receiver.id, {
+                          delivery: {
+                            address: {
+                              ...receiver.delivery?.address,
+                              addressLine1: newState[receiver.id] ? '' : null,
+                            },
+                          },
+                        })
+                        return newState
+                      })
+                    }}
+                    className="group relative inline-flex h-5 w-10 sm:h-5 sm:w-10 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent bg-gray-200 transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-green focus:ring-offset-2 data-[checked]:bg-green"
+                  >
+                    <span
+                      aria-hidden="true"
+                      className="pointer-events-none inline-block h-4.5 w-4 sm:h-4.5 sm:w-4.5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out group-data-[checked]:translate-x-4 sm:group-data-[checked]:translate-x-3.5"
+                    />
+                  </Switch>
+                  <Label as="span" className="ml-3 text-xs">
+                    <span className="font-semibold text-gray-500">{` Sending to AusPost Parcel Collect / Locker / PO Box?`}</span>{' '}
+                  </Label>
+                </Field>
+
+                {(poBoxFlags[receiver.id] || addressesLine1[receiver.id]) && (
+                  <>
+                    <input
+                      id={`addressLine1-${receiver.id}`}
+                      name="addressLine1"
+                      type="text"
+                      placeholder="Parcel Collect / Locker / PO Box"
+                      value={addressesLine1[receiver.id] || ''}
+                      onChange={(e) => {
+                        const newAddressLine1 = e.target.value
+                        setLine1Addresses((prev) => ({
+                          ...prev,
+                          [receiver.id]: newAddressLine1,
+                        }))
+                        updateReceiver(item.product.id, receiver.id, {
+                          delivery: {
+                            address: {
+                              ...receiver.delivery?.address,
+                              addressLine1: newAddressLine1,
+                            },
+                          },
+                        })
+                      }}
+                      className={cn(
+                        'block w-full border-0 focus:outline-none border-b focus:border-b-2 border-gray-300 bg-gray-50 py-2 px-1 text-gray-900 placeholder-gray-400 focus:border-green/75 focus:ring-0 text-base sm:text-sm',
+                        validationErrors[receiver.id]?.addressLine1 && 'border-red-500',
+                      )}
+                      aria-invalid={!!validationErrors[receiver.id]?.addressLine1}
+                      aria-describedby={
+                        validationErrors[receiver.id]?.addressLine1
+                          ? `addressLine1-error-${receiver.id}`
+                          : undefined
+                      }
+                    />
+                    {validationErrors[receiver.id]?.addressLine1 && (
+                      <span
+                        className="block mt-1 text-sm text-red-600"
+                        id={`addressLine1-error-${receiver.id}`}
+                      >
+                        {validationErrors[receiver.id].addressLine1}
+                      </span>
+                    )}
+                  </>
+                )}
+                <input
+                  id={`address-${receiver.id}`}
+                  name="formattedAddress"
+                  type="text"
+                  value={formattedAddresses[receiver.id] || ''}
+                  placeholder="Enter street address"
+                  onChange={(e) => handleFormattedAddressChange(receiver.id, e.target.value)}
+                  className={cn(
+                    'mt-2 peer block w-full border-0 focus:outline-none border-b focus:border-b-2 border-gray-300 bg-gray-50 py-2 px-1 text-gray-900 placeholder-gray-400 focus:border-green/75 focus:ring-0 text-base sm:text-sm',
+                    validationErrors[receiver.id]?.formattedAddress && 'border-red-500',
+                  )}
+                  aria-invalid={!!validationErrors[receiver.id]?.formattedAddress}
+                  aria-describedby={
+                    validationErrors[receiver.id]?.formattedAddress
+                      ? `address-error-${receiver.id}`
+                      : undefined
+                  }
+                />
+                {validationErrors[receiver.id]?.formattedAddress && (
+                  <span
+                    className="block mt-1 text-sm text-red-600"
+                    id={`address-error-${receiver.id}`}
+                  >
+                    {validationErrors[receiver.id].formattedAddress}
+                  </span>
+                )}
+                {addressSuggestions[receiver.id]?.length > 0 && (
+                  <div className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                    {addressSuggestions[receiver.id].map((suggestion, index) => (
+                      <div
+                        key={index}
+                        className="relative cursor-default select-none py-3 sm:py-2 px-4 sm:px-3 text-gray-900 hover:bg-green/75 hover:text-white"
+                        onClick={debounce(() => {
+                          // console.log('addressLine2 updated -- ', suggestion.formattedAddress)
+                          startTransition(() => {
+                            try {
+                              updateReceiver(item.product.id, receiver.id, {
+                                delivery: {
+                                  address: {
+                                    ...receiver.delivery?.address,
+                                    addressLine2: suggestion.formattedAddress,
+                                    formattedAddress: suggestion.formattedAddress,
+                                    json: suggestion,
+                                  },
+                                },
+                              })
+                              setFormattedAddresses((prev) => ({
+                                ...prev,
+                                [receiver.id]: suggestion.formattedAddress,
+                              }))
+                              clearSuggestionsForReceiver(receiver.id)
+                            } catch (error) {
+                              console.error('Error saving address:', error)
+                            }
+                          })
+                        }, 200)}
+                      >
+                        <MapPinIcon className="inline-block h-5 w-5 text-gray-400 mr-2" />
+                        {suggestion.addressLabel}, {suggestion.city}, {suggestion.state}{' '}
+                        {suggestion.postalCode}
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* shipping method */}
+              <div>
+                <label
+                  htmlFor="shipping-method"
+                  className="block text-sm font-medium text-gray-900"
+                >
+                  <SendIcon className="inline-block mr-1 h-5 w-5 text-gray-400" strokeWidth={1.2} />
+                  Shipping
+                </label>
+                <span className="block mt-1 text-xs text-gray-500">
+                  {`Choose your preferred shipping method. FREE shipping for orders over $150.
+        Discount applied at checkout.`}
+                </span>
+
+                <RadioGroup
+                  value={selectedShipping[receiver.id] || shippingOptions[0]}
+                  onChange={(selected) => {
+                    setSelectedShipping((prev) => ({
+                      ...prev,
+                      [receiver.id]: selected,
+                    }))
+                    updateReceiver(item.product.id, receiver.id, {
+                      delivery: {
+                        shippingMethod: selected.value as ShippingMethod,
+                      },
+                    })
+                  }}
+                  className={cn(
+                    'mt-2 grid grid-cols-2 gap-3 sm:grid-cols-2 leading-tighter',
+                    validationErrors[receiver.id]?.shippingMethod && 'border-red-500',
+                  )}
+                >
+                  {shippingOptions
+                    .filter((option) => option.productType === item.product.productType)
+                    .map((option) => (
+                      <Radio
+                        key={option.value}
+                        value={option}
+                        className={cn(
+                          'cursor-pointer focus:outline-none leading-tighter',
+                          'flex items-center justify-center rounded-md bg-white px-3 py-3 text-sm  text-gray-900 ring-1 ring-gray-300 hover:bg-gray-50 data-[checked]:bg-green data-[checked]:text-white data-[checked]:ring-0 data-[focus]:data-[checked]:ring-2 data-[focus]:ring-2 data-[focus]:ring-green data-[focus]:ring-offset-2 data-[checked]:hover:bg-green sm:flex-1 [&:not([data-focus],[data-checked])]:ring-inset',
+                        )}
+                      >
+                        {option.name}
+                      </Radio>
+                    ))}
+                </RadioGroup>
+                {validationErrors[receiver.id]?.shippingMethod && (
+                  <span
+                    className="block mt-1 text-sm text-red-600"
+                    id={`shipping-error-${receiver.id}`}
+                  >
+                    {validationErrors[receiver.id].shippingMethod}
+                  </span>
+                )}
+              </div>
+            </div>
+          </div>
+
+          <div className="pt-4 text-right">
+            <div>
+              <span className={[contentFormats.global, contentFormats.text].join(' ')}>
+                {`Cost: ${
+                  receiver.totals.cost.toLocaleString('en-AU', {
+                    style: 'currency',
+                    currency: 'AUD',
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 2,
+                  }) || 0
+                }`}
+              </span>
+            </div>
+            <div>
+              <span className={[contentFormats.global, contentFormats.text].join(' ')}>
+                {`Shipping: ${
+                  receiver.totals.shipping
+                    ? receiver.totals.shipping?.toLocaleString('en-AU', {
+                        style: 'currency',
+                        currency: 'AUD',
+                        minimumFractionDigits: 0,
+                        maximumFractionDigits: 2,
+                      })
+                    : '(needs address)'
+                }`}
+              </span>
+            </div>
+            <div className={[contentFormats.global, contentFormats.h6].join(' ')}>
+              {`Subtotal: ${
+                receiver.totals.subTotal.toLocaleString('en-AU', {
+                  style: 'currency',
+                  currency: 'AUD',
+                  minimumFractionDigits: 0,
+                  maximumFractionDigits: 2,
+                }) || 0
+              }`}
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  )
+}
+
+```
+
+# _blocks/Order/ReceiversGrid/addressAutocomplete.ts
+
+```ts
+'use server'
+
+import { revalidatePath } from 'next/cache'
+
+export async function addressAutocomplete(query: string, countryCode: string = 'AU') {
+  if (!query || query.length < 2) {
+    return []
+  }
+
+  try {
+    const response = await fetch(
+      `https://api.radar.io/v1/search/autocomplete?query=${encodeURIComponent(query)}&country=${countryCode}`,
+      {
+        headers: { Authorization: process.env.RADAR_LIVE_SECRET as string },
+        cache: 'no-store',
+      },
+    )
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch from Radar API')
+    }
+
+    const data = await response.json()
+    revalidatePath('/shop/cart') // Adjust this path as needed
+    return data.addresses || []
+  } catch (error) {
+    console.error('Error fetching address suggestions:', error)
+    return []
+  }
+}
+
+```
+
+# _blocks/Order/ReceiversGrid/ReceiverActions.tsx
+
+```tsx
+'use client'
+
+import React, { useState, useTransition } from 'react'
+
+import { CMSLink } from '@app/_components/CMSLink'
+import { CopyIcon, TrashIcon, UserPlusIcon, XIcon } from 'lucide-react'
+import { useOrder } from '@app/_providers/Order'
+import { OrderItem } from '@app/_providers/Order/reducer'
+import { useRouter } from 'next/navigation'
+
+interface AddReceiverButtonProps {
+  productId: number | string
+}
+
+export const AddReceiverButton: React.FC<AddReceiverButtonProps> = ({ productId }) => {
+  const [isPending, startTransition] = useTransition()
+  const [error, setError] = useState<string | null>(null)
+  const { addReceiver, order } = useOrder()
+
+  const handleClick = () => {
+    startTransition(() => {
+      const orderItem = order.items?.find(
+        (item) => typeof item.product === 'object' && item.product.id === productId,
+      )
+      const productType =
+        typeof orderItem?.product === 'object' ? orderItem.product.productType : null
+
+      const defaultShippingMethod =
+        productType === 'gift' ? 'standardParcel' : productType === 'card' ? 'standardMail' : null
+
+      const newReceiver: NonNullable<OrderItem['receivers']>[number] = {
+        id: `${Date.now()}`,
+        name: null,
+        message: null,
+        delivery: {
+          address: { addressLine1: null },
+          shippingMethod: defaultShippingMethod,
+        },
+        totals: { subTotal: 0, cost: 0, shipping: 0 },
+      }
+
+      try {
+        addReceiver(productId, newReceiver)
+        setError(null)
+      } catch (error) {
+        console.error('Error adding receiver:', error)
+        setError('Failed to add receiver. Please try again.')
+      }
+    })
+  }
+
+  return (
+    <>
+      <CMSLink
+        data={{
+          label: 'Add Receiver',
+        }}
+        look={{
+          theme: 'light',
+          type: 'button',
+          size: 'small',
+          width: 'narrow',
+          variant: 'blocks',
+          icon: {
+            content: <UserPlusIcon strokeWidth={1.25} />,
+            iconPosition: 'right',
+          },
+        }}
+        actions={{
+          onClick: handleClick,
+        }}
+        pending={isPending}
+      />
+      {error && <div className="text-red-500 text-sm mt-1">{error}</div>}
+    </>
+  )
+}
+
+interface CopyReceiverIconProps {
+  orderItemId: string | number
+  receiverId: string
+}
+export const CopyReceiverIcon: React.FC<CopyReceiverIconProps> = ({ orderItemId, receiverId }) => {
+  const [isPending, startTransition] = useTransition()
+  const [error, setError] = useState<string | null>(null)
+  const { copyReceiver } = useOrder()
+
+  const handleClick = () => {
+    startTransition(() => {
+      try {
+        copyReceiver(orderItemId, receiverId)
+        setError(null)
+      } catch (error) {
+        console.error('Error copying receiver:', error)
+        setError('Failed to copy receiver. Please try again.')
+      }
+    })
+  }
+
+  return (
+    <div className="relative">
+      <CopyIcon
+        className={`h-5 w-5 sm:h-5 sm:w-5 cursor-pointer hover:text-green transition-colors duration-200 ${
+          isPending ? 'opacity-50' : ''
+        }`}
+        aria-hidden="true"
+        strokeWidth={1.4}
+        onClick={handleClick}
+      />
+    </div>
+  )
+}
+
+interface RemoveReceiverIconProps {
+  orderItemId: string | number // Changed from just string to string | number
+  receiverId: string
+  removeReceiver: (productId: string | number, receiverId: string) => void // Matches OrderContext
+}
+
+export const RemoveReceiverIcon: React.FC<RemoveReceiverIconProps> = ({
+  orderItemId,
+  receiverId,
+  removeReceiver,
+}) => {
+  const [isPending, startTransition] = useTransition()
+
+  const handleClick = () => {
+    startTransition(() => {
+      removeReceiver(orderItemId, receiverId)
+    })
+  }
+
+  return (
+    <XIcon
+      className={`h-5 w-5 sm:h-5 sm:w-5  cursor-pointer hover:text-green hover:animate-pulse ${
+        isPending ? 'opacity-50' : ''
+      }`}
+      aria-hidden="true"
+      strokeWidth={1.4}
+      onClick={handleClick}
+    />
+  )
+}
+
+interface RemoveProductButtonProps {
+  orderItemId: string | number
+}
+
+export const RemoveProductButton: React.FC<RemoveProductButtonProps> = ({ orderItemId }) => {
+  const [isPending, startTransition] = useTransition()
+  const { removeProduct } = useOrder()
+  const router = useRouter()
+
+  const handleClick = () => {
+    startTransition(() => {
+      removeProduct(orderItemId)
+      router.refresh()
+    })
+  }
+
+  return (
+    <CMSLink
+      data={{
+        label: 'Remove Thankly',
+      }}
+      look={{
+        theme: 'light',
+        type: 'button',
+        size: 'small',
+        width: 'narrow',
+        variant: 'blocks',
+        icon: {
+          content: <TrashIcon strokeWidth={1.25} />,
+          iconPosition: 'right',
+        },
+      }}
+      actions={{
+        onClick: handleClick,
+      }}
+      pending={isPending}
+    />
+  )
+}
+
+```
+
+# _blocks/Order/OrderSummary/index.tsx
+
+```tsx
+import React, { useEffect, useState, useTransition } from 'react'
+import { buttonLook, contentFormats } from '@app/_css/tailwindClasses'
+import { DollarSignIcon, MailWarningIcon, SmileIcon, XIcon, ArrowLeftIcon } from 'lucide-react'
+import { CMSLink } from '@app/_components/CMSLink'
+import { Order } from '@/payload-types'
+import Link from 'next/link'
+import cn from '@/utilities/cn'
+import { useRouter } from 'next/navigation'
+import { useOrder } from '@app/_providers/Order'
+import { LoaderCircleIcon } from 'lucide-react'
+import { FullLogo } from '@app/_graphics/FullLogo'
+import { orderText } from '@/utilities/refData'
+
+export const OrderSummary: React.FC<{ order: Order }> = ({ order }) => {
+  if (!order || !order.totals) return null
+
+  const router = useRouter()
+  const { validateOrder, clearOrder } = useOrder()
+  const [isValid, setIsValid] = useState(true)
+  const [validationMessage, setValidationMessage] = useState('')
+  const [isProcessing, setIsProcessing] = useState(false)
+  const [isPending, startTransition] = useTransition()
+
+  useEffect(() => {
+    const orderValidity = validateOrder()
+    setIsValid(orderValidity)
+    setValidationMessage(
+      orderValidity ? '' : 'Please complete all receiver details before proceeding to checkout.',
+    )
+  }, [order, validateOrder])
+
+  const handleCheckout = async (event?: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    if (event) event.preventDefault()
+    if (isValid) {
+      setIsProcessing(true)
+      try {
+        router.push(`/shop/checkout`)
+      } catch (error) {
+        console.error('Error during checkout:', error)
+        setIsProcessing(false)
+        alert('An error occurred during checkout. Please try again.')
+      }
+    } else {
+      alert(validationMessage)
+    }
+  }
+
+  return (
+    <div id="summary-heading" className="sticky top-4 scroll-py-28 scroll-mt-24">
+      <h2 className={cn(contentFormats.global, contentFormats.h3, 'mb-6')}>Order Summary</h2>
+
+      <div className="space-y-4">
+        <SummaryItem
+          label="Total (inc. taxes)"
+          value={order.totals.total + (order.totals.discount || 0)}
+          isBold
+        />
+        <SummaryItem label="Thanklys" value={order.totals.cost} />
+        <SummaryItem label="+ Shipping" value={order.totals.shipping || 0} />
+
+        {(order.totals.discount || 0) < 0 && (
+          <SummaryItem
+            label={
+              <span className="flex items-center">
+                <SmileIcon className="mr-2" />
+                Your order is over $150 so Shipping is on us!
+              </span>
+            }
+            value={order.totals.discount || 0}
+          />
+        )}
+      </div>
+
+      <div className="mt-6 space-y-4">
+        {!isValid && <div className="text-red-500 text-sm">{validationMessage}</div>}
+
+        <div className={cn(contentFormats.global, contentFormats.text, 'text-sm flex items-start')}>
+          <MailWarningIcon className="mr-2 flex-shrink-0 mt-1" />
+          <span>
+            <span className="font-semibold">Thankly Cards: </span>
+            {orderText.shippingMessage}{' '}
+            <Link
+              className={cn(contentFormats.global, contentFormats.a, '!text-sm')}
+              href="https://auspost.com.au/about-us/supporting-communities/services-all-communities/our-future"
+              target="_blank"
+            >
+              Learn More
+            </Link>
+          </span>
+        </div>
+
+        <CMSLink
+          className={cn('block w-full', isValid ? '!bg-green' : '!bg-gray-400', '!text-white')}
+          data={{
+            label: 'Checkout',
+            type: 'custom',
+            url: `/shop/checkout`,
+          }}
+          look={{
+            theme: 'dark',
+            type: 'button',
+            size: 'medium',
+            width: 'narrow',
+            variant: 'blocks',
+            icon: {
+              content: <DollarSignIcon strokeWidth={1.25} />,
+              iconPosition: 'right',
+            },
+          }}
+          actions={{ onClick: handleCheckout }}
+          pending={isProcessing}
+        />
+
+        <div className="flex flex-col sm:flex-row gap-4">
+          <CMSLink
+            data={{
+              label: !isPending ? 'Clear Cart' : 'Clearing Cart... please wait',
+            }}
+            look={{
+              theme: 'light',
+              type: 'button',
+              size: 'small',
+              width: 'full',
+              variant: 'blocks',
+              icon: {
+                content: <XIcon strokeWidth={1.25} />,
+                iconPosition: 'right',
+              },
+            }}
+            actions={{
+              onClick: async () => {
+                startTransition(async () => {
+                  clearOrder()
+                  router.push('/shop')
+                })
+              },
+            }}
+          />
+
+          <CMSLink
+            data={{
+              label: 'Continue Shopping',
+              type: 'custom',
+              url: '/shop',
+            }}
+            look={{
+              theme: 'light',
+              type: 'button',
+              size: 'small',
+              width: 'full',
+              variant: 'blocks',
+              icon: {
+                content: <ArrowLeftIcon strokeWidth={1.25} />,
+                iconPosition: 'right',
+              },
+            }}
+          />
+        </div>
+      </div>
+
+      {isProcessing && <CheckoutProcessing />}
+    </div>
+  )
+}
+
+const SummaryItem: React.FC<{ label: React.ReactNode; value: number; isBold?: boolean }> = ({
+  label,
+  value,
+  isBold,
+}) => (
+  <div className="flex items-center justify-between">
+    <dt className={cn(contentFormats.global, contentFormats.text, isBold && 'font-semibold')}>
+      {label}
+    </dt>
+    <dd className={cn(contentFormats.global, contentFormats.text, isBold && 'font-semibold')}>
+      {value.toLocaleString('en-AU', {
+        style: 'currency',
+        currency: 'AUD',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 2,
+      })}
+    </dd>
+  </div>
+)
+
+const CheckoutProcessing: React.FC = () => (
+  <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/75">
+    <div className="bg-white p-8 rounded-lg shadow-xl text-center max-w-md w-full">
+      <FullLogo className="h-12 w-12 mx-auto mb-4" />
+      <LoaderCircleIcon
+        className="animate-spin h-12 w-12 text-green-500 mx-auto mb-4"
+        strokeWidth={1.25}
+        aria-hidden="true"
+      />
+      <h2 className="text-2xl font-semibold mb-2">Preparing Checkout</h2>
+      <p className="text-gray-600 mb-4">
+        Please do not close this window or click the back button.
+      </p>
+      <div className="text-sm text-gray-500">This may take a few moments...</div>
+    </div>
+  </div>
+)
+
+```
+
+# _blocks/Order/OrderItems/index.tsx
+
+```tsx
+import React from 'react'
+import Image from 'next/image'
+import { contentFormats } from '@app/_css/tailwindClasses'
+import cn from '@/utilities/cn'
+import { ReceiversGrid } from '../ReceiversGrid'
+import { getImageUrl } from '@/utilities/getImageDetails'
+import { AddReceiverButton, RemoveProductButton } from '../ReceiversGrid/ReceiverActions'
+import { useOrder } from '@app/_providers/Order'
+import ReceiversGridTable from '../ReceiversGrid/ReceiversTable'
+
+export const OrderItems: React.FC = () => {
+  const { order } = useOrder()
+  const { items: orderItems } = order
+
+  return (
+    <div className="py-4 sm:py-8 space-y-6 sm:space-y-8">
+      {orderItems?.map((item: any, index: any) => {
+        const { product } = item
+        const imageUrl =
+          product.media && product.media.length > 0
+            ? getImageUrl(product.media[0]?.mediaItem)
+            : null
+        const placeholderSVG = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='none' stroke='%23cccccc'%3E%3Crect width='100' height='100' rx='10' stroke-width='2' /%3E%3Cpath d='M20 80 L50 20 L80 80 Z' stroke-width='2' /%3E%3Ccircle cx='50' cy='50' r='20' stroke-width='2' /%3E%3C/svg%3E`
+
+        return (
+          <div key={index} className="border border-neutral-300 rounded-lg overflow-hidden">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center p-4 sm:p-6 space-y-4 sm:space-y-0 sm:space-x-6 bg-neutral-100">
+              <Image
+                src={imageUrl || placeholderSVG}
+                alt={''}
+                priority
+                width={100}
+                height={100}
+                className="rounded-md object-cover object-center aspect-square shadow-md"
+              />
+              <div className="flex-1 min-w-0">
+                <h3
+                  className={cn(contentFormats.global, contentFormats.h4, 'no-underline truncate')}
+                >
+                  {product.title}
+                </h3>
+                <p
+                  className={cn(
+                    'mt-1 text-sm text-gray-500 line-clamp-2',
+                    contentFormats.global,
+                    contentFormats.text,
+                  )}
+                >
+                  {product.meta.description}
+                </p>
+              </div>
+              <div className="flex flex-row sm:flex-row justify-end items-center gap-3 sm:gap-4">
+                <AddReceiverButton productId={item.product.id} />
+                <RemoveProductButton orderItemId={item.product.id} />
+              </div>
+            </div>
+            <ReceiversGrid item={item} />
+          </div>
+        )
+      })}
+    </div>
+  )
+}
+
+```
+
+# _blocks/Order/OrderEmpty/index.tsx
+
+```tsx
+'use client'
+
+import React from 'react'
+import { useTransition } from 'react'
+import { BlockWrapper } from '@app/_components/BlockWrapper'
+import { CMSLink } from '@app/_components/CMSLink'
+import { Gutter } from '@app/_components/Gutter'
+import { contentFormats, getPaddingClasses } from '@app/_css/tailwindClasses'
+import { useRouter } from 'next/navigation'
+import { ArrowRightIcon, HomeIcon, ShoppingCartIcon } from 'lucide-react'
+
+export const OrderEmpty: React.FC<any> = () => {
+  const router = useRouter()
+  const [isPending, startTransition] = useTransition()
+
+  return (
+    <BlockWrapper settings={{ settings: { theme: 'light' } }} className={getPaddingClasses('hero')}>
+      <Gutter>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-3/4">
+          <div className="justify-center text-center">
+            <h2
+              className={[
+                contentFormats.global,
+                contentFormats.text,
+                'font-normal tracking-tighter !text-left',
+              ].join(' ')}
+            >
+              {`Your cart is empty`}
+            </h2>
+          </div>
+          <div className="space-y-6 flex flex-col items-end justify-end justify-items-end flex-auto px-4 md:px-0 ">
+            <CMSLink
+              data={{
+                label: 'Thankly Shop',
+                type: 'custom',
+                url: '/shop',
+              }}
+              look={{
+                theme: 'light',
+                type: 'button',
+                size: 'medium',
+                width: 'wide',
+                variant: 'blocks',
+                icon: {
+                  content: <ShoppingCartIcon strokeWidth={1.25} />,
+                  iconPosition: 'right',
+                },
+              }}
+              actions={{
+                onClick: async () => {
+                  startTransition(async () => {
+                    router.push('/shop')
+                  })
+                },
+              }}
+            />
+
+            <CMSLink
+              data={{
+                label: 'Thankly Home',
+                type: 'custom',
+                url: '/',
+              }}
+              look={{
+                theme: 'light',
+                type: 'button',
+                size: 'medium',
+                width: 'wide',
+                variant: 'blocks',
+                icon: {
+                  content: <HomeIcon strokeWidth={1.25} />,
+                  iconPosition: 'right',
+                },
+              }}
+              actions={{
+                onClick: async () => {
+                  startTransition(async () => {
+                    router.push('/')
+                  })
+                },
+              }}
+            />
+          </div>
+        </div>
+      </Gutter>
+    </BlockWrapper>
+  )
+}
+
+```
+
+# _blocks/MediaContentAccordion/Mobile/index.tsx
 
 ```tsx
 import React, { createRef, Fragment, useEffect, useRef, useState } from 'react'
@@ -12646,9 +13766,10 @@ export const MobileMediaContentAccordion: React.FC<MediaContentAccordionProps> =
     </div>
   )
 }
+
 ```
 
-# \_blocks/MediaContentAccordion/Desktop/index.tsx
+# _blocks/MediaContentAccordion/Desktop/index.tsx
 
 ```tsx
 import React, { createRef, Fragment, useEffect, useRef, useState } from 'react'
@@ -13120,1334 +14241,10 @@ export const DesktopMediaContentAccordion: React.FC<MediaContentAccordionProps> 
     </div>
   )
 }
+
 ```
 
-# \_blocks/Order/ReceiversGrid/index.tsx
-
-```tsx
-'use client'
-
-import React, { useState, useEffect, useCallback, useTransition, useMemo } from 'react'
-import { contentFormats } from '@app/_css/tailwindClasses'
-import { useOrder } from '@app/_providers/Order'
-import { MapPinIcon, MessageSquareTextIcon, SendIcon, UserIcon, UsersIcon } from 'lucide-react'
-import { AddReceiverButton, CopyReceiverIcon, RemoveReceiverIcon } from './ReceiverActions'
-import { addressAutocomplete } from './addressAutocomplete'
-import { debounce, update } from 'lodash'
-import { Order, Product } from '@/payload-types'
-import { Field, Label, Switch } from '@headlessui/react'
-import { Radio, RadioGroup } from '@headlessui/react'
-import cn from '@/utilities/cn'
-
-const shippingOptions = [
-  { name: 'Standard Mail', value: 'standardMail', productType: 'card', cost: true },
-  { name: 'Express Mail', value: 'expressMail', productType: 'card', cost: true },
-  { name: 'Standard Parcel', value: 'standardParcel', productType: 'gift', cost: true },
-  { name: 'Express Parcel', value: 'expressParcel', productType: 'gift', cost: true },
-]
-
-interface Receiver {
-  id: string
-  message: string
-  name: string
-  delivery: {
-    address?: {
-      formattedAddress?: string | null
-      addressLine1?: string | null
-      addressLine2?: string | null
-      json?:
-        | {
-            [k: string]: unknown
-          }
-        | unknown[]
-        | string
-        | number
-        | boolean
-        | null
-    }
-    shippingMethod: ShippingMethod
-  }
-  totals: {
-    cost: number
-    shipping: number
-    subTotal: number
-  }
-  errors: JSON
-}
-
-interface OrderItem {
-  id: string
-  product: Product
-  receivers: Receiver[]
-}
-
-interface ValidationErrors {
-  name?: string
-  message?: string
-  formattedAddress?: string
-  addressLine1?: string
-  shippingMethod?: string
-}
-
-type ShippingMethod = 'standardMail' | 'expressMail' | 'standardParcel' | 'expressParcel' | null
-
-export const ReceiversGrid: React.FC<{ item: OrderItem }> = ({ item }) => {
-  const { order, updateReceiver, removeReceiver } = useOrder()
-
-  const [isPending, startTransition] = useTransition()
-  const [errors, setErrors] = useState<{ [key: string]: JSON }>({})
-  const [names, setNames] = useState<{ [key: string]: string }>({})
-  const [messages, setMessages] = useState<{ [key: string]: string }>({})
-  const [poBoxFlags, setPoBoxFlags] = useState<{ [key: string]: boolean }>({})
-  const [addressesLine1, setLine1Addresses] = useState<{ [key: string]: string }>({})
-  const [formattedAddresses, setFormattedAddresses] = useState<{ [key: string]: string }>({})
-  const [addressSuggestions, setAddressSuggestions] = useState<{ [key: string]: any[] }>({})
-  const [validationErrors, setValidationErrors] = useState<{ [key: string]: ValidationErrors }>({})
-
-  const [selectedShipping, setSelectedShipping] = useState<{
-    [key: string]: (typeof shippingOptions)[0]
-  }>(() => {
-    const initialShipping: { [key: string]: (typeof shippingOptions)[0] } = {}
-    item.receivers?.forEach((receiver) => {
-      let selectedOption: (typeof shippingOptions)[0]
-      if (receiver.delivery?.shippingMethod) {
-        selectedOption =
-          shippingOptions.find((option) => option.value === receiver.delivery?.shippingMethod) ||
-          shippingOptions[0]
-      } else {
-        selectedOption =
-          item.product.productType === 'gift'
-            ? shippingOptions.find((option) => option.value === 'standardParcel') ||
-              shippingOptions[2]
-            : shippingOptions.find((option) => option.value === 'standardMail') ||
-              shippingOptions[0]
-      }
-      initialShipping[receiver.id] = selectedOption
-    })
-    return initialShipping
-  })
-
-  const validateReceiver = useCallback(
-    (receiver: Receiver, poBoxFlag: boolean): ValidationErrors => {
-      const errors: ValidationErrors = {}
-
-      if (!receiver.name) {
-        errors.name = 'Name is required'
-      } else if (receiver.name.length < 2) {
-        errors.name = 'Name must be at least 2 characters long'
-      } else if (receiver.name.length > 100) {
-        errors.name = 'Name must be at most 100 characters long'
-      } else if (!/^[a-zA-Z\s'-]+$/.test(receiver.name)) {
-        errors.name = 'Name contains invalid characters'
-      }
-
-      if (!receiver.message) {
-        errors.message = 'Message is required'
-      }
-      //  else if (receiver.message.split(/\s+/).length < 60) {
-      //   errors.message = 'Message must be at least 60 words'
-      // }
-      else if (!/^[a-zA-Z0-9\s.,!?'-]+$/.test(receiver.message)) {
-        errors.message = 'Message contains invalid characters'
-      }
-
-      if (!receiver.delivery?.address?.formattedAddress) {
-        errors.formattedAddress = 'Address is required'
-      } else if (!receiver.delivery?.address?.json) {
-        errors.formattedAddress = 'Please select an address from the suggestions'
-      }
-
-      if (poBoxFlag && !receiver.delivery?.address?.addressLine1) {
-        errors.addressLine1 = 'PO Box / Parcel Collect details are required'
-      }
-
-      if (!receiver.delivery?.shippingMethod) {
-        errors.shippingMethod = 'Shipping method is required'
-      }
-
-      return errors
-    },
-    [],
-  )
-
-  useEffect(() => {
-    const newValidationErrors: { [key: string]: ValidationErrors } = {}
-    item.receivers?.forEach((receiver) => {
-      newValidationErrors[receiver.id] = validateReceiver(
-        receiver,
-        poBoxFlags[receiver.id] || false,
-      )
-    })
-    setValidationErrors(newValidationErrors)
-  }, [item.receivers, poBoxFlags, validateReceiver])
-
-  useEffect(() => {
-    const currentItem = order.items?.find((orderItem) => orderItem.id === item.id)
-    // console.log('Current Item in Cart:', currentItem)
-  }, [order, item.id])
-
-  useEffect(() => {
-    const initialErrors: { [key: string]: JSON } = {}
-    const initialNames: { [key: string]: string } = {}
-    const initialMessages: { [key: string]: string } = {}
-
-    const initialPoBoxFlags: { [key: string]: boolean } = {}
-    const initialLine1Addresses: { [key: string]: string } = {}
-    const initialFormattedAddresses: { [key: string]: string } = {}
-
-    const initialShipping: { [key: string]: (typeof shippingOptions)[0] } = {}
-
-    item.receivers?.forEach((receiver) => {
-      initialErrors[receiver.id] = receiver.errors || {}
-      initialNames[receiver.id] = receiver.name || ''
-      initialMessages[receiver.id] = receiver.message || ''
-      initialLine1Addresses[receiver.id] = receiver.delivery?.address?.addressLine1 || ''
-      initialFormattedAddresses[receiver.id] = receiver.delivery?.address?.formattedAddress || ''
-
-      let selectedOption: (typeof shippingOptions)[0]
-      if (receiver.delivery?.shippingMethod) {
-        selectedOption =
-          shippingOptions.find((option) => option.value === receiver.delivery?.shippingMethod) ||
-          shippingOptions[0]
-      } else {
-        selectedOption =
-          item.product.productType === 'gift'
-            ? shippingOptions.find((option) => option.value === 'standardParcel') ||
-              shippingOptions[2]
-            : shippingOptions.find((option) => option.value === 'standardMail') ||
-              shippingOptions[0]
-      }
-      initialShipping[receiver.id] = selectedOption
-    })
-
-    setErrors(initialErrors)
-    setNames(initialNames)
-    setMessages(initialMessages)
-    setLine1Addresses(initialLine1Addresses)
-    setFormattedAddresses(initialFormattedAddresses)
-    setSelectedShipping(initialShipping)
-
-    // Initialize poBoxFlags only if it's empty
-    setPoBoxFlags((prev) => {
-      if (Object.keys(prev).length === 0) {
-        const initialPoBoxFlags: { [key: string]: boolean } = {}
-        item.receivers?.forEach((receiver) => {
-          initialPoBoxFlags[receiver.id] = !!receiver.delivery?.address?.addressLine1
-        })
-        return initialPoBoxFlags
-      }
-      return prev
-    })
-  }, [item.receivers, item.product.productType])
-
-  const debouncedAddressInput = useCallback(
-    debounce(async (receiverId: string, value: string) => {
-      try {
-        const suggestions = await addressAutocomplete(value)
-        setAddressSuggestions((prev) => ({ ...prev, [receiverId]: suggestions }))
-      } catch (error) {
-        console.error('Error fetching address suggestions:', error)
-        setAddressSuggestions((prev) => ({ ...prev, [receiverId]: [] }))
-      }
-    }, 300),
-    [],
-  )
-
-  const handleNameChange = (receiverId: string, value: string) => {
-    setNames((prev) => ({ ...prev, [receiverId]: value }))
-    updateReceiver(item.product.id, receiverId, { name: value })
-  }
-
-  const handleMessageChange = (receiverId: string, value: string) => {
-    setMessages((prev) => ({ ...prev, [receiverId]: value }))
-    updateReceiver(item.product.id, receiverId, { message: value })
-  }
-
-  const handleFormattedAddressChange = (receiverId: string, value: string) => {
-    setFormattedAddresses((prev) => ({
-      ...prev,
-      [receiverId]: value,
-    }))
-    debouncedAddressInput(receiverId, value)
-  }
-
-  const clearSuggestionsForReceiver = (receiverId: string) => {
-    setAddressSuggestions((prev) => ({
-      ...prev,
-      [receiverId]: [],
-    }))
-  }
-
-  if (!item) return null
-
-  return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-4 px-3 pt-6 sm:px-6 md:px-6">
-      {item.receivers?.map((receiver: Receiver, index: number) => (
-        <div
-          key={receiver.id}
-          className="relative flex flex-col justify-between rounded-sm border border-solid hover:shadow-xl hover:delay-75 duration-150 p-6 aspect-square"
-        >
-          <div className="space-y-8 sm:space-y-10">
-            {/* heading / title / actions */}
-            <div className="flex flex-row justify-between items-center">
-              <span className={[contentFormats.p, 'font-semibold basis-3/4'].join(' ')}>
-                {`#${(index + 1).toString().padStart(2, '0')}`}
-              </span>
-              <div className="flex justify-end items-center gap-x-4 sm:gap-x-3">
-                <CopyReceiverIcon
-                  orderItemId={item.product.id}
-                  receiverId={receiver.id}
-                  // className="h-8 w-8 sm:h-6 sm:w-6"
-                />
-                <RemoveReceiverIcon
-                  orderItemId={item.product.id}
-                  receiverId={receiver.id}
-                  removeReceiver={removeReceiver}
-                  // className="h-8 w-8 sm:h-6 sm:w-6"
-                />
-              </div>
-            </div>
-
-            <div className="space-y-6 sm:space-y-8">
-              {/* receiver */}
-              <div>
-                <label
-                  htmlFor={`name-${receiver.id}`}
-                  className="block text-sm font-medium text-gray-900"
-                >
-                  <UserIcon className="inline-block mr-1 h-5 w-5 text-gray-400" strokeWidth={1.2} />
-                  Name
-                </label>
-                <span className="block mt-1 text-xs text-gray-500">
-                  {`A full name and any business name helps with delivery`}
-                </span>
-                <input
-                  id={`name-${receiver.id}`}
-                  name="name"
-                  type="text"
-                  placeholder="Jane Smith"
-                  value={names[receiver.id] || ''}
-                  className={cn(
-                    'mt-2 peer block w-full border-0 focus:outline-none border-b focus:border-b-2 border-gray-300 bg-gray-50 py-2 px-1 text-gray-900 placeholder-gray-400 focus:border-green/75 focus:ring-0 text-base sm:text-sm',
-                    validationErrors[receiver.id]?.name && 'border-red-500',
-                  )}
-                  onChange={(e) => handleNameChange(receiver.id, e.target.value)}
-                  aria-invalid={!!validationErrors[receiver.id]?.name}
-                  aria-describedby={
-                    validationErrors[receiver.id]?.name ? `name-error-${receiver.id}` : undefined
-                  }
-                />
-                {validationErrors[receiver.id]?.name && (
-                  <span
-                    className="block mt-1 text-sm text-red-600"
-                    id={`name-error-${receiver.id}`}
-                  >
-                    {validationErrors[receiver.id].name}
-                  </span>
-                )}
-              </div>
-
-              {/* message */}
-              <div>
-                <label
-                  htmlFor={`message-${receiver.id}`}
-                  className="block text-sm font-medium text-gray-900"
-                >
-                  <MessageSquareTextIcon
-                    className="inline-block mr-1 h-5 w-5 text-gray-400"
-                    strokeWidth={1.2}
-                  />
-                  Message
-                </label>
-                <span className="block mt-1 text-xs text-gray-500">
-                  {`Write a personal message for the recipient (60-100 words)`}
-                </span>
-                <textarea
-                  id={`message-${receiver.id}`}
-                  name="message"
-                  value={messages[receiver.id] || ''}
-                  maxLength={400}
-                  rows={5}
-                  placeholder="Add a message with your thankly here..."
-                  className={cn(
-                    'font-body mt-2 peer block w-full border-0 focus:outline-none border-b focus:border-b-2 border-gray-300 bg-gray-50 py-2 px-1 text-gray-900 placeholder-gray-400 focus:border-green/75 focus:ring-0 text-base sm:text-sm',
-                    validationErrors[receiver.id]?.message && 'border-red-500',
-                  )}
-                  onChange={(e) => handleMessageChange(receiver.id, e.target.value)}
-                  aria-invalid={!!validationErrors[receiver.id]?.message}
-                  aria-describedby={
-                    validationErrors[receiver.id]?.message
-                      ? `message-error-${receiver.id}`
-                      : undefined
-                  }
-                />
-                {validationErrors[receiver.id]?.message && (
-                  <span
-                    className="block mt-1 text-sm text-red-600"
-                    id={`message-error-${receiver.id}`}
-                  >
-                    {validationErrors[receiver.id].message}
-                  </span>
-                )}
-              </div>
-
-              {/* address */}
-              <div>
-                <label
-                  htmlFor={`address-${receiver.id}`}
-                  className="block text-sm font-medium text-gray-900"
-                >
-                  <MapPinIcon
-                    className="inline-block mr-1 h-5 w-5 text-gray-400"
-                    strokeWidth={1.2}
-                  />
-                  Address
-                </label>
-                <span className="block mt-1 text-xs text-gray-500">
-                  {`Provide the complete shipping address. `}
-                </span>
-
-                <Field className="flex items-center py-2">
-                  <Switch
-                    checked={poBoxFlags[receiver.id] ?? false}
-                    onChange={() => {
-                      setPoBoxFlags((prev) => {
-                        const newState = { ...prev, [receiver.id]: !prev[receiver.id] }
-                        updateReceiver(item.product.id, receiver.id, {
-                          delivery: {
-                            address: {
-                              ...receiver.delivery?.address,
-                              addressLine1: newState[receiver.id] ? '' : null,
-                            },
-                          },
-                        })
-                        return newState
-                      })
-                    }}
-                    className="group relative inline-flex h-5 w-10 sm:h-5 sm:w-10 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent bg-gray-200 transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-green focus:ring-offset-2 data-[checked]:bg-green"
-                  >
-                    <span
-                      aria-hidden="true"
-                      className="pointer-events-none inline-block h-4.5 w-4 sm:h-4.5 sm:w-4.5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out group-data-[checked]:translate-x-4 sm:group-data-[checked]:translate-x-3.5"
-                    />
-                  </Switch>
-                  <Label as="span" className="ml-3 text-xs">
-                    <span className="font-semibold text-gray-500">{` Sending to AusPost Parcel Collect / Locker / PO Box?`}</span>{' '}
-                  </Label>
-                </Field>
-
-                {(poBoxFlags[receiver.id] || addressesLine1[receiver.id]) && (
-                  <>
-                    <input
-                      id={`addressLine1-${receiver.id}`}
-                      name="addressLine1"
-                      type="text"
-                      placeholder="Parcel Collect / Locker / PO Box"
-                      value={addressesLine1[receiver.id] || ''}
-                      onChange={(e) => {
-                        const newAddressLine1 = e.target.value
-                        setLine1Addresses((prev) => ({
-                          ...prev,
-                          [receiver.id]: newAddressLine1,
-                        }))
-                        updateReceiver(item.product.id, receiver.id, {
-                          delivery: {
-                            address: {
-                              ...receiver.delivery?.address,
-                              addressLine1: newAddressLine1,
-                            },
-                          },
-                        })
-                      }}
-                      className={cn(
-                        'block w-full border-0 focus:outline-none border-b focus:border-b-2 border-gray-300 bg-gray-50 py-2 px-1 text-gray-900 placeholder-gray-400 focus:border-green/75 focus:ring-0 text-base sm:text-sm',
-                        validationErrors[receiver.id]?.addressLine1 && 'border-red-500',
-                      )}
-                      aria-invalid={!!validationErrors[receiver.id]?.addressLine1}
-                      aria-describedby={
-                        validationErrors[receiver.id]?.addressLine1
-                          ? `addressLine1-error-${receiver.id}`
-                          : undefined
-                      }
-                    />
-                    {validationErrors[receiver.id]?.addressLine1 && (
-                      <span
-                        className="block mt-1 text-sm text-red-600"
-                        id={`addressLine1-error-${receiver.id}`}
-                      >
-                        {validationErrors[receiver.id].addressLine1}
-                      </span>
-                    )}
-                  </>
-                )}
-                <input
-                  id={`address-${receiver.id}`}
-                  name="formattedAddress"
-                  type="text"
-                  value={formattedAddresses[receiver.id] || ''}
-                  placeholder="Enter street address"
-                  onChange={(e) => handleFormattedAddressChange(receiver.id, e.target.value)}
-                  className={cn(
-                    'mt-2 peer block w-full border-0 focus:outline-none border-b focus:border-b-2 border-gray-300 bg-gray-50 py-2 px-1 text-gray-900 placeholder-gray-400 focus:border-green/75 focus:ring-0 text-base sm:text-sm',
-                    validationErrors[receiver.id]?.formattedAddress && 'border-red-500',
-                  )}
-                  aria-invalid={!!validationErrors[receiver.id]?.formattedAddress}
-                  aria-describedby={
-                    validationErrors[receiver.id]?.formattedAddress
-                      ? `address-error-${receiver.id}`
-                      : undefined
-                  }
-                />
-                {validationErrors[receiver.id]?.formattedAddress && (
-                  <span
-                    className="block mt-1 text-sm text-red-600"
-                    id={`address-error-${receiver.id}`}
-                  >
-                    {validationErrors[receiver.id].formattedAddress}
-                  </span>
-                )}
-                {addressSuggestions[receiver.id]?.length > 0 && (
-                  <div className="absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-                    {addressSuggestions[receiver.id].map((suggestion, index) => (
-                      <div
-                        key={index}
-                        className="relative cursor-default select-none py-3 sm:py-2 px-4 sm:px-3 text-gray-900 hover:bg-green/75 hover:text-white"
-                        onClick={debounce(() => {
-                          // console.log('addressLine2 updated -- ', suggestion.formattedAddress)
-                          startTransition(() => {
-                            try {
-                              updateReceiver(item.product.id, receiver.id, {
-                                delivery: {
-                                  address: {
-                                    ...receiver.delivery?.address,
-                                    addressLine2: suggestion.formattedAddress,
-                                    formattedAddress: suggestion.formattedAddress,
-                                    json: suggestion,
-                                  },
-                                },
-                              })
-                              setFormattedAddresses((prev) => ({
-                                ...prev,
-                                [receiver.id]: suggestion.formattedAddress,
-                              }))
-                              clearSuggestionsForReceiver(receiver.id)
-                            } catch (error) {
-                              console.error('Error saving address:', error)
-                            }
-                          })
-                        }, 200)}
-                      >
-                        <MapPinIcon className="inline-block h-5 w-5 text-gray-400 mr-2" />
-                        {suggestion.addressLabel}, {suggestion.city}, {suggestion.state}{' '}
-                        {suggestion.postalCode}
-                      </div>
-                    ))}
-                  </div>
-                )}
-              </div>
-
-              {/* shipping method */}
-              <div>
-                <label
-                  htmlFor="shipping-method"
-                  className="block text-sm font-medium text-gray-900"
-                >
-                  <SendIcon className="inline-block mr-1 h-5 w-5 text-gray-400" strokeWidth={1.2} />
-                  Shipping
-                </label>
-                <span className="block mt-1 text-xs text-gray-500">
-                  {`Choose your preferred shipping method. FREE shipping for orders over $150.
-        Discount applied at checkout.`}
-                </span>
-
-                <RadioGroup
-                  value={selectedShipping[receiver.id] || shippingOptions[0]}
-                  onChange={(selected) => {
-                    setSelectedShipping((prev) => ({
-                      ...prev,
-                      [receiver.id]: selected,
-                    }))
-                    updateReceiver(item.product.id, receiver.id, {
-                      delivery: {
-                        shippingMethod: selected.value as ShippingMethod,
-                      },
-                    })
-                  }}
-                  className={cn(
-                    'mt-2 grid grid-cols-2 gap-3 sm:grid-cols-2 leading-tighter',
-                    validationErrors[receiver.id]?.shippingMethod && 'border-red-500',
-                  )}
-                >
-                  {shippingOptions
-                    .filter((option) => option.productType === item.product.productType)
-                    .map((option) => (
-                      <Radio
-                        key={option.value}
-                        value={option}
-                        className={cn(
-                          'cursor-pointer focus:outline-none leading-tighter',
-                          'flex items-center justify-center rounded-md bg-white px-3 py-3 text-sm  text-gray-900 ring-1 ring-gray-300 hover:bg-gray-50 data-[checked]:bg-green data-[checked]:text-white data-[checked]:ring-0 data-[focus]:data-[checked]:ring-2 data-[focus]:ring-2 data-[focus]:ring-green data-[focus]:ring-offset-2 data-[checked]:hover:bg-green sm:flex-1 [&:not([data-focus],[data-checked])]:ring-inset',
-                        )}
-                      >
-                        {option.name}
-                      </Radio>
-                    ))}
-                </RadioGroup>
-                {validationErrors[receiver.id]?.shippingMethod && (
-                  <span
-                    className="block mt-1 text-sm text-red-600"
-                    id={`shipping-error-${receiver.id}`}
-                  >
-                    {validationErrors[receiver.id].shippingMethod}
-                  </span>
-                )}
-              </div>
-            </div>
-          </div>
-
-          <div className="pt-4 text-right">
-            <div>
-              <span className={[contentFormats.global, contentFormats.text].join(' ')}>
-                {`Cost: ${
-                  receiver.totals.cost.toLocaleString('en-AU', {
-                    style: 'currency',
-                    currency: 'AUD',
-                    minimumFractionDigits: 0,
-                    maximumFractionDigits: 2,
-                  }) || 0
-                }`}
-              </span>
-            </div>
-            <div>
-              <span className={[contentFormats.global, contentFormats.text].join(' ')}>
-                {`Shipping: ${
-                  receiver.totals.shipping
-                    ? receiver.totals.shipping?.toLocaleString('en-AU', {
-                        style: 'currency',
-                        currency: 'AUD',
-                        minimumFractionDigits: 0,
-                        maximumFractionDigits: 2,
-                      })
-                    : '(needs address)'
-                }`}
-              </span>
-            </div>
-            <div className={[contentFormats.global, contentFormats.h6].join(' ')}>
-              {`Subtotal: ${
-                receiver.totals.subTotal.toLocaleString('en-AU', {
-                  style: 'currency',
-                  currency: 'AUD',
-                  minimumFractionDigits: 0,
-                  maximumFractionDigits: 2,
-                }) || 0
-              }`}
-            </div>
-          </div>
-        </div>
-      ))}
-    </div>
-  )
-}
-```
-
-# \_blocks/Order/ReceiversGrid/addressAutocomplete.ts
-
-```ts
-'use server'
-
-import { revalidatePath } from 'next/cache'
-
-export async function addressAutocomplete(query: string, countryCode: string = 'AU') {
-  if (!query || query.length < 2) {
-    return []
-  }
-
-  try {
-    const response = await fetch(
-      `https://api.radar.io/v1/search/autocomplete?query=${encodeURIComponent(query)}&country=${countryCode}`,
-      {
-        headers: { Authorization: process.env.RADAR_LIVE_SECRET as string },
-        cache: 'no-store',
-      },
-    )
-
-    if (!response.ok) {
-      throw new Error('Failed to fetch from Radar API')
-    }
-
-    const data = await response.json()
-    revalidatePath('/shop/cart') // Adjust this path as needed
-    return data.addresses || []
-  } catch (error) {
-    console.error('Error fetching address suggestions:', error)
-    return []
-  }
-}
-```
-
-# \_blocks/Order/ReceiversGrid/ReceiverActions.tsx
-
-```tsx
-'use client'
-
-import React, { useState, useTransition } from 'react'
-
-import { CMSLink } from '@app/_components/CMSLink'
-import { CopyIcon, TrashIcon, UserPlusIcon, XIcon } from 'lucide-react'
-import { useOrder } from '@app/_providers/Order'
-import { OrderItem } from '@app/_providers/Order/reducer'
-import { useRouter } from 'next/navigation'
-
-interface AddReceiverButtonProps {
-  productId: number | string
-}
-
-export const AddReceiverButton: React.FC<AddReceiverButtonProps> = ({ productId }) => {
-  const [isPending, startTransition] = useTransition()
-  const [error, setError] = useState<string | null>(null)
-  const { addReceiver, order } = useOrder()
-
-  const handleClick = () => {
-    startTransition(() => {
-      const orderItem = order.items?.find(
-        (item) => typeof item.product === 'object' && item.product.id === productId,
-      )
-      const productType =
-        typeof orderItem?.product === 'object' ? orderItem.product.productType : null
-
-      const defaultShippingMethod =
-        productType === 'gift' ? 'standardParcel' : productType === 'card' ? 'standardMail' : null
-
-      const newReceiver: NonNullable<OrderItem['receivers']>[number] = {
-        id: `${Date.now()}`,
-        name: null,
-        message: null,
-        delivery: {
-          address: { addressLine1: null },
-          shippingMethod: defaultShippingMethod,
-        },
-        totals: { subTotal: 0, cost: 0, shipping: 0 },
-      }
-
-      try {
-        addReceiver(productId, newReceiver)
-        setError(null)
-      } catch (error) {
-        console.error('Error adding receiver:', error)
-        setError('Failed to add receiver. Please try again.')
-      }
-    })
-  }
-
-  return (
-    <>
-      <CMSLink
-        data={{
-          label: 'Add Receiver',
-        }}
-        look={{
-          theme: 'light',
-          type: 'button',
-          size: 'small',
-          width: 'narrow',
-          variant: 'blocks',
-          icon: {
-            content: <UserPlusIcon strokeWidth={1.25} />,
-            iconPosition: 'right',
-          },
-        }}
-        actions={{
-          onClick: handleClick,
-        }}
-        pending={isPending}
-      />
-      {error && <div className="text-red-500 text-sm mt-1">{error}</div>}
-    </>
-  )
-}
-
-interface CopyReceiverIconProps {
-  orderItemId: string | number
-  receiverId: string
-}
-export const CopyReceiverIcon: React.FC<CopyReceiverIconProps> = ({ orderItemId, receiverId }) => {
-  const [isPending, startTransition] = useTransition()
-  const [error, setError] = useState<string | null>(null)
-  const { copyReceiver } = useOrder()
-
-  const handleClick = () => {
-    startTransition(() => {
-      try {
-        copyReceiver(orderItemId, receiverId)
-        setError(null)
-      } catch (error) {
-        console.error('Error copying receiver:', error)
-        setError('Failed to copy receiver. Please try again.')
-      }
-    })
-  }
-
-  return (
-    <div className="relative">
-      <CopyIcon
-        className={`h-5 w-5 sm:h-5 sm:w-5 cursor-pointer hover:text-green transition-colors duration-200 ${
-          isPending ? 'opacity-50' : ''
-        }`}
-        aria-hidden="true"
-        strokeWidth={1.4}
-        onClick={handleClick}
-      />
-    </div>
-  )
-}
-
-interface RemoveReceiverIconProps {
-  orderItemId: string | number // Changed from just string to string | number
-  receiverId: string
-  removeReceiver: (productId: string | number, receiverId: string) => void // Matches OrderContext
-}
-
-export const RemoveReceiverIcon: React.FC<RemoveReceiverIconProps> = ({
-  orderItemId,
-  receiverId,
-  removeReceiver,
-}) => {
-  const [isPending, startTransition] = useTransition()
-
-  const handleClick = () => {
-    startTransition(() => {
-      removeReceiver(orderItemId, receiverId)
-    })
-  }
-
-  return (
-    <XIcon
-      className={`h-5 w-5 sm:h-5 sm:w-5  cursor-pointer hover:text-green hover:animate-pulse ${
-        isPending ? 'opacity-50' : ''
-      }`}
-      aria-hidden="true"
-      strokeWidth={1.4}
-      onClick={handleClick}
-    />
-  )
-}
-
-interface RemoveProductButtonProps {
-  orderItemId: string | number
-}
-
-export const RemoveProductButton: React.FC<RemoveProductButtonProps> = ({ orderItemId }) => {
-  const [isPending, startTransition] = useTransition()
-  const { removeProduct } = useOrder()
-  const router = useRouter()
-
-  const handleClick = () => {
-    startTransition(() => {
-      removeProduct(orderItemId)
-      router.refresh()
-      // router.push('/shop/cart')
-    })
-  }
-
-  return (
-    <CMSLink
-      data={{
-        label: 'Remove Thankly',
-      }}
-      look={{
-        theme: 'light',
-        type: 'button',
-        size: 'small',
-        width: 'narrow',
-        variant: 'blocks',
-        icon: {
-          content: <TrashIcon strokeWidth={1.25} />,
-          iconPosition: 'right',
-        },
-      }}
-      actions={{
-        onClick: handleClick,
-      }}
-      pending={isPending}
-    />
-  )
-}
-```
-
-# \_blocks/Order/OrderSummary/index.tsx
-
-```tsx
-import React, { useEffect, useState, useTransition } from 'react'
-import { buttonLook, contentFormats } from '@app/_css/tailwindClasses'
-import {
-  DollarSignIcon,
-  ChevronUpIcon,
-  MailWarningIcon,
-  SmileIcon,
-  XIcon,
-  ArrowLeftIcon,
-} from 'lucide-react'
-import { CMSLink } from '@app/_components/CMSLink'
-import { Order } from '@/payload-types'
-import Link from 'next/link'
-import cn from '@/utilities/cn'
-import { useRouter } from 'next/navigation'
-import { useOrder } from '@app/_providers/Order'
-import { LoaderCircleIcon } from 'lucide-react'
-import { FullLogo } from '@app/_graphics/FullLogo'
-import { orderText } from '@/utilities/refData'
-
-export const OrderSummary: React.FC<{ order: Order }> = ({ order }) => {
-  if (!order || !order.totals) {
-    return null // or return a loading state or placeholder
-  }
-
-  const router = useRouter()
-  const { validateOrder } = useOrder()
-  const [isValid, setIsValid] = useState(true)
-  const [validationMessage, setValidationMessage] = useState('')
-  const [isProcessing, setIsProcessing] = useState(false)
-  const [isGuest, setIsGuest] = useState(false)
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [isPending, startTransition] = useTransition()
-  const { clearOrder } = useOrder()
-
-  const [billingAddress, setBillingAddress] = useState({
-    formattedAddress: '',
-    addressLine1: '',
-    addressLine2: '',
-  })
-
-  useEffect(() => {
-    const orderValidity = validateOrder()
-    setIsValid(orderValidity)
-    setValidationMessage(
-      orderValidity ? '' : 'Please complete all receiver details before proceeding to checkout.',
-    )
-  }, [order, validateOrder])
-
-  const handleCheckout = async (event?: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-    if (event) {
-      event.preventDefault()
-    }
-
-    if (isValid) {
-      setIsProcessing(true)
-      // console.log(`Cart is valid, let's create a draft order...`)
-
-      try {
-        // Simulate API call or any async operation
-        // await new Promise((resolve) => setTimeout(resolve, 2000))
-        router.push(`/shop/checkout`)
-      } catch (error) {
-        console.error('Error during checkout:', error)
-        setIsProcessing(false)
-        alert('An error occurred during checkout. Please try again.')
-      }
-    } else {
-      // console.log('Cart is invalid, errors should be displayed')
-      alert(validationMessage)
-    }
-  }
-
-  return (
-    <div id="summary-heading" className="scroll-py-28 scroll-mt-24 basis-1/2">
-      <h2 className={`${contentFormats.global} ${contentFormats.h3} mb-6`}>Order Summary</h2>
-
-      <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <dt className={[contentFormats.global, contentFormats.text, `font-semibold`].join(' ')}>
-            {`Total (inc. taxes)`}
-          </dt>
-          <dd className={[contentFormats.global, contentFormats.text, `font-semibold`].join(' ')}>
-            {(order.totals.total + (order.totals.discount || 0)).toLocaleString('en-AU', {
-              style: 'currency',
-              currency: 'AUD',
-              minimumFractionDigits: 0,
-              maximumFractionDigits: 2,
-            })}
-          </dd>
-        </div>
-
-        <div className="flex items-center justify-between">
-          <dt className={[contentFormats.global, contentFormats.text].join(' ')}>Thanklys</dt>
-          <dd className={[contentFormats.global, contentFormats.text].join(' ')}>
-            {order.totals.cost.toLocaleString('en-AU', {
-              style: 'currency',
-              currency: 'AUD',
-              minimumFractionDigits: 0,
-              maximumFractionDigits: 2,
-            })}
-          </dd>
-        </div>
-
-        <div className="flex items-center justify-between">
-          <dt className={[contentFormats.global, contentFormats.text].join(' ')}>{`+ Shipping`}</dt>
-          <dd className={[contentFormats.global, contentFormats.text].join(' ')}>
-            {order.totals.shipping?.toLocaleString('en-AU', {
-              style: 'currency',
-              currency: 'AUD',
-              minimumFractionDigits: 0,
-              maximumFractionDigits: 2,
-            })}
-          </dd>
-        </div>
-
-        {(order.totals.discount || 0) < 0 && (
-          <div className="flex items-center justify-between">
-            <dt className={[contentFormats.global, contentFormats.text].join(' ')}>
-              <SmileIcon />
-              {` Your order is over $150 so Shipping is on us!`}
-            </dt>
-            <dd className={[contentFormats.global, contentFormats.text].join(' ')}>
-              {`(${order.totals.discount?.toLocaleString('en-AU', {
-                style: 'currency',
-                currency: 'AUD',
-                minimumFractionDigits: 0,
-                maximumFractionDigits: 2,
-              })})`}
-            </dd>
-          </div>
-        )}
-      </div>
-
-      <div className="mt-4 lg:mt-8 p-4 lg:p-0">
-        {!isValid && <div className="text-red-500 mt-2 text-sm">{validationMessage}</div>}
-
-        {/* Notices */}
-        <div className={cn(contentFormats.global, contentFormats.text, `!mt-0 text-sm py-4`)}>
-          <React.Fragment>
-            <MailWarningIcon className="mr-2" />
-            <span className="font-semibold">{`Thankly Cards: `}</span>
-            <span className={[contentFormats.text, `text-sm`].join(' ')}>
-              {orderText.shippingMessage}
-              <Link
-                className={[contentFormats.global, contentFormats.a, `!text-sm`].join(' ')}
-                href="https://auspost.com.au/about-us/supporting-communities/services-all-communities/our-future"
-                target="_blank"
-              >
-                Learn More
-              </Link>
-            </span>
-          </React.Fragment>
-        </div>
-        <CMSLink
-          className={`block #py-6 w-full ${isValid ? '!bg-green' : '!bg-gray-400'} !text-white`}
-          data={{
-            label: 'Checkout',
-            type: 'custom',
-            url: `/shop/checkout`,
-          }}
-          look={{
-            theme: 'dark',
-            type: 'button',
-            size: 'medium',
-            width: 'narrow',
-            variant: 'blocks',
-            icon: {
-              content: <DollarSignIcon strokeWidth={1.25} />,
-              iconPosition: 'right',
-            },
-          }}
-          actions={{ onClick: handleCheckout }}
-          pending={isProcessing}
-        />
-
-        <div className="flex flex-row gap-4 py-3">
-          <CMSLink
-            data={{
-              label: !isPending ? 'Clear Cart' : 'Clearing Cart... please wait',
-              // type: 'custom',
-              // url: '/shop',
-            }}
-            look={{
-              theme: 'light',
-              type: 'button',
-              size: 'small',
-              width: 'full',
-              variant: 'blocks',
-              icon: {
-                content: <XIcon strokeWidth={1.25} />,
-                iconPosition: 'right',
-              },
-            }}
-            actions={{
-              onClick: async () => {
-                startTransition(async () => {
-                  clearOrder()
-                  // revalidateCache({ path: '/shop' })
-                  router.push('/shop')
-                })
-              },
-            }}
-          />
-
-          <CMSLink
-            data={{
-              label: 'Continue Shopping',
-              type: 'custom',
-              url: '/shop',
-            }}
-            look={{
-              theme: 'light',
-              type: 'button',
-              size: 'small',
-              width: 'full',
-              variant: 'blocks',
-              icon: {
-                content: <ArrowLeftIcon strokeWidth={1.25} />,
-                iconPosition: 'right',
-              },
-            }}
-          />
-        </div>
-      </div>
-      <div className="sm:hidden flex flex-row z-50 fixed bottom-0 left-0 w-full outline-green">
-        <Link
-          href="#summary-heading"
-          scroll={true}
-          className="basis-1/2 hover:no-underline no-underline  bg-white py-2  flex flex-col items-center cursor-pointer"
-        >
-          <span
-            className={cn(
-              contentFormats.global,
-              contentFormats.text,
-              buttonLook.variants.blocks,
-              'mt-1 text-sm',
-            )}
-          >
-            {` Order Total: `}
-            {order.totals.total.toLocaleString('en-AU', {
-              style: 'currency',
-              currency: 'AUD',
-              minimumFractionDigits: 0,
-              maximumFractionDigits: 2,
-            })}
-          </span>
-          <span className={cn(contentFormats.global, contentFormats.h5, 'mt-1')}>
-            {`View Summary `}
-            &rarr;
-          </span>
-        </Link>
-
-        <CMSLink
-          className={`block w-1/2 ${isValid ? '!bg-green' : '!bg-gray-400'} !text-white`}
-          data={{
-            label: 'Checkout',
-            type: 'custom',
-            url: `/shop/checkout?orderId=${order.id}`,
-          }}
-          look={{
-            theme: 'dark',
-            type: 'button',
-            size: 'small',
-            width: 'narrow',
-            variant: 'blocks',
-            icon: {
-              content: <DollarSignIcon strokeWidth={1.25} />,
-              iconPosition: 'right',
-            },
-          }}
-          actions={{ onClick: handleCheckout }}
-          pending={isProcessing}
-        />
-      </div>
-
-      {isProcessing && <CheckoutProcessing />}
-    </div>
-  )
-}
-
-const CheckoutProcessing: React.FC = () => {
-  return (
-    <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-gray-900/75 bg-opacity-50">
-      <div className="flex flex-col  bg-white p-8 rounded-sm shadow-xl text-center">
-        <FullLogo className="h-12 w-12 mx-auto mb-4" />
-
-        <LoaderCircleIcon
-          className="animate-spin h-12 w-12 text-green-500 mx-auto mb-4"
-          strokeWidth={1.25}
-          aria-hidden="true"
-        />
-        <h2 className="text-2xl font-semibold mb-2">Preparing Checkout</h2>
-        <p className="text-gray-600 mb-4">
-          Please do not close this window or click the back button.
-        </p>
-        <div className="text-sm text-gray-500">This may take a few moments...</div>
-      </div>
-    </div>
-  )
-}
-```
-
-# \_blocks/Order/OrderItems/index.tsx
-
-```tsx
-'use client'
-
-import React, { useEffect } from 'react'
-import Image from 'next/image'
-import { contentFormats } from '@app/_css/tailwindClasses'
-import cn from '@/utilities/cn'
-import { ReceiversGrid } from '../ReceiversGrid'
-import { getImageAlt, getImageUrl } from '@/utilities/getmageUrl'
-import { AddReceiverButton, RemoveProductButton } from '../ReceiversGrid/ReceiverActions'
-import { useOrder } from '@app/_providers/Order'
-
-export const OrderItems: React.FC = () => {
-  const { order } = useOrder()
-  const { items: orderItems } = order
-
-  return (
-    <div className="py-8 divide-y">
-      {orderItems?.map((item: any, index: any) => {
-        const { product } = item
-        const imageUrl =
-          product.media && product.media.length > 0
-            ? getImageUrl(product.media[0]?.mediaItem)
-            : null
-        const placeholderSVG = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='none' stroke='%23cccccc'%3E%3Crect width='100' height='100' rx='10' stroke-width='2' /%3E%3Cpath d='M20 80 L50 20 L80 80 Z' stroke-width='2' /%3E%3Ccircle cx='50' cy='50' r='20' stroke-width='2' /%3E%3C/svg%3E`
-        return (
-          <div key={index} className="">
-            <div className="space-y-4 md:border md:border-solid md:border-neutral-300 pb-6">
-              <div className="flex items-start sm:items-center sm:space-x-4 p-3 sm:p-0 space-x-3 bg-neutral-200">
-                <Image
-                  src={imageUrl || placeholderSVG}
-                  // src={getImageUrl(product.media[0]?.mediaItem)}
-                  alt={''}
-                  priority
-                  width={100}
-                  height={100}
-                  className="rounded-sm object-cover object-center aspect-square shadow-md"
-                />
-                <div className="flex-1">
-                  <span className={cn(contentFormats.global, contentFormats.h4, `no-underline`)}>
-                    {product.title}
-                  </span>
-                  <div
-                    className={cn(
-                      'mt-2 !text-left !leading-snug !font-normal !tracking-tighter !antialiased line-clamp-2 sm:line-clamp-1 sm:pr-10',
-                      contentFormats.global,
-                      contentFormats.text,
-                    )}
-                  >
-                    {product.meta.description}
-                  </div>
-                </div>
-                <div className="hidden sm:flex flex-row justify-end items-center py-3 gap-3 pr-3">
-                  <AddReceiverButton productId={item.product.id} />
-                  <RemoveProductButton orderItemId={item.product.id} />
-                </div>
-              </div>
-              <div className="sm:hidden flex flex-row justify-center items-center gap-3">
-                <AddReceiverButton productId={item.product.id} />
-                <RemoveProductButton orderItemId={item.product.id} />
-              </div>
-              <ReceiversGrid item={item} />
-            </div>
-          </div>
-        )
-      })}
-    </div>
-  )
-}
-```
-
-# \_blocks/Order/OrderEmpty/index.tsx
-
-```tsx
-'use client'
-
-import React from 'react'
-import { useTransition } from 'react'
-import { BlockWrapper } from '@app/_components/BlockWrapper'
-import { CMSLink } from '@app/_components/CMSLink'
-import { Gutter } from '@app/_components/Gutter'
-import { contentFormats, getPaddingClasses } from '@app/_css/tailwindClasses'
-import { useRouter } from 'next/navigation'
-import { ArrowRightIcon, HomeIcon, ShoppingCartIcon } from 'lucide-react'
-
-export const OrderEmpty: React.FC<any> = () => {
-  const router = useRouter()
-  const [isPending, startTransition] = useTransition()
-
-  return (
-    <BlockWrapper settings={{ settings: { theme: 'light' } }} className={getPaddingClasses('hero')}>
-      <Gutter>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 w-3/4">
-          <div className="justify-center text-center">
-            <h2
-              className={[
-                contentFormats.global,
-                contentFormats.text,
-                'font-normal tracking-tighter !text-left',
-              ].join(' ')}
-            >
-              Your order is empty
-            </h2>
-          </div>
-          <div className="space-y-6 flex flex-col items-end justify-end justify-items-end flex-auto px-4 md:px-0 ">
-            <CMSLink
-              data={{
-                label: 'Thankly Shop',
-                type: 'custom',
-                url: '/shop',
-              }}
-              look={{
-                theme: 'light',
-                type: 'button',
-                size: 'medium',
-                width: 'wide',
-                variant: 'blocks',
-                icon: {
-                  content: <ShoppingCartIcon strokeWidth={1.25} />,
-                  iconPosition: 'right',
-                },
-              }}
-              actions={{
-                onClick: async () => {
-                  startTransition(async () => {
-                    router.push('/shop')
-                  })
-                },
-              }}
-            />
-
-            <CMSLink
-              data={{
-                label: 'Thankly Home',
-                type: 'custom',
-                url: '/',
-              }}
-              look={{
-                theme: 'light',
-                type: 'button',
-                size: 'medium',
-                width: 'wide',
-                variant: 'blocks',
-                icon: {
-                  content: <HomeIcon strokeWidth={1.25} />,
-                  iconPosition: 'right',
-                },
-              }}
-              actions={{
-                onClick: async () => {
-                  startTransition(async () => {
-                    router.push('/')
-                  })
-                },
-              }}
-            />
-          </div>
-        </div>
-      </Gutter>
-    </BlockWrapper>
-  )
-}
-```
-
-# \_blocks/HoverHighlights/HoverHighlight/index.tsx
+# _blocks/HoverHighlights/HoverHighlight/index.tsx
 
 ```tsx
 'use client'
@@ -14564,9 +14361,10 @@ export const HoverHighlight: React.FC<
     </React.Fragment>
   )
 }
+
 ```
 
-# \_blocks/Hero/Three/index.tsx
+# _blocks/Hero/Three/index.tsx
 
 ```tsx
 import React from 'react'
@@ -14752,9 +14550,10 @@ export const ThreeHero: React.FC<{ fields: HeroFields }> = ({ fields }) => {
 //     </React.Fragment>
 //   )
 // }
+
 ```
 
-# \_blocks/Hero/Home/index.tsx
+# _blocks/Hero/Home/index.tsx
 
 ```tsx
 'use client'
@@ -14864,58 +14663,6 @@ export const HomeHero: React.FC<
 
   const contentWrapperHeight = getContentWrapperHeight()
 
-  // const getGridLineStyles = () => {
-  //   if (windowWidth >= 1024) {
-  //     // For desktop
-  //     return {
-  //       0: {
-  //         background:
-  //           'linear-gradient(to top, var(--grid-line-dark) 0%, var(--grid-line-dark) 65%, rgba(0, 0, 0, 0) 80%)',
-  //       },
-  //       1: {
-  //         background:
-  //           'linear-gradient(to top, var(--grid-line-dark) 0%, var(--grid-line-dark) 65%, rgba(0, 0, 0, 0) 80%)',
-  //       },
-  //       2: {
-  //         background:
-  //           'linear-gradient(to top, var(--grid-line-dark) 0%, var(--grid-line-dark) 75%, rgba(0, 0, 0, 0) 95%)',
-  //       },
-  //       3: {
-  //         background:
-  //           'linear-gradient(to top, var(--grid-line-dark) 0%, var(--grid-line-dark) 20%, rgba(0, 0, 0, 0) 60%)',
-  //       },
-  //       4: {
-  //         background:
-  //           'linear-gradient(to top, var(--grid-line-dark) 0%, var(--grid-line-dark) 60%, rgba(0, 0, 0, 0) 90%)',
-  //       },
-  //     }
-  //   } else {
-  //     // For mobile
-  //     return {
-  //       0: {
-  //         background:
-  //           'linear-gradient(to top, var(--grid-line-dark) 0%, var(--grid-line-dark) 70%, rgba(0, 0, 0, 0) 100%)',
-  //       },
-  //       1: {
-  //         background:
-  //           'linear-gradient(to top, var(--grid-line-dark) 0%, var(--grid-line-dark) 80%, rgba(0, 0, 0, 0) 90%)',
-  //       },
-  //       2: {
-  //         background: 'var(--grid-line-dark)',
-  //       },
-  //       3: {
-  //         background: 'var(--grid-line-dark)',
-  //       },
-  //       4: {
-  //         background:
-  //           'linear-gradient(to top, var(--grid-line-dark) 0%, var(--grid-line-dark) 80%, rgba(0, 0, 0, 0) 100%)',
-  //       },
-  //     }
-  //   }
-  // }
-
-  // const gridLineStyles = getGridLineStyles()
-
   return (
     <ChangeHeaderTheme theme={theme}>
       <BlockWrapper
@@ -14938,18 +14685,23 @@ export const HomeHero: React.FC<
               )}
             </div>
           </div>
+
           <div className={classes.contentWrapper} style={contentWrapperHeight}>
             <Gutter className={classes.content}>
               <div className={classes.primaryContentWrap} data-theme={theme}>
                 <div className={[classes.primaryContent, 'grid'].filter(Boolean).join(' ')}>
-                  <div className={['cols-8 start-1'].filter(Boolean).join(' ')}>
+                  <div className={['cols-14 start-1'].filter(Boolean).join(' ')}>
                     {enableAnnouncement && (
                       <div className={classes.announcementLink}>
                         <CMSLink {...announcementLink} />
                       </div>
                     )}
-                    <RichText className={classes.richTextHeading} content={content} />
-                    <RichText className={classes.richTextDescription} content={description} />
+                    {/* <RichText className={classes.richTextHeading} content={content} />
+                    <RichText className={[classes.richTextDescription]} content={description} /> */}
+                    <RichText
+                      className={[classes.richTextDescription, 'text-center']}
+                      content={description}
+                    />
                     {Array.isArray(primaryButtons) && (
                       <ul className={[classes.primaryButtons].filter(Boolean).join(' ')}>
                         {primaryButtons.map(({ link }, i) => {
@@ -14973,53 +14725,7 @@ export const HomeHero: React.FC<
                     <div
                       className={classes.mobileMediaWrapper}
                       style={{ height: mobileMediaWrapperHeight }}
-                    >
-                      {typeof media === 'object' && media !== null && (
-                        <Media
-                          ref={mobileLaptopMediaRef}
-                          resource={media}
-                          className={classes.laptopMedia}
-                        />
-                      )}
-                      {/* {typeof secondaryMedia === 'object' && secondaryMedia !== null && (
-                        <div className={classes.pedestalMaskedImage}>
-                          <BackgroundGrid
-                            className={classes.mobilePedestalBackgroundGrid}
-                            gridLineStyles={{
-                              0: {
-                                background: 'var(--grid-line-dark)',
-                              },
-                              1: {
-                                background: 'var(--grid-line-dark)',
-                              },
-                              2: {
-                                background: 'var(--grid-line-dark)',
-                              },
-                              3: {
-                                background: 'var(--grid-line-dark)',
-                              },
-                              4: {
-                                background: 'var(--grid-line-dark)',
-                              },
-                            }}
-                            zIndex={1}
-                          />
-                          <Media resource={secondaryMedia} className={classes.pedestalImage} />
-                        </div>
-                      )} */}
-                      {/* {typeof featureVideo === 'object' && featureVideo !== null && (
-                        <div
-                          className={classes.featureVideoMask}
-                          style={{ height: mobileMediaWrapperHeight }}
-                        >
-                          <Media
-                            resource={featureVideo}
-                            className={classes.featureVideo}
-                            priority
-                          />
-                        </div>
-                      )} */}
-                    </div>
+                    ></div>
                   </div>
                 </div>
               </div>
@@ -15030,9 +14736,10 @@ export const HomeHero: React.FC<
     </ChangeHeaderTheme>
   )
 }
+
 ```
 
-# \_blocks/Hero/Gradient/index.tsx
+# _blocks/Hero/Gradient/index.tsx
 
 ```tsx
 'use client'
@@ -15067,7 +14774,7 @@ export const GradientHero: React.FC<GradientHeroProps> = ({
   const theme = fullBackground ? 'dark' : themeFromProps
 
   return (
-    <BlockWrapper settings={{ theme }} className={getPaddingClasses('standard')}>
+    <BlockWrapper settings={{ theme }} className={getPaddingClasses('hero')}>
       {Boolean(fullBackground) && (
         <Media
           className={[classes.bgFull, enableBreadcrumbsBar ? classes.hasBreadcrumbsEnabled : '']
@@ -15157,44 +14864,10 @@ export const GradientHero: React.FC<GradientHeroProps> = ({
 }
 
 export default GradientHero
+
 ```
 
-# \_blocks/Hero/Default/index.tsx
-
-```tsx
-'use client'
-
-import React from 'react'
-
-import { BackgroundGrid } from '@app/_components/BackgroundGrid'
-import { BlockWrapper } from '@app/_components/BlockWrapper'
-import { Gutter } from '@app/_components/Gutter'
-import { RichText } from '@app/_blocks/RichText'
-import classes from './index.module.scss'
-
-import { ExtractBlockProps } from '@/utilities/extractBlockProps'
-import { getPaddingClasses } from '@app/_css/tailwindClasses'
-export type DefaultHeroProps = ExtractBlockProps<'fields'>
-
-export const DefaultHero: React.FC<DefaultHeroProps> = ({ description, theme }) => {
-  return (
-    <BlockWrapper settings={{ theme: theme }} className={getPaddingClasses('hero')}>
-      <Gutter>
-        {/* <BackgroundGrid zIndex={0} /> */}
-        <div className={classes.defaultHero}>
-          <div className={[classes.container, 'grid'].filter(Boolean).join(' ')}>
-            <div className={[`cols-8 start-1`, `cols-m-8`, 'cols-s-8'].filter(Boolean).join(' ')}>
-              <RichText className={classes.richText} content={description} />
-            </div>
-          </div>
-        </div>
-      </Gutter>
-    </BlockWrapper>
-  )
-}
-```
-
-# \_blocks/Hero/ContentMedia/index.tsx
+# _blocks/Hero/ContentMedia/index.tsx
 
 ```tsx
 'use client'
@@ -15224,7 +14897,7 @@ export const ContentMediaHero: React.FC<ContentMediaHeroProps> = ({
   firstContentBlock,
 }) => {
   return (
-    <BlockWrapper settings={{ theme }} className={getPaddingClasses('standard')}>
+    <BlockWrapper settings={{ theme }} className={getPaddingClasses('hero')}>
       {/* <BackgroundGrid zIndex={0} /> */}
       <Gutter>
         <div className={[classes.wrapper, 'grid'].filter(Boolean).join(' ')}>
@@ -15291,9 +14964,78 @@ export const ContentMediaHero: React.FC<ContentMediaHeroProps> = ({
 }
 
 export default ContentMediaHero
+
 ```
 
-# \_blocks/Hero/CenteredContent/index.tsx
+# _blocks/Hero/Default/index.tsx
+
+```tsx
+'use client'
+
+import React from 'react'
+
+import { BackgroundGrid } from '@app/_components/BackgroundGrid'
+import { BlockWrapper } from '@app/_components/BlockWrapper'
+import { Gutter } from '@app/_components/Gutter'
+import { RichText } from '@app/_blocks/RichText'
+import classes from './index.module.scss'
+
+import { Media } from '@app/_components/Media'
+import { CMSLink } from '@app/_components/CMSLink'
+
+import { ExtractBlockProps } from '@/utilities/extractBlockProps'
+import { getPaddingClasses } from '@app/_css/tailwindClasses'
+export type DefaultHeroProps = ExtractBlockProps<'fields'>
+
+export const DefaultHero: React.FC<DefaultHeroProps> = ({ description, theme, media, primaryButtons }) => {
+  return (
+    <BlockWrapper settings={{ theme }} className={`${getPaddingClasses('hero')}`}>
+      {/* <Gutter className='container px-0'> */}
+        <div className="relative w-full xl:h-[900px] lg:h-[700px] md:h-[550px] h-[450px] overflow-hidden flex items-center justify-center">
+          <Media
+            resource={media}
+            className="absolute inset-0 w-full h-full object-cover max-w-none"
+            priority
+            width={2560}
+            height={1971}
+          />
+          <div className="absolute inset-0 flex justify-center">
+            <div className={`${classes.defaultHero} text-black text-center px-12 pt-4 lg:pt-12 xl:pt-16`}>
+              <div className={`${classes.container} grid`}>
+                <div className="cols-16 start-1 cols-m-8 cols-s-8">
+                  <RichText className={`${classes.richText} font-logo`} content={description} />
+                  {Array.isArray(primaryButtons) && (
+                    <ul className={[classes.primaryButtons].filter(Boolean).join(' ')}>
+                      {primaryButtons.map(({ link }, i) => {
+                        return (
+                          <li key={i}>
+                            <CMSLink
+                              data={{...link}}
+                              className={[classes.primaryButton, 'border-none shadow-xl bg-white'].filter(Boolean).join(' ')}
+                              look={{
+                                type: 'button',
+                                size: 'medium',
+                                width: 'narrow',
+                                variant: 'blocks',
+                              }}
+                            />
+                          </li>
+                        )
+                      })}
+                    </ul>
+                  )}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      {/* </Gutter> */}
+    </BlockWrapper>
+  );
+};
+```
+
+# _blocks/Hero/CenteredContent/index.tsx
 
 ```tsx
 'use client'
@@ -15321,7 +15063,7 @@ export const CenteredContent: React.FC<CenteredContentProps> = ({
   firstContentBlock,
 }) => {
   return (
-    <BlockWrapper settings={{ theme }} className={getPaddingClasses('standard')}>
+    <BlockWrapper settings={{ theme }} className={getPaddingClasses('hero')}>
       {/* <BackgroundGrid zIndex={0} /> */}
       <Gutter>
         <div className={[classes.container, 'grid'].filter(Boolean).join(' ')}>
@@ -15372,9 +15114,10 @@ export const CenteredContent: React.FC<CenteredContentProps> = ({
 }
 
 export default CenteredContent
+
 ```
 
-# \_blocks/Checkout/Summary/index.tsx
+# _blocks/Checkout/Summary/index.tsx
 
 ```tsx
 import React, { useEffect, useState, useTransition } from 'react'
@@ -15398,7 +15141,7 @@ import { FullLogo } from '@app/_graphics/FullLogo'
 import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js'
 import { loadStripe } from '@stripe/stripe-js'
 import Image from 'next/image'
-import { getImageAlt, getImageUrl } from '@/utilities/getmageUrl'
+import { getImageAlt, getImageUrl } from '@/utilities/getImageDetails'
 
 // Initialize Stripe
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '')
@@ -15639,9 +15382,10 @@ export const CheckoutSummary: React.FC<{ order: Order }> = ({ order }) => {
     </div>
   )
 }
+
 ```
 
-# \_blocks/Checkout/CheckoutForm/index.tsx
+# _blocks/Checkout/CheckoutForm/index.tsx
 
 ```tsx
 'use client'
@@ -15741,9 +15485,10 @@ export const CheckoutForm: React.FC = () => {
     </form>
   )
 }
+
 ```
 
-# \_blocks/Checkout/CheckoutForm/createPaymentIntent.ts
+# _blocks/Checkout/CheckoutForm/createPaymentIntent.ts
 
 ```ts
 'use server'
@@ -15772,6 +15517,7 @@ export async function createPaymentIntent(
     return { clientSecret: null }
   }
 }
+
 ```
 
 # (pages)/shop/checkout/page.tsx
@@ -16014,6 +15760,7 @@ const StripeElementsSkeleton: React.FC = () => {
     </div>
   )
 }
+
 ```
 
 # (pages)/shop/checkout/loading.tsx
@@ -16040,11 +15787,20 @@ const Loading = () => {
 }
 
 export default Loading
+
 ```
 
 # (pages)/shop/[slug]/page.tsx
 
 ```tsx
+/**
+ * @file page.tsx
+ * @module ProductPage
+ * @description This file contains the ProductPage component for displaying product details and layout.
+ * @overview
+ * The ProductPage component is a Next.js page component that renders a product detail page for a specific product based on the provided slug parameter. It fetches the product data from the backend using the fetchProduct query function and renders the ProductBlock component to display the product details and images. Additionally, it renders any layout blocks associated with the product using the Blocks component. The component utilizes server-side rendering (SSR) to fetch the product data on the server and notFound to handle cases where the product is not found or invalid. It also supports draft mode for previewing unpublished content.
+ */
+
 import React from 'react'
 import { draftMode } from 'next/headers'
 import { notFound } from 'next/navigation'
@@ -16080,8 +15836,6 @@ export default async function ProductPage({
     return notFound()
   }
 
-  // Use the isProductInOrder function from the order provider
-
   return (
     <React.Fragment>
       <ProductBlock product={product} selectedImageIndex={selectedImageIndex} />
@@ -16089,6 +15843,7 @@ export default async function ProductPage({
     </React.Fragment>
   )
 }
+
 ```
 
 # (pages)/shop/[slug]/loading.tsx
@@ -16137,89 +15892,60 @@ export default function LoadingShop() {
     </div>
   )
 }
+
 ```
 
 # (pages)/shop/cart/page.tsx
 
 ```tsx
 'use client'
-import React, { Suspense, useEffect } from 'react'
+import React, { Suspense } from 'react'
 import { BlockWrapper } from '@app/_components/BlockWrapper'
 import { Gutter } from '@app/_components/Gutter'
 import { OrderEmpty } from '@app/_blocks/Order/OrderEmpty'
-import { orderText } from '@/utilities/refData'
-import { buttonLook, contentFormats, getPaddingClasses } from '@app/_css/tailwindClasses'
+import { contentFormats, getPaddingClasses } from '@app/_css/tailwindClasses'
 import { useOrder } from '@app/_providers/Order'
 import { OrderItems } from '@app/_blocks/Order/OrderItems'
 import { OrderSummary } from '@app/_blocks/Order/OrderSummary'
-import { CMSLink } from '../../../_components/CMSLink'
-import { DollarSignIcon } from 'lucide-react'
-import Link from 'next/link'
 import cn from '@/utilities/cn'
 
 export default function CartPage() {
   const { order, orderIsEmpty, hasInitializedOrder } = useOrder()
 
-  // If we have order data, render the content regardless of hasInitializedOrder
-  if (order && order.items && order.items.length > 0) {
-    return renderCartContent(order, orderIsEmpty)
-  }
-
-  // If we don't have order data and hasInitializedOrder is false, show loading
   if (!hasInitializedOrder) {
     return <CartLoadingSkeleton />
   }
 
-  // If we have initialized but the order is empty, show empty order
-  return <OrderEmpty />
-}
+  if (orderIsEmpty) {
+    return <OrderEmpty />
+  }
 
-function renderCartContent(order: any, orderIsEmpty: any) {
   return (
     <BlockWrapper className={getPaddingClasses('hero')}>
       <Gutter>
-        {orderIsEmpty ? (
-          <OrderEmpty />
-        ) : (
-          <>
-            <div className="flex flex-row justify-between #gap-6">
-              <h1
-                className={[
-                  contentFormats.global,
-                  contentFormats.h3,
-                  'tracking-tighter text-3xl sm:text-2xl font-medium my-2',
-                ].join(' ')}
-              >
-                {'Your Cart'}
-              </h1>
-
-              {/* <div className="hidden sm:flex w-1/6">
-                <Link
-                  href="#summary-heading"
-                  scroll={true}
-                  className={[
-                    buttonLook.variants.base,
-                    buttonLook.sizes.medium,
-                    buttonLook.widths.full,
-                    `flex flex-row justify-between no-underline`,
-                  ].join(' ')}
-                >
-                  <span className={cn(contentFormats.global, contentFormats.p, '')}>
-                    {`Order Summary `}
-                  </span>
-                  <span> &darr; </span>
-                </Link>
-              </div> */}
-            </div>
-            <div className="flex flex-col sm:flex-row gap-6">
-              <Suspense fallback={<OrderItemsSkeleton />}>{order && <OrderItems />}</Suspense>
-
-              <Suspense fallback={<OrderSummarySkeleton />}>
-                {order && <OrderSummary order={order} />}
+        <div className="max-w-7xl mx-auto">
+          <h1
+            className={cn(
+              contentFormats.global,
+              contentFormats.h3,
+              'mb-6 text-3xl sm:text-4xl font-medium',
+            )}
+          >
+            Your Cart
+          </h1>
+          <div className="flex flex-col lg:flex-row gap-8">
+            <div className="w-full lg:w-2/3">
+              <Suspense fallback={<OrderItemsSkeleton />}>
+                <OrderItems />
               </Suspense>
             </div>
-          </>
-        )}
+            <div className="w-full lg:w-1/3">
+              <Suspense fallback={<OrderSummarySkeleton />}>
+                <OrderSummary order={order} />
+              </Suspense>
+            </div>
+          </div>
+        </div>
       </Gutter>
     </BlockWrapper>
   )
@@ -16228,14 +15954,13 @@ function renderCartContent(order: any, orderIsEmpty: any) {
 const CartLoadingSkeleton = () => (
   <BlockWrapper className={getPaddingClasses('hero')}>
     <Gutter>
-      <div className="animate-pulse">
-        <div className="h-8 bg-gray-200 w-1/4 mb-6"></div>
-        <div className="h-4 bg-gray-200 w-3/4 mb-8"></div>
-        <div className="flex flex-col lg:flex-row gap-6">
-          <div className="lg:basis-3/4">
+      <div className="animate-pulse max-w-7xl mx-auto">
+        <div className="h-10 bg-gray-200 w-1/4 mb-8"></div>
+        <div className="flex flex-col lg:flex-row gap-8">
+          <div className="w-full lg:w-2/3">
             <OrderItemsSkeleton />
           </div>
-          <div className="lg:basis-1/4">
+          <div className="w-full lg:w-1/3">
             <OrderSummarySkeleton />
           </div>
         </div>
@@ -16244,52 +15969,35 @@ const CartLoadingSkeleton = () => (
   </BlockWrapper>
 )
 
-const OrderItemsSkeleton: React.FC = () => {
-  return (
-    <div className="border border-solid border-gray-200/90 animate-pulse">
-      <div className="flex flex-col gap-6 p-5 md:flex-row md:justify-between">
-        <div className="flex min-w-0 gap-x-4">
-          <div className="h-20 w-20 flex-none bg-gray-200"></div>
-          <div className="flex flex-col gap-x-3 sm:items-start">
-            <div className="w-32 h-6 bg-gray-200 mb-2"></div>
-            <div className="w-48 h-4 bg-gray-200"></div>
+const OrderItemsSkeleton = () => (
+  <div className="space-y-6">
+    {[...Array(2)].map((_, index) => (
+      <div key={index} className="border border-gray-200 rounded-lg p-4">
+        <div className="flex items-center space-x-4">
+          <div className="w-20 h-20 bg-gray-200 rounded-md"></div>
+          <div className="flex-1">
+            <div className="h-6 bg-gray-200 w-3/4 mb-2"></div>
+            <div className="h-4 bg-gray-200 w-1/2"></div>
           </div>
         </div>
-        <div className="flex flex-none items-end gap-x-4 align-top">
-          <div className="w-24 h-8 bg-gray-200"></div>
-          <div className="w-24 h-8 bg-gray-200"></div>
-        </div>
       </div>
-    </div>
-  )
-}
+    ))}
+  </div>
+)
 
-const OrderSummarySkeleton: React.FC = () => {
-  return (
-    <div className="animate-pulse">
-      <div className="relative flex justify-between gap-4">
-        <h2 className="bg-gray-200 rounded h-6 w-32"></h2>
+const OrderSummarySkeleton = () => (
+  <div className="border border-gray-200 rounded-lg p-4 space-y-4">
+    <div className="h-6 bg-gray-200 w-1/2 mb-4"></div>
+    {[...Array(4)].map((_, index) => (
+      <div key={index} className="flex justify-between">
+        <div className="h-4 bg-gray-200 w-1/3"></div>
+        <div className="h-4 bg-gray-200 w-1/4"></div>
       </div>
+    ))}
+    <div className="h-10 bg-gray-200 w-full mt-6"></div>
+  </div>
+)
 
-      <div className="mt-6 space-y-4">
-        <div className="flex items-center justify-between">
-          <div className="bg-gray-200 rounded h-4 w-48"></div>
-          <div className="bg-gray-200 rounded h-4 w-20"></div>
-        </div>
-
-        <div className="flex items-center justify-between">
-          <div className="bg-gray-200 rounded h-4 w-36"></div>
-          <div className="bg-gray-200 rounded h-4 w-20"></div>
-        </div>
-
-        <div className="flex items-center justify-between">
-          <div className="bg-gray-200 rounded h-4 w-36"></div>
-          <div className="bg-gray-200 rounded h-4 w-20"></div>
-        </div>
-      </div>
-    </div>
-  )
-}
 ```
 
 # (pages)/shop/cart/loading.tsx
@@ -16316,9 +16024,10 @@ const Loading = () => {
 }
 
 export default Loading
+
 ```
 
-# \_components/forms/fields/useField/index.tsx
+# _components/forms/fields/useField/index.tsx
 
 ```tsx
 import { useCallback, useEffect, useRef, useState } from 'react'
@@ -16403,9 +16112,94 @@ export const useField = <T extends Value>(props: {
     errorMessage,
   }
 }
+
 ```
 
-# \_components/forms/fields/Text/index.tsx
+# _components/forms/fields/Textarea/index.tsx
+
+```tsx
+'use client'
+
+import React from 'react'
+
+import Error from '../../Error'
+import Label from '../../Label'
+import { FieldProps } from '../types'
+import { useField } from '../useField'
+
+import classes from './index.module.scss'
+
+export const Textarea: React.FC<
+  FieldProps<string> & {
+    rows?: number
+    copy?: boolean
+    elementAttributes?: React.InputHTMLAttributes<HTMLTextAreaElement>
+  }
+> = (props) => {
+  const {
+    path,
+    required = false,
+    validate,
+    label,
+    placeholder,
+    onChange: onChangeFromProps,
+    rows = 3,
+    initialValue,
+    className,
+    copy,
+    elementAttributes = {
+      autoComplete: 'off',
+      autoCorrect: 'off',
+      autoCapitalize: 'none',
+    },
+  } = props
+
+  const defaultValidateFunction = React.useCallback(
+    (fieldValue: any | string): string | true => {
+      if (required && !fieldValue) {
+        return 'Please enter a value.'
+      }
+
+      if (fieldValue && typeof fieldValue !== 'string') {
+        return 'This field can only be a string.'
+      }
+
+      return true
+    },
+    [required],
+  )
+
+  const { onChange, value, showError, errorMessage } = useField<string>({
+    initialValue,
+    onChange: onChangeFromProps,
+    path,
+    validate: validate || defaultValidateFunction,
+    required,
+  })
+
+  return (
+    <div className={[className, classes.wrap].filter(Boolean).join(' ')}>
+      <Error showError={showError} message={errorMessage} />
+      <Label htmlFor={path} label={label} required={required} />
+      <textarea
+        {...elementAttributes}
+        rows={rows}
+        className={classes.textarea}
+        value={value || ''}
+        onChange={(e) => {
+          onChange(e.target.value)
+        }}
+        placeholder={placeholder}
+        id={path}
+        name={path}
+      />
+    </div>
+  )
+}
+
+```
+
+# _components/forms/fields/Text/index.tsx
 
 ```tsx
 'use client'
@@ -16413,7 +16207,6 @@ export const useField = <T extends Value>(props: {
 import React, { Fragment, useEffect } from 'react'
 import Label from '@app/_components/forms/Label'
 
-import { CopyToClipboard } from '@app/_components/CopyToClipboard'
 import { Tooltip } from '@app/_components/Tooltip'
 import { EyeIcon } from '@app/_icons/EyeIcon'
 import Error from '../../Error'
@@ -16562,7 +16355,6 @@ export const Text: React.FC<
             margin={false}
             actionsSlot={
               <React.Fragment>
-                {copy && <CopyToClipboard value={value} />}
                 {type === 'password' && (
                   <Tooltip
                     text={isHidden ? 'show' : 'hide'}
@@ -16580,98 +16372,10 @@ export const Text: React.FC<
     </div>
   )
 }
+
 ```
 
-# \_components/forms/fields/Textarea/index.tsx
-
-```tsx
-'use client'
-
-import React from 'react'
-
-import { CopyToClipboard } from '@app/_components/CopyToClipboard'
-import Error from '../../Error'
-import Label from '../../Label'
-import { FieldProps } from '../types'
-import { useField } from '../useField'
-
-import classes from './index.module.scss'
-
-export const Textarea: React.FC<
-  FieldProps<string> & {
-    rows?: number
-    copy?: boolean
-    elementAttributes?: React.InputHTMLAttributes<HTMLTextAreaElement>
-  }
-> = (props) => {
-  const {
-    path,
-    required = false,
-    validate,
-    label,
-    placeholder,
-    onChange: onChangeFromProps,
-    rows = 3,
-    initialValue,
-    className,
-    copy,
-    elementAttributes = {
-      autoComplete: 'off',
-      autoCorrect: 'off',
-      autoCapitalize: 'none',
-    },
-  } = props
-
-  const defaultValidateFunction = React.useCallback(
-    (fieldValue: any | string): string | true => {
-      if (required && !fieldValue) {
-        return 'Please enter a value.'
-      }
-
-      if (fieldValue && typeof fieldValue !== 'string') {
-        return 'This field can only be a string.'
-      }
-
-      return true
-    },
-    [required],
-  )
-
-  const { onChange, value, showError, errorMessage } = useField<string>({
-    initialValue,
-    onChange: onChangeFromProps,
-    path,
-    validate: validate || defaultValidateFunction,
-    required,
-  })
-
-  return (
-    <div className={[className, classes.wrap].filter(Boolean).join(' ')}>
-      <Error showError={showError} message={errorMessage} />
-      <Label
-        htmlFor={path}
-        label={label}
-        required={required}
-        actionsSlot={copy && <CopyToClipboard value={value} />}
-      />
-      <textarea
-        {...elementAttributes}
-        rows={rows}
-        className={classes.textarea}
-        value={value || ''}
-        onChange={(e) => {
-          onChange(e.target.value)
-        }}
-        placeholder={placeholder}
-        id={path}
-        name={path}
-      />
-    </div>
-  )
-}
-```
-
-# \_components/forms/fields/Select/index.tsx
+# _components/forms/fields/Select/index.tsx
 
 ```tsx
 'use client'
@@ -16894,9 +16598,10 @@ export const Select: React.FC<SelectProps> = (props) => {
     </div>
   )
 }
+
 ```
 
-# \_components/forms/fields/Secret/index.tsx
+# _components/forms/fields/Secret/index.tsx
 
 ```tsx
 'use client'
@@ -16904,7 +16609,6 @@ export const Select: React.FC<SelectProps> = (props) => {
 import React, { Fragment } from 'react'
 import Label from '@app/_components/forms/Label'
 
-import { CopyToClipboard } from '@app/_components/CopyToClipboard'
 import { Tooltip } from '@app/_components/Tooltip'
 import { EyeIcon } from '@app/_icons/EyeIcon'
 import Error from '../../Error'
@@ -17024,16 +16728,16 @@ export const Secret: React.FC<SecretProps> = (props) => {
             >
               <EyeIcon closed={isHidden} size="large" />
             </Tooltip>
-            <CopyToClipboard value={isValueLoaded ? value : loadExternalValue} />
           </React.Fragment>
         }
       />
     </div>
   )
 }
+
 ```
 
-# \_components/forms/fields/RadioGroup/index.tsx
+# _components/forms/fields/RadioGroup/index.tsx
 
 ```tsx
 'use client'
@@ -17142,9 +16846,10 @@ const RadioGroup: React.FC<
 }
 
 export default RadioGroup
+
 ```
 
-# \_components/forms/fields/Number/index.tsx
+# _components/forms/fields/Number/index.tsx
 
 ```tsx
 'use client'
@@ -17213,9 +16918,10 @@ export const NumberInput: React.FC<FieldProps<number>> = (props) => {
     </div>
   )
 }
+
 ```
 
-# \_components/forms/fields/Checkbox/index.tsx
+# _components/forms/fields/Checkbox/index.tsx
 
 ```tsx
 'use client'
@@ -17346,9 +17052,10 @@ export const Checkbox: React.FC<
     </div>
   )
 }
+
 ```
 
-# \_components/forms/fields/Array/index.tsx
+# _components/forms/fields/Array/index.tsx
 
 ```tsx
 import * as React from 'react'
@@ -17411,9 +17118,10 @@ export const AddArrayRow: React.FC<AddRowProps> = ({
 
   return <CircleIconButton className={className} onClick={addRow} label={label} />
 }
+
 ```
 
-# \_components/forms/fields/Array/context.tsx
+# _components/forms/fields/Array/context.tsx
 
 ```tsx
 import * as React from 'react'
@@ -17481,9 +17189,10 @@ export const ArrayProvider: React.FC<{
     </ArrayContext.Provider>
   )
 }
+
 ```
 
-# \_components/CMSForm/fields/Textarea/index.tsx
+# _components/CMSForm/fields/Textarea/index.tsx
 
 ```tsx
 'use client'
@@ -17494,7 +17203,6 @@ import { FieldProps } from '@app/_components/forms/fields/types'
 import { useField } from '@app/_components/forms/fields/useField'
 
 import Label from '@app/_components/CMSForm/Label'
-import { CopyToClipboard } from '@app/_components/CopyToClipboard'
 
 import classes from './index.module.scss'
 
@@ -17583,7 +17291,6 @@ export const Textarea: React.FC<
           htmlFor={path}
           label={label}
           required={required}
-          actionsSlot={copy && <CopyToClipboard value={value} />}
           className={[classes.textareaLabel].filter(Boolean).join(' ')}
         />
         <Error
@@ -17610,9 +17317,10 @@ export const Textarea: React.FC<
     </div>
   )
 }
+
 ```
 
-# \_components/CMSForm/fields/Text/index.tsx
+# _components/CMSForm/fields/Text/index.tsx
 
 ```tsx
 'use client'
@@ -17623,7 +17331,6 @@ import { FieldProps } from '@app/_components/forms/fields/types'
 import { useField } from '@app/_components/forms/fields/useField'
 
 import Label from '@app/_components/CMSForm/Label'
-import { CopyToClipboard } from '@app/_components/CopyToClipboard'
 import { Tooltip } from '@app/_components/Tooltip'
 import { EyeIcon } from '@app/_icons/EyeIcon'
 
@@ -17745,7 +17452,6 @@ export const Text: React.FC<
             margin={false}
             actionsSlot={
               <React.Fragment>
-                {copy && <CopyToClipboard value={value} />}
                 {type === 'password' && (
                   <Tooltip
                     text={isHidden ? 'show' : 'hide'}
@@ -17794,9 +17500,10 @@ export const Text: React.FC<
     </div>
   )
 }
+
 ```
 
-# \_components/CMSForm/fields/Select/states.ts
+# _components/CMSForm/fields/Select/states.ts
 
 ```ts
 export const stateOptions = [
@@ -17851,9 +17558,10 @@ export const stateOptions = [
   { label: 'Wisconsin', value: 'WI' },
   { label: 'Wyoming', value: 'WY' },
 ]
+
 ```
 
-# \_components/CMSForm/fields/Select/index.tsx
+# _components/CMSForm/fields/Select/index.tsx
 
 ```tsx
 'use client'
@@ -18121,9 +17829,10 @@ export const Select: React.FC<SelectProps & { selectType?: 'normal' | 'state' | 
     </div>
   )
 }
+
 ```
 
-# \_components/CMSForm/fields/Select/countries.ts
+# _components/CMSForm/fields/Select/countries.ts
 
 ```ts
 export const countryOptions = [
@@ -19108,9 +18817,10 @@ export const countryOptions = [
     value: 'ZW',
   },
 ]
+
 ```
 
-# \_components/CMSForm/fields/Checkbox/index.tsx
+# _components/CMSForm/fields/Checkbox/index.tsx
 
 ```tsx
 'use client'
@@ -19239,9 +18949,10 @@ export const Checkbox: React.FC<
     </div>
   )
 }
+
 ```
 
-# \_blocks/Hero/Home/LogoShowcase/index.tsx
+# _blocks/Hero/Home/LogoShowcase/index.tsx
 
 ```tsx
 import React, { useEffect, useState } from 'react'
@@ -19408,6 +19119,7 @@ export const LogoShowcase: React.FC<Props> = ({ logos }) => {
 }
 
 export default LogoShowcase
+
 ```
 
 # (pages)/shop/order/confirmation/page.tsx
@@ -19561,4 +19273,6 @@ const OrderSummarySkeleton: React.FC = () => {
     </div>
   )
 }
+
 ```
+
