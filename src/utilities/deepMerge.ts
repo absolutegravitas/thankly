@@ -1,19 +1,9 @@
 // @ts-nocheck
 
-/**
- * Simple object check.
- * @param item
- * @returns {boolean}
- */
 export function isObject(item: unknown): boolean {
   return item && typeof item === 'object' && !Array.isArray(item)
 }
 
-/**
- * Deep merge two or more objects.
- * @param target
- * @param ...sources
- */
 export default function deepMerge<T>(target: T, ...sources: any[]): T {
   const output = { ...target }
 

@@ -105,58 +105,6 @@ export const HomeHero: React.FC<
 
   const contentWrapperHeight = getContentWrapperHeight()
 
-  // const getGridLineStyles = () => {
-  //   if (windowWidth >= 1024) {
-  //     // For desktop
-  //     return {
-  //       0: {
-  //         background:
-  //           'linear-gradient(to top, var(--grid-line-dark) 0%, var(--grid-line-dark) 65%, rgba(0, 0, 0, 0) 80%)',
-  //       },
-  //       1: {
-  //         background:
-  //           'linear-gradient(to top, var(--grid-line-dark) 0%, var(--grid-line-dark) 65%, rgba(0, 0, 0, 0) 80%)',
-  //       },
-  //       2: {
-  //         background:
-  //           'linear-gradient(to top, var(--grid-line-dark) 0%, var(--grid-line-dark) 75%, rgba(0, 0, 0, 0) 95%)',
-  //       },
-  //       3: {
-  //         background:
-  //           'linear-gradient(to top, var(--grid-line-dark) 0%, var(--grid-line-dark) 20%, rgba(0, 0, 0, 0) 60%)',
-  //       },
-  //       4: {
-  //         background:
-  //           'linear-gradient(to top, var(--grid-line-dark) 0%, var(--grid-line-dark) 60%, rgba(0, 0, 0, 0) 90%)',
-  //       },
-  //     }
-  //   } else {
-  //     // For mobile
-  //     return {
-  //       0: {
-  //         background:
-  //           'linear-gradient(to top, var(--grid-line-dark) 0%, var(--grid-line-dark) 70%, rgba(0, 0, 0, 0) 100%)',
-  //       },
-  //       1: {
-  //         background:
-  //           'linear-gradient(to top, var(--grid-line-dark) 0%, var(--grid-line-dark) 80%, rgba(0, 0, 0, 0) 90%)',
-  //       },
-  //       2: {
-  //         background: 'var(--grid-line-dark)',
-  //       },
-  //       3: {
-  //         background: 'var(--grid-line-dark)',
-  //       },
-  //       4: {
-  //         background:
-  //           'linear-gradient(to top, var(--grid-line-dark) 0%, var(--grid-line-dark) 80%, rgba(0, 0, 0, 0) 100%)',
-  //       },
-  //     }
-  //   }
-  // }
-
-  // const gridLineStyles = getGridLineStyles()
-
   return (
     <ChangeHeaderTheme theme={theme}>
       <BlockWrapper
@@ -190,7 +138,7 @@ export const HomeHero: React.FC<
                       </div>
                     )}
                     <RichText className={classes.richTextHeading} content={content} />
-                    <RichText className={classes.richTextDescription} content={description} />
+                    <RichText className={[classes.richTextDescription]} content={description} />
                     {Array.isArray(primaryButtons) && (
                       <ul className={[classes.primaryButtons].filter(Boolean).join(' ')}>
                         {primaryButtons.map(({ link }, i) => {
@@ -222,44 +170,6 @@ export const HomeHero: React.FC<
                           className={classes.laptopMedia}
                         />
                       )}
-                      {/* {typeof secondaryMedia === 'object' && secondaryMedia !== null && (
-                        <div className={classes.pedestalMaskedImage}>
-                          <BackgroundGrid
-                            className={classes.mobilePedestalBackgroundGrid}
-                            gridLineStyles={{
-                              0: {
-                                background: 'var(--grid-line-dark)',
-                              },
-                              1: {
-                                background: 'var(--grid-line-dark)',
-                              },
-                              2: {
-                                background: 'var(--grid-line-dark)',
-                              },
-                              3: {
-                                background: 'var(--grid-line-dark)',
-                              },
-                              4: {
-                                background: 'var(--grid-line-dark)',
-                              },
-                            }}
-                            zIndex={1}
-                          />
-                          <Media resource={secondaryMedia} className={classes.pedestalImage} />
-                        </div>
-                      )} */}
-                      {/* {typeof featureVideo === 'object' && featureVideo !== null && (
-                        <div
-                          className={classes.featureVideoMask}
-                          style={{ height: mobileMediaWrapperHeight }}
-                        >
-                          <Media
-                            resource={featureVideo}
-                            className={classes.featureVideo}
-                            priority
-                          />
-                        </div>
-                      )} */}
                     </div>
                   </div>
                 </div>

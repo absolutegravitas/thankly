@@ -7,7 +7,7 @@ export const revalidatePage = async ({
   collection,
   payload,
 }: {
-  doc: any // eslint-disable-line @typescript-eslint/no-explicit-any
+  doc: any
   collection: string
   payload: Payload
 }): Promise<void> => {

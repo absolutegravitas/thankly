@@ -30,11 +30,12 @@ export const ImageComponent: React.FC<Props> = (props) => {
   let alt = altFromProps
   let src: StaticImageData | string | undefined | null = srcFromProps
 
-  const hasDarkModeFallback =
-    resource?.darkModeFallback &&
-    typeof resource.darkModeFallback === 'object' &&
-    resource.darkModeFallback !== null &&
-    typeof resource.darkModeFallback.filename === 'string'
+  // removed field in Image content schema
+  // const hasDarkModeFallback =
+  //   resource?.darkModeFallback &&
+  //   typeof resource.darkModeFallback === 'object' &&
+  //   resource.darkModeFallback !== null &&
+  //   typeof resource.darkModeFallback.filename === 'string'
 
   if (!src && resource && typeof resource !== 'string') {
     width = resource.width
@@ -54,7 +55,7 @@ export const ImageComponent: React.FC<Props> = (props) => {
     isLoading && classes.placeholder,
     classes.image,
     imgClassName,
-    hasDarkModeFallback && classes.hasDarkModeFallback,
+    // hasDarkModeFallback && classes.hasDarkModeFallback,
   ]
     .filter(Boolean)
     .join(' ')
@@ -78,7 +79,8 @@ export const ImageComponent: React.FC<Props> = (props) => {
         sizes={sizes}
         priority={priority}
       />
-      {hasDarkModeFallback &&
+      {/* // removed field in Image content schema */}
+      {/* {hasDarkModeFallback &&
         typeof resource.darkModeFallback === 'object' &&
         resource.darkModeFallback !== null && (
           <Image
@@ -98,7 +100,7 @@ export const ImageComponent: React.FC<Props> = (props) => {
             sizes={sizes}
             priority={priority}
           />
-        )}
+        )} */}
     </React.Fragment>
   )
 }

@@ -3,7 +3,6 @@
 import React, { Fragment } from 'react'
 import Label from '@app/_components/forms/Label'
 
-import { CopyToClipboard } from '@app/_components/CopyToClipboard'
 import { Tooltip } from '@app/_components/Tooltip'
 import { EyeIcon } from '@app/_icons/EyeIcon'
 import Error from '../../Error'
@@ -123,7 +122,6 @@ export const Secret: React.FC<SecretProps> = (props) => {
             >
               <EyeIcon closed={isHidden} size="large" />
             </Tooltip>
-            <CopyToClipboard value={isValueLoaded ? value : loadExternalValue} />
           </React.Fragment>
         }
       />

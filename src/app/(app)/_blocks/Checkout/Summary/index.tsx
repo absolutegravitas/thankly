@@ -19,7 +19,7 @@ import { FullLogo } from '@app/_graphics/FullLogo'
 import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js'
 import { loadStripe } from '@stripe/stripe-js'
 import Image from 'next/image'
-import { getImageAlt, getImageUrl } from '@/utilities/getmageUrl'
+import { getImageAlt, getImageUrl } from '@/utilities/getImageDetails'
 
 // Initialize Stripe
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '')

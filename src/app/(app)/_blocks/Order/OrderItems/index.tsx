@@ -5,7 +5,7 @@ import Image from 'next/image'
 import { contentFormats } from '@app/_css/tailwindClasses'
 import cn from '@/utilities/cn'
 import { ReceiversGrid } from '../ReceiversGrid'
-import { getImageAlt, getImageUrl } from '@/utilities/getmageUrl'
+import { getImageAlt, getImageUrl } from '@/utilities/getImageDetails'
 import { AddReceiverButton, RemoveProductButton } from '../ReceiversGrid/ReceiverActions'
 import { useOrder } from '@app/_providers/Order'
 

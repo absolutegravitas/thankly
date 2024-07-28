@@ -43,21 +43,22 @@ export const blockFields = ({ name, label, fields, overrides }: Args): Field =>
         },
       },
       fields: [
-        {
-          type: 'collapsible',
-          label: 'Settings',
-          fields: [
-            {
-              type: 'group',
-              label: false,
-              admin: {
-                hideGutter: true,
-              },
-              name: 'settings',
-              fields: [themeField],
-            },
-          ],
-        },
+        // removed "theme" field for blocks
+        // {
+        //   type: 'collapsible',
+        //   label: 'Settings',
+        //   fields: [
+        //     {
+        //       type: 'group',
+        //       label: false,
+        //       admin: {
+        //         hideGutter: true,
+        //       },
+        //       name: 'settings',
+        //       fields: [themeField],
+        //     },
+        //   ],
+        // },
         ...fields,
       ],
     },

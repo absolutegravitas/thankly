@@ -6,7 +6,6 @@ import { FieldProps } from '@app/_components/forms/fields/types'
 import { useField } from '@app/_components/forms/fields/useField'
 
 import Label from '@app/_components/CMSForm/Label'
-import { CopyToClipboard } from '@app/_components/CopyToClipboard'
 
 import classes from './index.module.scss'
 
@@ -95,7 +94,6 @@ export const Textarea: React.FC<
           htmlFor={path}
           label={label}
           required={required}
-          actionsSlot={copy && <CopyToClipboard value={value} />}
           className={[classes.textareaLabel].filter(Boolean).join(' ')}
         />
         <Error

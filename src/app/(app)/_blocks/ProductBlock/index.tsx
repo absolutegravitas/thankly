@@ -7,7 +7,7 @@ import { ProductActions } from '@app/_components/ProductActions'
 import { Product, Media } from '@payload-types'
 import { contentFormats, getPaddingClasses } from '@app/_css/tailwindClasses'
 import cn from '@/utilities/cn'
-import { getImageAlt, getImageUrl } from '@/utilities/getmageUrl'
+import { getImageAlt, getImageUrl } from '@/utilities/getImageDetails'
 
 interface ProductBlockContentProps {
   product: Product
