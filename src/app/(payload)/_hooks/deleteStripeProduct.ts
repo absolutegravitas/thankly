@@ -26,6 +26,7 @@ export const deleteStripeProduct: CollectionAfterDeleteHook<Product> = async ({
       // }
 
       await stripe.products.update(doc.stripe.productId, { active: false })
+    } else if (doc.stripe?.productId === '') {
     } else {
       req.payload.logger.warn('No valid Stripe product ID found for deletion')
     }

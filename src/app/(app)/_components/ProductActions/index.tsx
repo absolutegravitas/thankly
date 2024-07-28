@@ -10,9 +10,9 @@ import { RemoveFromCartButton } from './RemoveFromCart'
 import { useOrder } from '@app/_providers/Order'
 
 export function ProductActions({ product, hidePerks, hideRemove }: any) {
-  const { stockOnHand } = product
-  // const inCart = await isProductInOrder(product.id)
-
+  const {
+    stock: { stockOnHand },
+  } = product
   const { isProductInOrder } = useOrder()
   const inCart = isProductInOrder(product.id)
 
