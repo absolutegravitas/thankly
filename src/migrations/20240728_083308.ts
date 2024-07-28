@@ -63,19 +63,7 @@ EXCEPTION
 END $$;
 
 DO $$ BEGIN
- CREATE TYPE "enum_pages_theme" AS ENUM('light', 'dark');
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
-
-DO $$ BEGIN
  CREATE TYPE "enum_pages_status" AS ENUM('draft', 'published');
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
-
-DO $$ BEGIN
- CREATE TYPE "enum__pages_v_version_theme" AS ENUM('light', 'dark');
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -225,7 +213,7 @@ CREATE TABLE IF NOT EXISTS "products" (
 	"productType" "enum_products_product_type",
 	"shippingSize" "enum_products_shipping_size",
 	"prices_base_price" numeric,
-	"prices_promo_price" numeric,
+	"prices_sale_price" numeric,
 	"layout" jsonb,
 	"stock_availability" "enum_products_stock_availability",
 	"stock_stock_on_hand" numeric,
@@ -233,7 +221,7 @@ CREATE TABLE IF NOT EXISTS "products" (
 	"slug" varchar,
 	"stripe_product_id" varchar,
 	"stripe_base_price_id" varchar,
-	"stripe_promo_price_id" varchar,
+	"stripe_sale_price_id" varchar,
 	"meta_title" varchar,
 	"meta_description" varchar,
 	"meta_image_id" integer,
@@ -257,7 +245,7 @@ CREATE TABLE IF NOT EXISTS "_products_v" (
 	"version_productType" "enum__products_v_version_product_type",
 	"version_shippingSize" "enum__products_v_version_shipping_size",
 	"version_prices_base_price" numeric,
-	"version_prices_promo_price" numeric,
+	"version_prices_sale_price" numeric,
 	"version_layout" jsonb,
 	"version_stock_availability" "enum__products_v_version_stock_availability",
 	"version_stock_stock_on_hand" numeric,
@@ -265,7 +253,7 @@ CREATE TABLE IF NOT EXISTS "_products_v" (
 	"version_slug" varchar,
 	"version_stripe_product_id" varchar,
 	"version_stripe_base_price_id" varchar,
-	"version_stripe_promo_price_id" varchar,
+	"version_stripe_sale_price_id" varchar,
 	"version_meta_title" varchar,
 	"version_meta_description" varchar,
 	"version_meta_image_id" integer,
@@ -290,7 +278,6 @@ CREATE TABLE IF NOT EXISTS "pages" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"title" varchar,
 	"slug" varchar,
-	"theme" "enum_pages_theme",
 	"layout" jsonb,
 	"meta_title" varchar,
 	"meta_description" varchar,
@@ -316,7 +303,6 @@ CREATE TABLE IF NOT EXISTS "_pages_v" (
 	"parent_id" integer,
 	"version_title" varchar,
 	"version_slug" varchar,
-	"version_theme" "enum__pages_v_version_theme",
 	"version_layout" jsonb,
 	"version_meta_title" varchar,
 	"version_meta_description" varchar,
@@ -342,7 +328,6 @@ CREATE TABLE IF NOT EXISTS "media" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"alt" varchar NOT NULL,
 	"caption" jsonb,
-	"dark_mode_fallback_id" integer,
 	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
 	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
 	"url" varchar,
@@ -855,12 +840,6 @@ END $$;
 
 DO $$ BEGIN
  ALTER TABLE "_pages_v" ADD CONSTRAINT "_pages_v_version_parent_id_pages_id_fk" FOREIGN KEY ("version_parent_id") REFERENCES "pages"("id") ON DELETE set null ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
-
-DO $$ BEGIN
- ALTER TABLE "media" ADD CONSTRAINT "media_dark_mode_fallback_id_media_id_fk" FOREIGN KEY ("dark_mode_fallback_id") REFERENCES "media"("id") ON DELETE set null ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
