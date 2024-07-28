@@ -116,11 +116,7 @@ export const ReceiversGrid: React.FC<{ item: OrderItem }> = ({ item }) => {
 
       if (!receiver.message) {
         errors.message = 'Message is required'
-      }
-      //  else if (receiver.message.split(/\s+/).length < 60) {
-      //   errors.message = 'Message must be at least 60 words'
-      // }
-      else if (!/^[a-zA-Z0-9\s.,!?'-]+$/.test(receiver.message)) {
+      } else if (!/^[a-zA-Z0-9\s.,!?'-]+$/.test(receiver.message)) {
         errors.message = 'Message contains invalid characters'
       }
 

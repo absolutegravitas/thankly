@@ -1,13 +1,3 @@
-/**
- * @file ProductActions.tsx
- * @description Contains the ProductActions component which displays action buttons and messages based on the product's stock and cart status.
- * @overview The ProductActions component takes in a product object and optional flags to hide certain elements. It determines whether the product is in stock and in the user's cart, and renders appropriate action buttons (Add to Cart, View in Cart, Remove from Cart) and informational messages accordingly.
- * @component
- * @param {object} product - The product object.
- * @param {boolean} [hidePerks] - Optional flag to hide the shipping and stock perks.
- * @param {boolean} [hideRemove] - Optional flag to hide the remove from cart message.
- */
-
 'use client'
 
 import React from 'react' // The ProductActions component uses the useOrder hook to access the order context and determine if the product is already in the user's cart.
@@ -94,19 +84,6 @@ export function ProductActions({ product, hidePerks, hideRemove }: any) {
           </div>
         </div>
       )}
-
-      {/* {!hidePerks && (
-        <div className="#hidden sm:flex pt-2 items-center justify-center space-x-2">
-          <div className="py-1 sm:py-2 flex items-center">
-            <SendHorizonalIcon className="h-5 w-5 flex-shrink-0 text-green" aria-hidden="true" />
-            <div className="ml-2 text-sm text-gray-500">{messages.shippingFreeMessage}</div>
-          </div>
-          <div className="py-1 sm:py-2 flex items-center">
-            <CheckIcon className="h-5 w-5 flex-shrink-0 text-green-500" aria-hidden="true" />
-            <div className="ml-2 text-sm text-gray-500">{messages.inStock}</div>
-          </div>
-        </div>
-      )} */}
     </>
   )
 }

@@ -1,3 +1,7 @@
+// This file contains the main Cart page component and related UI skeletons for the Next.js 14 app with the App Router and server components.
+// The Cart page displays the user's current order, including order items and a summary with totals.
+// If the order is empty or not initialized, appropriate placeholders or skeletons are shown.
+
 'use client'
 import React, { Suspense } from 'react'
 import { BlockWrapper } from '@app/_components/BlockWrapper'
@@ -8,18 +12,32 @@ import { useOrder } from '@app/_providers/Order'
 import { OrderItems } from '@app/_blocks/Order/OrderItems'
 import { OrderSummary } from '@app/_blocks/Order/OrderSummary'
 import cn from '@/utilities/cn'
+import { Order } from '@/payload-types'
 
+// The main Cart page component
 export default function CartPage() {
-  const { order, orderIsEmpty, hasInitializedOrder } = useOrder()
+  // Destructure order state and helper values from the useOrder custom hook
+  const {
+    order,
+    orderIsEmpty,
+    hasInitializedOrder,
+  }: {
+    order: Order // Assuming 'Order' is a type or interface defined elsewhere
+    orderIsEmpty: boolean
+    hasInitializedOrder: boolean
+  } = useOrder()
 
+  // Show a loading skeleton if the order hasn't been initialized yet
   if (!hasInitializedOrder) {
     return <CartLoadingSkeleton />
   }
 
+  // Show an empty order placeholder if the order is empty
   if (orderIsEmpty) {
     return <OrderEmpty />
   }
 
+  // Render the Cart page with order items and summary
   return (
     <BlockWrapper className={getPaddingClasses('hero')}>
       <Gutter>
@@ -35,11 +53,13 @@ export default function CartPage() {
           </h1>
           <div className="flex flex-col lg:flex-row gap-8">
             <div className="w-full lg:w-2/3">
+              {/* Suspense fallback for OrderItems */}
               <Suspense fallback={<OrderItemsSkeleton />}>
                 <OrderItems />
               </Suspense>
             </div>
             <div className="w-full lg:w-1/3">
+              {/* Suspense fallback for OrderSummary */}
               <Suspense fallback={<OrderSummarySkeleton />}>
                 <OrderSummary order={order} />
               </Suspense>
@@ -51,6 +71,7 @@ export default function CartPage() {
   )
 }
 
+// Skeleton component for the loading state of the Cart page
 const CartLoadingSkeleton = () => (
   <BlockWrapper className={getPaddingClasses('hero')}>
     <Gutter>
@@ -69,6 +90,7 @@ const CartLoadingSkeleton = () => (
   </BlockWrapper>
 )
 
+// Skeleton component for the loading state of the order items section
 const OrderItemsSkeleton = () => (
   <div className="space-y-6">
     {[...Array(2)].map((_, index) => (
@@ -85,6 +107,7 @@ const OrderItemsSkeleton = () => (
   </div>
 )
 
+// Skeleton component for the loading state of the order summary section
 const OrderSummarySkeleton = () => (
   <div className="border border-gray-200 rounded-lg p-4 space-y-4">
     <div className="h-6 bg-gray-200 w-1/2 mb-4"></div>
