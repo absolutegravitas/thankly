@@ -320,3 +320,23 @@ dialog {
 .visually-hidden {
   @include visually-hidden;
 }
+
+// force light mode for shitty ass apple devices
+@supports (-webkit-touch-callout: none) {
+  :root {
+    color-scheme: light only !important;
+  }
+
+  html {
+    background: var(--theme-bg) !important;
+  }
+
+  body {
+    color: var(--theme-text) !important;
+  }
+
+  [data-theme='dark'] {
+    --theme-bg: var(--color-base-0) !important;
+    --theme-text: var(--color-base-1000) !important;
+  }
+}
