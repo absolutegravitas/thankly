@@ -29,10 +29,19 @@ npx ai-digest
 8. Site-specific Next.js config (hardcoded CSRF / CORS configs)
 9. Data pulled via payloadHMR / payload.find due to GraphQL and CORS issues
 10. E-commerce features (pending)
+11. Implemented "comment generator" script to comment code using ClaudeAPI, JSDoc compliant
+
+```bash
+ANTHROPIC=your_api_key_here
+npm install esprima dotenv
+node scripts/generate_comments.js path/to/your/file.ts // to process a single file
+node scripts/generate_comments.js // to process the entire directory
+```
 
 ## TO DO
 
-Vercel crons (see [example](https://github.com/vercel/examples/blob/main/solutions/cron/vercel.json))
+1. Vercel crons (see [example](https://github.com/vercel/examples/blob/main/solutions/cron/vercel.json))
+2. afterChange hook on pages and products to revalidate (refresh) them
 
 ## Instructions
 
