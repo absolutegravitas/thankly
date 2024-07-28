@@ -6,7 +6,7 @@ import { revalidatePage } from '@/utilities/revalidatePage'
 import { layoutField } from '@cms/_fields/layoutField'
 
 import { slugField } from '@cms/_fields/slug'
-import { themeField } from '@cms/_fields/blockFields'
+// import { themeField } from '@cms/_fields/blockFields'
 // import pathField from '@cms/_fields/path'
 
 export const COLLECTION_SLUG_PAGE = 'pages'
@@ -15,7 +15,20 @@ export const Pages: CollectionConfig = {
   slug: 'pages',
   admin: {
     useAsTitle: 'title',
-    // preview: (doc) => formatPreviewURL('pages', doc),
+    // livePreview: {
+    //   url: ({ data }) =>
+    //     `${process.env.PAYLOAD_PUBLIC_SERVER_URL}/api/preview?url=${encodeURIComponent(
+    //       `${process.env.PAYLOAD_PUBLIC_SERVER_URL}/${
+    //         data.slug !== 'home' ? `/products/${data.slug}` : ''
+    //       }`,
+    //     )}&secret=${process.env.PAYLOAD_PUBLIC_DRAFT_SECRET}`,
+    //   // `${process.env.PAYLOAD_PUBLIC_SERVER_URL}${data.slug !== 'home' ? `/${data.slug}` : ''}`,
+    // },
+    // preview: doc => {
+    //   return `${process.env.PAYLOAD_PUBLIC_SERVER_URL}/api/preview?url=${encodeURIComponent(
+    //     `${process.env.PAYLOAD_PUBLIC_SERVER_URL}/products/${doc.slug}`,
+    //   )}&secret=${process.env.PAYLOAD_PUBLIC_DRAFT_SECRET}`
+    // },
     defaultColumns: ['title', 'slug', 'createdAt', 'updatedAt'],
   },
   versions: {
@@ -28,33 +41,16 @@ export const Pages: CollectionConfig = {
     update: adminsOnly,
     delete: adminsOnly,
   },
-  hooks: {
-    afterChange: [
-      ({ req: { payload }, doc }) => {
-        revalidatePage({
-          payload,
-          collection: 'pages',
-          doc,
-        })
-      },
-    ],
-  },
+  hooks: { afterChange: [] },
   fields: [
-    {
-      name: 'title',
-      type: 'text',
-      required: true,
-    },
+    { name: 'title', type: 'text', required: true },
     slugField(),
-    // pathField(),
-    themeField,
-
     {
       type: 'tabs',
       tabs: [
         {
           label: 'Layout',
-          description: 'Product Page Layout',
+          description: 'Page Layout',
           fields: [layoutField()],
         },
       ],

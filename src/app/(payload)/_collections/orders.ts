@@ -40,7 +40,6 @@ export const Orders: CollectionConfig = {
                   })
 
                   // console.log(lastOrder)
-
                   const lastOrderNumber = lastOrder.docs[0]?.orderNumber ?? 0
                   return lastOrderNumber > 0 ? lastOrderNumber + 1 : data?.orderNumber
                 }
@@ -245,22 +244,10 @@ export const Orders: CollectionConfig = {
                             },
                           ],
                         },
-
-                        // {
-                        //   type: 'row',
-                        //   fields: [
-                        //     {
-                        //       name: 'tracking',
-                        //       label: 'Tracking',
-                        //       type: 'group',
-                        //       fields: [],
-                        //     },
-                        //   ],
-                        // },
                       ],
                     },
 
-                    { name: 'errors', type: 'json', admin: { width: '100%' } }, // errors for this receiver
+                    { name: 'errors', type: 'json', admin: { width: '100%' } },
                   ],
                 },
               ],

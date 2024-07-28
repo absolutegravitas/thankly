@@ -17,33 +17,25 @@ export const Settings: GlobalConfig = {
   fields: [
     {
       name: 'topBar',
-      interfaceName: 'topBar', // optional
+      interfaceName: 'topBar',
       type: 'group',
       fields: [contentField()],
     },
     {
       name: 'menu',
-      interfaceName: 'menu', // optional
+      interfaceName: 'menu',
       type: 'group',
       fields: [
         {
           name: 'tabs',
-          // label: 'Main Menu Items',
           type: 'array',
           fields: [
             { name: 'label', required: true, type: 'text' },
-
             {
               type: 'row',
               fields: [
-                {
-                  type: 'checkbox',
-                  name: 'enableDirectLink',
-                },
-                {
-                  type: 'checkbox',
-                  name: 'enableDropdown',
-                },
+                { type: 'checkbox', name: 'enableDirectLink' },
+                { type: 'checkbox', name: 'enableDropdown' },
               ],
             },
             {
@@ -52,12 +44,7 @@ export const Settings: GlobalConfig = {
               admin: {
                 condition: (_, siblingData) => siblingData.enableDirectLink,
               },
-              fields: [
-                link({
-                  looks: false,
-                  disableLabel: true,
-                }),
-              ],
+              fields: [link({ looks: false, disableLabel: true })],
             },
             {
               label: 'Dropdown Menu',
@@ -66,21 +53,11 @@ export const Settings: GlobalConfig = {
                 condition: (_, siblingData) => siblingData.enableDropdown,
               },
               fields: [
-                {
-                  name: 'description',
-                  type: 'textarea',
-                },
+                { name: 'description', type: 'textarea' },
                 {
                   name: 'descriptionLinks',
                   type: 'array',
-                  fields: [
-                    link({
-                      overrides: {
-                        label: false,
-                      },
-                      looks: false,
-                    }),
-                  ],
+                  fields: [link({ overrides: { label: false }, looks: false })],
                 },
                 {
                   name: 'items',
@@ -106,18 +83,9 @@ export const Settings: GlobalConfig = {
                       type: 'select',
                       defaultValue: 'default',
                       options: [
-                        {
-                          label: 'Default',
-                          value: 'default',
-                        },
-                        {
-                          label: 'Featured',
-                          value: 'featured',
-                        },
-                        {
-                          label: 'List',
-                          value: 'list',
-                        },
+                        { label: 'Default', value: 'default' },
+                        { label: 'Featured', value: 'featured' },
+                        { label: 'List', value: 'list' },
                       ],
                     },
                     {
@@ -127,16 +95,8 @@ export const Settings: GlobalConfig = {
                         condition: (_, siblingData) => siblingData.style === 'default',
                       },
                       fields: [
-                        link({
-                          overrides: {
-                            label: false,
-                          },
-                          looks: false,
-                        }),
-                        {
-                          name: 'description',
-                          type: 'textarea',
-                        },
+                        link({ overrides: { label: false }, looks: false }),
+                        { name: 'description', type: 'textarea' },
                       ],
                     },
                     {
@@ -146,25 +106,12 @@ export const Settings: GlobalConfig = {
                         condition: (_, siblingData) => siblingData.style === 'featured',
                       },
                       fields: [
-                        {
-                          name: 'tag',
-                          type: 'text',
-                        },
-                        {
-                          name: 'label',
-                          type: 'richText',
-                        },
+                        { name: 'tag', type: 'text' },
+                        { name: 'label', type: 'richText' },
                         {
                           name: 'links',
                           type: 'array',
-                          fields: [
-                            link({
-                              overrides: {
-                                label: false,
-                              },
-                              looks: false,
-                            }),
-                          ],
+                          fields: [link({ overrides: { label: false }, looks: false })],
                         },
                       ],
                     },
@@ -175,21 +122,11 @@ export const Settings: GlobalConfig = {
                         condition: (_, siblingData) => siblingData.style === 'list',
                       },
                       fields: [
-                        {
-                          name: 'tag',
-                          type: 'text',
-                        },
+                        { name: 'tag', type: 'text' },
                         {
                           name: 'links',
                           type: 'array',
-                          fields: [
-                            link({
-                              overrides: {
-                                label: false,
-                              },
-                              looks: false,
-                            }),
-                          ],
+                          fields: [link({ overrides: { label: false }, looks: false })],
                         },
                       ],
                     },
@@ -217,29 +154,6 @@ export const Settings: GlobalConfig = {
           ],
         },
       ],
-
-      // fields: [
-      //   {
-      //     name: 'columns',
-      //     label: 'Columns',
-      //     type: 'array',
-      //     minRows: 1,
-      //     maxRows: 3,
-      //     admin: {
-      //       // components: {
-      //       //   RowLabel: ({ data, index, path }) => {
-      //       //     if (data.name) {
-      //       //       return data.name
-      //       //     }
-      //       //   },
-      //       // },
-      //     },
-      //     fields: [
-      //       { name: 'label', label: 'Column Name', type: 'text', required: true },
-      //       linkGroup(),
-      //     ],
-      //   },
-      // ],
     },
   ],
 }

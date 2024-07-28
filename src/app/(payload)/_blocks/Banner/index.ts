@@ -1,7 +1,4 @@
-// import { slateEditor } from '@payloadcms/richtext-slate'
 import type { Block } from 'payload'
-import { lexicalEditor } from '@payloadcms/richtext-lexical'
-
 import { blockFields } from '@cms/_fields/blockFields'
 import { contentField } from '@cms/_fields/contentField'
 
@@ -53,12 +50,6 @@ export const Banner: Block = {
           ],
         },
         contentField(),
-        // {
-        //   name: 'content',
-        //   type: 'richText',
-        //   required: true,
-        //   editor: lexicalEditor(),
-        // },
       ],
     }),
   ],

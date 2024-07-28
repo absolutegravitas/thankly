@@ -3,13 +3,10 @@ import { HTMLConverterFeature, lexicalEditor, TreeViewFeature } from '@payloadcm
 
 import link from '@cms/_fields/link'
 import linkGroup from '@cms/_fields/linkGroup'
-import { contentField } from '@cms/_fields/contentField'
-import { themeField } from '@cms/_fields/blockFields'
 
 export const Hero: Block = {
   slug: 'hero',
   fields: [
-    themeField,
     {
       type: 'select',
       name: 'type',
@@ -29,18 +26,12 @@ export const Hero: Block = {
           label: 'Centered Content',
           value: 'centeredContent',
         },
-        // {
-        //   label: 'Form',
-        //   value: 'form',
-        // },
+
         {
           label: 'Home',
           value: 'home',
         },
-        // {
-        //   label: 'Livestream',
-        //   value: 'livestream',
-        // },
+
         {
           label: 'Gradient',
           value: 'gradient',
@@ -80,78 +71,7 @@ export const Hero: Block = {
         },
       },
     }),
-    // linkGroup({
-    //   looks: false,
-    //   overrides: {
-    //     name: 'secondaryButtons',
-    //     label: 'Secondary Buttons',
-    //     admin: {
-    //       condition: (_: any, { type }) => type === 'home',
-    //     },
-    //   },
-    // }),
-    // {
-    //   name: 'secondaryHeading',
-    //   type: 'richText',
-    //   admin: {
-    //     condition: (_: any, { type }) => type === 'home',
-    //   },
-    //   editor: lexicalEditor({
-    //     features: ({ defaultFeatures }) => [
-    //       ...defaultFeatures,
-    //       HTMLConverterFeature({}),
-    //       //TreeViewFeature(),
-    //     ],
-    //   }),
-    // },
-    // {
-    //   name: 'secondaryDescription',
-    //   type: 'richText',
-    //   admin: {
-    //     condition: (_: any, { type }) => type === 'home',
-    //   },
-    //   editor: lexicalEditor({
-    //     features: ({ defaultFeatures }) => [
-    //       ...defaultFeatures,
-    //       HTMLConverterFeature({}),
-    //       //TreeViewFeature(),
-    //     ],
-    //   }),
-    // },
-    // {
-    //   name: 'secondaryMedia',
-    //   type: 'upload',
-    //   relationTo: 'media',
-    //   required: false,
-    //   admin: {
-    //     condition: (_: any, { type }) => type === 'home',
-    //   },
-    // },
-    // {
-    //   name: 'featureVideo',
-    //   type: 'upload',
-    //   relationTo: 'media',
-    //   required: false,
-    //   admin: {
-    //     condition: (_: any, { type }) => type === 'home',
-    //   },
-    // },
-    // {
-    //   name: 'logos',
-    //   type: 'array',
-    //   fields: [
-    //     {
-    //       name: 'logoMedia',
-    //       label: 'Media',
-    //       type: 'upload',
-    //       relationTo: 'media',
-    //       required: true,
-    //     },
-    //   ],
-    //   admin: {
-    //     condition: (_: any, { type }) => type === 'home',
-    //   },
-    // },
+
     {
       name: 'media',
       type: 'upload',
@@ -172,46 +92,15 @@ export const Hero: Block = {
         condition: (_: any, { type } = {}) => type === 'gradient',
       },
     },
-    // {
-    //   type: 'collapsible',
-    //   label: 'Breadcrumbs Bar',
-    //   fields: [
-    //     {
-    //       type: 'checkbox',
-    //       name: 'enableBreadcrumbsBar',
-    //       label: 'Enable Breadcrumbs Bar',
-    //     },
-    //     linkGroup({
-    //       overrides: {
-    //         name: 'breadcrumbsBarLinks',
-    //         labels: {
-    //           singular: 'Link',
-    //           plural: 'Links',
-    //         },
-    //         admin: {
-    //           condition: (_: any, { enableBreadcrumbsBar } = {}) => Boolean(enableBreadcrumbsBar),
-    //         },
-    //       },
-    //       looks: false,
-    //     }),
-    //   ],
-    // },
-    // livestreamFields,
 
     {
       name: 'description',
       type: 'richText',
       admin: {
-        condition: (_: any, { type } = {}) =>
-          // type !== 'livestream' &&
-          type !== 'centeredContent' && type !== 'three',
+        condition: (_: any, { type } = {}) => type !== 'centeredContent' && type !== 'three',
       },
       editor: lexicalEditor({
-        features: ({ defaultFeatures }) => [
-          ...defaultFeatures,
-          HTMLConverterFeature({}),
-          //TreeViewFeature(),
-        ],
+        features: ({ defaultFeatures }) => [...defaultFeatures, HTMLConverterFeature({})],
       }),
     },
     {
@@ -281,14 +170,5 @@ export const Hero: Block = {
         },
       ],
     },
-
-    // {
-    //   name: 'form',
-    //   type: 'relationship',
-    //   relationTo: 'forms',
-    //   admin: {
-    //     condition: (_:any, { type }) => type === 'form',
-    //   },
-    // },
   ],
 }

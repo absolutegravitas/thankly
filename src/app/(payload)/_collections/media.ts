@@ -21,23 +21,15 @@ export const Media: CollectionConfig = {
   },
 
   fields: [
-    {
-      name: 'alt',
-      type: 'text',
-      required: true,
-    },
-    {
-      name: 'caption',
-      type: 'richText',
-      editor: lexicalEditor(),
-    },
-    {
-      name: 'darkModeFallback',
-      type: 'upload',
-      relationTo: 'media',
-      admin: {
-        description: 'Choose an upload to render if the visitor is using dark mode.',
-      },
-    },
+    { name: 'alt', type: 'text', required: true },
+    { name: 'caption', type: 'richText', editor: lexicalEditor() },
+    // {
+    //   name: 'darkModeFallback',
+    //   type: 'upload',
+    //   relationTo: 'media',
+    //   admin: {
+    //     description: 'Choose an upload to render if the visitor is using dark mode.',
+    //   },
+    // },
   ],
 }

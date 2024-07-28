@@ -7,7 +7,7 @@ import { layoutField } from '@cms/_fields/layoutField'
 import { upsertStripeProduct } from '@cms/_hooks/upsertStripeProduct'
 import { deleteStripeProduct } from '@cms/_hooks/deleteStripeProduct'
 import { adminsOnly, publishedOnly } from '@/utilities/access'
-import { themeField } from '../_fields/blockFields'
+// import { themeField } from '../_fields/blockFields'
 
 export const Products: CollectionConfig = {
   slug: 'products',
@@ -35,9 +35,7 @@ export const Products: CollectionConfig = {
     // afterRead: [populateArchiveBlock],
     afterDelete: [deleteStripeProduct],
   },
-  versions: {
-    drafts: true,
-  },
+  versions: { drafts: true },
   access: {
     create: adminsOnly,
     read: publishedOnly,
@@ -58,7 +56,7 @@ export const Products: CollectionConfig = {
             { label: 'Gift', value: 'gift' },
           ],
         },
-        // basically product size/weight determines what the predefault base ship price is for a gift
+        // basically shipping size/weight determines what the predefault base ship price is for a gift
         {
           name: 'shippingSize',
           type: 'select',
@@ -151,11 +149,6 @@ export const Products: CollectionConfig = {
             },
           ],
         },
-        // {
-        //   label: 'Images',
-        //   description: 'Product Images',
-        //   fields: [],
-        // },
 
         {
           label: 'Tech Info',
@@ -177,11 +170,6 @@ export const Products: CollectionConfig = {
                 },
               ],
             },
-            // {
-            //   name: 'stripe',
-            //   type: 'group',
-            //   fields: [],
-            // },
           ],
         },
       ],
