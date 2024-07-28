@@ -1,5 +1,10 @@
 @use '../../../_css/common.scss' as *;
 
+// // styles/globals.scss
+// @tailwind base;
+// @tailwind components;
+// @tailwind utilities;
+
 // .defaultHero {
 //   position: relative;
 // }
@@ -38,7 +43,7 @@
   font-weight: bold;
   margin-top: 1rem;
   justify-content: center;
-  width: 180px;
+  width: 190px;
 }
 
 .richText h4 {
@@ -51,14 +56,15 @@
 .richText h2 {
   margin-top: 5px;
   margin-bottom: 10px;
-}
-
-.richText h2 strong {
-  font-family: "League Spartan", Helvetica, Arial, Lucida, sans-serif;
   font-size: 50px;
   color: #292929;
-
+  @apply font-logo font-bold
 }
+
+// .richText h2 strong {
+//   // font-family: "League Spartan", Helvetica, Arial, Lucida, sans-serif;
+
+// }
 
 // img {
 //   max-width: none;

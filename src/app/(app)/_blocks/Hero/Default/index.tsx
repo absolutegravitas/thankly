@@ -31,7 +31,7 @@ export const DefaultHero: React.FC<DefaultHeroProps> = ({ description, theme, me
             <div className={`${classes.defaultHero} text-black text-center px-12 pt-4 lg:pt-12 xl:pt-16`}>
               <div className={`${classes.container} grid`}>
                 <div className="cols-16 start-1 cols-m-8 cols-s-8">
-                  <RichText className={classes.richText} content={description} />
+                  <RichText className={`${classes.richText} font-logo`} content={description} />
                   {Array.isArray(primaryButtons) && (
                     <ul className={[classes.primaryButtons].filter(Boolean).join(' ')}>
                       {primaryButtons.map(({ link }, i) => {
