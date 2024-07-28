@@ -17,6 +17,32 @@ This project is based on a one-click deployment template of Payload on Vercel + 
 npx ai-digest
 ```
 
+## Project Structure
+
+### `/app`
+
+The core of our Next.js application, containing:
+
+- Reusable UI components (`/_components`)
+- Custom CSS styles (`/_css`)
+- Email templates (`/_emails`)
+- SVG graphics and icons (`/_graphics`, `/_icons`)
+- State management and context providers (`/_providers`)
+- Data fetching and API queries (`/_queries`)
+- Page routes and layouts (`/(pages)`)
+
+### `/payload`
+
+Houses PayloadCMS configuration and customizations:
+
+- Content Schema for content blocks used on pages (`/_blocks`)
+- Content Schema for Entities (database entities `_collections`)
+- nextjs custom ui components for payloadCMS (e.g. payload logo on cms login `_components`)
+- Custom field types (`/_fields`)
+- Payload Specific API endpoints and middleware to expose REST / GraphQL endpoints (`/api`)
+- Base payload page(s) and app entry logic (`/admin`)
+- Database migration scripts (`/migrations`)
+
 ## Additional Modifications
 
 1. Integrated current (v2.x) payload-cms and payload-website components & code
@@ -29,13 +55,16 @@ npx ai-digest
 8. Site-specific Next.js config (hardcoded CSRF / CORS configs)
 9. Data pulled via payloadHMR / payload.find due to GraphQL and CORS issues
 10. E-commerce features (pending)
-11. Implemented "comment generator" script to comment code using ClaudeAPI, JSDoc compliant
+
+## WORK IN PROGRESS
+
+"comment generator" script to comment code using ClaudeAPI, JSDoc compliant
 
 ```bash
 ANTHROPIC=your_api_key_here
 npm install esprima dotenv
-node scripts/generate_comments.js path/to/your/file.ts // to process a single file
-node scripts/generate_comments.js // to process the entire directory
+node src/utilities/commentGenerator.js path/to/your/file.ts // to process a single file
+node src/utilities/commentGenerator.js // to process the entire directory
 ```
 
 ## TO DO

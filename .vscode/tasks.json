@@ -1,0 +1,22 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "type": "process",
+      "command": "node",
+      "args": [
+        "${workspaceFolder}/src/utilities/commentsGenerator.js",
+        "${fileDirname}/${fileBasename}"
+      ],
+      "problemMatcher": [],
+      "label": "Generate Comments for Current File",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "options": {
+        "cwd": "${workspaceFolder}"
+      }
+    }
+  ]
+}
