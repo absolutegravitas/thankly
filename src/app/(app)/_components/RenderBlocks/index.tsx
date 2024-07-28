@@ -1,3 +1,14 @@
+/**
+ * @file index.tsx
+ * @module RenderBlocks
+ * @description Renders dynamic content blocks for a responsive ecommerce website
+ * @overview
+ * This file contains the RenderBlocks component, which is responsible for rendering various content blocks
+ * in a Next.js 14 and PayloadCMS-based ecommerce website. It imports and manages different block components,
+ * handles theme-based padding, and provides a flexible structure for rendering content. The component
+ * uses TypeScript for type safety and implements server-side rendering for optimal performance.
+ */
+
 'use client'
 
 import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
@@ -166,12 +177,7 @@ export const RenderBlocks: React.FC<Props> = (props) => {
         bottom: bottomPadding ?? undefined,
       }
     },
-    [
-      themeState,
-      // heroTheme,
-      blocks,
-      paddingExceptions,
-    ],
+    [themeState, blocks, paddingExceptions],
   )
 
   React.useEffect(() => {

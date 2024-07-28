@@ -1,3 +1,11 @@
+/**
+ * @file index.tsx
+ * @module OrderProvider
+ * @description Order management system for an e-commerce application
+ * @overview
+ * This file implements a custom order management system using React's Context API. It provides a centralized state management solution for handling orders in an e-commerce application. The OrderProvider component manages the order state, including adding/removing products, managing receivers, updating shipping methods, and synchronizing with local storage. It uses a reducer pattern for state updates and exposes various utility functions through the OrderContext.
+ */
+
 import React, {
   createContext,
   useContext,

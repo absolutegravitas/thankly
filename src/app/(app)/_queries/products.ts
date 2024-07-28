@@ -1,3 +1,10 @@
+/**
+ * @file app/(app)/_queries/products.ts
+ * @module ProductQueries
+ * @description This module contains utility functions for fetching product data from the Payload CMS.
+ * @overview The module exports functions for fetching individual products, lists of products, and product slugs from the Payload CMS. It uses the `next/cache` utility for caching and revalidating the data.
+ */
+
 // import 'server-only'
 
 import { revalidatePath, unstable_cache } from 'next/cache'

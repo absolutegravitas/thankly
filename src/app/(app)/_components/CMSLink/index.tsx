@@ -1,3 +1,17 @@
+/**
+ * @file index.tsx
+ * @module CMSLink
+ * @description This module provides a reusable component for rendering links with various styles and behaviors.
+ * @overview
+ * The `CMSLink` component is a React functional component that renders either a `<Link>` or `<button>` element based on the provided props. It accepts various configuration options such as label, URL, reference, theme, size, variant, icon, and event handlers.
+ *
+ * The component is designed to handle different types of links (custom, reference, or URL) and can render icons, handle click events, and open links in new tabs. It uses utility functions like `generateHref` to generate the appropriate link URL based on the provided data.
+ *
+ * The component also utilizes Tailwind CSS utility classes for styling, with custom classes defined in the `buttonLook` object. The component's appearance can be customized by passing in different props for theme, size, width, variant, and icon position.
+ *
+ * Overall, this module provides a flexible and reusable way to create links with various styles and behaviors across the application.
+ */
+
 import React from 'react'
 import Link from 'next/link'
 import { Page, Product } from '@/payload-types'

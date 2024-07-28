@@ -1,3 +1,11 @@
+/**
+ * @file page.tsx
+ * @module ProductPage
+ * @description This file contains the ProductPage component for displaying product details and layout.
+ * @overview
+ * The ProductPage component is a Next.js page component that renders a product detail page for a specific product based on the provided slug parameter. It fetches the product data from the backend using the fetchProduct query function and renders the ProductBlock component to display the product details and images. Additionally, it renders any layout blocks associated with the product using the Blocks component. The component utilizes server-side rendering (SSR) to fetch the product data on the server and notFound to handle cases where the product is not found or invalid. It also supports draft mode for previewing unpublished content.
+ */
+
 import React from 'react'
 import { draftMode } from 'next/headers'
 import { notFound } from 'next/navigation'
@@ -32,8 +40,6 @@ export default async function ProductPage({
   ) {
     return notFound()
   }
-
-  // Use the isProductInOrder function from the order provider
 
   return (
     <React.Fragment>

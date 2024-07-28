@@ -1,3 +1,19 @@
+/**
+@file layout.tsx
+@module RootLayout
+@description This module serves as the root layout for the Next.js application and handles various aspects of the application, including providers, analytics, theme settings, and global components.
+@overview
+The RootLayout module is a React component that serves as the root layout for the Next.js application. It sets up the application's structure, providers, and global components. Additionally, it handles analytics tracking, theme settings, and fetches global settings from the PayloadCMS.
+
+The component renders an HTML structure with a head and body section. The head section includes various meta tags, links, and scripts for favicon, Google Analytics, Google Tag Manager, and theme initialization. The body section wraps the application's content with the necessary providers, header, footer, and privacy banner components.
+
+The fetchSettings function is responsible for fetching the global settings from the PayloadCMS. It utilizes the Next.js cache to improve performance and cache the settings for a specified duration.
+
+The RootLayout component renders the application's content within the Providers component, which sets up the global state and context providers. The Header and Footer components are rendered based on the fetched settings. The PrivacyBanner component is always rendered, and the Analytics and SpeedInsights components are included for tracking and performance monitoring purposes.
+
+The metadata export object sets the base URL, Twitter card settings, and open graph metadata for the application.
+*/
+
 import React from 'react'
 import { Providers } from '@app/_providers/'
 import { defaultTheme, themeLocalStorageKey } from '@app/_providers/Theme/shared'
@@ -31,7 +47,7 @@ const fetchSettings = (): Promise<Setting | null> => {
       let payload: any = await getPayloadHMR({ config })
       let settings = null
 
-      console.log('settings -- ', JSON.stringify(settings))
+      // console.log('settings -- ', JSON.stringify(settings))
 
       try {
         settings = await payload.findGlobal({
@@ -45,7 +61,9 @@ const fetchSettings = (): Promise<Setting | null> => {
     },
     ['settings'],
     {
-      revalidate: 60, // 60 seconds
+      revalidate: 10, // 60 seconds
+
+      // revalidate: 60, // 60 seconds
       tags: ['settings'],
     },
   )
@@ -71,36 +89,6 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             dangerouslySetInnerHTML={{
               __html: `
             (function () {
-              // function getImplicitPreference() {
-              //   var mediaQuery = '(prefers-color-scheme: dark)'
-              //   var mql = window.matchMedia(mediaQuery)
-              //   var hasImplicitPreference = typeof mql.matches === 'boolean'
-
-              //   if (hasImplicitPreference) {
-              //     return mql.matches ? 'dark' : 'light'
-              //   }
-
-              //   return null
-              // }
-
-              // function themeIsValid(theme) {
-              //   return theme === 'light' || theme === 'dark'
-              // }
-
-              // var themeToSet = '${defaultTheme}'
-
-              // var preference = window.localStorage.getItem('${themeLocalStorageKey}')
-
-              // if (themeIsValid(preference)) {
-              //   themeToSet = preference
-              // } else {
-              //   var implicitPreference = getImplicitPreference()
-              
-              //   if (implicitPreference) {
-              //     themeToSet = implicitPreference
-              //   }
-              // }
-
              var themeToSet = 'light';
              document.documentElement.setAttribute('data-theme', themeToSet);
              document.documentElement.classList.add(themeToSet);
