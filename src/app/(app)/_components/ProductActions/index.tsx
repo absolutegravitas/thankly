@@ -95,7 +95,7 @@ export function ProductActions({ product, hidePerks, hideRemove }: any) {
         </div>
       )}
 
-      {!hidePerks && (
+      {/* {!hidePerks && (
         <div className="#hidden sm:flex pt-2 items-center justify-center space-x-2">
           <div className="py-1 sm:py-2 flex items-center">
             <SendHorizonalIcon className="h-5 w-5 flex-shrink-0 text-green" aria-hidden="true" />
@@ -106,7 +106,7 @@ export function ProductActions({ product, hidePerks, hideRemove }: any) {
             <div className="ml-2 text-sm text-gray-500">{messages.inStock}</div>
           </div>
         </div>
-      )}
+      )} */}
     </>
   )
 }

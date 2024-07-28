@@ -11,12 +11,13 @@ export interface Config {
     users: UserAuthOperations;
   };
   collections: {
+    pages: Page;
     orders: Order;
     products: Product;
-    pages: Page;
     reusable: Reusable;
     media: Media;
     users: User;
+    carts: Cart;
     forms: Form;
     'form-submissions': FormSubmission;
     'payload-preferences': PayloadPreference;
@@ -42,6 +43,72 @@ export interface UserAuthOperations {
     email: string;
     password: string;
   };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pages".
+ */
+export interface Page {
+  id: number;
+  title: string;
+  slug?: string | null;
+  layout?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    image?: number | Media | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media".
+ */
+export interface Media {
+  id: number;
+  alt: string;
+  caption?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -225,81 +292,6 @@ export interface Product {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media".
- */
-export interface Media {
-  id: number;
-  alt: string;
-  caption?: {
-    root: {
-      type: string;
-      children: {
-        type: string;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  updatedAt: string;
-  createdAt: string;
-  url?: string | null;
-  thumbnailURL?: string | null;
-  filename?: string | null;
-  mimeType?: string | null;
-  filesize?: number | null;
-  width?: number | null;
-  height?: number | null;
-  focalX?: number | null;
-  focalY?: number | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "pages".
- */
-export interface Page {
-  id: number;
-  title: string;
-  slug?: string | null;
-  layout?: {
-    root: {
-      type: string;
-      children: {
-        type: string;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  meta?: {
-    title?: string | null;
-    description?: string | null;
-    image?: number | Media | null;
-  };
-  parent?: (number | null) | Page;
-  breadcrumbs?:
-    | {
-        doc?: (number | null) | Page;
-        url?: string | null;
-        label?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  updatedAt: string;
-  createdAt: string;
-  _status?: ('draft' | 'published') | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "reusable".
  */
 export interface Reusable {
@@ -320,6 +312,100 @@ export interface Reusable {
     };
     [k: string]: unknown;
   } | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "carts".
+ */
+export interface Cart {
+  id: number;
+  status: 'pending' | 'completed' | 'cancelled';
+  totals: {
+    cost: number;
+    shipping?: number | null;
+    discount?: number | null;
+    total: number;
+  };
+  billing?: {
+    orderedBy?: (number | null) | User;
+    name?: string | null;
+    email?: string | null;
+    contactNumber?: number | null;
+    orgName?: string | null;
+    orgId?: string | null;
+    address?: {
+      formattedAddress?: string | null;
+      addressLine1?: string | null;
+      addressLine2?: string | null;
+      json?:
+        | {
+            [k: string]: unknown;
+          }
+        | unknown[]
+        | string
+        | number
+        | boolean
+        | null;
+    };
+  };
+  items?:
+    | {
+        price?: number | null;
+        product: number | Product;
+        totals: {
+          cost: number;
+          shipping?: number | null;
+          subTotal: number;
+          discount?: number | null;
+        };
+        receivers?:
+          | {
+              totals: {
+                cost: number;
+                shipping?: number | null;
+                subTotal: number;
+                discount?: number | null;
+              };
+              name?: string | null;
+              message?: string | null;
+              delivery?: {
+                tracking?: {
+                  id?: string | null;
+                  link?: string | null;
+                };
+                shippingMethod?: ('standardMail' | 'expressMail' | 'standardParcel' | 'expressParcel') | null;
+                address?: {
+                  formattedAddress?: string | null;
+                  addressLine1?: string | null;
+                  addressLine2?: string | null;
+                  json?:
+                    | {
+                        [k: string]: unknown;
+                      }
+                    | unknown[]
+                    | string
+                    | number
+                    | boolean
+                    | null;
+                };
+              };
+              errors?:
+                | {
+                    [k: string]: unknown;
+                  }
+                | unknown[]
+                | string
+                | number
+                | boolean
+                | null;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
   updatedAt: string;
   createdAt: string;
 }

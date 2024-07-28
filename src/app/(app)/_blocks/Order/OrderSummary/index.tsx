@@ -1,13 +1,6 @@
 import React, { useEffect, useState, useTransition } from 'react'
 import { buttonLook, contentFormats } from '@app/_css/tailwindClasses'
-import {
-  DollarSignIcon,
-  ChevronUpIcon,
-  MailWarningIcon,
-  SmileIcon,
-  XIcon,
-  ArrowLeftIcon,
-} from 'lucide-react'
+import { DollarSignIcon, MailWarningIcon, SmileIcon, XIcon, ArrowLeftIcon } from 'lucide-react'
 import { CMSLink } from '@app/_components/CMSLink'
 import { Order } from '@/payload-types'
 import Link from 'next/link'
@@ -19,26 +12,14 @@ import { FullLogo } from '@app/_graphics/FullLogo'
 import { orderText } from '@/utilities/refData'
 
 export const OrderSummary: React.FC<{ order: Order }> = ({ order }) => {
-  if (!order || !order.totals) {
-    return null // or return a loading state or placeholder
-  }
+  if (!order || !order.totals) return null
 
   const router = useRouter()
-  const { validateOrder } = useOrder()
+  const { validateOrder, clearOrder } = useOrder()
   const [isValid, setIsValid] = useState(true)
   const [validationMessage, setValidationMessage] = useState('')
   const [isProcessing, setIsProcessing] = useState(false)
-  const [isGuest, setIsGuest] = useState(false)
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
   const [isPending, startTransition] = useTransition()
-  const { clearOrder } = useOrder()
-
-  const [billingAddress, setBillingAddress] = useState({
-    formattedAddress: '',
-    addressLine1: '',
-    addressLine2: '',
-  })
 
   useEffect(() => {
     const orderValidity = validateOrder()
@@ -49,17 +30,10 @@ export const OrderSummary: React.FC<{ order: Order }> = ({ order }) => {
   }, [order, validateOrder])
 
   const handleCheckout = async (event?: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-    if (event) {
-      event.preventDefault()
-    }
-
+    if (event) event.preventDefault()
     if (isValid) {
       setIsProcessing(true)
-      // console.log(`Cart is valid, let's create a draft order...`)
-
       try {
-        // Simulate API call or any async operation
-        // await new Promise((resolve) => setTimeout(resolve, 2000))
         router.push(`/shop/checkout`)
       } catch (error) {
         console.error('Error during checkout:', error)
@@ -67,94 +41,56 @@ export const OrderSummary: React.FC<{ order: Order }> = ({ order }) => {
         alert('An error occurred during checkout. Please try again.')
       }
     } else {
-      // console.log('Cart is invalid, errors should be displayed')
       alert(validationMessage)
     }
   }
 
   return (
-    <div id="summary-heading" className="scroll-py-28 scroll-mt-24 basis-1/2">
-      <h2 className={`${contentFormats.global} ${contentFormats.h3} mb-6`}>Order Summary</h2>
+    <div id="summary-heading" className="sticky top-4 scroll-py-28 scroll-mt-24">
+      <h2 className={cn(contentFormats.global, contentFormats.h3, 'mb-6')}>Order Summary</h2>
 
       <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <dt className={[contentFormats.global, contentFormats.text, `font-semibold`].join(' ')}>
-            {`Total (inc. taxes)`}
-          </dt>
-          <dd className={[contentFormats.global, contentFormats.text, `font-semibold`].join(' ')}>
-            {(order.totals.total + (order.totals.discount || 0)).toLocaleString('en-AU', {
-              style: 'currency',
-              currency: 'AUD',
-              minimumFractionDigits: 0,
-              maximumFractionDigits: 2,
-            })}
-          </dd>
-        </div>
-
-        <div className="flex items-center justify-between">
-          <dt className={[contentFormats.global, contentFormats.text].join(' ')}>Thanklys</dt>
-          <dd className={[contentFormats.global, contentFormats.text].join(' ')}>
-            {order.totals.cost.toLocaleString('en-AU', {
-              style: 'currency',
-              currency: 'AUD',
-              minimumFractionDigits: 0,
-              maximumFractionDigits: 2,
-            })}
-          </dd>
-        </div>
-
-        <div className="flex items-center justify-between">
-          <dt className={[contentFormats.global, contentFormats.text].join(' ')}>{`+ Shipping`}</dt>
-          <dd className={[contentFormats.global, contentFormats.text].join(' ')}>
-            {order.totals.shipping?.toLocaleString('en-AU', {
-              style: 'currency',
-              currency: 'AUD',
-              minimumFractionDigits: 0,
-              maximumFractionDigits: 2,
-            })}
-          </dd>
-        </div>
+        <SummaryItem
+          label="Total (inc. taxes)"
+          value={order.totals.total + (order.totals.discount || 0)}
+          isBold
+        />
+        <SummaryItem label="Thanklys" value={order.totals.cost} />
+        <SummaryItem label="+ Shipping" value={order.totals.shipping || 0} />
 
         {(order.totals.discount || 0) < 0 && (
-          <div className="flex items-center justify-between">
-            <dt className={[contentFormats.global, contentFormats.text].join(' ')}>
-              <SmileIcon />
-              {` Your order is over $150 so Shipping is on us!`}
-            </dt>
-            <dd className={[contentFormats.global, contentFormats.text].join(' ')}>
-              {`(${order.totals.discount?.toLocaleString('en-AU', {
-                style: 'currency',
-                currency: 'AUD',
-                minimumFractionDigits: 0,
-                maximumFractionDigits: 2,
-              })})`}
-            </dd>
-          </div>
+          <SummaryItem
+            label={
+              <span className="flex items-center">
+                <SmileIcon className="mr-2" />
+                Your order is over $150 so Shipping is on us!
+              </span>
+            }
+            value={order.totals.discount || 0}
+          />
         )}
       </div>
 
-      <div className="mt-4 lg:mt-8 p-4 lg:p-0">
-        {!isValid && <div className="text-red-500 mt-2 text-sm">{validationMessage}</div>}
+      <div className="mt-6 space-y-4">
+        {!isValid && <div className="text-red-500 text-sm">{validationMessage}</div>}
 
-        {/* Notices */}
-        <div className={cn(contentFormats.global, contentFormats.text, `!mt-0 text-sm py-4`)}>
-          <React.Fragment>
-            <MailWarningIcon className="mr-2" />
-            <span className="font-semibold">{`Thankly Cards: `}</span>
-            <span className={[contentFormats.text, `text-sm`].join(' ')}>
-              {orderText.shippingMessage}
-              <Link
-                className={[contentFormats.global, contentFormats.a, `!text-sm`].join(' ')}
-                href="https://auspost.com.au/about-us/supporting-communities/services-all-communities/our-future"
-                target="_blank"
-              >
-                Learn More
-              </Link>
-            </span>
-          </React.Fragment>
+        <div className={cn(contentFormats.global, contentFormats.text, 'text-sm flex items-start')}>
+          <MailWarningIcon className="mr-2 flex-shrink-0 mt-1" />
+          <span>
+            <span className="font-semibold">Thankly Cards: </span>
+            {orderText.shippingMessage}{' '}
+            <Link
+              className={cn(contentFormats.global, contentFormats.a, '!text-sm')}
+              href="https://auspost.com.au/about-us/supporting-communities/services-all-communities/our-future"
+              target="_blank"
+            >
+              Learn More
+            </Link>
+          </span>
         </div>
+
         <CMSLink
-          className={`block #py-6 w-full ${isValid ? '!bg-green' : '!bg-gray-400'} !text-white`}
+          className={cn('block w-full', isValid ? '!bg-green' : '!bg-gray-400', '!text-white')}
           data={{
             label: 'Checkout',
             type: 'custom',
@@ -175,12 +111,10 @@ export const OrderSummary: React.FC<{ order: Order }> = ({ order }) => {
           pending={isProcessing}
         />
 
-        <div className="flex flex-row gap-4 py-3">
+        <div className="flex flex-col sm:flex-row gap-4">
           <CMSLink
             data={{
               label: !isPending ? 'Clear Cart' : 'Clearing Cart... please wait',
-              // type: 'custom',
-              // url: '/shop',
             }}
             look={{
               theme: 'light',
@@ -197,7 +131,6 @@ export const OrderSummary: React.FC<{ order: Order }> = ({ order }) => {
               onClick: async () => {
                 startTransition(async () => {
                   clearOrder()
-                  // revalidateCache({ path: '/shop' })
                   router.push('/shop')
                 })
               },
@@ -224,79 +157,46 @@ export const OrderSummary: React.FC<{ order: Order }> = ({ order }) => {
           />
         </div>
       </div>
-      <div className="sm:hidden flex flex-row z-50 fixed bottom-0 left-0 w-full outline-green">
-        <Link
-          href="#summary-heading"
-          scroll={true}
-          className="basis-1/2 hover:no-underline no-underline  bg-white py-2  flex flex-col items-center cursor-pointer"
-        >
-          <span
-            className={cn(
-              contentFormats.global,
-              contentFormats.text,
-              buttonLook.variants.blocks,
-              'mt-1 text-sm',
-            )}
-          >
-            {` Order Total: `}
-            {order.totals.total.toLocaleString('en-AU', {
-              style: 'currency',
-              currency: 'AUD',
-              minimumFractionDigits: 0,
-              maximumFractionDigits: 2,
-            })}
-          </span>
-          <span className={cn(contentFormats.global, contentFormats.h5, 'mt-1')}>
-            {`View Summary `}
-            &rarr;
-          </span>
-        </Link>
-
-        <CMSLink
-          className={`block w-1/2 ${isValid ? '!bg-green' : '!bg-gray-400'} !text-white`}
-          data={{
-            label: 'Checkout',
-            type: 'custom',
-            url: `/shop/checkout?orderId=${order.id}`,
-          }}
-          look={{
-            theme: 'dark',
-            type: 'button',
-            size: 'small',
-            width: 'narrow',
-            variant: 'blocks',
-            icon: {
-              content: <DollarSignIcon strokeWidth={1.25} />,
-              iconPosition: 'right',
-            },
-          }}
-          actions={{ onClick: handleCheckout }}
-          pending={isProcessing}
-        />
-      </div>
 
       {isProcessing && <CheckoutProcessing />}
     </div>
   )
 }
 
-const CheckoutProcessing: React.FC = () => {
-  return (
-    <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-gray-900/75 bg-opacity-50">
-      <div className="flex flex-col  bg-white p-8 rounded-sm shadow-xl text-center">
-        <FullLogo className="h-12 w-12 mx-auto mb-4" />
+const SummaryItem: React.FC<{ label: React.ReactNode; value: number; isBold?: boolean }> = ({
+  label,
+  value,
+  isBold,
+}) => (
+  <div className="flex items-center justify-between">
+    <dt className={cn(contentFormats.global, contentFormats.text, isBold && 'font-semibold')}>
+      {label}
+    </dt>
+    <dd className={cn(contentFormats.global, contentFormats.text, isBold && 'font-semibold')}>
+      {value.toLocaleString('en-AU', {
+        style: 'currency',
+        currency: 'AUD',
+        minimumFractionDigits: 0,
+        maximumFractionDigits: 2,
+      })}
+    </dd>
+  </div>
+)
 
-        <LoaderCircleIcon
-          className="animate-spin h-12 w-12 text-green-500 mx-auto mb-4"
-          strokeWidth={1.25}
-          aria-hidden="true"
-        />
-        <h2 className="text-2xl font-semibold mb-2">Preparing Checkout</h2>
-        <p className="text-gray-600 mb-4">
-          Please do not close this window or click the back button.
-        </p>
-        <div className="text-sm text-gray-500">This may take a few moments...</div>
-      </div>
+const CheckoutProcessing: React.FC = () => (
+  <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/75">
+    <div className="bg-white p-8 rounded-lg shadow-xl text-center max-w-md w-full">
+      <FullLogo className="h-12 w-12 mx-auto mb-4" />
+      <LoaderCircleIcon
+        className="animate-spin h-12 w-12 text-green-500 mx-auto mb-4"
+        strokeWidth={1.25}
+        aria-hidden="true"
+      />
+      <h2 className="text-2xl font-semibold mb-2">Preparing Checkout</h2>
+      <p className="text-gray-600 mb-4">
+        Please do not close this window or click the back button.
+      </p>
+      <div className="text-sm text-gray-500">This may take a few moments...</div>
     </div>
-  )
-}
+  </div>
+)

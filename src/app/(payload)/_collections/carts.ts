@@ -1,20 +1,11 @@
 import type { CollectionConfig } from 'payload'
 import { adminsAndUserOnly, adminsOnly } from '@/utilities/access'
 
-export const Orders: CollectionConfig = {
-  slug: 'orders',
-  admin: {
-    useAsTitle: `orderNumber`,
-    defaultColumns: ['orderNumber', 'createdAt', 'orderedBy'],
-    group: '2. Shop',
-  },
-  hooks: {
-    // beforeChange: [getOrderNumber],
-    afterChange: [],
-  },
+export const Carts: CollectionConfig = {
+  slug: 'carts',
+  admin: { group: '2. Shop' },
 
   access: {
-    // create: () => true,
     create: adminsOnly,
     read: adminsAndUserOnly,
     update: adminsAndUserOnly,
@@ -27,52 +18,21 @@ export const Orders: CollectionConfig = {
       fields: [
         // global
         {
-          name: 'orderNumber',
-          type: 'number',
-          unique: true,
-          hooks: {
-            beforeValidate: [
-              async ({ data, operation, req }) => {
-                if (operation === 'create') {
-                  const lastOrder = await req.payload.find({
-                    collection: 'orders',
-                    sort: '-orderNumber',
-                    limit: 1,
-                  })
-
-                  // console.log(lastOrder)
-                  const lastOrderNumber = lastOrder.docs[0]?.orderNumber ?? 0
-                  return lastOrderNumber > 0 ? lastOrderNumber + 1 : data?.orderNumber
-                }
-
-                return data?.orderNumber
-              },
-            ],
-          },
-        },
-        {
           name: 'status',
           type: 'select',
           defaultValue: 'pending',
           hasMany: false,
           required: true,
           options: [
-            { label: 'Pending', value: 'pending' }, // draft, created upon checkout
-            { label: 'Processing', value: 'processing' }, // paid, waiting to be fulfilled
-            { label: 'Completed', value: 'completed' }, // paid, fulfilled/shipped
-            { label: 'Cancelled', value: 'cancelled' }, // not paid, refunded, cancelled by user
-            { label: 'On Hold', value: 'onhold' },
+            { label: 'Draft', value: 'pending' }, // draft, created upon checkout
+            { label: 'Completed', value: 'completed' }, // converted to order
+            { label: 'Cancelled', value: 'cancelled' }, // not ordered, deleted by user, expired
           ],
-        },
-        {
-          name: 'stripePaymentIntentID',
-          label: 'Stripe Payment Intent ID',
-          type: 'text',
         },
       ],
     },
 
-    // order totals
+    // cart totals
     {
       name: 'totals',
       type: 'group',
@@ -143,13 +103,13 @@ export const Orders: CollectionConfig = {
         },
         {
           // name: 'items',
-          label: 'Order Items',
+          label: 'Cart Items',
           fields: [
             {
               name: 'items',
               label: 'Items',
               type: 'array',
-              // required: true, // doesn't export types as a proper array unless this is specified, but also fucks up order creation in frontend
+              // required: true, // doesn't export types as a proper array unless this is specified, but also fucks up cart creation in frontend
               // minRows: 1,
               fields: [
                 { name: 'price', type: 'number', defaultValue: 0, min: 0 },
@@ -171,7 +131,6 @@ export const Orders: CollectionConfig = {
                 },
                 {
                   name: 'receivers',
-                  label: { singular: 'Receiver', plural: 'Receivers' },
                   type: 'array',
                   fields: [
                     {
@@ -191,7 +150,6 @@ export const Orders: CollectionConfig = {
                     },
                     { name: 'name', type: 'text' },
                     { name: 'message', type: 'textarea' },
-
                     {
                       name: 'delivery',
                       label: 'Delivery',

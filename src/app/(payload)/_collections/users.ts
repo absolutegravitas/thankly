@@ -14,6 +14,7 @@ export const Users: CollectionConfig = {
   admin: {
     useAsTitle: 'email',
     defaultColumns: ['email', 'firstName', 'lastName'],
+    group: '9. Common',
   },
   // auth: true,
   // https://payloadcms.com/docs/authentication/config

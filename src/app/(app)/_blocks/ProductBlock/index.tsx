@@ -1,30 +1,47 @@
+// This file contains a React component that renders a product block for an e-commerce website.
+// The component displays product details such as title, price, description, and images.
+// It also includes an "Add to Cart" button and allows users to switch between different product images.
+//
+// The component is built using Next.js 14 with App Router and server components, which provides a more efficient
+// and streamlined approach to server-side rendering and data fetching.
+//
+// Performance considerations:
+// - Lazy loading and optimizing image sizes can improve load times.
+// - Memoizing formatPrice function and avoiding unnecessary re-renders can enhance performance.
+//
+// Accessibility (a11y) considerations:
+// - Ensure proper alt text is provided for images.
+// - Use appropriate ARIA roles and labels for better screen reader accessibility.
+
 import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { BlockWrapper } from '@app/_components/BlockWrapper'
 import { Gutter } from '@app/_components/Gutter'
 import { ProductActions } from '@app/_components/ProductActions'
-import { Product, Media } from '@payload-types'
+import { Product, Media } from '@payload-types' // Types for product and media data
 import { contentFormats, getPaddingClasses } from '@app/_css/tailwindClasses'
 import cn from '@/utilities/cn'
 import { getImageAlt, getImageUrl } from '@/utilities/getImageDetails'
 
 interface ProductBlockContentProps {
-  product: Product
-  selectedImageIndex?: number
+  product: Product // The product data to be displayed
+  selectedImageIndex?: number // Index of the currently selected image (default: 0)
 }
 
+// Renders the main content of the product block
 const ProductBlockContent: React.FC<ProductBlockContentProps> = ({
   product,
   selectedImageIndex = 0,
 }) => {
   const {
     title,
-    prices: { basePrice, salePrice },
+    prices: { basePrice, salePrice }, // Product title and prices
     meta,
-    media,
+    media, // Product media (images)
   } = product
 
+  // Formats a price amount into a currency string
   const formatPrice = (amount: number | null | undefined) => {
     if (amount == null) return 'Price not available'
     return new Intl.NumberFormat('en-AU', {
@@ -35,8 +52,8 @@ const ProductBlockContent: React.FC<ProductBlockContentProps> = ({
     }).format(amount)
   }
 
-  const displayPrice = basePrice ?? 0
-  const displaysalePrice = salePrice ?? 0
+  const displayPrice = basePrice ?? 0 // Fallback to 0 if basePrice is null or undefined
+  const displaysalePrice = salePrice ?? 0 // Fallback to 0 if salePrice is null or undefined
 
   return (
     <Gutter>
@@ -127,10 +144,11 @@ const ProductBlockContent: React.FC<ProductBlockContentProps> = ({
 }
 
 interface ProductBlockProps {
-  product: Product
-  selectedImageIndex?: number
+  product: Product // The product data to be displayed
+  selectedImageIndex?: number // Index of the currently selected image (default: 0)
 }
 
+// Renders the overall product block component
 export const ProductBlock: React.FC<ProductBlockProps> = ({ product, selectedImageIndex = 0 }) => {
   return (
     <BlockWrapper settings={{ theme: 'light' }} className={getPaddingClasses('content')}>

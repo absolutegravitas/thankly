@@ -1,6 +1,7 @@
 /** @file
  * @module ProductCard
  * @description Product card component for displaying product details
+ * @overview This file contains the ProductCard component, which renders a product card with details such as image, title, price, description, and add/remove from cart functionality. It uses hooks like useState and useEffect to manage the state of the product being in the cart or not. It also handles cases like low stock, out of stock, and sale prices.
  */
 
 'use client'
@@ -29,6 +30,7 @@ export const ProductCard: React.FC<any> = (product: Product) => {
   const { isProductInOrder, order } = useOrder()
   const [inCart, setInCart] = useState(isProductInOrder(product.id))
 
+  // @note Update the inCart state when the order or product changes
   useEffect(() => {
     setInCart(isProductInOrder(product.id))
   }, [order, product.id, isProductInOrder])

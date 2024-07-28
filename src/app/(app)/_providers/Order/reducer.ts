@@ -71,13 +71,11 @@ const getProductId = (product: OrderItem['product']): string | number => {
 
 const calculateOrderTotals = (items: OrderItem[] | undefined): Order['totals'] => {
   if (!items) return { total: 0, cost: 0, shipping: 0 }
-
   items.forEach((item) => {
     const product = item.product as Product
 
     item.receivers?.forEach((receiver) => {
       let shipping: number | null = null
-
       const postalCode = (() => {
         if (
           typeof receiver.delivery?.address?.json === 'object' &&
@@ -106,28 +104,24 @@ const calculateOrderTotals = (items: OrderItem[] | undefined): Order['totals'] =
             shippingPrices.gifts.size[
               product.shippingSize as keyof typeof shippingPrices.gifts.size
             ] ?? null
-
           if (shipping !== null) {
             if (isRegionalPostcode(postalCode)) {
               shipping += shippingPrices.gifts.surcharge.regional
             } else if (isRemotePostcode(postalCode)) {
               shipping += shippingPrices.gifts.surcharge.remote
             }
-
             if (receiver.delivery?.shippingMethod === 'expressParcel') {
               shipping += shippingPrices.gifts.surcharge.expressParcel
             }
           }
         }
       }
-
       receiver.totals = {
         cost: item.price || 0,
         shipping,
         subTotal: (item.price || 0) + (shipping || 0),
       }
     })
-
     item.totals = {
       cost: item.receivers?.reduce((sum, receiver) => sum + receiver.totals.cost, 0) || 0,
       shipping:
@@ -330,20 +324,28 @@ export const orderReducer = (order: Order, action: OrderAction): Order => {
 
     case 'UPDATE_RECEIVER': {
       const { productId, receiverId, updatedFields } = action.payload
-
-      // console.log('payload ', action.payload)
       const updatedItems = order.items?.map((item) => {
         if (getProductId(item.product) === productId) {
           const updatedReceivers = item.receivers?.map((receiver) =>
-            receiver.id === receiverId ? { ...receiver, ...updatedFields } : receiver,
+            receiver.id === receiverId
+              ? {
+                  ...receiver,
+                  ...updatedFields,
+                  delivery: {
+                    ...receiver.delivery,
+                    ...updatedFields.delivery,
+                    address: {
+                      ...receiver.delivery?.address,
+                      ...updatedFields.delivery?.address,
+                    },
+                  },
+                }
+              : receiver,
           )
           return { ...item, receivers: updatedReceivers }
         }
-        // console.log('item ', item)
         return item
       })
-      // console.log('updatedItems - ', updatedItems)
-
       return {
         ...order,
         items: updatedItems,
@@ -373,11 +375,7 @@ export const orderReducer = (order: Order, action: OrderAction): Order => {
     }
 
     case 'UPDATE_SHIPPING_METHOD': {
-      const {
-        productId,
-        receiverId,
-        delivery: { shippingMethod },
-      } = action.payload
+      const { productId, receiverId, delivery } = action.payload
       const updatedItems = order.items?.map((item) => {
         if (getProductId(item.product) === productId) {
           const updatedReceivers = item.receivers?.map((receiver) =>
@@ -386,7 +384,7 @@ export const orderReducer = (order: Order, action: OrderAction): Order => {
                   ...receiver,
                   delivery: {
                     ...receiver.delivery,
-                    shippingMethod,
+                    ...delivery,
                   },
                 }
               : receiver,

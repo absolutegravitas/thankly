@@ -36,7 +36,18 @@ const fetchProductsList = (): Promise<Product[] | null> => {
           depth: 1,
           pagination: false,
           context: {
-            select: ['id', 'slug', 'title', 'media', 'prices', 'productType', 'stock', 'meta'],
+            select: [
+              'id',
+              'slug',
+              'title',
+              'media',
+              'prices',
+              'productType',
+              'shippingSize',
+              'stock',
+              'meta',
+              'stripe',
+            ],
           },
         })
 

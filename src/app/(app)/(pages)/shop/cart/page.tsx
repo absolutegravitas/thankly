@@ -1,64 +1,51 @@
 'use client'
-import React, { Suspense, useEffect } from 'react'
+import React, { Suspense } from 'react'
 import { BlockWrapper } from '@app/_components/BlockWrapper'
 import { Gutter } from '@app/_components/Gutter'
 import { OrderEmpty } from '@app/_blocks/Order/OrderEmpty'
-import { orderText } from '@/utilities/refData'
-import { buttonLook, contentFormats, getPaddingClasses } from '@app/_css/tailwindClasses'
+import { contentFormats, getPaddingClasses } from '@app/_css/tailwindClasses'
 import { useOrder } from '@app/_providers/Order'
 import { OrderItems } from '@app/_blocks/Order/OrderItems'
 import { OrderSummary } from '@app/_blocks/Order/OrderSummary'
-import { CMSLink } from '../../../_components/CMSLink'
-import { DollarSignIcon } from 'lucide-react'
-import Link from 'next/link'
 import cn from '@/utilities/cn'
 
 export default function CartPage() {
   const { order, orderIsEmpty, hasInitializedOrder } = useOrder()
-  console.log('cart --', order)
 
-  // If we have order data, render the content regardless of hasInitializedOrder
-  if (order && order.items && order.items.length > 0) {
-    return renderCartContent(order, orderIsEmpty)
-  }
-
-  // If we don't have order data and hasInitializedOrder is false, show loading
   if (!hasInitializedOrder) {
     return <CartLoadingSkeleton />
   }
 
-  // If we have initialized but the order is empty, show empty order
-  return <OrderEmpty />
-}
+  if (orderIsEmpty) {
+    return <OrderEmpty />
+  }
 
-function renderCartContent(order: any, orderIsEmpty: any) {
   return (
     <BlockWrapper className={getPaddingClasses('hero')}>
       <Gutter>
-        {orderIsEmpty ? (
-          <OrderEmpty />
-        ) : (
-          <>
-            <div className="flex flex-row justify-between #gap-6">
-              <h1
-                className={[
-                  contentFormats.global,
-                  contentFormats.h3,
-                  'tracking-tighter text-3xl sm:text-2xl font-medium my-2',
-                ].join(' ')}
-              >
-                {'Your Cart'}
-              </h1>
-            </div>
-            <div className="flex flex-col sm:flex-row gap-6">
-              <Suspense fallback={<OrderItemsSkeleton />}>{order && <OrderItems />}</Suspense>
-
-              <Suspense fallback={<OrderSummarySkeleton />}>
-                {order && <OrderSummary order={order} />}
+        <div className="max-w-7xl mx-auto">
+          <h1
+            className={cn(
+              contentFormats.global,
+              contentFormats.h3,
+              'mb-6 text-3xl sm:text-4xl font-medium',
+            )}
+          >
+            Your Cart
+          </h1>
+          <div className="flex flex-col lg:flex-row gap-8">
+            <div className="w-full lg:w-2/3">
+              <Suspense fallback={<OrderItemsSkeleton />}>
+                <OrderItems />
               </Suspense>
             </div>
-          </>
-        )}
+            <div className="w-full lg:w-1/3">
+              <Suspense fallback={<OrderSummarySkeleton />}>
+                <OrderSummary order={order} />
+              </Suspense>
+            </div>
+          </div>
+        </div>
       </Gutter>
     </BlockWrapper>
   )
@@ -67,14 +54,13 @@ function renderCartContent(order: any, orderIsEmpty: any) {
 const CartLoadingSkeleton = () => (
   <BlockWrapper className={getPaddingClasses('hero')}>
     <Gutter>
-      <div className="animate-pulse">
-        <div className="h-8 bg-gray-200 w-1/4 mb-6"></div>
-        <div className="h-4 bg-gray-200 w-3/4 mb-8"></div>
-        <div className="flex flex-col lg:flex-row gap-6">
-          <div className="lg:basis-3/4">
+      <div className="animate-pulse max-w-7xl mx-auto">
+        <div className="h-10 bg-gray-200 w-1/4 mb-8"></div>
+        <div className="flex flex-col lg:flex-row gap-8">
+          <div className="w-full lg:w-2/3">
             <OrderItemsSkeleton />
           </div>
-          <div className="lg:basis-1/4">
+          <div className="w-full lg:w-1/3">
             <OrderSummarySkeleton />
           </div>
         </div>
@@ -83,49 +69,31 @@ const CartLoadingSkeleton = () => (
   </BlockWrapper>
 )
 
-const OrderItemsSkeleton: React.FC = () => {
-  return (
-    <div className="border border-solid border-gray-200/90 animate-pulse">
-      <div className="flex flex-col gap-6 p-5 md:flex-row md:justify-between">
-        <div className="flex min-w-0 gap-x-4">
-          <div className="h-20 w-20 flex-none bg-gray-200"></div>
-          <div className="flex flex-col gap-x-3 sm:items-start">
-            <div className="w-32 h-6 bg-gray-200 mb-2"></div>
-            <div className="w-48 h-4 bg-gray-200"></div>
+const OrderItemsSkeleton = () => (
+  <div className="space-y-6">
+    {[...Array(2)].map((_, index) => (
+      <div key={index} className="border border-gray-200 rounded-lg p-4">
+        <div className="flex items-center space-x-4">
+          <div className="w-20 h-20 bg-gray-200 rounded-md"></div>
+          <div className="flex-1">
+            <div className="h-6 bg-gray-200 w-3/4 mb-2"></div>
+            <div className="h-4 bg-gray-200 w-1/2"></div>
           </div>
         </div>
-        <div className="flex flex-none items-end gap-x-4 align-top">
-          <div className="w-24 h-8 bg-gray-200"></div>
-          <div className="w-24 h-8 bg-gray-200"></div>
-        </div>
       </div>
-    </div>
-  )
-}
+    ))}
+  </div>
+)
 
-const OrderSummarySkeleton: React.FC = () => {
-  return (
-    <div className="animate-pulse">
-      <div className="relative flex justify-between gap-4">
-        <h2 className="bg-gray-200 rounded h-6 w-32"></h2>
+const OrderSummarySkeleton = () => (
+  <div className="border border-gray-200 rounded-lg p-4 space-y-4">
+    <div className="h-6 bg-gray-200 w-1/2 mb-4"></div>
+    {[...Array(4)].map((_, index) => (
+      <div key={index} className="flex justify-between">
+        <div className="h-4 bg-gray-200 w-1/3"></div>
+        <div className="h-4 bg-gray-200 w-1/4"></div>
       </div>
-
-      <div className="mt-6 space-y-4">
-        <div className="flex items-center justify-between">
-          <div className="bg-gray-200 rounded h-4 w-48"></div>
-          <div className="bg-gray-200 rounded h-4 w-20"></div>
-        </div>
-
-        <div className="flex items-center justify-between">
-          <div className="bg-gray-200 rounded h-4 w-36"></div>
-          <div className="bg-gray-200 rounded h-4 w-20"></div>
-        </div>
-
-        <div className="flex items-center justify-between">
-          <div className="bg-gray-200 rounded h-4 w-36"></div>
-          <div className="bg-gray-200 rounded h-4 w-20"></div>
-        </div>
-      </div>
-    </div>
-  )
-}
+    ))}
+    <div className="h-10 bg-gray-200 w-full mt-6"></div>
+  </div>
+)

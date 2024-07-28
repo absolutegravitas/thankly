@@ -22,14 +22,15 @@ import { Users } from '@cms/_collections/users'
 // import { buildConfig } from 'payload/config' // deprecated
 import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
-import generateBreadcrumbsUrl from '@/utilities/generateBreadcrumbsUrl'
 import { fieldsSelect } from '@payload-enchants/fields-select'
+import { Carts } from './app/(payload)/_collections/carts'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
 export default buildConfig({
-  collections: [Orders, Products, Pages, Reusable, Media, Users],
+  // needs to be ordered in a specific way otherwise the admin grouping fucks up
+  collections: [Pages, Orders, Products, Reusable, Media, Users, Carts],
   globals: [Settings],
   editor: lexicalEditor({}),
   db: postgresAdapter({ pool: { connectionString: process.env.POSTGRES_URL } }),
@@ -45,7 +46,7 @@ export default buildConfig({
         `${process.env.NEXT_PUBLIC_SERVER_URL}/preview${data.path}${
           locale ? `?locale=${locale.code}` : ''
         }`,
-      collections: ['pages'],
+      collections: ['pages', 'products'],
       breakpoints: [
         { label: 'Mobile', name: 'mobile', width: 375, height: 667 },
         { label: 'Tablet', name: 'tablet', width: 768, height: 1024 },
@@ -81,7 +82,7 @@ export default buildConfig({
     //   overrides: { admin: { group: 'Globals' } },
     // }),
     formBuilderPlugin({ redirectRelationships: ['pages'], fields: { state: false } }),
-    nestedDocsPlugin({ collections: ['pages'], generateURL: generateBreadcrumbsUrl }),
+    // nestedDocsPlugin({ collections: ['pages'], generateURL: generateBreadcrumbsUrl }),
     vercelBlobStorage({
       collections: {
         [Media.slug]: true,

@@ -156,7 +156,7 @@ export const ReceiversGrid: React.FC<{ item: OrderItem }> = ({ item }) => {
 
   useEffect(() => {
     const currentItem = order.items?.find((orderItem) => orderItem.id === item.id)
-    // console.log('Current Item in Cart:', currentItem)
+    console.log('Current Item in Cart:', currentItem)
   }, [order, item.id])
 
   useEffect(() => {
@@ -236,13 +236,16 @@ export const ReceiversGrid: React.FC<{ item: OrderItem }> = ({ item }) => {
     updateReceiver(item.product.id, receiverId, { message: value })
   }
 
-  const handleFormattedAddressChange = (receiverId: string, value: string) => {
-    setFormattedAddresses((prev) => ({
-      ...prev,
-      [receiverId]: value,
-    }))
-    debouncedAddressInput(receiverId, value)
-  }
+  const handleFormattedAddressChange = useCallback(
+    (receiverId: string, value: string) => {
+      setFormattedAddresses((prev) => ({
+        ...prev,
+        [receiverId]: value,
+      }))
+      debouncedAddressInput(receiverId, value)
+    },
+    [debouncedAddressInput],
+  )
 
   const clearSuggestionsForReceiver = (receiverId: string) => {
     setAddressSuggestions((prev) => ({
@@ -251,10 +254,25 @@ export const ReceiversGrid: React.FC<{ item: OrderItem }> = ({ item }) => {
     }))
   }
 
+  const handleShippingMethodChange = useCallback(
+    (receiverId: string, selected: (typeof shippingOptions)[0]) => {
+      setSelectedShipping((prev) => ({
+        ...prev,
+        [receiverId]: selected,
+      }))
+      updateReceiver(item.product.id, receiverId, {
+        delivery: {
+          shippingMethod: selected.value as ShippingMethod,
+        },
+      })
+    },
+    [item.product.id, updateReceiver],
+  )
+
   if (!item) return null
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-2 gap-4 px-3 pt-6 sm:px-6 md:px-6">
+    <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-4 px-3 pt-6 sm:px-6 md:px-6">
       {item.receivers?.map((receiver: Receiver, index: number) => (
         <div
           key={receiver.id}
@@ -486,13 +504,11 @@ export const ReceiversGrid: React.FC<{ item: OrderItem }> = ({ item }) => {
                         key={index}
                         className="relative cursor-default select-none py-3 sm:py-2 px-4 sm:px-3 text-gray-900 hover:bg-green/75 hover:text-white"
                         onClick={debounce(() => {
-                          // console.log('addressLine2 updated -- ', suggestion.formattedAddress)
                           startTransition(() => {
                             try {
                               updateReceiver(item.product.id, receiver.id, {
                                 delivery: {
                                   address: {
-                                    ...receiver.delivery?.address,
                                     addressLine2: suggestion.formattedAddress,
                                     formattedAddress: suggestion.formattedAddress,
                                     json: suggestion,
@@ -535,17 +551,7 @@ export const ReceiversGrid: React.FC<{ item: OrderItem }> = ({ item }) => {
 
                 <RadioGroup
                   value={selectedShipping[receiver.id] || shippingOptions[0]}
-                  onChange={(selected) => {
-                    setSelectedShipping((prev) => ({
-                      ...prev,
-                      [receiver.id]: selected,
-                    }))
-                    updateReceiver(item.product.id, receiver.id, {
-                      delivery: {
-                        shippingMethod: selected.value as ShippingMethod,
-                      },
-                    })
-                  }}
+                  onChange={(selected) => handleShippingMethodChange(receiver.id, selected)}
                   className={cn(
                     'mt-2 grid grid-cols-2 gap-3 sm:grid-cols-2 leading-tighter',
                     validationErrors[receiver.id]?.shippingMethod && 'border-red-500',

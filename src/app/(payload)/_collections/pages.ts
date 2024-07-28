@@ -15,6 +15,7 @@ export const Pages: CollectionConfig = {
   slug: 'pages',
   admin: {
     useAsTitle: 'title',
+    group: '1. Website',
     // livePreview: {
     //   url: ({ data }) =>
     //     `${process.env.PAYLOAD_PUBLIC_SERVER_URL}/api/preview?url=${encodeURIComponent(

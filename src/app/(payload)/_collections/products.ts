@@ -13,6 +13,7 @@ export const Products: CollectionConfig = {
   slug: 'products',
   admin: {
     useAsTitle: 'title',
+    group: '2. Shop',
     defaultColumns: ['title', 'productType', 'stripeId', 'availability'],
     // livePreview: {
     //   url: ({ data }) =>
@@ -31,8 +32,7 @@ export const Products: CollectionConfig = {
   },
   hooks: {
     beforeChange: [upsertStripeProduct],
-    // afterChange: [revalidateProduct], // probably dont need this
-    // afterRead: [populateArchiveBlock],
+    // afterChange: [revalidateProduct],
     afterDelete: [deleteStripeProduct],
   },
   versions: { drafts: true },
