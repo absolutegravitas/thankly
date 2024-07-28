@@ -17,7 +17,7 @@ export const contentFormats = {
   alignJustify: ``,
 
   // gen text
-  text: `#text-justify font-body font-light tracking-tight leading-snug prose-em:font-extrabold`,
+  text: `font-body font-light tracking-tight leading-snug prose-em:font-extrabold`,
   smallText: `text-sm text-left #text-justify font-body font-light tracking-tight leading-snug prose-em:font-extrabold #prose-em:text-neutral-700`,
 
   h1: `font-title font-semibold text-5xl tracking-tight`,
@@ -27,10 +27,10 @@ export const contentFormats = {
   h5: `font-title font-semibold text-base tracking-tighter`,
   h6: `font-title font-semibold text-base tracking-tighter`,
 
-  p: `font-body font-light tracking-tight lg:tracking-tighter`,
-  blockquote: `font-body font-light tracking-tight lg:tracking-tighter`,
-  pre: `font-body font-light tracking-tight lg:tracking-tighter`,
-  code: `font-body font-light tracking-tight lg:tracking-tighter`,
+  p: `font-body font-light tracking-tight`,
+  blockquote: `font-body font-light tracking-tight #lg:tracking-tighter`,
+  pre: `font-body font-light tracking-tight #lg:tracking-tighter`,
+  code: `font-body font-light tracking-tight #lg:tracking-tighter`,
   a: `font-body  font-light underline underline-offset-4 decoration-dotted decoration-neutral-800 hover:font-medium`,
   strong: `font-bold text-neutral-700`,
 

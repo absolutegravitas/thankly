@@ -38,7 +38,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "src/utilities/commentsGenerator.tjs"
+    "src/utilities/commentCode.js"
   ],
   "exclude": ["node_modules"]
 }

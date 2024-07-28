@@ -4,10 +4,7 @@
     {
       "type": "process",
       "command": "node",
-      "args": [
-        "${workspaceFolder}/src/utilities/commentsGenerator.js",
-        "${fileDirname}/${fileBasename}"
-      ],
+      "args": ["${workspaceFolder}/src/utilities/commentCode.js", "${fileDirname}/${fileBasename}"],
       "problemMatcher": [],
       "label": "Generate Comments for Current File",
       "group": {
