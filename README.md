@@ -55,17 +55,7 @@ Houses PayloadCMS configuration and customizations:
 8. Site-specific Next.js config (hardcoded CSRF / CORS configs)
 9. Data pulled via payloadHMR / payload.find due to GraphQL and CORS issues
 10. E-commerce features (pending)
-
-## WORK IN PROGRESS
-
-"comment generator" script to comment code using ClaudeAPI, JSDoc compliant
-
-```bash
-ANTHROPIC=your_api_key_here
-npm install esprima dotenv
-node src/utilities/commentGenerator.js path/to/your/file.ts // to process a single file
-node src/utilities/commentGenerator.js // to process the entire directory
-```
+11. Comment generator script to comment code using ClaudeAPI, JSDoc compliant
 
 ## TO DO
 
@@ -147,7 +137,91 @@ WHERE table_schema NOT IN ('pg_catalog', 'information_schema')
 ORDER BY table_schema, table_name;
 ```
 
-### Production
+# Comment Generator Script
+
+This script uses the Claude AI API to automatically generate comprehensive, JSDoc-compliant comments for your JavaScript and TypeScript files. It can process individual files or entire directories, adding insightful comments that explain the code's functionality, purpose, and any important considerations.
+
+## Features
+
+- Generates JSDoc-compliant file-level comments
+- Adds inline comments explaining code functionality
+- Supports JavaScript (.js), TypeScript (.ts), and React (.jsx, .tsx) files
+- Can process individual files or entire directories
+- Maintains existing code structure and formatting
+- Avoids breaking JSX structure in React components
+- Provides visual feedback with spinners and progress bars during execution
+
+## Prerequisites
+
+Before using this script, ensure you have the following installed:
+
+- Node.js (version 12 or higher recommended)
+- npm (usually comes with Node.js)
+
+## Installation
+
+1. Clone this repository or download the script files.
+
+2. Navigate to the project directory and install the required dependencies:
+
+```bash
+npm install dotenv ora cli-progress
+```
+
+3. Create a `.env` file in the root directory of your project and add your Anthropic API key:
+
+```
+ANTHROPIC_API_KEY=your_api_key_here
+```
+
+Replace `your_api_key_here` with your actual Anthropic API key.
+
+## Usage
+
+### Processing a Single File
+
+To generate comments for a single file, use the following command:
+
+```bash
+node src/utilities/commentGenerator.js path/to/your/file.ts
+```
+
+Replace `path/to/your/file.ts` with the actual path to the file you want to process.
+
+### Processing an Entire Directory
+
+To generate comments for all supported files in a directory (including subdirectories), simply run the script without specifying a file:
+
+```bash
+node src/utilities/commentGenerator.js
+```
+
+This will process all .js, .ts, .jsx, and .tsx files in the current directory and its subdirectories.
+
+## How It Works
+
+1. The script reads the content of the specified file(s).
+2. It sends the code to the Claude AI API, requesting JSDoc comments and inline explanations.
+3. The API response is parsed to extract the comments.
+4. File-level JSDoc comments are added at the top of the file.
+5. Inline comments are inserted throughout the code, taking care not to break existing structure (especially in JSX).
+6. The updated content is written back to the original file.
+
+## Configuration
+
+You can modify the following aspects of the script:
+
+- `CLAUDE_API_URL`: The URL for the Claude AI API (in case it changes in the future).
+- `max_tokens`: Adjust this value in the API request body to control the length of the generated comments.
+- File extensions: Modify the script to include or exclude certain file types.
+
+## Troubleshooting
+
+- If you encounter "API key not found" errors, ensure your `.env` file is in the correct location and contains the correct API key.
+- For "File not found" errors, double-check the file path you're providing to the script.
+- If comments are not appearing as expected, review the Claude AI API response and adjust the parsing logic if necessary.
+
+# Production
 
 Run the following command every time the database structure changes to ensure proper builds on Vercel:
 
