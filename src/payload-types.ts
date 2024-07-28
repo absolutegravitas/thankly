@@ -245,7 +245,6 @@ export interface Media {
     };
     [k: string]: unknown;
   } | null;
-  darkModeFallback?: number | Media | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -266,7 +265,6 @@ export interface Page {
   id: number;
   title: string;
   slug?: string | null;
-  theme?: ('light' | 'dark') | null;
   layout?: {
     root: {
       type: string;
