@@ -1,16 +1,38 @@
-import React from 'react'
+/** @file
+ * @module ProductCard
+ * @description Product card component for displaying product details
+ */
+
+'use client'
+
+import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
-import { ChevronRightIcon } from 'lucide-react'
+import { ChevronRightIcon, FrownIcon } from 'lucide-react'
 import cn from '@/utilities/cn'
 import { contentFormats } from '@app/_css/tailwindClasses'
 import { ProductActions } from '@app/_components/ProductActions'
 import { messages } from '@/utilities/refData'
-import { FullLogo } from '../../_graphics/FullLogo'
 import { Product } from '@/payload-types'
 import { getImageUrl } from '@/utilities/getImageDetails'
+import { useOrder } from '@app/_providers/Order'
+import { AddToCartButton } from '../ProductActions/AddToCart'
+import { ViewInCartButton } from '../ProductActions/ViewInCart'
+import { RemoveFromCartButton } from '../ProductActions/RemoveFromCart'
+
+/** @component
+ * @description Renders a product card
+ * @param {Product} product - The product data
+ * @returns {JSX.Element}
+ */
 export const ProductCard: React.FC<any> = (product: Product) => {
-  console.log('product -- ', product)
+  const { isProductInOrder, order } = useOrder()
+  const [inCart, setInCart] = useState(isProductInOrder(product.id))
+
+  useEffect(() => {
+    setInCart(isProductInOrder(product.id))
+  }, [order, product.id, isProductInOrder])
+
   const {
     prices: { salePrice, basePrice },
   } = product
@@ -18,32 +40,30 @@ export const ProductCard: React.FC<any> = (product: Product) => {
   const onSale =
     salePrice !== null && salePrice !== undefined && salePrice !== 0 && salePrice < basePrice
 
-  console.log('onSale --', onSale)
+  const outOfStock =
+    product.stock?.stockOnHand === 0 ||
+    product.stock?.stockOnHand === null ||
+    product.stock?.stockOnHand === undefined
+
+  const lowStock =
+    product.stock?.stockOnHand &&
+    product.stock?.lowStockThreshold &&
+    product.stock?.stockOnHand <= product.stock?.lowStockThreshold
 
   return (
     <React.Fragment>
       <div key={product.slug} className="group ">
-        <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md #bg-gray-200 xl:aspect-h-8 xl:aspect-w-7">
+        <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md #bg-gray-200 xl:aspect-h-8 xl:aspect-w-7 hover:delay-75 duration-150 hover:-translate-y-1">
           <Link
             href={`/shop/${product.slug}`}
-            className="cursor-pointer no-underline hover:no-underline #z-50 "
+            className="cursor-pointer no-underline hover:no-underline "
           >
             <div className="aspect-square relative overflow-hidden rounded-sm shadow-md">
-              {(product.stock?.stockOnHand === 0 ||
-                product.stock?.stockOnHand === null ||
-                product.stock?.stockOnHand === undefined) && (
+              {lowStock && !outOfStock && (
                 <div className="absolute left-0 top-0 z-10 flex w-full items-center justify-center bg-gray-900/50 p-2 font-body font-semibold uppercase tracking-wider text-white !no-underline">
-                  <span className="text-base uppercase">{messages.outOfStock}</span>
+                  <span className="text-base">{messages.lowStock}</span>
                 </div>
               )}
-              {product.stock?.stockOnHand &&
-                product.stock.lowStockThreshold &&
-                product.stock.stockOnHand <= product.stock.lowStockThreshold &&
-                product.stock.stockOnHand > 0 && (
-                  <div className="absolute left-0 top-0 z-10 flex w-full items-center justify-center bg-gray-900/50 p-2 font-body font-semibold uppercase tracking-wider text-white !no-underline">
-                    <span className="text-base">{messages.lowStock}</span>
-                  </div>
-                )}
               {product.meta?.image ? (
                 <Image
                   src={`${getImageUrl(product.meta.image)}`}
@@ -55,14 +75,32 @@ export const ProductCard: React.FC<any> = (product: Product) => {
                 />
               ) : (
                 <img
-                  src={`https://placehold.co/600x600?text=No \nImage`}
+                  src={`https://placehold.co/600x600?text=No\nImage`}
                   alt={''}
                   className="aspect-square h-full w-full object-cover object-center group-hover:opacity-75"
                 />
               )}
+              {outOfStock ? (
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <span className="flex w-full font-body text-white bg-black bg-opacity-50 px-4 py-2 items-center justify-between">
+                    <FrownIcon
+                      className="h-7 w-7 flex-shrink-0 text-white"
+                      strokeWidth={1.25}
+                      aria-hidden="true"
+                    />
+                    {`Out of Stock`}
+                  </span>
+                </div>
+              ) : (
+                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300 ease-in-out">
+                  <span className="font-body  text-white bg-black bg-opacity-50 px-4 py-2 ">
+                    {`View Details`}
+                    <ChevronRightIcon className="inline-block w-4 h-4 ml-2" />
+                  </span>
+                </div>
+              )}
             </div>
           </Link>
-          <ProductActions product={product} hidePerks={true} hideRemove={true} />
         </div>
         <div className="#mt-4 flex items-center justify-between">
           <h3
@@ -96,16 +134,28 @@ export const ProductCard: React.FC<any> = (product: Product) => {
           </div>
         </div>
 
-        <p className="text-sm text-gray-500">
+        <p className={cn('my-3', contentFormats.global, contentFormats.p)}>
           {product.meta && product.meta.description && product.meta.description.replace(/\s/g, ' ')}
         </p>
-        <Link
-          href={`/shop/${product.slug}`}
-          className="mt-2 inline-flex items-center text-sm font-medium  hover:underline"
-        >
-          Details
-          <ChevronRightIcon className="ml-1 h-4 w-4" />
-        </Link>
+
+        <div className="flex flex-row items-center justify-between">
+          {!outOfStock && !inCart && (
+            <div className="w-full flex pb-2">
+              <AddToCartButton product={product} />
+            </div>
+          )}
+
+          {inCart && (
+            <div className="w-full flex pb-2 gap-2">
+              <div className="flex-auto w-3/4">
+                <ViewInCartButton />
+              </div>
+              <div className="flex-initial w-1/4">
+                <RemoveFromCartButton orderItemId={product.id} />
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </React.Fragment>
   )

@@ -14,9 +14,7 @@
 
 import React from 'react'
 import { draftMode } from 'next/headers'
-import { fetchShopList } from '@app/_queries/products'
 import { Metadata } from 'next'
-import { notFound } from 'next/navigation'
 import ProductGrid from '@app/_blocks/ProductGrid'
 import { BlockWrapper } from '../../_components/BlockWrapper'
 import { contentFormats, getPaddingClasses } from '../../_css/tailwindClasses'
@@ -35,11 +33,10 @@ const fetchProductsList = (): Promise<Product[] | null> => {
       try {
         const { docs } = await payload.find({
           collection: 'products',
-          // where: { slug: { equals: 'home' } },
           depth: 1,
           pagination: false,
           context: {
-            select: ['slug', 'title', 'media', 'prices', 'productType', 'stock', 'meta'],
+            select: ['id', 'slug', 'title', 'media', 'prices', 'productType', 'stock', 'meta'],
           },
         })
 
@@ -50,11 +47,10 @@ const fetchProductsList = (): Promise<Product[] | null> => {
         return products
       }
     },
-    [`fetchProductsList`], // Include the slug in the cache key
+    [`fetchProductsList`],
     {
-      revalidate: 10, // 60 seconds
-      // revalidate: 60, // 60 seconds
-      tags: [`fetchProductsList`], // Include the slug in the tags for easier invalidation
+      revalidate: 10,
+      tags: [`fetchProductsList`],
     },
   )
 

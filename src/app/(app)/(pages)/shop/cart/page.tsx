@@ -15,6 +15,7 @@ import cn from '@/utilities/cn'
 
 export default function CartPage() {
   const { order, orderIsEmpty, hasInitializedOrder } = useOrder()
+  console.log('cart --', order)
 
   // If we have order data, render the content regardless of hasInitializedOrder
   if (order && order.items && order.items.length > 0) {
@@ -48,24 +49,6 @@ function renderCartContent(order: any, orderIsEmpty: any) {
               >
                 {'Your Cart'}
               </h1>
-
-              {/* <div className="hidden sm:flex w-1/6">
-                <Link
-                  href="#summary-heading"
-                  scroll={true}
-                  className={[
-                    buttonLook.variants.base,
-                    buttonLook.sizes.medium,
-                    buttonLook.widths.full,
-                    `flex flex-row justify-between no-underline`,
-                  ].join(' ')}
-                >
-                  <span className={cn(contentFormats.global, contentFormats.p, '')}>
-                    {`Order Summary `}
-                  </span>
-                  <span> &darr; </span>
-                </Link>
-              </div> */}
             </div>
             <div className="flex flex-col sm:flex-row gap-6">
               <Suspense fallback={<OrderItemsSkeleton />}>{order && <OrderItems />}</Suspense>
