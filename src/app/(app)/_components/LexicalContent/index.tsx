@@ -200,7 +200,7 @@ const LexicalContent: React.FC<{
             </li>
           )
         case 'heading':
-          const HeadingTag = `h${node.tag}` as keyof JSX.IntrinsicElements
+          const HeadingTag = `${node.tag}` as keyof JSX.IntrinsicElements
           return (
             <HeadingTag key={index} {...attributes}>
               {node.children ? (
