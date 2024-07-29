@@ -49,17 +49,15 @@ export default function CartPage() {
               'mb-6 text-3xl sm:text-4xl font-medium',
             )}
           >
-            Your Cart
+            {`Your Cart`}
           </h1>
           <div className="flex flex-col lg:flex-row gap-8">
             <div className="w-full lg:w-2/3">
-              {/* Suspense fallback for CartItems */}
               <Suspense fallback={<CartItemsSkeleton />}>
                 <CartItems />
               </Suspense>
             </div>
             <div className="w-full lg:w-1/3">
-              {/* Suspense fallback for CartSummary */}
               <Suspense fallback={<CartSummarySkeleton />}>
                 <CartSummary cart={cart} />
               </Suspense>

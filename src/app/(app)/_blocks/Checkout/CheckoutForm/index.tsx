@@ -79,7 +79,7 @@ export const CheckoutForm: React.FC = () => {
           // buttonLook.variants.blocks,
         )}
       >
-        {isLoading ? 'Processing...' : `Pay ${order.totals.total.toFixed(2)} AUD`}
+        {isLoading ? 'Processing...' : `Pay ${cart.totals.total.toFixed(2)} AUD`}
       </button>
 
       <p

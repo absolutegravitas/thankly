@@ -3,7 +3,6 @@ import Link from 'next/link'
 
 import { Heading } from '@app/_components/Heading'
 import { Media } from '@app/_components/Media'
-import { Pill } from '@app/_components/Pill'
 import { PlusIcon } from '@app/_icons/PlusIcon'
 import { DefaultCardProps } from '../types'
 

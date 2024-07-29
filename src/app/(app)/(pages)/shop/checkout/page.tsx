@@ -9,7 +9,7 @@ import Link from 'next/link'
 import cn from '@/utilities/cn'
 import { CheckoutSummary } from '../../../_blocks/Checkout/Summary'
 import { CheckoutForm } from '../../../_blocks/Checkout/CheckoutForm'
-import { Elements, ExpressCheckoutElement } from '@stripe/react-stripe-js'
+import { useStripe, useElements, Elements, ExpressCheckoutElement } from '@stripe/react-stripe-js'
 import { loadStripe } from '@stripe/stripe-js'
 import { createPaymentIntent } from '../../../_blocks/Checkout/CheckoutForm/createPaymentIntent'
 
@@ -46,6 +46,98 @@ function renderCartContent(cart: any, cartIsEmpty: any, clientSecret: string | n
   if (!clientSecret) {
     return <CheckoutLoadingSkeleton />
   }
+  const stripe = useStripe()
+  const elements = useElements()
+  // Optional: If you're doing custom animations, hide the Element
+  const [visibility, setVisibility] = useState('hidden')
+  const [errorMessage, setErrorMessage] = useState()
+
+  const onReady = ({ availablePaymentMethods }: any) => {
+    if (!availablePaymentMethods) {
+      // No buttons will show
+    } else {
+      // Optional: Animate in the Element
+      setVisibility('initial')
+    }
+  }
+
+  const onClick = ({ resolve }: any) => {
+    const options = {
+      lineItems: [
+        {
+          name: 'Sample item',
+          amount: 1000,
+        },
+        {
+          name: 'Tax',
+          amount: 100,
+        },
+        {
+          name: 'Shipping cost',
+          amount: 1000,
+        },
+      ],
+    }
+
+    resolve(options)
+  }
+
+  // const onConfirm = async (event) => {
+  //   if (!stripe) {
+  //     // Stripe.js hasn't loaded yet.
+  //     // Make sure to disable form submission until Stripe.js has loaded.
+  //     return
+  //   }
+
+  //   const { error: submitError } = await elements.submit()
+  //   if (submitError) {
+  //     setErrorMessage(submitError.message)
+  //     return
+  //   }
+
+  //   // Create a ConfirmationToken using the details collected by the Express Checkout Element
+  //   const { error, confirmationToken } = await stripe.createPaymentMethod({
+  //     elements,
+  //     params: {
+  //       payment_method_data: {
+  //         billing_details: {
+  //           name: 'Jenny Rosen',
+  //         },
+  //       },
+  //       return_url: 'https://example.com/order/123/complete',
+  //     },
+  //   })
+
+  //   if (error) {
+  //     // This point is only reached if there's an immediate error when
+  //     // creating the ConfirmationToken. Show the error to your customer (for example, payment details incomplete)
+  //     setErrorMessage(error.message)
+  //   }
+
+  //   // Send the ConfirmationToken ID to your server for additional logic and attach the ConfirmationToken
+  //   const res = await fetch('/create-intent', {
+  //     method: 'POST',
+  //     body: confirmationToken.id,
+  //   })
+  //   const { client_secret: clientSecret } = await res.json()
+
+  //   // Confirm the PaymentIntent
+  //   const { error: confirmError } = await stripe.confirmPayment({
+  //     clientSecret,
+  //     confirmParams: {
+  //       confirmation_token: confirmationToken.id,
+  //     },
+  //   })
+
+  //   if (confirmError) {
+  //     // This point is only reached if there's an immediate error when
+  //     // confirming the payment. Show the error to your customer (for example, payment details incomplete)
+  //     setErrorMessage(confirmError.message)
+  //   } else {
+  //     // The payment UI automatically closes with a success animation.
+  //     // Your customer is redirected to your `return_url`.
+  //   }
+  // }
 
   const appearance = {
     theme: 'flat' as const,
@@ -130,21 +222,30 @@ function renderCartContent(cart: any, cartIsEmpty: any, clientSecret: string | n
                 </Link>
               </div>
             </div>
-            <div className="flex justify-center">
-              <div className="flex flex-col sm:flex-row md:shrink-0  gap-6 px-0 #max-w-6xl justify-center justify-items-center">
+            <div className="flex flex-col lg:flex-row gap-8">
+              <div className="w-full lg:w-2/3">
                 <Suspense fallback={<StripeElementsSkeleton />}>
                   {cart && clientSecret ? (
                     <Elements stripe={stripePromise} options={options}>
-                      {/* <ExpressCheckoutElement onConfirm={} /> */}
+                      {/* <div id="express-checkout-element" style={{ visibility }}>
+                        <ExpressCheckoutElement
+                          onConfirm={onConfirm}
+                          onReady={onReady}
+                          onClick={onClick}
+                          onCancel={onCancel}
+                        />
+                      </div> */}
                       <CheckoutForm />
                     </Elements>
                   ) : (
                     <StripeElementsSkeleton />
                   )}
                 </Suspense>
-                <Suspense fallback={<CartSummarySkeleton />}>
-                  {cart && <CheckoutSummary cart={cart} />}
-                </Suspense>
+                <div className="w-full lg:w-1/3">
+                  <Suspense fallback={<CartSummarySkeleton />}>
+                    {cart && <CheckoutSummary cart={cart} />}
+                  </Suspense>
+                </div>
               </div>
             </div>
           </React.Fragment>
@@ -153,8 +254,6 @@ function renderCartContent(cart: any, cartIsEmpty: any, clientSecret: string | n
     </BlockWrapper>
   )
 }
-
-// ... rest of the file remains the same
 
 const CheckoutLoadingSkeleton = () => (
   <BlockWrapper className={getPaddingClasses('hero')}>

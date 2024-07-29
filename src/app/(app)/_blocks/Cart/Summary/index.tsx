@@ -13,7 +13,7 @@ import { useRouter } from 'next/navigation'
 import { useCart } from '@app/_providers/Cart'
 import { LoaderCircleIcon } from 'lucide-react'
 import { FullLogo } from '@app/_graphics/FullLogo'
-import { orderText } from '@/utilities/refData'
+import { cartText } from '@/utilities/refData'
 
 // The CartSummary component renders the cart summary section
 // It displays the total cost, shipping cost, and any applicable discounts
@@ -90,7 +90,7 @@ export const CartSummary: React.FC<{ cart: Cart }> = ({ cart }) => {
           <MailWarningIcon className="mr-2 flex-shrink-0 mt-1" />
           <span>
             <span className="font-semibold">Thankly Cards: </span>
-            {orderText.shippingMessage}{' '}
+            {cartText.shippingMessage}{' '}
             <Link
               className={cn(contentFormats.global, contentFormats.a, '!text-sm')}
               href="https://auspost.com.au/about-us/supporting-communities/services-all-communities/our-future"

@@ -8,7 +8,7 @@ export const messages = {
   shippingFreeMessage: `FREE Delivery for orders over $100.`,
 }
 
-export const orderText = {
+export const cartText = {
   leader: `Checkout`,
   heading: `Your Cart`,
   // receiverMessage: `Send thanklys to as many people as you like. Each thankly can be sent to many people or you can send different thanklys one to each person.`,
