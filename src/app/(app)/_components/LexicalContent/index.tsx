@@ -172,29 +172,21 @@ const getNodeClassNames = (node: SerializedLexicalNode) => {
 
   let classNames = ''
 
-  if (typeof node.format === 'number') {
+  if (typeof node.format === 'string') {
     switch (node.format) {
-      case IS_ALIGN_LEFT:
-        classNames += 'text-left '
-        break
-      case IS_ALIGN_CENTER:
+      case 'center':
         classNames += 'text-center '
         break
-      case IS_ALIGN_RIGHT:
+      case 'left':
+        classNames += 'text-left '
+        break
+      case 'right':
         classNames += 'text-right '
         break
-      case IS_ALIGN_JUSTIFY:
+      case 'justify':
         classNames += 'text-justify '
         break
-      case IS_ALIGN_START:
-        classNames += node.direction === 'rtl' ? 'text-right ' : 'text-left '
-        break
-      case IS_ALIGN_END:
-        classNames += node.direction === 'rtl' ? 'text-left ' : 'text-right '
-        break
-      default:
-        // Default to left alignment if no alignment is specified
-        classNames += 'text-left '
+      // Add other cases as needed
     }
   }
 
@@ -274,8 +266,9 @@ const LexicalContent: React.FC<{
         )
       case 'heading':
         const HeadingTag = node.tag as keyof JSX.IntrinsicElements
+        const headingAttributes = getNodeClassNames(node)
         return (
-          <HeadingTag key={ix} {...attributes}>
+          <HeadingTag key={ix} {...headingAttributes}>
             {serializedChildren}
           </HeadingTag>
         )
