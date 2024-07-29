@@ -258,7 +258,7 @@ This will process all .js, .ts, .jsx, and .tsx files in the current directory an
 
 # Production
 
-Run the following command every time the database structure changes to ensure proper builds on Vercel:
+Run the following command every time the database structure changes and before pushing a commit to ensure proper builds on Vercel:
 
 ```bash
 pnpm payload migrate:create && pnpm generate:types && pnpm build
