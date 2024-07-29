@@ -62,7 +62,6 @@ export const HoverCards: React.FC<HoverCardsProps> = (props) => {
 
   return (
     <BlockWrapper
-      settings={{ theme: 'light' }}
       className={[getPaddingClasses('hoverCards'), classes.wrapper].filter(Boolean).join(' ')}
     >
       <BackgroundGrid zIndex={1} />

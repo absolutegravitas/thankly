@@ -25,6 +25,26 @@
       "options": {
         "cwd": "${workspaceFolder}"
       }
+    },
+    {
+      "type": "process",
+      "label": "Convert SCSS to Tailwind",
+      "command": "node",
+      "args": [
+        "${workspaceFolder}/src/utilities/convertToTailwind.js",
+        "${file}",
+        "${fileDirname}/index.module.scss",
+        "${workspaceFolder}/src/app/\\(app\\)/_css/common.scss",
+        "${workspaceFolder}"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "problemMatcher": [],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      }
     }
   ]
 }

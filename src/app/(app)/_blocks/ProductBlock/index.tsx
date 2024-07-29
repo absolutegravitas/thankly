@@ -151,7 +151,7 @@ interface ProductBlockProps {
 // Renders the overall product block component
 export const ProductBlock: React.FC<ProductBlockProps> = ({ product, selectedImageIndex = 0 }) => {
   return (
-    <BlockWrapper settings={{ theme: 'light' }} className={getPaddingClasses('content')}>
+    <BlockWrapper className={getPaddingClasses('content')}>
       <ProductBlockContent product={product} selectedImageIndex={selectedImageIndex} />
     </BlockWrapper>
   )
