@@ -1,15 +1,15 @@
-import type { Order, Product } from '@/payload-types'
+import type { Cart, Product } from '@/payload-types'
 import { shippingPrices } from '@/utilities/refData'
 
-export type OrderItem = NonNullable<Order['items']>[number]
-type OrderType = Order
+export type CartItem = NonNullable<Cart['items']>[number]
+type CartType = Cart
 type ShippingMethod =
   // | 'free'
   'standardMail' | 'registeredMail' | 'expressMail' | 'standardParcel' | 'expressParcel' | null
 
-export type OrderAction =
-  | { type: 'SET_ORDER'; payload: Order }
-  | { type: 'MERGE_ORDER'; payload: Order }
+export type CartAction =
+  | { type: 'SET_ORDER'; payload: Cart }
+  | { type: 'MERGE_ORDER'; payload: Cart }
   | { type: 'FORCE_UPDATE' }
   | {
       type: 'ADD_PRODUCT'
@@ -22,7 +22,7 @@ export type OrderAction =
       type: 'ADD_RECEIVER'
       payload: {
         productId: number | string
-        receiver: NonNullable<NonNullable<Order['items']>[number]['receivers']>[number]
+        receiver: NonNullable<NonNullable<Cart['items']>[number]['receivers']>[number]
       }
     }
   | {
@@ -37,9 +37,7 @@ export type OrderAction =
       payload: {
         productId: number | string
         receiverId: string
-        updatedFields: Partial<
-          NonNullable<NonNullable<Order['items']>[number]['receivers']>[number]
-        >
+        updatedFields: Partial<NonNullable<NonNullable<Cart['items']>[number]['receivers']>[number]>
       }
     }
   | {
@@ -65,11 +63,11 @@ export type OrderAction =
     }
   | { type: 'CLEAR_ORDER' }
 
-const getProductId = (product: OrderItem['product']): string | number => {
+const getProductId = (product: CartItem['product']): string | number => {
   return typeof product === 'object' ? product.id : product
 }
 
-const calculateOrderTotals = (items: OrderItem[] | undefined): Order['totals'] => {
+const calculateCartTotals = (items: CartItem[] | undefined): Cart['totals'] => {
   if (!items) return { total: 0, cost: 0, shipping: 0 }
   items.forEach((item) => {
     const product = item.product as Product
@@ -144,16 +142,16 @@ const calculateOrderTotals = (items: OrderItem[] | undefined): Order['totals'] =
   )
 }
 
-export const orderReducer = (order: Order, action: OrderAction): Order => {
+export const cartReducer = (cart: Cart, action: CartAction): Cart => {
   switch (action.type) {
     case 'SET_ORDER': {
       return action.payload
     }
 
     case 'MERGE_ORDER': {
-      const { payload: incomingOrder } = action
-      const mergedItems = [...(order.items || []), ...(incomingOrder.items || [])].reduce(
-        (acc: OrderItem[], item) => {
+      const { payload: incomingCart } = action
+      const mergedItems = [...(cart.items || []), ...(incomingCart.items || [])].reduce(
+        (acc: CartItem[], item) => {
           const existingItemIndex = acc.findIndex(
             (accItem) => getProductId(accItem.product) === getProductId(item.product),
           )
@@ -178,9 +176,9 @@ export const orderReducer = (order: Order, action: OrderAction): Order => {
       )
 
       return {
-        ...order,
+        ...cart,
         items: mergedItems,
-        totals: calculateOrderTotals(mergedItems),
+        totals: calculateCartTotals(mergedItems),
       }
     }
 
@@ -188,17 +186,17 @@ export const orderReducer = (order: Order, action: OrderAction): Order => {
       const { product, price } = action.payload
       const productId = typeof product === 'object' ? product.id : product
 
-      const existingItem = order.items?.find((item) =>
+      const existingItem = cart.items?.find((item) =>
         typeof item.product === 'object'
           ? item.product.id === productId
           : item.product === productId,
       )
 
       if (existingItem) {
-        return order
+        return cart
       }
 
-      const newItem: OrderItem = {
+      const newItem: CartItem = {
         product: product,
         price: price,
         receivers: [],
@@ -210,14 +208,14 @@ export const orderReducer = (order: Order, action: OrderAction): Order => {
         id: Date.now().toString(),
       }
 
-      const updatedItems = [...(order.items || []), newItem]
+      const updatedItems = [...(cart.items || []), newItem]
 
-      const updatedOrder = {
-        ...order,
+      const updatedCart = {
+        ...cart,
         items: updatedItems,
       }
 
-      return orderReducer(updatedOrder, {
+      return cartReducer(updatedCart, {
         type: 'ADD_RECEIVER',
         payload: {
           productId: productId,
@@ -246,21 +244,21 @@ export const orderReducer = (order: Order, action: OrderAction): Order => {
 
     case 'REMOVE_PRODUCT': {
       const { productId } = action.payload
-      const updatedItems = order.items?.filter(
+      const updatedItems = cart.items?.filter(
         (item) => getProductId(item.product) !== productId,
-      ) as OrderItem[]
+      ) as CartItem[]
 
       return {
-        ...order,
+        ...cart,
         items: updatedItems,
-        totals: calculateOrderTotals(updatedItems),
+        totals: calculateCartTotals(updatedItems),
       }
     }
 
     case 'ADD_RECEIVER': {
       const { productId, receiver } = action.payload
       const updatedItems =
-        order.items?.map((item) => {
+        cart.items?.map((item) => {
           if (getProductId(item.product) === productId) {
             return {
               ...item,
@@ -276,9 +274,9 @@ export const orderReducer = (order: Order, action: OrderAction): Order => {
         }) || []
 
       return {
-        ...order,
+        ...cart,
         items: updatedItems,
-        totals: calculateOrderTotals(updatedItems),
+        totals: calculateCartTotals(updatedItems),
       }
     }
 
@@ -286,7 +284,7 @@ export const orderReducer = (order: Order, action: OrderAction): Order => {
       const { productId, receiverId } = action.payload
 
       const updatedItems =
-        order.items?.map((item) => {
+        cart.items?.map((item) => {
           // find matching product
 
           if (getProductId(item.product) === productId) {
@@ -296,7 +294,7 @@ export const orderReducer = (order: Order, action: OrderAction): Order => {
             // console.log('copiedreceiver --', receiverToCopy)
             // receiver found
             if (receiverToCopy) {
-              const newReceiver: NonNullable<OrderItem['receivers']>[number] = {
+              const newReceiver: NonNullable<CartItem['receivers']>[number] = {
                 ...receiverToCopy,
                 id: Date.now().toString(),
               }
@@ -316,15 +314,15 @@ export const orderReducer = (order: Order, action: OrderAction): Order => {
         }) || []
 
       return {
-        ...order,
+        ...cart,
         items: updatedItems,
-        totals: calculateOrderTotals(updatedItems),
+        totals: calculateCartTotals(updatedItems),
       }
     }
 
     case 'UPDATE_RECEIVER': {
       const { productId, receiverId, updatedFields } = action.payload
-      const updatedItems = order.items?.map((item) => {
+      const updatedItems = cart.items?.map((item) => {
         if (getProductId(item.product) === productId) {
           const updatedReceivers = item.receivers?.map((receiver) =>
             receiver.id === receiverId
@@ -347,15 +345,15 @@ export const orderReducer = (order: Order, action: OrderAction): Order => {
         return item
       })
       return {
-        ...order,
+        ...cart,
         items: updatedItems,
-        totals: calculateOrderTotals(updatedItems),
+        totals: calculateCartTotals(updatedItems),
       }
     }
 
     case 'REMOVE_RECEIVER': {
       const { productId, receiverId } = action.payload
-      const updatedItems = order.items
+      const updatedItems = cart.items
         ?.map((item) => {
           if (getProductId(item.product) === productId) {
             const updatedReceivers = item.receivers?.filter(
@@ -365,18 +363,18 @@ export const orderReducer = (order: Order, action: OrderAction): Order => {
           }
           return item
         })
-        .filter((item) => item.receivers && item.receivers.length > 0) as OrderItem[]
+        .filter((item) => item.receivers && item.receivers.length > 0) as CartItem[]
 
       return {
-        ...order,
+        ...cart,
         items: updatedItems,
-        totals: calculateOrderTotals(updatedItems),
+        totals: calculateCartTotals(updatedItems),
       }
     }
 
     case 'UPDATE_SHIPPING_METHOD': {
       const { productId, receiverId, delivery } = action.payload
-      const updatedItems = order.items?.map((item) => {
+      const updatedItems = cart.items?.map((item) => {
         if (getProductId(item.product) === productId) {
           const updatedReceivers = item.receivers?.map((receiver) =>
             receiver.id === receiverId
@@ -392,18 +390,18 @@ export const orderReducer = (order: Order, action: OrderAction): Order => {
           return { ...item, receivers: updatedReceivers }
         }
         return item
-      }) as OrderItem[]
+      }) as CartItem[]
 
       return {
-        ...order,
+        ...cart,
         items: updatedItems,
-        totals: calculateOrderTotals(updatedItems),
+        totals: calculateCartTotals(updatedItems),
       }
     }
 
     case 'CLEAR_ORDER': {
       return {
-        ...order,
+        ...cart,
         items: [],
         totals: {
           total: 0,
@@ -414,7 +412,7 @@ export const orderReducer = (order: Order, action: OrderAction): Order => {
     }
 
     default: {
-      return order
+      return cart
     }
   }
 }

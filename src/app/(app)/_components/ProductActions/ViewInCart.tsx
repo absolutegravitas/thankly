@@ -24,7 +24,7 @@ export function ViewInCartButton() {
    * @function
    * @description Handles click event on the "View in Cart" button
    */
-  const handleViewInOrder = async () => {
+  const handleViewInCart = async () => {
     setIsLoading(true)
     router.push('/shop/cart')
   }
@@ -52,7 +52,7 @@ export function ViewInCartButton() {
         },
       }}
       actions={{
-        onClick: handleViewInOrder,
+        onClick: handleViewInCart,
       }}
     />
   )

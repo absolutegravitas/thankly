@@ -10,7 +10,7 @@ import { DefaultCardProps } from '../types'
 import classes from './index.module.scss'
 
 export const DefaultCard: React.FC<DefaultCardProps> = (props) => {
-  const { pill, description, href, media, title, className, leader } = props
+  const { description, href, media, title, className, leader } = props
 
   return (
     <Link
@@ -21,11 +21,6 @@ export const DefaultCard: React.FC<DefaultCardProps> = (props) => {
       <div className={classes.content}>
         <div className={classes.leaderWrapper}>
           {leader && <div className={classes.leader}>{leader}</div>}
-          {pill && (
-            <span className={classes.pill}>
-              <Pill color="warning" text={pill} />
-            </span>
-          )}
         </div>
         <Heading element="h2" as="h4" marginTop={false}>
           {title}

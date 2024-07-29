@@ -4,8 +4,8 @@ import React, { useState, useTransition } from 'react'
 
 import { CMSLink } from '@app/_components/CMSLink'
 import { CopyIcon, TrashIcon, UserPlusIcon, XIcon } from 'lucide-react'
-import { useOrder } from '@app/_providers/Order'
-import { OrderItem } from '@app/_providers/Order/reducer'
+import { useCart } from '@/app/(app)/_providers/Cart'
+import { CartItem } from '@/app/(app)/_providers/Cart/reducer'
 import { useRouter } from 'next/navigation'
 
 interface AddReceiverButtonProps {
@@ -15,20 +15,20 @@ interface AddReceiverButtonProps {
 export const AddReceiverButton: React.FC<AddReceiverButtonProps> = ({ productId }) => {
   const [isPending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
-  const { addReceiver, order } = useOrder()
+  const { addReceiver, cart } = useCart()
 
   const handleClick = () => {
     startTransition(() => {
-      const orderItem = order.items?.find(
+      const cartItem = cart.items?.find(
         (item) => typeof item.product === 'object' && item.product.id === productId,
       )
       const productType =
-        typeof orderItem?.product === 'object' ? orderItem.product.productType : null
+        typeof cartItem?.product === 'object' ? cartItem.product.productType : null
 
       const defaultShippingMethod =
         productType === 'gift' ? 'standardParcel' : productType === 'card' ? 'standardMail' : null
 
-      const newReceiver: NonNullable<OrderItem['receivers']>[number] = {
+      const newReceiver: NonNullable<CartItem['receivers']>[number] = {
         id: `${Date.now()}`,
         name: null,
         message: null,
@@ -77,18 +77,18 @@ export const AddReceiverButton: React.FC<AddReceiverButtonProps> = ({ productId 
 }
 
 interface CopyReceiverIconProps {
-  orderItemId: string | number
+  cartItemId: string | number
   receiverId: string
 }
-export const CopyReceiverIcon: React.FC<CopyReceiverIconProps> = ({ orderItemId, receiverId }) => {
+export const CopyReceiverIcon: React.FC<CopyReceiverIconProps> = ({ cartItemId, receiverId }) => {
   const [isPending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
-  const { copyReceiver } = useOrder()
+  const { copyReceiver } = useCart()
 
   const handleClick = () => {
     startTransition(() => {
       try {
-        copyReceiver(orderItemId, receiverId)
+        copyReceiver(cartItemId, receiverId)
         setError(null)
       } catch (error) {
         console.error('Error copying receiver:', error)
@@ -112,13 +112,13 @@ export const CopyReceiverIcon: React.FC<CopyReceiverIconProps> = ({ orderItemId,
 }
 
 interface RemoveReceiverIconProps {
-  orderItemId: string | number // Changed from just string to string | number
+  cartItemId: string | number // Changed from just string to string | number
   receiverId: string
-  removeReceiver: (productId: string | number, receiverId: string) => void // Matches OrderContext
+  removeReceiver: (productId: string | number, receiverId: string) => void // Matches CartContext
 }
 
 export const RemoveReceiverIcon: React.FC<RemoveReceiverIconProps> = ({
-  orderItemId,
+  cartItemId,
   receiverId,
   removeReceiver,
 }) => {
@@ -126,7 +126,7 @@ export const RemoveReceiverIcon: React.FC<RemoveReceiverIconProps> = ({
 
   const handleClick = () => {
     startTransition(() => {
-      removeReceiver(orderItemId, receiverId)
+      removeReceiver(cartItemId, receiverId)
     })
   }
 
@@ -143,17 +143,17 @@ export const RemoveReceiverIcon: React.FC<RemoveReceiverIconProps> = ({
 }
 
 interface RemoveProductButtonProps {
-  orderItemId: string | number
+  productId: string | number
 }
 
-export const RemoveProductButton: React.FC<RemoveProductButtonProps> = ({ orderItemId }) => {
+export const RemoveProductButton: React.FC<RemoveProductButtonProps> = ({ productId }) => {
   const [isPending, startTransition] = useTransition()
-  const { removeProduct } = useOrder()
+  const { removeProduct } = useCart()
   const router = useRouter()
 
   const handleClick = () => {
     startTransition(() => {
-      removeProduct(orderItemId)
+      removeProduct(productId)
       router.refresh()
     })
   }

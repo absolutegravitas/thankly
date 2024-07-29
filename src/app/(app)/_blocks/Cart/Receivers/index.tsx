@@ -2,12 +2,12 @@
 
 import React, { useState, useEffect, useCallback, useTransition, useMemo } from 'react'
 import { contentFormats } from '@app/_css/tailwindClasses'
-import { useOrder } from '@app/_providers/Order'
+import { useCart } from '@/app/(app)/_providers/Cart'
 import { MapPinIcon, MessageSquareTextIcon, SendIcon, UserIcon, UsersIcon } from 'lucide-react'
 import { AddReceiverButton, CopyReceiverIcon, RemoveReceiverIcon } from './ReceiverActions'
 import { addressAutocomplete } from './addressAutocomplete'
 import { debounce, update } from 'lodash'
-import { Order, Product } from '@/payload-types'
+import { Cart, Product } from '@/payload-types'
 import { Field, Label, Switch } from '@headlessui/react'
 import { Radio, RadioGroup } from '@headlessui/react'
 import cn from '@/utilities/cn'
@@ -48,7 +48,7 @@ interface Receiver {
   errors: JSON
 }
 
-interface OrderItem {
+interface CartItem {
   id: string
   product: Product
   receivers: Receiver[]
@@ -64,8 +64,8 @@ interface ValidationErrors {
 
 type ShippingMethod = 'standardMail' | 'expressMail' | 'standardParcel' | 'expressParcel' | null
 
-export const ReceiversGrid: React.FC<{ item: OrderItem }> = ({ item }) => {
-  const { order, updateReceiver, removeReceiver } = useOrder()
+export const ReceiversGrid: React.FC<{ item: CartItem }> = ({ item }) => {
+  const { cart, updateReceiver, removeReceiver } = useCart()
 
   const [isPending, startTransition] = useTransition()
   const [errors, setErrors] = useState<{ [key: string]: JSON }>({})
@@ -151,9 +151,9 @@ export const ReceiversGrid: React.FC<{ item: OrderItem }> = ({ item }) => {
   }, [item.receivers, poBoxFlags, validateReceiver])
 
   useEffect(() => {
-    const currentItem = order.items?.find((orderItem) => orderItem.id === item.id)
+    const currentItem = cart.items?.find((cartItem) => cartItem.id === item.id)
     console.log('Current Item in Cart:', currentItem)
-  }, [order, item.id])
+  }, [cart, item.id])
 
   useEffect(() => {
     const initialErrors: { [key: string]: JSON } = {}
@@ -272,7 +272,7 @@ export const ReceiversGrid: React.FC<{ item: OrderItem }> = ({ item }) => {
       {item.receivers?.map((receiver: Receiver, index: number) => (
         <div
           key={receiver.id}
-          className="relative flex flex-col justify-between rounded-sm border border-solid hover:shadow-xl hover:delay-75 duration-150 p-6 aspect-square"
+          className="relative flex flex-col justify-between rounded-sm bcart bcart-solid hover:shadow-xl hover:delay-75 duration-150 p-6 aspect-square"
         >
           <div className="space-y-8 sm:space-y-10">
             {/* heading / title / actions */}
@@ -282,12 +282,12 @@ export const ReceiversGrid: React.FC<{ item: OrderItem }> = ({ item }) => {
               </span>
               <div className="flex justify-end items-center gap-x-4 sm:gap-x-3">
                 <CopyReceiverIcon
-                  orderItemId={item.product.id}
+                  cartItemId={item.product.id}
                   receiverId={receiver.id}
                   // className="h-8 w-8 sm:h-6 sm:w-6"
                 />
                 <RemoveReceiverIcon
-                  orderItemId={item.product.id}
+                  cartItemId={item.product.id}
                   receiverId={receiver.id}
                   removeReceiver={removeReceiver}
                   // className="h-8 w-8 sm:h-6 sm:w-6"
@@ -315,8 +315,8 @@ export const ReceiversGrid: React.FC<{ item: OrderItem }> = ({ item }) => {
                   placeholder="Jane Smith"
                   value={names[receiver.id] || ''}
                   className={cn(
-                    'mt-2 peer block w-full border-0 focus:outline-none border-b focus:border-b-2 border-gray-300 bg-gray-50 py-2 px-1 text-gray-900 placeholder-gray-400 focus:border-green/75 focus:ring-0 text-base sm:text-sm',
-                    validationErrors[receiver.id]?.name && 'border-red-500',
+                    'mt-2 peer block w-full bcart-0 focus:outline-none bcart-b focus:bcart-b-2 bcart-gray-300 bg-gray-50 py-2 px-1 text-gray-900 placeholder-gray-400 focus:bcart-green/75 focus:ring-0 text-base sm:text-sm',
+                    validationErrors[receiver.id]?.name && 'bcart-red-500',
                   )}
                   onChange={(e) => handleNameChange(receiver.id, e.target.value)}
                   aria-invalid={!!validationErrors[receiver.id]?.name}
@@ -357,8 +357,8 @@ export const ReceiversGrid: React.FC<{ item: OrderItem }> = ({ item }) => {
                   rows={5}
                   placeholder="Add a message with your thankly here..."
                   className={cn(
-                    'font-body mt-2 peer block w-full border-0 focus:outline-none border-b focus:border-b-2 border-gray-300 bg-gray-50 py-2 px-1 text-gray-900 placeholder-gray-400 focus:border-green/75 focus:ring-0 text-base sm:text-sm',
-                    validationErrors[receiver.id]?.message && 'border-red-500',
+                    'font-body mt-2 peer block w-full bcart-0 focus:outline-none bcart-b focus:bcart-b-2 bcart-gray-300 bg-gray-50 py-2 px-1 text-gray-900 placeholder-gray-400 focus:bcart-green/75 focus:ring-0 text-base sm:text-sm',
+                    validationErrors[receiver.id]?.message && 'bcart-red-500',
                   )}
                   onChange={(e) => handleMessageChange(receiver.id, e.target.value)}
                   aria-invalid={!!validationErrors[receiver.id]?.message}
@@ -411,7 +411,7 @@ export const ReceiversGrid: React.FC<{ item: OrderItem }> = ({ item }) => {
                         return newState
                       })
                     }}
-                    className="group relative inline-flex h-5 w-10 sm:h-5 sm:w-10 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent bg-gray-200 transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-green focus:ring-offset-2 data-[checked]:bg-green"
+                    className="group relative inline-flex h-5 w-10 sm:h-5 sm:w-10 flex-shrink-0 cursor-pointer rounded-full bcart-2 bcart-transparent bg-gray-200 transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-green focus:ring-offset-2 data-[checked]:bg-green"
                   >
                     <span
                       aria-hidden="true"
@@ -447,8 +447,8 @@ export const ReceiversGrid: React.FC<{ item: OrderItem }> = ({ item }) => {
                         })
                       }}
                       className={cn(
-                        'block w-full border-0 focus:outline-none border-b focus:border-b-2 border-gray-300 bg-gray-50 py-2 px-1 text-gray-900 placeholder-gray-400 focus:border-green/75 focus:ring-0 text-base sm:text-sm',
-                        validationErrors[receiver.id]?.addressLine1 && 'border-red-500',
+                        'block w-full bcart-0 focus:outline-none bcart-b focus:bcart-b-2 bcart-gray-300 bg-gray-50 py-2 px-1 text-gray-900 placeholder-gray-400 focus:bcart-green/75 focus:ring-0 text-base sm:text-sm',
+                        validationErrors[receiver.id]?.addressLine1 && 'bcart-red-500',
                       )}
                       aria-invalid={!!validationErrors[receiver.id]?.addressLine1}
                       aria-describedby={
@@ -475,8 +475,8 @@ export const ReceiversGrid: React.FC<{ item: OrderItem }> = ({ item }) => {
                   placeholder="Enter street address"
                   onChange={(e) => handleFormattedAddressChange(receiver.id, e.target.value)}
                   className={cn(
-                    'mt-2 peer block w-full border-0 focus:outline-none border-b focus:border-b-2 border-gray-300 bg-gray-50 py-2 px-1 text-gray-900 placeholder-gray-400 focus:border-green/75 focus:ring-0 text-base sm:text-sm',
-                    validationErrors[receiver.id]?.formattedAddress && 'border-red-500',
+                    'mt-2 peer block w-full bcart-0 focus:outline-none bcart-b focus:bcart-b-2 bcart-gray-300 bg-gray-50 py-2 px-1 text-gray-900 placeholder-gray-400 focus:bcart-green/75 focus:ring-0 text-base sm:text-sm',
+                    validationErrors[receiver.id]?.formattedAddress && 'bcart-red-500',
                   )}
                   aria-invalid={!!validationErrors[receiver.id]?.formattedAddress}
                   aria-describedby={
@@ -541,7 +541,7 @@ export const ReceiversGrid: React.FC<{ item: OrderItem }> = ({ item }) => {
                   Shipping
                 </label>
                 <span className="block mt-1 text-xs text-gray-500">
-                  {`Choose your preferred shipping method. FREE shipping for orders over $150.
+                  {`Choose your preferred shipping method. FREE shipping for carts over $150.
         Discount applied at checkout.`}
                 </span>
 
@@ -550,7 +550,7 @@ export const ReceiversGrid: React.FC<{ item: OrderItem }> = ({ item }) => {
                   onChange={(selected) => handleShippingMethodChange(receiver.id, selected)}
                   className={cn(
                     'mt-2 grid grid-cols-2 gap-3 sm:grid-cols-2 leading-tighter',
-                    validationErrors[receiver.id]?.shippingMethod && 'border-red-500',
+                    validationErrors[receiver.id]?.shippingMethod && 'bcart-red-500',
                   )}
                 >
                   {shippingOptions

@@ -1,20 +1,20 @@
 'use client'
 
-import React from 'react' // The ProductActions component uses the useOrder hook to access the order context and determine if the product is already in the user's cart.
+import React from 'react' // The ProductActions component uses the useCart hook to access the order context and determine if the product is already in the user's cart.
 import { CheckIcon, FrownIcon, MessageCircleWarningIcon, SendHorizonalIcon } from 'lucide-react'
 import Link from 'next/link'
 import { messages } from '@/utilities/refData'
 import { AddToCartButton } from './AddToCart'
 import { ViewInCartButton } from './ViewInCart' // If the product is out of stock, a message is displayed with a link back to the shop.
 import { RemoveFromCartButton } from './RemoveFromCart'
-import { useOrder } from '@app/_providers/Order'
+import { useCart } from '@/app/(app)/_providers/Cart'
 
 export function ProductActions({ product, hidePerks, hideRemove }: any) {
   const {
     stock: { stockOnHand },
   } = product
-  const { isProductInOrder } = useOrder()
-  const inCart = isProductInOrder(product.id)
+  const { isProductInCart } = useCart()
+  const inCart = isProductInCart(product.id)
 
   if (stockOnHand === 0) {
     return (
@@ -49,7 +49,7 @@ export function ProductActions({ product, hidePerks, hideRemove }: any) {
               <ViewInCartButton />
             </div>
             <div className="flex-initial w-1/4">
-              <RemoveFromCartButton orderItemId={product.id} />
+              <RemoveFromCartButton cartItemId={product.id} />
             </div>
           </>
         )}

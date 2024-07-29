@@ -2,9 +2,9 @@
 import React, { Suspense, useEffect, useState } from 'react'
 import { BlockWrapper } from '@app/_components/BlockWrapper'
 import { Gutter } from '@app/_components/Gutter'
-import { OrderEmpty } from '@app/_blocks/Order/OrderEmpty'
+import { EmptyCart } from '@/app/(app)/_blocks/Cart/EmptyCart'
 import { buttonLook, contentFormats, getPaddingClasses } from '@app/_css/tailwindClasses'
-import { useOrder } from '@app/_providers/Order'
+import { useCart } from '@/app/(app)/_providers/Cart'
 import Link from 'next/link'
 import cn from '@/utilities/cn'
 import { CheckoutSummary } from '../../../_blocks/Checkout/Summary'
@@ -16,12 +16,12 @@ import { createPaymentIntent } from '../../../_blocks/Checkout/CheckoutForm/crea
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
 
 export default function CartPage() {
-  const { order, orderIsEmpty, hasInitializedOrder } = useOrder()
+  const { cart, cartIsEmpty, hasInitializedCart } = useCart()
   const [clientSecret, setClientSecret] = useState<string | null>(null)
 
   useEffect(() => {
-    if (order && order.totals && order.totals.total > 0) {
-      createPaymentIntent(order.totals.total)
+    if (cart && cart.totals && cart.totals.total > 0) {
+      createPaymentIntent(cart.totals.total)
         .then((result) => {
           if (result.clientSecret) {
             setClientSecret(result.clientSecret)
@@ -29,20 +29,20 @@ export default function CartPage() {
         })
         .catch((error) => console.error('Error creating PaymentIntent:', error))
     }
-  }, [order])
+  }, [cart])
 
-  if (order && order.items && order.items.length > 0) {
-    return renderCartContent(order, orderIsEmpty, clientSecret)
+  if (cart && cart.items && cart.items.length > 0) {
+    return renderCartContent(cart, cartIsEmpty, clientSecret)
   }
 
-  if (!hasInitializedOrder) {
+  if (!hasInitializedCart) {
     return <CheckoutLoadingSkeleton />
   }
 
-  return <OrderEmpty />
+  return <EmptyCart />
 }
 
-function renderCartContent(order: any, orderIsEmpty: any, clientSecret: string | null) {
+function renderCartContent(cart: any, cartIsEmpty: any, clientSecret: string | null) {
   if (!clientSecret) {
     return <CheckoutLoadingSkeleton />
   }
@@ -57,19 +57,19 @@ function renderCartContent(order: any, orderIsEmpty: any, clientSecret: string |
       fontFamily:
         'ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
       spacingUnit: '4px',
-      borderRadius: '0px',
+      bcartRadius: '0px',
     },
     rules: {
       '.Input': {
-        border: 'none',
-        borderBottom: '1px solid #d1d5db', // Matches border-gray-300
+        bcart: 'none',
+        bcartBottom: '1px solid #d1d5db', // Matches bcart-gray-300
         boxShadow: 'none',
         fontSize: '14px', // Matches text-sm
         padding: '8px 4px', // Adjusted to match your input padding
       },
       '.Input:focus': {
-        border: 'none',
-        borderBottom: '2px solid #557755', // Matches focus:border-green/75
+        bcart: 'none',
+        bcartBottom: '2px solid #557755', // Matches focus:bcart-green/75
         boxShadow: 'none',
       },
       '.Input::placeholder': {
@@ -92,14 +92,14 @@ function renderCartContent(order: any, orderIsEmpty: any, clientSecret: string |
     appearance,
     mode: 'payment' as const,
     currency: 'aud',
-    amount: order.totals.total * 100, // amount in cents
+    amount: cart.totals.total * 100, // amount in cents
   }
 
   return (
     <BlockWrapper className={getPaddingClasses('hero')}>
       <Gutter>
-        {orderIsEmpty ? (
-          <OrderEmpty />
+        {cartIsEmpty ? (
+          <EmptyCart />
         ) : (
           <React.Fragment>
             <div className="flex flex-row justify-between pb-6">
@@ -133,7 +133,7 @@ function renderCartContent(order: any, orderIsEmpty: any, clientSecret: string |
             <div className="flex justify-center">
               <div className="flex flex-col sm:flex-row md:shrink-0  gap-6 px-0 #max-w-6xl justify-center justify-items-center">
                 <Suspense fallback={<StripeElementsSkeleton />}>
-                  {order && clientSecret ? (
+                  {cart && clientSecret ? (
                     <Elements stripe={stripePromise} options={options}>
                       {/* <ExpressCheckoutElement onConfirm={} /> */}
                       <CheckoutForm />
@@ -142,8 +142,8 @@ function renderCartContent(order: any, orderIsEmpty: any, clientSecret: string |
                     <StripeElementsSkeleton />
                   )}
                 </Suspense>
-                <Suspense fallback={<OrderSummarySkeleton />}>
-                  {order && <CheckoutSummary order={order} />}
+                <Suspense fallback={<CartSummarySkeleton />}>
+                  {cart && <CheckoutSummary cart={cart} />}
                 </Suspense>
               </div>
             </div>
@@ -164,10 +164,10 @@ const CheckoutLoadingSkeleton = () => (
         <div className="h-4 bg-gray-200 w-3/4 mb-8"></div>
         <div className="flex flex-col lg:flex-row gap-6">
           <div className="lg:basis-3/4">
-            <OrderItemsSkeleton />
+            <CartItemsSkeleton />
           </div>
           <div className="lg:basis-1/4">
-            <OrderSummarySkeleton />
+            <CartSummarySkeleton />
           </div>
         </div>
       </div>
@@ -175,9 +175,9 @@ const CheckoutLoadingSkeleton = () => (
   </BlockWrapper>
 )
 
-const OrderItemsSkeleton: React.FC = () => {
+const CartItemsSkeleton: React.FC = () => {
   return (
-    <div className="border border-solid border-gray-200/90 animate-pulse">
+    <div className="bcart bcart-solid bcart-gray-200/90 animate-pulse">
       <div className="flex flex-col gap-6 p-5 md:flex-row md:justify-between">
         <div className="flex min-w-0 gap-x-4">
           <div className="h-20 w-20 flex-none bg-gray-200"></div>
@@ -195,7 +195,7 @@ const OrderItemsSkeleton: React.FC = () => {
   )
 }
 
-const OrderSummarySkeleton: React.FC = () => {
+const CartSummarySkeleton: React.FC = () => {
   return (
     <div className="animate-pulse">
       <div className="relative flex justify-between gap-4">

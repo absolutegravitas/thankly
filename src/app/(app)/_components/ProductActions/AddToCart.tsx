@@ -18,7 +18,7 @@ import { useRouter } from 'next/navigation'
 import { CMSLink } from '@app/_components/CMSLink'
 import { PlusIcon, LoaderCircleIcon } from 'lucide-react'
 import { Product } from '@payload-types'
-import { useOrder } from '@app/_providers/Order'
+import { useCart } from '@/app/(app)/_providers/Cart'
 
 // Interface defining the props for the AddToCartButton component
 interface AddToCartButtonProps {
@@ -31,12 +31,12 @@ export function AddToCartButton({ product }: AddToCartButtonProps) {
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [error, setError] = useState<string | null>(null)
 
-  // Hooks for navigation and managing the order state
+  // Hooks for navigation and managing the cart state
   const router = useRouter()
-  const { addProduct } = useOrder()
+  const { addProduct } = useCart()
 
-  // Function to handle adding the product to the order
-  const handleAddToOrder = async () => {
+  // Function to handle adding the product to the cart
+  const handleAddToCart = async () => {
     setIsLoading(true)
     setError(null)
     try {
@@ -46,14 +46,14 @@ export function AddToCartButton({ product }: AddToCartButtonProps) {
         Math.min(product.prices.basePrice ?? Infinity, product.prices.salePrice ?? Infinity),
       )
 
-      // Add the product to the order
+      // Add the product to the cart
       addProduct(product, priceToUse)
 
       // Navigate to the cart page
       router.push('/shop/cart')
     } catch (e: any) {
       // Handle errors
-      setError(e.message || 'Failed to add product to order. Please try again.')
+      setError(e.message || 'Failed to add product to cart. Please try again.')
       setIsLoading(false)
     }
   }
@@ -87,7 +87,7 @@ export function AddToCartButton({ product }: AddToCartButtonProps) {
         },
       }}
       actions={{
-        onClick: handleAddToOrder,
+        onClick: handleAddToCart,
       }}
     />
   )

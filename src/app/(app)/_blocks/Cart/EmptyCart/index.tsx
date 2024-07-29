@@ -9,7 +9,7 @@ import { contentFormats, getPaddingClasses } from '@app/_css/tailwindClasses'
 import { useRouter } from 'next/navigation'
 import { ArrowRightIcon, HomeIcon, ShoppingCartIcon } from 'lucide-react'
 
-export const OrderEmpty: React.FC<any> = () => {
+export const EmptyCart: React.FC<any> = () => {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
 

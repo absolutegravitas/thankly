@@ -1,43 +1,43 @@
 // This file contains the main Cart page component and related UI skeletons for the Next.js 14 app with the App Router and server components.
-// The Cart page displays the user's current order, including order items and a summary with totals.
-// If the order is empty or not initialized, appropriate placeholders or skeletons are shown.
+// The Cart page displays the user's current cart, including cart items and a summary with totals.
+// If the cart is empty or not initialized, appropriate placeholders or skeletons are shown.
 
 'use client'
 import React, { Suspense } from 'react'
 import { BlockWrapper } from '@app/_components/BlockWrapper'
 import { Gutter } from '@app/_components/Gutter'
-import { OrderEmpty } from '@app/_blocks/Order/OrderEmpty'
+import { EmptyCart } from '@/app/(app)/_blocks/Cart/EmptyCart'
 import { contentFormats, getPaddingClasses } from '@app/_css/tailwindClasses'
-import { useOrder } from '@app/_providers/Order'
-import { OrderItems } from '@app/_blocks/Order/OrderItems'
-import { OrderSummary } from '@app/_blocks/Order/OrderSummary'
+import { useCart } from '@/app/(app)/_providers/Cart'
+import { CartItems } from '@app/_blocks/Cart/CartItems'
+import { CartSummary } from '@app/_blocks/Cart/Summary'
 import cn from '@/utilities/cn'
-import { Order } from '@/payload-types'
+import { Cart } from '@/payload-types'
 
 // The main Cart page component
 export default function CartPage() {
-  // Destructure order state and helper values from the useOrder custom hook
+  // Destructure cart state and helper values from the useCart custom hook
   const {
-    order,
-    orderIsEmpty,
-    hasInitializedOrder,
+    cart,
+    cartIsEmpty,
+    hasInitializedCart,
   }: {
-    order: Order // Assuming 'Order' is a type or interface defined elsewhere
-    orderIsEmpty: boolean
-    hasInitializedOrder: boolean
-  } = useOrder()
+    cart: Cart // Assuming 'Cart' is a type or interface defined elsewhere
+    cartIsEmpty: boolean
+    hasInitializedCart: boolean
+  } = useCart()
 
-  // Show a loading skeleton if the order hasn't been initialized yet
-  if (!hasInitializedOrder) {
+  // Show a loading skeleton if the cart hasn't been initialized yet
+  if (!hasInitializedCart) {
     return <CartLoadingSkeleton />
   }
 
-  // Show an empty order placeholder if the order is empty
-  if (orderIsEmpty) {
-    return <OrderEmpty />
+  // Show an empty cart placeholder if the cart is empty
+  if (cartIsEmpty) {
+    return <EmptyCart />
   }
 
-  // Render the Cart page with order items and summary
+  // Render the Cart page with cart items and summary
   return (
     <BlockWrapper className={getPaddingClasses('hero')}>
       <Gutter>
@@ -53,15 +53,15 @@ export default function CartPage() {
           </h1>
           <div className="flex flex-col lg:flex-row gap-8">
             <div className="w-full lg:w-2/3">
-              {/* Suspense fallback for OrderItems */}
-              <Suspense fallback={<OrderItemsSkeleton />}>
-                <OrderItems />
+              {/* Suspense fallback for CartItems */}
+              <Suspense fallback={<CartItemsSkeleton />}>
+                <CartItems />
               </Suspense>
             </div>
             <div className="w-full lg:w-1/3">
-              {/* Suspense fallback for OrderSummary */}
-              <Suspense fallback={<OrderSummarySkeleton />}>
-                <OrderSummary order={order} />
+              {/* Suspense fallback for CartSummary */}
+              <Suspense fallback={<CartSummarySkeleton />}>
+                <CartSummary cart={cart} />
               </Suspense>
             </div>
           </div>
@@ -79,10 +79,10 @@ const CartLoadingSkeleton = () => (
         <div className="h-10 bg-gray-200 w-1/4 mb-8"></div>
         <div className="flex flex-col lg:flex-row gap-8">
           <div className="w-full lg:w-2/3">
-            <OrderItemsSkeleton />
+            <CartItemsSkeleton />
           </div>
           <div className="w-full lg:w-1/3">
-            <OrderSummarySkeleton />
+            <CartSummarySkeleton />
           </div>
         </div>
       </div>
@@ -90,11 +90,11 @@ const CartLoadingSkeleton = () => (
   </BlockWrapper>
 )
 
-// Skeleton component for the loading state of the order items section
-const OrderItemsSkeleton = () => (
+// Skeleton component for the loading state of the cart items section
+const CartItemsSkeleton = () => (
   <div className="space-y-6">
     {[...Array(2)].map((_, index) => (
-      <div key={index} className="border border-gray-200 rounded-lg p-4">
+      <div key={index} className="bcart bcart-gray-200 rounded-lg p-4">
         <div className="flex items-center space-x-4">
           <div className="w-20 h-20 bg-gray-200 rounded-md"></div>
           <div className="flex-1">
@@ -107,9 +107,9 @@ const OrderItemsSkeleton = () => (
   </div>
 )
 
-// Skeleton component for the loading state of the order summary section
-const OrderSummarySkeleton = () => (
-  <div className="border border-gray-200 rounded-lg p-4 space-y-4">
+// Skeleton component for the loading state of the cart summary section
+const CartSummarySkeleton = () => (
+  <div className="bcart bcart-gray-200 rounded-lg p-4 space-y-4">
     <div className="h-6 bg-gray-200 w-1/2 mb-4"></div>
     {[...Array(4)].map((_, index) => (
       <div key={index} className="flex justify-between">

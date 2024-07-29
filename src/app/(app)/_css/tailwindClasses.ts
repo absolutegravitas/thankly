@@ -43,21 +43,6 @@ export const contentFormats = {
   error: 'rounded-sm font-medium text-white bg-red-700 px-4 py-3',
   success: 'rounded-sm font-medium text-offwhite bg-lime-600 px-4 py-3',
   warning: 'rounded-sm font-medium  bg-amber-400 px-4 py-3',
-
-  // order status
-  orderProcessing: `text-neutral-600 bg-neutral-50 ring-neutral-500/10`,
-
-  orderCompleted: `text-green-700 bg-green-50 ring-green-600/20`,
-  orderCancelled: `text-red-600 bg-neutral-50 ring-neutral-500/10`,
-  orderReturned: `text-neutral-600 bg-neutral-50 ring-neutral-500/10`,
-
-  // order line item status
-  lineItemProcessing: `text-neutral-600 bg-neutral-50 ring-neutral-500/10`, // when just created
-  lineItemShipped: `text-neutral-600 bg-neutral-50 ring-neutral-500/10`, // when fulfilled
-
-  lineItemCompleted: `text-green-700 bg-green-50 ring-green-600/20`,
-  lineItemCancelled: `text-neutral-600 bg-neutral-50 ring-neutral-500/10`,
-  lineItemReturned: `text-neutral-600 bg-neutral-50 ring-neutral-500/10`,
 }
 
 export const buttonLook = {

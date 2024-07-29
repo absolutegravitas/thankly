@@ -2,40 +2,36 @@
 import React, { Suspense, useEffect } from 'react'
 import { BlockWrapper } from '@app/_components/BlockWrapper'
 import { Gutter } from '@app/_components/Gutter'
-import { OrderEmpty } from '@app/_blocks/Order/OrderEmpty'
+import { EmptyCart } from '@/app/(app)/_blocks/Cart/EmptyCart'
 import { orderText } from '@/utilities/refData'
 import { buttonLook, contentFormats, getPaddingClasses } from '@app/_css/tailwindClasses'
-import { useOrder } from '@app/_providers/Order'
-import { OrderItems } from '@app/_blocks/Order/OrderItems'
-import { OrderSummary } from '@app/_blocks/Order/OrderSummary'
-import { CMSLink } from '@app/_components/CMSLink'
-import { DollarSignIcon } from 'lucide-react'
-import Link from 'next/link'
-import cn from '@/utilities/cn'
+import { useCart } from '@/app/(app)/_providers/Cart'
+import { CartItems } from '@/app/(app)/_blocks/Cart/CartItems'
+import { CartSummary } from '@/app/(app)/_blocks/Cart/Summary'
 
 export default function CartPage() {
-  const { order, orderIsEmpty, hasInitializedOrder } = useOrder()
+  const { cart, cartIsEmpty, hasInitializedCart } = useCart()
 
-  // If we have order data, render the content regardless of hasInitializedOrder
-  if (order && order.items && order.items.length > 0) {
-    return renderCartContent(order, orderIsEmpty)
+  // If we have order data, render the content regardless of hasInitializedCart
+  if (cart && cart.items && cart.items.length > 0) {
+    return renderCartContent(cart, cartIsEmpty)
   }
 
-  // If we don't have order data and hasInitializedOrder is false, show loading
-  if (!hasInitializedOrder) {
+  // If we don't have order data and hasInitializedCart is false, show loading
+  if (!hasInitializedCart) {
     return <CartLoadingSkeleton />
   }
 
   // If we have initialized but the order is empty, show empty order
-  return <OrderEmpty />
+  return <EmptyCart />
 }
 
-function renderCartContent(order: any, orderIsEmpty: any) {
+function renderCartContent(order: any, cartIsEmpty: any) {
   return (
     <BlockWrapper className={getPaddingClasses('hero')}>
       <Gutter>
-        {orderIsEmpty ? (
-          <OrderEmpty />
+        {cartIsEmpty ? (
+          <EmptyCart />
         ) : (
           <>
             <div className="flex flex-row justify-between #gap-6">
@@ -48,30 +44,12 @@ function renderCartContent(order: any, orderIsEmpty: any) {
               >
                 {'Your Cart'}
               </h1>
-
-              {/* <div className="hidden sm:flex w-1/6">
-                <Link
-                  href="#summary-heading"
-                  scroll={true}
-                  className={[
-                    buttonLook.variants.base,
-                    buttonLook.sizes.medium,
-                    buttonLook.widths.full,
-                    `flex flex-row justify-between no-underline`,
-                  ].join(' ')}
-                >
-                  <span className={cn(contentFormats.global, contentFormats.p, '')}>
-                    {`Order Summary `}
-                  </span>
-                  <span> &darr; </span>
-                </Link>
-              </div> */}
             </div>
             <div className="flex flex-col sm:flex-row gap-6">
-              <Suspense fallback={<OrderItemsSkeleton />}>{order && <OrderItems />}</Suspense>
+              <Suspense fallback={<CartItemsSkeleton />}>{order && <CartItems />}</Suspense>
 
-              <Suspense fallback={<OrderSummarySkeleton />}>
-                {order && <OrderSummary order={order} />}
+              <Suspense fallback={<CartSummarySkeleton />}>
+                {order && <CartSummary order={order} />}
               </Suspense>
             </div>
           </>
@@ -89,10 +67,10 @@ const CartLoadingSkeleton = () => (
         <div className="h-4 bg-gray-200 w-3/4 mb-8"></div>
         <div className="flex flex-col lg:flex-row gap-6">
           <div className="lg:basis-3/4">
-            <OrderItemsSkeleton />
+            <CartItemsSkeleton />
           </div>
           <div className="lg:basis-1/4">
-            <OrderSummarySkeleton />
+            <CartSummarySkeleton />
           </div>
         </div>
       </div>
@@ -100,7 +78,7 @@ const CartLoadingSkeleton = () => (
   </BlockWrapper>
 )
 
-const OrderItemsSkeleton: React.FC = () => {
+const CartItemsSkeleton: React.FC = () => {
   return (
     <div className="border border-solid border-gray-200/90 animate-pulse">
       <div className="flex flex-col gap-6 p-5 md:flex-row md:justify-between">
@@ -120,7 +98,7 @@ const OrderItemsSkeleton: React.FC = () => {
   )
 }
 
-const OrderSummarySkeleton: React.FC = () => {
+const CartSummarySkeleton: React.FC = () => {
   return (
     <div className="animate-pulse">
       <div className="relative flex justify-between gap-4">

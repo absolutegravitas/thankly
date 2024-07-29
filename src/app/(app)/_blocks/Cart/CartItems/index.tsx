@@ -1,4 +1,4 @@
-// This file contains a React component called OrderItems, which renders a list of ordered items with their details
+// This file contains a React component called CartItems, which renders a list of ordered items with their details
 // and provides functionality to add or remove receivers for each item. The component is designed to work with Next.js 14's
 // App Router and server components.
 
@@ -10,22 +10,22 @@ import React from 'react'
 import Image from 'next/image'
 import { contentFormats } from '@app/_css/tailwindClasses'
 import cn from '@/utilities/cn'
-import { ReceiversGrid } from '../ReceiversGrid'
+import { ReceiversGrid } from '../Receivers'
 import { getImageUrl } from '@/utilities/getImageDetails'
-import { AddReceiverButton, RemoveProductButton } from '../ReceiversGrid/ReceiverActions'
-import { useOrder } from '@app/_providers/Order'
+import { AddReceiverButton, RemoveProductButton } from '../Receivers/ReceiverActions'
+import { useCart } from '@/app/(app)/_providers/Cart'
 
-// Type definition for the OrderItems component
-export const OrderItems: React.FC = () => {
-  // Retrieve the order data from the useOrder hook
-  const { order } = useOrder()
-  // Destructure the items property from the order object
-  const { items: orderItems } = order
+// Type definition for the CartItems component
+export const CartItems: React.FC = () => {
+  // Retrieve the cart data from the useCart hook
+  const { cart } = useCart()
+  // Destructure the items property from the cart object
+  const { items: cartItems } = cart
 
   return (
     <div className="py-4 sm:py-8 space-y-6 sm:space-y-8">
-      {/* Map over the orderItems array and render a div for each item */}
-      {orderItems?.map((item: any, index: any) => {
+      {/* Map over the cartItems array and render a div for each item */}
+      {cartItems?.map((item: any, index: any) => {
         // Destructure the product property from the item object
         const { product } = item
         // Get the image URL for the product, or use a placeholder SVG if no image is available
@@ -66,7 +66,7 @@ export const OrderItems: React.FC = () => {
                 {/* Render an AddReceiverButton for the current product */}
                 <AddReceiverButton productId={item.product.id} />
                 {/* Render a RemoveProductButton for the current product */}
-                <RemoveProductButton orderItemId={item.product.id} />
+                <RemoveProductButton productId={item.product.id} />
               </div>
             </div>
             {/* Render a ReceiversGrid component for the current item */}

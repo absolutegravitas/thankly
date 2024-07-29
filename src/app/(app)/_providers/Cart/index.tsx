@@ -1,9 +1,9 @@
 /**
  * @file index.tsx
- * @module OrderProvider
- * @description Order management system for an e-commerce application
+ * @module CartProvider
+ * @description Cart management system for an e-commerce application
  * @overview
- * This file implements a custom order management system using React's Context API. It provides a centralized state management solution for handling orders in an e-commerce application. The OrderProvider component manages the order state, including adding/removing products, managing receivers, updating shipping methods, and synchronizing with local storage. It uses a reducer pattern for state updates and exposes various utility functions through the OrderContext.
+ * This file implements a custom cart management system using React's Context API. It provides a centralized state management solution for handling carts in an e-commerce application. The CartProvider component manages the cart state, including adding/removing products, managing receivers, updating shipping methods, and synchronizing with local storage. It uses a reducer pattern for state updates and exposes various utility functions through the CartContext.
  */
 
 import React, {
@@ -16,31 +16,31 @@ import React, {
   useMemo,
   useCallback,
 } from 'react'
-import { Order, Product } from '@/payload-types'
-import { OrderItem, orderReducer, OrderAction } from './reducer'
+import { Cart, Product } from '@/payload-types'
+import { CartItem, cartReducer, CartAction } from './reducer'
 import { debounce } from 'lodash'
 
 type ShippingMethod = 'standardMail' | 'expressMail' | 'standardParcel' | 'expressParcel' | null
-type Receiver = NonNullable<OrderItem['receivers']>[number]
+type Receiver = NonNullable<CartItem['receivers']>[number]
 type UpdateReceiverFields = Partial<Omit<Receiver, 'id' | 'totals' | 'delivery'>> & {
   delivery?: Partial<Receiver['delivery']>
 }
 
-export type OrderContext = {
-  order: Order
-  orderIsEmpty: boolean
-  hasInitializedOrder: boolean
-  validateOrder: () => boolean
+export type CartContext = {
+  cart: Cart
+  cartIsEmpty: boolean
+  hasInitializedCart: boolean
+  validateCart: () => boolean
 
-  isProductInOrder: (productId: string | number) => boolean
+  isProductInCart: (productId: string | number) => boolean
 
   addProduct: (product: Product, price: number) => void
   removeProduct: (productId: number | string) => void
-  clearOrder: () => void
+  clearCart: () => void
 
   addReceiver: (
     productId: number | string,
-    receiver: NonNullable<OrderItem['receivers']>[number],
+    receiver: NonNullable<CartItem['receivers']>[number],
   ) => void
 
   updateReceiver: (
@@ -57,21 +57,21 @@ export type OrderContext = {
   ) => void
 }
 
-const Context = createContext<OrderContext | undefined>(undefined)
-const debouncedUpdateLocalStorage = debounce((order) => {
-  localStorage.setItem('cart', JSON.stringify(order))
+const Context = createContext<CartContext | undefined>(undefined)
+const debouncedUpdateLocalStorage = debounce((cart) => {
+  localStorage.setItem('cart', JSON.stringify(cart))
 }, 300)
 
-export const useOrder = () => {
+export const useCart = () => {
   const context = useContext(Context)
   if (context === undefined) {
-    throw new Error('useOrder must be used within a OrderProvider')
+    throw new Error('useCart must be used within a CartProvider')
   }
   return context
 }
 
-export const OrderProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [order, dispatchOrder] = useReducer<React.Reducer<Order, OrderAction>>(orderReducer, {
+export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [cart, dispatchCart] = useReducer<React.Reducer<Cart, CartAction>>(cartReducer, {
     id: 0,
     items: [],
     status: 'pending' as const,
@@ -90,12 +90,12 @@ export const OrderProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   })
 
   const hasInitialized = useRef(false)
-  const [hasInitializedOrder, setHasInitialized] = useState(false)
+  const [hasInitializedCart, setHasInitialized] = useState(false)
 
-  const validateOrder = useCallback((): boolean => {
-    if (!order.items || order.items.length === 0) return false
+  const validateCart = useCallback((): boolean => {
+    if (!cart.items || cart.items.length === 0) return false
 
-    return order.items.every(
+    return cart.items.every(
       (item) =>
         item.receivers &&
         item.receivers.every(
@@ -106,10 +106,10 @@ export const OrderProvider: React.FC<{ children: React.ReactNode }> = ({ childre
             receiver.delivery?.shippingMethod,
         ),
     )
-  }, [order])
+  }, [cart])
 
   const addProduct = useCallback((product: Product | number, price: number) => {
-    dispatchOrder({
+    dispatchCart({
       type: 'ADD_PRODUCT',
       payload: {
         product,
@@ -119,8 +119,8 @@ export const OrderProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   }, [])
 
   const addReceiver = useCallback(
-    (productId: number | string, receiver: NonNullable<OrderItem['receivers']>[number]) => {
-      dispatchOrder({
+    (productId: number | string, receiver: NonNullable<CartItem['receivers']>[number]) => {
+      dispatchCart({
         type: 'ADD_RECEIVER',
         payload: { productId, receiver },
       })
@@ -129,7 +129,7 @@ export const OrderProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   )
 
   const copyReceiver = useCallback((productId: number | string, receiverId: string) => {
-    dispatchOrder({
+    dispatchCart({
       type: 'COPY_RECEIVER',
       payload: { productId, receiverId },
     })
@@ -137,7 +137,7 @@ export const OrderProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   const updateReceiver = useCallback(
     (productId: number | string, receiverId: string, updatedFields: UpdateReceiverFields) => {
-      dispatchOrder({
+      dispatchCart({
         type: 'UPDATE_RECEIVER',
         payload: { productId, receiverId, updatedFields },
       })
@@ -146,7 +146,7 @@ export const OrderProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   )
 
   const removeReceiver = useCallback((productId: number | string, receiverId: string) => {
-    dispatchOrder({
+    dispatchCart({
       type: 'REMOVE_RECEIVER',
       payload: { productId, receiverId },
     })
@@ -154,7 +154,7 @@ export const OrderProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   const updateShippingMethod = useCallback(
     (productId: number | string, receiverId: string, shippingMethod: ShippingMethod) => {
-      dispatchOrder({
+      dispatchCart({
         type: 'UPDATE_SHIPPING_METHOD',
         payload: { productId, receiverId, delivery: { shippingMethod } },
       })
@@ -163,66 +163,66 @@ export const OrderProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   )
 
   const removeProduct = useCallback((productId: number | string) => {
-    dispatchOrder({
+    dispatchCart({
       type: 'REMOVE_PRODUCT',
       payload: { productId },
     })
   }, [])
 
-  const clearOrder = useCallback(() => {
-    dispatchOrder({
+  const clearCart = useCallback(() => {
+    dispatchCart({
       type: 'CLEAR_ORDER',
     })
   }, [])
 
-  const isProductInOrder = useCallback(
+  const isProductInCart = useCallback(
     (productId: string | number): boolean => {
       return (
-        order.items?.some((item) =>
+        cart.items?.some((item) =>
           typeof item.product === 'object'
             ? item.product.id === productId
             : item.product === productId,
         ) || false
       )
     },
-    [order.items],
+    [cart.items],
   )
 
-  const orderIsEmpty = useMemo(() => order.items?.length === 0, [order.items])
+  const cartIsEmpty = useMemo(() => cart.items?.length === 0, [cart.items])
 
   const contextValue = useMemo(
     () => ({
       addProduct,
       addReceiver,
-      order,
-      orderIsEmpty,
+      cart,
+      cartIsEmpty,
       total: total,
-      clearOrder,
+      clearCart,
       copyReceiver,
 
-      hasInitializedOrder,
-      isProductInOrder,
+      hasInitializedCart,
+      isProductInCart,
       removeProduct,
       removeReceiver,
       updateReceiver,
       updateShippingMethod,
-      validateOrder,
+      validateCart,
     }),
     [
       addProduct,
       addReceiver,
-      order,
-      orderIsEmpty,
-      clearOrder,
+      cart,
+      cartIsEmpty,
+      clearCart,
       copyReceiver,
-      hasInitializedOrder,
-      isProductInOrder,
+      hasInitializedCart,
+      isProductInCart,
       removeProduct,
       removeReceiver,
       total,
       updateReceiver,
       updateShippingMethod,
-      validateOrder,
+      validateCart,
     ],
   )
 
@@ -233,18 +233,18 @@ export const OrderProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       const syncCartFromLocalStorage = async () => {
         try {
           const localCart = localStorage.getItem('cart')
-          const parsedOrder = JSON.parse(localCart || '{}')
+          const parsedCart = JSON.parse(localCart || '{}')
 
-          if (parsedOrder?.items && parsedOrder.items.length > 0) {
-            dispatchOrder({
+          if (parsedCart?.items && parsedCart.items.length > 0) {
+            dispatchCart({
               type: 'SET_ORDER',
-              payload: parsedOrder,
+              payload: parsedCart,
             })
           } else {
-            // console.log('OrderProvider: No items in local storage')
+            // console.log('CartProvider: No items in local storage')
           }
         } catch (error) {
-          // console.error('OrderProvider: Error initializing order:', error)
+          // console.error('CartProvider: Error initializing cart:', error)
         } finally {
           setHasInitialized(true)
         }
@@ -256,22 +256,22 @@ export const OrderProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   useEffect(() => {
     if (!hasInitialized.current) return
-    debouncedUpdateLocalStorage(order)
-  }, [order])
+    debouncedUpdateLocalStorage(cart)
+  }, [cart])
 
   useEffect(() => {
-    if (!hasInitializedOrder) return
+    if (!hasInitializedCart) return
 
     setTotal({
-      formatted: order.totals.total.toLocaleString('en-AU', {
+      formatted: cart.totals.total.toLocaleString('en-AU', {
         style: 'currency',
         currency: 'AUD',
         minimumFractionDigits: 2,
         maximumFractionDigits: 2,
       }),
-      raw: order.totals.total,
+      raw: cart.totals.total,
     })
-  }, [order, hasInitializedOrder])
+  }, [cart, hasInitializedCart])
 
   return <Context.Provider value={contextValue}>{children}</Context.Provider>
 }

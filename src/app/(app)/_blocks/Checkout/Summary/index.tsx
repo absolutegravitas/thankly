@@ -8,12 +8,12 @@ import {
   ChevronDownIcon,
 } from 'lucide-react'
 import { CMSLink } from '@app/_components/CMSLink'
-import { Order } from '@/payload-types'
-import { orderText } from '@/utilities/refData'
+import { Cart } from '@/payload-types'
+import { cartText } from '@/utilities/refData'
 import Link from 'next/link'
 import cn from '@/utilities/cn'
 import { useRouter } from 'next/navigation'
-import { useOrder } from '@app/_providers/Order'
+import { useCart } from '@/app/(app)/_providers/Cart'
 import { LoaderCircleIcon } from 'lucide-react'
 import { FullLogo } from '@app/_graphics/FullLogo'
 import { Elements, CardElement, useStripe, useElements } from '@stripe/react-stripe-js'
@@ -24,13 +24,13 @@ import { getImageAlt, getImageUrl } from '@/utilities/getImageDetails'
 // Initialize Stripe
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY || '')
 
-export const CheckoutSummary: React.FC<{ order: Order }> = ({ order }) => {
-  if (!order || !order.totals) {
+export const CheckoutSummary: React.FC<{ cart: Cart }> = ({ cart }) => {
+  if (!cart || !cart.totals) {
     return null // or return a loading state or placeholder
   }
   const [isAccordionOpen, setIsAccordionOpen] = useState(false)
   const router = useRouter()
-  const { validateOrder } = useOrder()
+  const { validateCart } = useCart()
   const [isValid, setIsValid] = useState(true)
   const [validationMessage, setValidationMessage] = useState('')
   const [isProcessing, setIsProcessing] = useState(false)
@@ -45,15 +45,15 @@ export const CheckoutSummary: React.FC<{ order: Order }> = ({ order }) => {
     addressLine2: '',
   })
 
-  const { items: orderItems } = order
+  const { items: cartItems } = cart
 
   useEffect(() => {
-    const orderValidity = validateOrder()
-    setIsValid(orderValidity)
+    const cartValidity = validateCart()
+    setIsValid(cartValidity)
     setValidationMessage(
-      orderValidity ? '' : 'Please complete all receiver details before proceeding to checkout.',
+      cartValidity ? '' : 'Please complete all receiver details before proceeding to checkout.',
     )
-  }, [order, validateOrder])
+  }, [cart, validateCart])
 
   const handleCheckout = async (event?: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     if (event) {
@@ -62,7 +62,7 @@ export const CheckoutSummary: React.FC<{ order: Order }> = ({ order }) => {
 
     if (isValid) {
       setIsProcessing(true)
-      // console.log(`Cart is valid, let's create a draft order...`)
+      // console.log(`Cart is valid, let's create a draft cart...`)
 
       try {
         // Simulate API call or any async operation
@@ -80,8 +80,8 @@ export const CheckoutSummary: React.FC<{ order: Order }> = ({ order }) => {
   }
 
   return (
-    <div id="summary-heading" className="sm:basis-1/2 #order-first sm:order-last">
-      <h2 className={`${contentFormats.global} ${contentFormats.h3} !my-0 pb-6`}>Order Summary</h2>
+    <div id="summary-heading" className="sm:basis-1/2 #cart-first sm:cart-last">
+      <h2 className={`${contentFormats.global} ${contentFormats.h3} !my-0 pb-6`}>Cart Summary</h2>
 
       <div className="space-y-4">
         <div className="flex items-center justify-between">
@@ -89,7 +89,7 @@ export const CheckoutSummary: React.FC<{ order: Order }> = ({ order }) => {
             {`Total (inc. taxes)`}
           </dt>
           <dd className={[contentFormats.global, contentFormats.text, `font-semibold`].join(' ')}>
-            {(order.totals.total + (order.totals.discount || 0)).toLocaleString('en-AU', {
+            {(cart.totals.total + (cart.totals.discount || 0)).toLocaleString('en-AU', {
               style: 'currency',
               currency: 'AUD',
               minimumFractionDigits: 0,
@@ -101,7 +101,7 @@ export const CheckoutSummary: React.FC<{ order: Order }> = ({ order }) => {
         <div className="flex items-center justify-between">
           <dt className={[contentFormats.global, contentFormats.text].join(' ')}>Thanklys</dt>
           <dd className={[contentFormats.global, contentFormats.text].join(' ')}>
-            {order.totals.cost.toLocaleString('en-AU', {
+            {cart.totals.cost.toLocaleString('en-AU', {
               style: 'currency',
               currency: 'AUD',
               minimumFractionDigits: 0,
@@ -113,7 +113,7 @@ export const CheckoutSummary: React.FC<{ order: Order }> = ({ order }) => {
         <div className="flex items-center justify-between">
           <dt className={[contentFormats.global, contentFormats.text].join(' ')}>{`+ Shipping`}</dt>
           <dd className={[contentFormats.global, contentFormats.text].join(' ')}>
-            {order.totals.shipping?.toLocaleString('en-AU', {
+            {cart.totals.shipping?.toLocaleString('en-AU', {
               style: 'currency',
               currency: 'AUD',
               minimumFractionDigits: 0,
@@ -122,14 +122,14 @@ export const CheckoutSummary: React.FC<{ order: Order }> = ({ order }) => {
           </dd>
         </div>
 
-        {(order.totals.discount || 0) < 0 && (
+        {(cart.totals.discount || 0) < 0 && (
           <div className="flex items-center justify-between">
             <dt className={[contentFormats.global, contentFormats.text].join(' ')}>
               <SmileIcon />
-              {` Your order is over $150 so Shipping is on us!`}
+              {` Your cart is over $150 so Shipping is on us!`}
             </dt>
             <dd className={[contentFormats.global, contentFormats.text].join(' ')}>
-              {`(${order.totals.discount?.toLocaleString('en-AU', {
+              {`(${cart.totals.discount?.toLocaleString('en-AU', {
                 style: 'currency',
                 currency: 'AUD',
                 minimumFractionDigits: 0,
@@ -140,7 +140,7 @@ export const CheckoutSummary: React.FC<{ order: Order }> = ({ order }) => {
         )}
 
         {/* <h2 className={`${contentFormats.global} ${contentFormats.h3} py-6 hidden sm:block`}>
-          Thanklys Ordered
+          Thanklys Carted
         </h2> */}
 
         <div className="mt-6">
@@ -148,7 +148,7 @@ export const CheckoutSummary: React.FC<{ order: Order }> = ({ order }) => {
             <MailWarningIcon className="mr-2" />
             <span className="font-semibold">{`Thankly Cards: `}</span>
             <span className={[contentFormats.text, `text-sm`].join(' ')}>
-              {orderText.shippingMessage}
+              {cartText.shippingMessage}
               <Link
                 className={[contentFormats.global, contentFormats.a, `!text-sm`].join(' ')}
                 href="https://auspost.com.au/about-us/supporting-communities/services-all-communities/our-future"
@@ -161,7 +161,7 @@ export const CheckoutSummary: React.FC<{ order: Order }> = ({ order }) => {
         </div>
 
         <div className={`space-y-4 #sm:block`}>
-          {orderItems?.map((item: any, index: any) => {
+          {cartItems?.map((item: any, index: any) => {
             const { product } = item
             const imageUrl =
               product.media && product.media.length > 0
@@ -253,7 +253,7 @@ export const CheckoutSummary: React.FC<{ order: Order }> = ({ order }) => {
           type="text"
           placeholder="DISCOUNT CODE"
           className={cn(
-            'peer block w-full border-0 border-b border-gray-300 bg-gray-50 py-2 px-1 text-gray-900 placeholder-gray-700 focus:border-b-2 focus:border-green/75 focus:outline-none focus:ring-0 text-base sm:text-sm',
+            'peer block w-full bcart-0 bcart-b bcart-gray-300 bg-gray-50 py-2 px-1 text-gray-900 placeholder-gray-700 focus:bcart-b-2 focus:bcart-green/75 focus:outline-none focus:ring-0 text-base sm:text-sm',
           )}
         />
       </div> */}

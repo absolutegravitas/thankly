@@ -8,7 +8,7 @@ import {
   AddressElement,
   ExpressCheckoutElement,
 } from '@stripe/react-stripe-js'
-import { useOrder } from '@app/_providers/Order'
+import { useCart } from '@/app/(app)/_providers/Cart'
 import { Lock } from 'lucide-react'
 import { buttonLook, contentFormats } from '@app/_css/tailwindClasses'
 import cn from '@/utilities/cn'
@@ -16,7 +16,7 @@ import cn from '@/utilities/cn'
 export const CheckoutForm: React.FC = () => {
   const stripe = useStripe()
   const elements = useElements()
-  const { order } = useOrder()
+  const { cart } = useCart()
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
   const paymentElementOptions = {

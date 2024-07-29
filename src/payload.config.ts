@@ -15,6 +15,7 @@ import { Media } from '@cms/_collections/media'
 import { Products } from '@cms/_collections/products'
 import { Pages } from '@cms/_collections/pages'
 import { Reusable } from '@cms/_collections/reusables'
+import { Carts } from '@cms/_collections/carts'
 import { Orders } from '@cms/_collections/orders'
 import { Settings } from '@cms/_collections/settings'
 import { Users } from '@cms/_collections/users'
@@ -23,7 +24,6 @@ import { Users } from '@cms/_collections/users'
 import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
 import { fieldsSelect } from '@payload-enchants/fields-select'
-import { Carts } from './app/(payload)/_collections/carts'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)

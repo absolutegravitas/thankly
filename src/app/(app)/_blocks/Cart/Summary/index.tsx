@@ -1,34 +1,46 @@
+// This file contains React components related to the shopping cart summary and checkout process.
+// It provides the CartSummary component which displays the cart totals, discount information, and checkout/clear cart buttons.
+// It also includes the SummaryItem component for rendering individual summary items and the CheckoutProcessing component for displaying a processing modal during checkout.
+
 import React, { useEffect, useState, useTransition } from 'react'
 import { buttonLook, contentFormats } from '@app/_css/tailwindClasses'
 import { DollarSignIcon, MailWarningIcon, SmileIcon, XIcon, ArrowLeftIcon } from 'lucide-react'
 import { CMSLink } from '@app/_components/CMSLink'
-import { Order } from '@/payload-types'
+import { Cart } from '@/payload-types'
 import Link from 'next/link'
 import cn from '@/utilities/cn'
 import { useRouter } from 'next/navigation'
-import { useOrder } from '@app/_providers/Order'
+import { useCart } from '@app/_providers/Cart'
 import { LoaderCircleIcon } from 'lucide-react'
 import { FullLogo } from '@app/_graphics/FullLogo'
 import { orderText } from '@/utilities/refData'
 
-export const OrderSummary: React.FC<{ order: Order }> = ({ order }) => {
-  if (!order || !order.totals) return null
+// The CartSummary component renders the cart summary section
+// It displays the total cost, shipping cost, and any applicable discounts
+// It also provides buttons for proceeding to checkout or clearing the cart
+export const CartSummary: React.FC<{ cart: Cart }> = ({ cart }) => {
+  // If the cart or cart totals are not available, return null
+  if (!cart || !cart.totals) return null
 
   const router = useRouter()
-  const { validateOrder, clearOrder } = useOrder()
-  const [isValid, setIsValid] = useState(true)
-  const [validationMessage, setValidationMessage] = useState('')
-  const [isProcessing, setIsProcessing] = useState(false)
+  const { validateCart, clearCart } = useCart()
+  const [isValid, setIsValid] = useState<boolean>(true)
+  const [validationMessage, setValidationMessage] = useState<string>('')
+  const [isProcessing, setIsProcessing] = useState<boolean>(false)
   const [isPending, startTransition] = useTransition()
 
+  // Validate the cart on component mount and whenever the cart or validateCart function changes
   useEffect(() => {
-    const orderValidity = validateOrder()
+    const orderValidity = validateCart()
     setIsValid(orderValidity)
     setValidationMessage(
       orderValidity ? '' : 'Please complete all receiver details before proceeding to checkout.',
     )
-  }, [order, validateOrder])
+  }, [cart, validateCart])
 
+  // Handle the checkout process
+  // If the cart is valid, navigate to the checkout page
+  // If the cart is invalid, display an alert with the validation message
   const handleCheckout = async (event?: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     if (event) event.preventDefault()
     if (isValid) {
@@ -47,18 +59,18 @@ export const OrderSummary: React.FC<{ order: Order }> = ({ order }) => {
 
   return (
     <div id="summary-heading" className="sticky top-4 scroll-py-28 scroll-mt-24">
-      <h2 className={cn(contentFormats.global, contentFormats.h3, 'mb-6')}>Order Summary</h2>
+      <h2 className={cn(contentFormats.global, contentFormats.h3, 'mb-6')}>Cart Summary</h2>
 
       <div className="space-y-4">
         <SummaryItem
           label="Total (inc. taxes)"
-          value={order.totals.total + (order.totals.discount || 0)}
+          value={cart.totals.total + (cart.totals.discount || 0)}
           isBold
         />
-        <SummaryItem label="Thanklys" value={order.totals.cost} />
-        <SummaryItem label="+ Shipping" value={order.totals.shipping || 0} />
+        <SummaryItem label="Thanklys" value={cart.totals.cost} />
+        <SummaryItem label="+ Shipping" value={cart.totals.shipping || 0} />
 
-        {(order.totals.discount || 0) < 0 && (
+        {(cart.totals.discount || 0) < 0 && (
           <SummaryItem
             label={
               <span className="flex items-center">
@@ -66,7 +78,7 @@ export const OrderSummary: React.FC<{ order: Order }> = ({ order }) => {
                 Your order is over $150 so Shipping is on us!
               </span>
             }
-            value={order.totals.discount || 0}
+            value={cart.totals.discount || 0}
           />
         )}
       </div>
@@ -130,7 +142,7 @@ export const OrderSummary: React.FC<{ order: Order }> = ({ order }) => {
             actions={{
               onClick: async () => {
                 startTransition(async () => {
-                  clearOrder()
+                  clearCart()
                   router.push('/shop')
                 })
               },
@@ -163,11 +175,14 @@ export const OrderSummary: React.FC<{ order: Order }> = ({ order }) => {
   )
 }
 
-const SummaryItem: React.FC<{ label: React.ReactNode; value: number; isBold?: boolean }> = ({
-  label,
-  value,
-  isBold,
-}) => (
+// The SummaryItem component renders an individual summary item with a label and value
+interface SummaryItemProps {
+  label: React.ReactNode
+  value: number
+  isBold?: boolean
+}
+
+const SummaryItem: React.FC<SummaryItemProps> = ({ label, value, isBold }) => (
   <div className="flex items-center justify-between">
     <dt className={cn(contentFormats.global, contentFormats.text, isBold && 'font-semibold')}>
       {label}
@@ -183,6 +198,7 @@ const SummaryItem: React.FC<{ label: React.ReactNode; value: number; isBold?: bo
   </div>
 )
 
+// The CheckoutProcessing component displays a modal with a loading spinner during the checkout process
 const CheckoutProcessing: React.FC = () => (
   <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/75">
     <div className="bg-white p-8 rounded-lg shadow-xl text-center max-w-md w-full">

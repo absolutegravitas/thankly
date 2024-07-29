@@ -16,7 +16,7 @@ import { ProductActions } from '@app/_components/ProductActions'
 import { messages } from '@/utilities/refData'
 import { Product } from '@/payload-types'
 import { getImageUrl } from '@/utilities/getImageDetails'
-import { useOrder } from '@app/_providers/Order'
+import { useCart } from '@/app/(app)/_providers/Cart'
 import { AddToCartButton } from '../ProductActions/AddToCart'
 import { ViewInCartButton } from '../ProductActions/ViewInCart'
 import { RemoveFromCartButton } from '../ProductActions/RemoveFromCart'
@@ -27,13 +27,13 @@ import { RemoveFromCartButton } from '../ProductActions/RemoveFromCart'
  * @returns {JSX.Element}
  */
 export const ProductCard: React.FC<any> = (product: Product) => {
-  const { isProductInOrder, order } = useOrder()
-  const [inCart, setInCart] = useState(isProductInOrder(product.id))
+  const { isProductInCart, cart } = useCart()
+  const [inCart, setInCart] = useState(isProductInCart(product.id))
 
   // @note Update the inCart state when the order or product changes
   useEffect(() => {
-    setInCart(isProductInOrder(product.id))
-  }, [order, product.id, isProductInOrder])
+    setInCart(isProductInCart(product.id))
+  }, [cart, product.id, isProductInCart])
 
   const {
     prices: { salePrice, basePrice },
@@ -153,7 +153,7 @@ export const ProductCard: React.FC<any> = (product: Product) => {
                 <ViewInCartButton />
               </div>
               <div className="flex-initial w-1/4">
-                <RemoveFromCartButton orderItemId={product.id} />
+                <RemoveFromCartButton cartItemId={product.id} />
               </div>
             </div>
           )}
