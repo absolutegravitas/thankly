@@ -8,10 +8,10 @@ export const messages = {
   shippingFreeMessage: `FREE Delivery for orders over $100.`,
 }
 
-export const cartText = {
+export const cartPageText = {
   leader: `Checkout`,
   heading: `Your Cart`,
-  // receiverMessage: `Send thanklys to as many people as you like. Each thankly can be sent to many people or you can send different thanklys one to each person.`,
+  receiverMessage: `Send this thankly to as many people as you like. Simply add a receiver and we'll take care of the rest`,
   shippingMessage: `Allow VIC (5 business days), Interstate (6-8 business days) due to AusPost letter delivery changes. `,
   // sendTo: `Sending this thankly to:`,
 }

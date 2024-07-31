@@ -45,7 +45,7 @@
   --gutter-h: calc(50vw - 40rem);
   --block-spacing: 7rem;
   --new-block-spacing: 8rem;
-  --default-border-width: 2px;
+  // --default-border-width: 2px;
 
   --trans-default: 150ms;
 
@@ -94,7 +94,7 @@
     -webkit-tap-highlight-color: transparent;
   }
 
-  @media (prefers-color-scheme: dark) {
+  @media (prefers-color-scheme: light) {
     a,
     button {
       color: theme('colors.dark-text');
@@ -247,7 +247,7 @@ em {
 
 code {
   @include code;
-  border-radius: 3px;
+  // border-radius: 3px;
   padding: 0 5px 2px;
 
   @include data-theme-selector('light') {
@@ -259,15 +259,15 @@ code {
   }
 }
 
-hr {
-  border: none;
-  border-top: 1px solid var(--theme-elevation-200);
-  margin: var(--block-spacing) 0;
-}
+// hr {
+//   // border: none;
+//   border-top: 1px solid var(--theme-elevation-200);
+//   margin: var(--block-spacing) 0;
+// }
 
 dialog {
   width: 100%;
-  border: 0;
+  // border: 0;
   padding: 0;
   color: currentColor;
 }

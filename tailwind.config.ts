@@ -102,7 +102,7 @@ const config: Config = {
       ...theme('colors'),
       DEFAULT: theme('colors.gray.200', 'currentColor'),
     }),
-    // borderOpacity: ({ theme }) => theme('opacity'),
+    borderOpacity: ({ theme }) => theme('opacity'),
     borderRadius: {
       none: '0px',
       sm: '0.125rem',
@@ -114,9 +114,9 @@ const config: Config = {
       '3xl': '1.5rem',
       full: '9999px',
     },
-    // borderSpacing: ({ theme }) => ({
-    //   ...theme('spacing'),
-    // }),
+    borderSpacing: ({ theme }) => ({
+      ...theme('spacing'),
+    }),
     borderWidth: {
       DEFAULT: '1px',
       0: '0px',
@@ -270,9 +270,9 @@ const config: Config = {
       'zoom-in': 'zoom-in',
       'zoom-out': 'zoom-out',
     },
-    divideColor: ({ theme }) => theme('borderColor'),
-    divideOpacity: ({ theme }) => theme('borderOpacity'),
-    divideWidth: ({ theme }) => theme('borderWidth'),
+    // divideColor: ({ theme }) => theme('borderColor'),
+    // divideOpacity: ({ theme }) => theme('borderOpacity'),
+    // divideWidth: ({ theme }) => theme('borderWidth'),
     dropShadow: {
       sm: '0 1px 1px rgb(0 0 0 / 0.05)',
       DEFAULT: ['0 1px 2px rgb(0 0 0 / 0.1)', '0 1px 1px rgb(0 0 0 / 0.06)'],
@@ -1040,8 +1040,8 @@ const config: Config = {
       none: 'none',
       all: 'all',
       DEFAULT:
-        'color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter',
-      colors: 'color, background-color, border-color, text-decoration-color, fill, stroke',
+        'color, background-color, #border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter',
+      colors: 'color, background-color, #border-color, text-decoration-color, fill, stroke',
       opacity: 'opacity',
       shadow: 'box-shadow',
       transform: 'transform',
@@ -1116,84 +1116,9 @@ const config: Config = {
   },
 
   plugins: [
-    // plugin(function({ addBase, theme }) {
-    //   addBase({
-    //     h1: {
-    //       fontFamily: theme('fontFamily.title'),
-    //       fontWeight: theme('fontWeight.medium'),
-    //       fontSize: theme('fontSize.5xl'),
-    //       marginBottom: theme('spacing.6'),
-    //       letterSpacing: theme('letterSpacing.tighter'),
-    //     },
-    //     h2: {
-    //       fontFamily: theme('fontFamily.title'),
-    //       fontWeight: theme('fontWeight.medium'),
-    //       fontSize: theme('fontSize.3xl'),
-    //       marginTop: theme('spacing.3'),
-    //       letterSpacing: theme('letterSpacing.tighter'),
-    //     },
-    //     h3: {
-    //       fontFamily: theme('fontFamily.title'),
-    //       fontWeight: theme('fontWeight.medium'),
-    //       fontSize: theme('fontSize.lg'),
-    //       letterSpacing: theme('letterSpacing.tighter'),
-    //     },
-    //     h4: {
-    //       fontFamily: theme('fontFamily.title'),
-    //       fontWeight: theme('fontWeight.medium'),
-    //       fontSize: theme('fontSize.base'),
-    //     },
-    //     h5: {
-    //       fontFamily: theme('fontFamily.title'),
-    //       fontWeight: theme('fontWeight.medium'),
-    //       fontSize: theme('fontSize.sm'),
-    //     },
-    //     h6: {
-    //       fontFamily: theme('fontFamily.title'),
-    //       fontWeight: theme('fontWeight.medium'),
-    //       fontSize: theme('fontSize.xs'),
-    //     },
-    //     p: {
-    //       maxWidth: theme('maxWidth.6xl'),
-    //       fontFamily: theme('fontFamily.title'),
-    //       fontWeight: theme('fontWeight.light'),
-    //       color: theme('colors.gray.800'),
-    //       letterSpacing: theme('letterSpacing.tighter'),
-    //       lineHeight: theme('lineHeight.snug'),
-    //     },
-    //     a: {
-    //       textDecoration: 'underline',
-    //       textDecorationOffset: theme('spacing.4'),
-    //       textDecorationColor: theme('colors.gray.700'),
-    //       color: theme('colors.gray.700'),
-    //     },
-    //     em: {
-    //       color: theme('colors.gray.700'),
-    //     },
-    //     ul: {
-    //       listStyleType: 'disc',
-    //       marker: {
-    //         color: theme('colors.gray.700'),
-    //       },
-    //     },
-    //     ol: {
-    //       listStyleType: 'decimal',
-    //       marker: {
-    //         color: theme('colors.gray.700'),
-    //       },
-    //     },
-    //     li: {
-    //       listStyleType: 'disc',
-    //       marker: {
-    //         color: theme('colors.gray.700'),
-    //       },
-    //     },
-    //   })
-    // }),
     // require('@tailwindcss/forms'), // cleaner forms - https://github.com/tailwindlabs/tailwindcss-forms
     require('@tailwindcss/aspect-ratio'),
-    require('@tailwindcss/typography'), // adds prose class for niceness on std elements without effort
-    // require('tailwindcss-children'), // Repeat elements without repeating styles *.child, .sibling, and .descendant* variants for TailwindCSS v3+ https://github.com/SamGoody/tailwind-children
+    require('@tailwindcss/typography'),
   ],
 }
 export default config

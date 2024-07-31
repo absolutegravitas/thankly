@@ -112,7 +112,7 @@ $breakpoint-l-height: 1000px;
   @include inputShadow;
   font-family: var(--font-inter);
   width: 100%;
-  border: 1px solid var(--theme-border-color);
+  // border: 1px solid var(--theme-border-color);
   background: var(--theme-input-bg);
   color: var(--theme-elevation-800);
   border-radius: 0;

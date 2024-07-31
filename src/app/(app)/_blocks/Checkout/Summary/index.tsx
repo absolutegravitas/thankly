@@ -9,7 +9,7 @@ import {
 } from 'lucide-react'
 import { CMSLink } from '@app/_components/CMSLink'
 import { Cart } from '@/payload-types'
-import { cartText } from '@/utilities/refData'
+import { cartPageText } from '@/utilities/referenceText'
 import Link from 'next/link'
 import cn from '@/utilities/cn'
 import { useRouter } from 'next/navigation'
@@ -148,7 +148,7 @@ export const CheckoutSummary: React.FC<{ cart: Cart }> = ({ cart }) => {
             <MailWarningIcon className="mr-2" />
             <span className="font-semibold">{`Thankly Cards: `}</span>
             <span className={[contentFormats.text, `text-sm`].join(' ')}>
-              {cartText.shippingMessage}
+              {cartPageText.shippingMessage}
               <Link
                 className={[contentFormats.global, contentFormats.a, `!text-sm`].join(' ')}
                 href="https://auspost.com.au/about-us/supporting-communities/services-all-communities/our-future"
@@ -253,7 +253,7 @@ export const CheckoutSummary: React.FC<{ cart: Cart }> = ({ cart }) => {
           type="text"
           placeholder="DISCOUNT CODE"
           className={cn(
-            'peer block w-full bcart-0 bcart-b bcart-gray-300 bg-gray-50 py-2 px-1 text-gray-900 placeholder-gray-700 focus:bcart-b-2 focus:bcart-green/75 focus:outline-none focus:ring-0 text-base sm:text-sm',
+            'peer block w-full border-0 border-b border-gray-300 bg-gray-50 py-2 px-1 text-gray-900 placeholder-gray-700 focus:border-b-2 focus:border-green/75 focus:outline-none focus:ring-0 text-base sm:text-sm',
           )}
         />
       </div> */}

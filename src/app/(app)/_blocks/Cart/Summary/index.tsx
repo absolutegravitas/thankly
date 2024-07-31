@@ -13,7 +13,7 @@ import { useRouter } from 'next/navigation'
 import { useCart } from '@app/_providers/Cart'
 import { LoaderCircleIcon } from 'lucide-react'
 import { FullLogo } from '@app/_graphics/FullLogo'
-import { cartText } from '@/utilities/refData'
+import { cartPageText } from '@/utilities/referenceText'
 
 // The CartSummary component renders the cart summary section
 // It displays the total cost, shipping cost, and any applicable discounts
@@ -58,7 +58,7 @@ export const CartSummary: React.FC<{ cart: Cart }> = ({ cart }) => {
   }
 
   return (
-    <div id="summary-heading" className="sticky top-4 scroll-py-28 scroll-mt-24">
+    <div id="summary-heading" className="sticky top-4 scroll-py-28 scroll-mt-24 lg:px-60">
       <h2 className={cn(contentFormats.global, contentFormats.h3, 'mb-6')}>Cart Summary</h2>
 
       <div className="space-y-4">
@@ -90,7 +90,7 @@ export const CartSummary: React.FC<{ cart: Cart }> = ({ cart }) => {
           <MailWarningIcon className="mr-2 flex-shrink-0 mt-1" />
           <span>
             <span className="font-semibold">Thankly Cards: </span>
-            {cartText.shippingMessage}{' '}
+            {cartPageText.shippingMessage}{' '}
             <Link
               className={cn(contentFormats.global, contentFormats.a, '!text-sm')}
               href="https://auspost.com.au/about-us/supporting-communities/services-all-communities/our-future"
@@ -101,72 +101,78 @@ export const CartSummary: React.FC<{ cart: Cart }> = ({ cart }) => {
           </span>
         </div>
 
-        <CMSLink
-          className={cn('block w-full', isValid ? '!bg-green' : '!bg-gray-400', '!text-white')}
-          data={{
-            label: 'Checkout',
-            type: 'custom',
-            url: `/shop/checkout`,
-          }}
-          look={{
-            theme: 'dark',
-            type: 'button',
-            size: 'medium',
-            width: 'narrow',
-            variant: 'blocks',
-            icon: {
-              content: <DollarSignIcon strokeWidth={1.25} />,
-              iconPosition: 'right',
-            },
-          }}
-          actions={{ onClick: handleCheckout }}
-          pending={isProcessing}
-        />
-
-        <div className="flex flex-col sm:flex-row gap-4">
+        <div className="flex flex-col gap-2 items-center">
           <CMSLink
+            className={cn(
+              'block w-full #sm:w-1/4',
+              isValid ? '!bg-green' : '!bg-gray-400',
+              '!text-white',
+            )}
             data={{
-              label: !isPending ? 'Clear Cart' : 'Clearing Cart... please wait',
-            }}
-            look={{
-              theme: 'light',
-              type: 'button',
-              size: 'small',
-              width: 'full',
-              variant: 'blocks',
-              icon: {
-                content: <XIcon strokeWidth={1.25} />,
-                iconPosition: 'right',
-              },
-            }}
-            actions={{
-              onClick: async () => {
-                startTransition(async () => {
-                  clearCart()
-                  router.push('/shop')
-                })
-              },
-            }}
-          />
-
-          <CMSLink
-            data={{
-              label: 'Continue Shopping',
+              label: 'Checkout',
               type: 'custom',
-              url: '/shop',
+              url: `/shop/checkout`,
             }}
             look={{
-              theme: 'light',
+              theme: 'dark',
               type: 'button',
-              size: 'small',
+              size: 'medium',
               width: 'full',
               variant: 'blocks',
               icon: {
-                content: <ArrowLeftIcon strokeWidth={1.25} />,
+                content: <DollarSignIcon strokeWidth={1.25} />,
                 iconPosition: 'right',
               },
             }}
+            actions={{ onClick: handleCheckout }}
+            pending={isProcessing}
           />
+
+          <div className="flex flex-col sm:flex-row gap-4">
+            {/* <CMSLink
+              data={{
+                label: !isPending ? 'Clear Cart' : 'Clearing Cart... please wait',
+              }}
+              look={{
+                theme: 'light',
+                type: 'button',
+                size: 'small',
+                width: 'full',
+                variant: 'blocks',
+                icon: {
+                  content: <XIcon strokeWidth={1.25} />,
+                  iconPosition: 'right',
+                },
+              }}
+              actions={{
+                onClick: async () => {
+                  startTransition(async () => {
+                    clearCart()
+                    router.push('/shop')
+                  })
+                },
+              }}
+            /> */}
+
+            <CMSLink
+              data={{
+                label: 'or Continue Shopping',
+                type: 'custom',
+                url: '/shop',
+              }}
+              look={{
+                theme: 'light',
+                type: 'link',
+                size: 'small',
+                width: 'full',
+                variant: 'blocks',
+                icon: {
+                  content: <ArrowLeftIcon strokeWidth={1.25} />,
+                  iconPosition: 'left',
+                },
+              }}
+            />
+          </div>
         </div>
       </div>
 

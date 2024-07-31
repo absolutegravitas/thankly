@@ -6,14 +6,15 @@
 // - Large product images can impact performance, so it's recommended to optimize image sizes and use lazy loading.
 // - Rendering a large number of items can potentially cause performance issues, so consider techniques like virtualization or pagination.
 
-import React from 'react'
+import React, { useState } from 'react'
 import Image from 'next/image'
 import { contentFormats } from '@app/_css/tailwindClasses'
 import cn from '@/utilities/cn'
-import { ReceiversGrid } from '../Receivers'
+import { Receivers } from '../Receivers'
 import { getImageUrl } from '@/utilities/getImageDetails'
-import { AddReceiverButton, RemoveProductButton } from '../Receivers/ReceiverActions'
+import { AddReceiver, RemoveProduct } from '../Receivers/ReceiverActions'
 import { useCart } from '@/app/(app)/_providers/Cart'
+import { ChevronRightIcon, ChevronDownIcon } from 'lucide-react'
 
 // Type definition for the CartItems component
 export const CartItems: React.FC = () => {
@@ -21,59 +22,101 @@ export const CartItems: React.FC = () => {
   const { cart } = useCart()
   // Destructure the items property from the cart object
   const { items: cartItems } = cart
+  const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>({})
+
+  const toggleExpand = (index: number) => {
+    setExpandedItems((prev) => ({ ...prev, [index]: !prev[index] }))
+  }
 
   return (
-    <div className="py-4 sm:py-8 space-y-6 sm:space-y-8">
-      {/* Map over the cartItems array and render a div for each item */}
-      {cartItems?.map((item: any, index: any) => {
-        // Destructure the product property from the item object
-        const { product } = item
-        // Get the image URL for the product, or use a placeholder SVG if no image is available
-        const imageUrl =
-          product.media && product.media.length > 0
-            ? getImageUrl(product.media[0]?.mediaItem)
-            : null
-        const placeholderSVG = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' fill='none' stroke='%23cccccc'%3E%3Crect width='100' height='100' rx='10' stroke-width='2' /%3E%3Cpath d='M20 80 L50 20 L80 80 Z' stroke-width='2' /%3E%3Ccircle cx='50' cy='50' r='20' stroke-width='2' /%3E%3C/svg%3E`
+    <React.Fragment>
+      <div className="py-4 sm:py-8 space-y-6 sm:space-y-8 pl-0 sm:pl-8">
+        <ul role="list" className="sm:divide-y sm:divide-gray-100 pl-0 ">
+          {cartItems?.map((item: any, index: any) => {
+            // Destructure the product property from the item object
+            const { product } = item
+            const isExpanded = expandedItems[index] || false
+            return (
+              <>
+                <li
+                  key={index}
+                  onClick={() => toggleExpand(index)}
+                  className="relative flex justify-between gap-x-6 mb-3  p-3  bg-neutral-200 hover:bg-neutral-100 hover:cursor-pointer "
+                >
+                  <div className="flex shrink-0 items-center gap-x-4">
+                    <div className="w-7 h-7 flex items-center justify-center transition-transform duration-200 ease-in-out">
+                      {isExpanded ? (
+                        <ChevronDownIcon
+                          aria-hidden="true"
+                          className="h-7 w-7 flex-none transform rotate-0"
+                          strokeWidth={1.25}
+                        />
+                      ) : (
+                        <ChevronRightIcon
+                          aria-hidden="true"
+                          className="h-7 w-7 flex-none transform w"
+                          strokeWidth={1.25}
+                        />
+                      )}
+                    </div>
+                    <p className={[contentFormats.p, 'font-semibold'].join(' ')}>
+                      {`#${(index + 1).toString().padStart(2, '0')}`}
+                    </p>
+                    {product.meta?.image ? (
+                      <img
+                        src={`${getImageUrl(product.meta.image)}`}
+                        alt={''}
+                        // width={96}
+                        // height={96}
+                        // sizes="(max-width: 640px) 60px, (max-width: 768px) 72px, 96px"
+                        className="h-14 w-14 flex-none rounded-full bg-gray-50 "
+                      />
+                    ) : (
+                      <img
+                        src={`https://placehold.co/100x100?text=No\nImage`}
+                        alt={''}
+                        className="h-14 w-14 flex-none rounded-full bg-gray-50"
+                      />
+                    )}
+                    {/* <img
+                          alt=""
+                          src={person.imageUrl}
+                          className="h-12 w-12 flex-none rounded-full bg-gray-50"
+                        /> */}
+                    <div className="flex #shrink-0 items-center gap-x-4  ">
+                      <div className="sm:flex sm:flex-col pr-3">
+                        <p className="my-0 text-sm font-semibold leading-6 text-gray-900">
+                          {product.title}
+                        </p>
+                        <p className="my-0 text-xs leading-5  text-gray-500 break-words w-full sm:w-auto">
+                          {product.meta.description}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex shrink-0 items-center gap-x-4">
+                    <div className="sm:flex sm:flex-col sm:items-end">
+                      <p className="my-0  font-body font-semibold leading-6 text-gray-900">{`Total for this Thankly: ${
+                        item.totals.subTotal.toLocaleString('en-AU', {
+                          style: 'currency',
+                          currency: 'AUD',
+                          minimumFractionDigits: 0,
+                          maximumFractionDigits: 2,
+                        }) || 0
+                      }`}</p>
+                      <p className="my-0 text-xs leading-5 text-gray-500">{`Sending to ${item.receivers.length} ${item.receivers.length === 1 ? 'person' : 'people'}`}</p>
+                    </div>
 
-        return (
-          <div key={index} className="border border-neutral-300 rounded-lg overflow-hidden">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center p-4 sm:p-6 space-y-4 sm:space-y-0 sm:space-x-6 bg-neutral-100">
-              <Image
-                src={imageUrl || placeholderSVG}
-                alt={''}
-                priority
-                width={100}
-                height={100}
-                className="rounded-md object-cover object-center aspect-square shadow-md"
-              />
-              <div className="flex-1 min-w-0">
-                <h3
-                  className={cn(contentFormats.global, contentFormats.h4, 'no-underline truncate')}
-                >
-                  {product.title}
-                </h3>
-                <p
-                  className={cn(
-                    'mt-1 text-sm text-gray-500 line-clamp-2',
-                    contentFormats.global,
-                    contentFormats.text,
-                  )}
-                >
-                  {product.meta.description}
-                </p>
-              </div>
-              <div className="flex flex-row sm:flex-row justify-end items-center gap-3 sm:gap-4">
-                {/* Render an AddReceiverButton for the current product */}
-                <AddReceiverButton productId={item.product.id} />
-                {/* Render a RemoveProductButton for the current product */}
-                <RemoveProductButton productId={item.product.id} />
-              </div>
-            </div>
-            {/* Render a ReceiversGrid component for the current item */}
-            <ReceiversGrid item={item} />
-          </div>
-        )
-      })}
-    </div>
+                    <RemoveProduct productId={item.product.id} />
+                  </div>
+                </li>
+
+                {isExpanded && <Receivers item={item} />}
+              </>
+            )
+          })}
+        </ul>
+      </div>
+    </React.Fragment>
   )
 }

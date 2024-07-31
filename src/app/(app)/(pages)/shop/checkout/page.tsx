@@ -82,63 +82,6 @@ function renderCartContent(cart: any, cartIsEmpty: any, clientSecret: string | n
     resolve(options)
   }
 
-  // const onConfirm = async (event) => {
-  //   if (!stripe) {
-  //     // Stripe.js hasn't loaded yet.
-  //     // Make sure to disable form submission until Stripe.js has loaded.
-  //     return
-  //   }
-
-  //   const { error: submitError } = await elements.submit()
-  //   if (submitError) {
-  //     setErrorMessage(submitError.message)
-  //     return
-  //   }
-
-  //   // Create a ConfirmationToken using the details collected by the Express Checkout Element
-  //   const { error, confirmationToken } = await stripe.createPaymentMethod({
-  //     elements,
-  //     params: {
-  //       payment_method_data: {
-  //         billing_details: {
-  //           name: 'Jenny Rosen',
-  //         },
-  //       },
-  //       return_url: 'https://example.com/order/123/complete',
-  //     },
-  //   })
-
-  //   if (error) {
-  //     // This point is only reached if there's an immediate error when
-  //     // creating the ConfirmationToken. Show the error to your customer (for example, payment details incomplete)
-  //     setErrorMessage(error.message)
-  //   }
-
-  //   // Send the ConfirmationToken ID to your server for additional logic and attach the ConfirmationToken
-  //   const res = await fetch('/create-intent', {
-  //     method: 'POST',
-  //     body: confirmationToken.id,
-  //   })
-  //   const { client_secret: clientSecret } = await res.json()
-
-  //   // Confirm the PaymentIntent
-  //   const { error: confirmError } = await stripe.confirmPayment({
-  //     clientSecret,
-  //     confirmParams: {
-  //       confirmation_token: confirmationToken.id,
-  //     },
-  //   })
-
-  //   if (confirmError) {
-  //     // This point is only reached if there's an immediate error when
-  //     // confirming the payment. Show the error to your customer (for example, payment details incomplete)
-  //     setErrorMessage(confirmError.message)
-  //   } else {
-  //     // The payment UI automatically closes with a success animation.
-  //     // Your customer is redirected to your `return_url`.
-  //   }
-  // }
-
   const appearance = {
     theme: 'flat' as const,
     variables: {
@@ -149,19 +92,19 @@ function renderCartContent(cart: any, cartIsEmpty: any, clientSecret: string | n
       fontFamily:
         'ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
       spacingUnit: '4px',
-      bcartRadius: '0px',
+      borderRadius: '0px',
     },
     rules: {
       '.Input': {
-        bcart: 'none',
-        bcartBottom: '1px solid #d1d5db', // Matches bcart-gray-300
+        border: 'none',
+        borderBottom: '1px solid #d1d5db', // Matches border-gray-300
         boxShadow: 'none',
         fontSize: '14px', // Matches text-sm
         padding: '8px 4px', // Adjusted to match your input padding
       },
       '.Input:focus': {
-        bcart: 'none',
-        bcartBottom: '2px solid #557755', // Matches focus:bcart-green/75
+        border: 'none',
+        borderBottom: '2px solid #557755', // Matches focus:border-green/75
         boxShadow: 'none',
       },
       '.Input::placeholder': {
@@ -227,14 +170,6 @@ function renderCartContent(cart: any, cartIsEmpty: any, clientSecret: string | n
                 <Suspense fallback={<StripeElementsSkeleton />}>
                   {cart && clientSecret ? (
                     <Elements stripe={stripePromise} options={options}>
-                      {/* <div id="express-checkout-element" style={{ visibility }}>
-                        <ExpressCheckoutElement
-                          onConfirm={onConfirm}
-                          onReady={onReady}
-                          onClick={onClick}
-                          onCancel={onCancel}
-                        />
-                      </div> */}
                       <CheckoutForm />
                     </Elements>
                   ) : (
@@ -276,7 +211,7 @@ const CheckoutLoadingSkeleton = () => (
 
 const CartItemsSkeleton: React.FC = () => {
   return (
-    <div className="bcart bcart-solid bcart-gray-200/90 animate-pulse">
+    <div className="border border-solid border-gray-200/90 animate-pulse">
       <div className="flex flex-col gap-6 p-5 md:flex-row md:justify-between">
         <div className="flex min-w-0 gap-x-4">
           <div className="h-20 w-20 flex-none bg-gray-200"></div>

@@ -37,7 +37,7 @@ export const CartNotification: React.FC = () => {
           )}
         </span>
       </Link>
-      <div className="absolute top-3 right-0 mt-2 w-64 bg-neutral-100 bcart bcart-solid shadow-xl rounded-sm hidden group-hover:block">
+      <div className="absolute top-3 right-0 mt-2 w-64 bg-neutral-100 border border-solid shadow-xl rounded-sm hidden group-hover:block">
         <div className="px-4 py-6">
           <span className="text-lg font-semibold mb-2">Cart Summary</span>
           {cart.items?.slice(0, 3).map((item: any, index: number) => (

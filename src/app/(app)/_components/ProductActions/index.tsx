@@ -3,7 +3,7 @@
 import React from 'react' // The ProductActions component uses the useCart hook to access the order context and determine if the product is already in the user's cart.
 import { CheckIcon, FrownIcon, MessageCircleWarningIcon, SendHorizonalIcon } from 'lucide-react'
 import Link from 'next/link'
-import { messages } from '@/utilities/refData'
+import { messages } from '@/utilities/referenceText'
 import { AddToCartButton } from './AddToCart'
 import { ViewInCartButton } from './ViewInCart' // If the product is out of stock, a message is displayed with a link back to the shop.
 import { RemoveFromCartButton } from './RemoveFromCart'

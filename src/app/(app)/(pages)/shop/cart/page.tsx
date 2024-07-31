@@ -51,13 +51,14 @@ export default function CartPage() {
           >
             {`Your Cart`}
           </h1>
-          <div className="flex flex-col lg:flex-row gap-8">
-            <div className="w-full lg:w-2/3">
+
+          <div className="flex flex-col #gap-8">
+            <div className="w-full sm:w-full md:w-full ">
               <Suspense fallback={<CartItemsSkeleton />}>
                 <CartItems />
               </Suspense>
             </div>
-            <div className="w-full lg:w-1/3">
+            <div className="w-full sm:w-full md:w-full">
               <Suspense fallback={<CartSummarySkeleton />}>
                 <CartSummary cart={cart} />
               </Suspense>
@@ -76,10 +77,10 @@ const CartLoadingSkeleton = () => (
       <div className="animate-pulse max-w-7xl mx-auto">
         <div className="h-10 bg-gray-200 w-1/4 mb-8"></div>
         <div className="flex flex-col lg:flex-row gap-8">
-          <div className="w-full lg:w-2/3">
+          <div className="w-full sm:w-full md:w-full lg:w-2/3">
             <CartItemsSkeleton />
           </div>
-          <div className="w-full lg:w-1/3">
+          <div className="w-full sm:w-full md:w-full lg:w-1/3">
             <CartSummarySkeleton />
           </div>
         </div>
@@ -92,7 +93,7 @@ const CartLoadingSkeleton = () => (
 const CartItemsSkeleton = () => (
   <div className="space-y-6">
     {[...Array(2)].map((_, index) => (
-      <div key={index} className="bcart bcart-gray-200 rounded-lg p-4">
+      <div key={index} className="border border-gray-200 rounded-lg p-4">
         <div className="flex items-center space-x-4">
           <div className="w-20 h-20 bg-gray-200 rounded-md"></div>
           <div className="flex-1">
@@ -107,7 +108,7 @@ const CartItemsSkeleton = () => (
 
 // Skeleton component for the loading state of the cart summary section
 const CartSummarySkeleton = () => (
-  <div className="bcart bcart-gray-200 rounded-lg p-4 space-y-4">
+  <div className="border border-gray-200 rounded-lg p-4 space-y-4">
     <div className="h-6 bg-gray-200 w-1/2 mb-4"></div>
     {[...Array(4)].map((_, index) => (
       <div key={index} className="flex justify-between">

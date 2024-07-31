@@ -1,5 +1,5 @@
 import type { Cart, Product } from '@/payload-types'
-import { shippingPrices } from '@/utilities/refData'
+import { shippingPrices } from '@/utilities/referenceText'
 
 export type CartItem = NonNullable<Cart['items']>[number]
 type CartType = Cart

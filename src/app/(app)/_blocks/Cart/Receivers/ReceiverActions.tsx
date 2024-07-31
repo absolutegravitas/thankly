@@ -8,11 +8,11 @@ import { useCart } from '@/app/(app)/_providers/Cart'
 import { CartItem } from '@/app/(app)/_providers/Cart/reducer'
 import { useRouter } from 'next/navigation'
 
-interface AddReceiverButtonProps {
+interface AddReceiverProps {
   productId: number | string
 }
 
-export const AddReceiverButton: React.FC<AddReceiverButtonProps> = ({ productId }) => {
+export const AddReceiver: React.FC<AddReceiverProps> = ({ productId }) => {
   const [isPending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
   const { addReceiver, cart } = useCart()
@@ -59,7 +59,7 @@ export const AddReceiverButton: React.FC<AddReceiverButtonProps> = ({ productId 
           theme: 'light',
           type: 'button',
           size: 'small',
-          width: 'narrow',
+          width: 'wide',
           variant: 'blocks',
           icon: {
             content: <UserPlusIcon strokeWidth={1.25} />,
@@ -76,11 +76,11 @@ export const AddReceiverButton: React.FC<AddReceiverButtonProps> = ({ productId 
   )
 }
 
-interface CopyReceiverIconProps {
+interface CopyReceiverProps {
   cartItemId: string | number
   receiverId: string
 }
-export const CopyReceiverIcon: React.FC<CopyReceiverIconProps> = ({ cartItemId, receiverId }) => {
+export const CopyReceiver: React.FC<CopyReceiverProps> = ({ cartItemId, receiverId }) => {
   const [isPending, startTransition] = useTransition()
   const [error, setError] = useState<string | null>(null)
   const { copyReceiver } = useCart()
@@ -111,13 +111,13 @@ export const CopyReceiverIcon: React.FC<CopyReceiverIconProps> = ({ cartItemId, 
   )
 }
 
-interface RemoveReceiverIconProps {
+interface RemoveReceiverProps {
   cartItemId: string | number // Changed from just string to string | number
   receiverId: string
   removeReceiver: (productId: string | number, receiverId: string) => void // Matches CartContext
 }
 
-export const RemoveReceiverIcon: React.FC<RemoveReceiverIconProps> = ({
+export const RemoveReceiver: React.FC<RemoveReceiverProps> = ({
   cartItemId,
   receiverId,
   removeReceiver,
@@ -131,7 +131,7 @@ export const RemoveReceiverIcon: React.FC<RemoveReceiverIconProps> = ({
   }
 
   return (
-    <XIcon
+    <TrashIcon
       className={`h-5 w-5 sm:h-5 sm:w-5  cursor-pointer hover:text-green hover:animate-pulse ${
         isPending ? 'opacity-50' : ''
       }`}
@@ -142,11 +142,11 @@ export const RemoveReceiverIcon: React.FC<RemoveReceiverIconProps> = ({
   )
 }
 
-interface RemoveProductButtonProps {
+interface RemoveProductProps {
   productId: string | number
 }
 
-export const RemoveProductButton: React.FC<RemoveProductButtonProps> = ({ productId }) => {
+export const RemoveProduct: React.FC<RemoveProductProps> = ({ productId }) => {
   const [isPending, startTransition] = useTransition()
   const { removeProduct } = useCart()
   const router = useRouter()
