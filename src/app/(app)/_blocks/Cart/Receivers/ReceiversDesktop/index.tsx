@@ -238,17 +238,7 @@ export const ReceiversDesktop = (item: CartItem) => {
             </div>
           </div>
           <div className="flex shrink-0  gap-x-4 items-end">
-            <div className="sm:flex sm:flex-col sm:items-end">
-              {/* <p className="my-0 text-sm leading-6 text-gray-900">{`Total for this Thankly: ${
-              item.totals.subTotal.toLocaleString('en-AU', {
-                style: 'currency',
-                currency: 'AUD',
-                minimumFractionDigits: 0,
-                maximumFractionDigits: 2,
-              }) || 0
-            }`}</p>
-            <p className="my-0 text-xs leading-5 text-gray-500">{`Sending to ${item.receivers.length} ${item.receivers.length === 1 ? 'person' : 'people'}`}</p> */}
-            </div>
+            <div className="sm:flex sm:flex-col sm:items-end"></div>
             <div className="sm:flex sm:flex-col sm:items-end"></div>
             <AddReceiver productId={item.product.id} />
           </div>

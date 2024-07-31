@@ -41,9 +41,9 @@ export const CartItems: React.FC = () => {
                 <li
                   key={index}
                   onClick={() => toggleExpand(index)}
-                  className="relative flex justify-between gap-x-6 mb-3  p-3  bg-neutral-200 hover:bg-neutral-100 hover:cursor-pointer "
+                  className="relative flex sm:flex-row sm:flex-nowrap flex-col flex-wrap  justify-between gap-x-6 mb-3  p-3  bg-neutral-200 hover:bg-neutral-100 hover:cursor-pointer "
                 >
-                  <div className="flex shrink-0 items-center gap-x-4">
+                  <div className="flex hrink-0 items-center gap-x-4">
                     <div className="w-7 h-7 flex items-center justify-center transition-transform duration-200 ease-in-out">
                       {isExpanded ? (
                         <ChevronDownIcon
@@ -88,13 +88,13 @@ export const CartItems: React.FC = () => {
                         <p className="my-0 text-sm font-semibold leading-6 text-gray-900">
                           {product.title}
                         </p>
-                        <p className="my-0 text-xs leading-5  text-gray-500 break-words w-full sm:w-auto">
+                        <p className="hidden sm:visible my-0 text-xs leading-5  text-gray-500 break-words w-full sm:w-auto">
                           {product.meta.description}
                         </p>
                       </div>
                     </div>
                   </div>
-                  <div className="flex shrink-0 items-center gap-x-4">
+                  <div className="flex flex-nowrap shrink-0 items-center gap-x-4">
                     <div className="sm:flex sm:flex-col sm:items-end">
                       <p className="my-0  font-body font-semibold leading-6 text-gray-900">{`Total for this Thankly: ${
                         item.totals.subTotal.toLocaleString('en-AU', {
