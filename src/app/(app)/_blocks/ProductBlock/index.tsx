@@ -26,7 +26,7 @@ import cn from '@/utilities/cn'
 import { getImageAlt, getImageUrl } from '@/utilities/getImageDetails'
 import { useCart } from '@/app/(app)/_providers/Cart'
 import { messages } from '@/utilities/referenceText'
-import { FrownIcon } from 'lucide-react'
+import { CheckIcon, FrownIcon, MessageCircleWarningIcon } from 'lucide-react'
 import { AddToCartButton } from '../../_components/ProductActions/AddToCart'
 import { ViewInCartButton } from '../../_components/ProductActions/ViewInCart'
 import { RemoveFromCartButton } from '../../_components/ProductActions/RemoveFromCart'
@@ -186,7 +186,7 @@ const ProductBlockContent: React.FC<ProductBlockContentProps> = ({
           )}
         </div>
 
-        {/* <div className="flex flex-row items-center justify-between">
+        <div className="py-6 flex flex-row items-center justify-between px-6">
           {!outOfStock && !inCart && (
             <div className="w-full flex pb-2">
               <AddToCartButton product={product} />
@@ -194,22 +194,50 @@ const ProductBlockContent: React.FC<ProductBlockContentProps> = ({
           )}
 
           {inCart && (
-            <div className="w-full flex pb-2 gap-2">
-              <div className="flex-auto w-3/4">
-                <ViewInCartButton />
+            <div className="flex flex-col">
+              <div className="w-full flex pb-2 gap-2">
+                <div className="flex-auto w-3/4">
+                  <ViewInCartButton />
+                </div>
+                <div className="flex-initial w-1/4">
+                  <RemoveFromCartButton cartItemId={product.id} />
+                  <div className="sm:flex pt-2 items-center justify-center space-x-2"></div>
+                </div>
               </div>
-              <div className="flex-initial w-1/4">
-                <RemoveFromCartButton cartItemId={product.id} />
+              <div className="sm:flex pt-2 items-center justify-center space-x-2">
+                <div className="py-4 sm:py-4 flex items-center">
+                  {/* If the product is in the cart and hideRemove is not set, a warning message is displayed regarding removing the product from the cart. */}
+                  <CheckIcon
+                    className="h-8 w-8 flex-shrink-0 text-green"
+                    strokeWidth={1.25}
+                    aria-hidden="true"
+                  />
+                  <div className="ml-2 text-sm text-gray-500">
+                    {messages.removeProductBase}
+                    {messages.removeProductExtra}
+                  </div>
+                </div>
+              </div>
+
+              <div className="sm:flex pt-2 items-center justify-center space-x-2">
+                <div className="py-1 sm:py-2 flex items-center">
+                  <MessageCircleWarningIcon
+                    className="h-8 w-8 flex-shrink-0 text-green"
+                    strokeWidth={1.25}
+                    aria-hidden="true"
+                  />
+                  <div className="ml-2 text-sm text-gray-500">{messages.removeProductWarning}</div>
+                </div>
               </div>
             </div>
           )}
-        </div> */}
+        </div>
 
-        <div className="mt-10 lg:col-start-1 lg:row-start-2 lg:max-w-lg lg:self-start">
+        {/* <div className="mt-10 lg:col-start-1 lg:row-start-2 lg:max-w-lg lg:self-start">
           <section aria-labelledby="options-heading">
             <ProductActions product={product} hidePerks={false} hideRemove={false} />
           </section>
-        </div>
+        </div> */}
       </div>
     </Gutter>
   )
