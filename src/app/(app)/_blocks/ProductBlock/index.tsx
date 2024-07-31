@@ -12,8 +12,9 @@
 // Accessibility (a11y) considerations:
 // - Ensure proper alt text is provided for images.
 // - Use appropriate ARIA roles and labels for better screen reader accessibility.
+'use client'
 
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { BlockWrapper } from '@app/_components/BlockWrapper'
@@ -23,6 +24,12 @@ import { Product, Media } from '@payload-types' // Types for product and media d
 import { contentFormats, getPaddingClasses } from '@app/_css/tailwindClasses'
 import cn from '@/utilities/cn'
 import { getImageAlt, getImageUrl } from '@/utilities/getImageDetails'
+import { useCart } from '@/app/(app)/_providers/Cart'
+import { messages } from '@/utilities/referenceText'
+import { FrownIcon } from 'lucide-react'
+import { AddToCartButton } from '../../_components/ProductActions/AddToCart'
+import { ViewInCartButton } from '../../_components/ProductActions/ViewInCart'
+import { RemoveFromCartButton } from '../../_components/ProductActions/RemoveFromCart'
 
 interface ProductBlockContentProps {
   product: Product // The product data to be displayed
@@ -34,26 +41,38 @@ const ProductBlockContent: React.FC<ProductBlockContentProps> = ({
   product,
   selectedImageIndex = 0,
 }) => {
+  // Hook to access cart-related state and functions
+  const { isProductInCart, cart } = useCart()
+
+  // State to track if the product is in the cart
+  const [inCart, setInCart] = useState<boolean>(isProductInCart(product.id))
+
+  // Side effect to update the `inCart` state when the cart or product changes
+  useEffect(() => {
+    setInCart(isProductInCart(product.id))
+  }, [cart, product.id, isProductInCart])
+
+  // Destructure product prices
   const {
-    title,
-    prices: { basePrice, salePrice }, // Product title and prices
-    meta,
-    media, // Product media (images)
+    media: images,
+    prices: { salePrice, basePrice },
   } = product
 
-  // Formats a price amount into a currency string
-  const formatPrice = (amount: number | null | undefined) => {
-    if (amount == null) return 'Price not available'
-    return new Intl.NumberFormat('en-AU', {
-      style: 'currency',
-      currency: 'AUD',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 2,
-    }).format(amount)
-  }
+  // Calculate if the product is on sale
+  const onSale =
+    salePrice !== null && salePrice !== undefined && salePrice !== 0 && salePrice < basePrice
 
-  const displayPrice = basePrice ?? 0 // Fallback to 0 if basePrice is null or undefined
-  const displaysalePrice = salePrice ?? 0 // Fallback to 0 if salePrice is null or undefined
+  // Check if the product is out of stock
+  const outOfStock =
+    product.stock?.stockOnHand === 0 ||
+    product.stock?.stockOnHand === null ||
+    product.stock?.stockOnHand === undefined
+
+  // Check if the product has low stock
+  const lowStock =
+    product.stock?.stockOnHand &&
+    product.stock?.lowStockThreshold &&
+    product.stock?.stockOnHand <= product.stock?.lowStockThreshold
 
   return (
     <Gutter>
@@ -67,53 +86,87 @@ const ProductBlockContent: React.FC<ProductBlockContentProps> = ({
                 `text-3xl mb-2 mt-0 sm:mt-6 sm:mb-6 font-title font-semibold tracking-tight text-gray-900 sm:text-4xl`,
               )}
             >
-              {title}
+              {product.title}
             </h1>
 
             <div
               className={cn(
-                `flex`,
+                'flex flex-col items-end ml-2',
                 contentFormats.global,
-                `text-xl mb-2 mt-0 sm:mt-6 sm:mb-6 font-title font-semibold tracking-tight text-gray-900 sm:text-4xl`,
+                contentFormats.h4,
               )}
             >
               <span
-                className={`${displaysalePrice !== 0 && displaysalePrice < displayPrice ? 'line-through text-gray-500' : ''}`}
+                className={`text-black font-semibold ${onSale === true && 'text-sm !line-through text-gray-700'}`}
               >
-                {formatPrice(displayPrice)}
+                {basePrice?.toLocaleString('en-AU', {
+                  style: 'currency',
+                  currency: 'AUD',
+                  minimumFractionDigits: 0,
+                  maximumFractionDigits: 2,
+                })}
               </span>
-              {displaysalePrice !== 0 && displaysalePrice < displayPrice && (
-                <span className="text-black ml-2 ">{formatPrice(displaysalePrice)}</span>
+              {onSale && (
+                <span className={''}>
+                  {`${salePrice.toLocaleString('en-AU', {
+                    style: 'currency',
+                    currency: 'AUD',
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 2,
+                  })}`}
+                </span>
               )}
             </div>
           </div>
 
           <section aria-labelledby="information-heading" className="mt-4">
             <div className="mt-4 space-y-6">
-              <p className="text-base text-gray-500">{meta?.description || ''}</p>
+              <p className="text-base text-gray-500">
+                {product.meta &&
+                  product.meta.description &&
+                  product.meta.description.replace(/\s/g, ' ')}
+              </p>
             </div>
           </section>
         </div>
 
         {/* Product images */}
         <div className="mt-10 lg:col-start-2 lg:row-span-2 lg:mt-0 lg:self-center">
-          {media && media.length > 0 && (
+          {images && images.length > 0 && (
             <>
               {/* Main image */}
-              <div className="aspect-square overflow-hidden rounded-md mb-4">
+              <div className="aspect-square relative overflow-hidden rounded-md mb-4">
+                {lowStock && !outOfStock && (
+                  <div className="absolute left-0 top-0 z-10 flex w-full items-center justify-center bg-gray-900/50 p-2 font-body font-semibold uppercase tracking-wider text-white !no-underline">
+                    <span className="text-base">{messages.lowStock}</span>
+                  </div>
+                )}
                 <Image
-                  src={getImageUrl(media[selectedImageIndex]?.mediaItem)}
-                  alt={getImageAlt(media[selectedImageIndex]?.mediaItem)}
+                  src={getImageUrl(images[selectedImageIndex]?.mediaItem)}
+                  alt={getImageAlt(images[selectedImageIndex]?.mediaItem)}
                   priority
-                  width={800}
-                  height={800}
+                  width={1200}
+                  height={1200}
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                   className="object-cover object-center w-full h-full"
                 />
+                {outOfStock ?? (
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <span className="flex w-full font-body text-white bg-black bg-opacity-50 px-4 py-2 items-center justify-between">
+                      <FrownIcon
+                        className="h-7 w-7 flex-shrink-0 text-white"
+                        strokeWidth={1.25}
+                        aria-hidden="true"
+                      />
+                      {`Out of Stock`}
+                    </span>
+                  </div>
+                )}
               </div>
 
               {/* Thumbnail images */}
               <div className="grid grid-cols-4 gap-4">
-                {media.map((image, index) => (
+                {images.map((image, index) => (
                   <Link
                     key={image.id || index}
                     href={`/shop/${product.slug}?image=${index}`}
@@ -132,6 +185,25 @@ const ProductBlockContent: React.FC<ProductBlockContentProps> = ({
             </>
           )}
         </div>
+
+        {/* <div className="flex flex-row items-center justify-between">
+          {!outOfStock && !inCart && (
+            <div className="w-full flex pb-2">
+              <AddToCartButton product={product} />
+            </div>
+          )}
+
+          {inCart && (
+            <div className="w-full flex pb-2 gap-2">
+              <div className="flex-auto w-3/4">
+                <ViewInCartButton />
+              </div>
+              <div className="flex-initial w-1/4">
+                <RemoveFromCartButton cartItemId={product.id} />
+              </div>
+            </div>
+          )}
+        </div> */}
 
         <div className="mt-10 lg:col-start-1 lg:row-start-2 lg:max-w-lg lg:self-start">
           <section aria-labelledby="options-heading">

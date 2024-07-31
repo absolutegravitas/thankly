@@ -464,7 +464,7 @@ export const ReceiversDesktop = (item: CartItem) => {
                         {addressSuggestions[receiver.id].map((suggestion, index) => (
                           <div
                             key={index}
-                            className="relative cursor-default select-none py-3 sm:px-4 sm:px-3  hover:bg-green/75 hover:text-white"
+                            className="relative cursor-default select-none py-3 sm:px-4   hover:bg-green/75 hover:text-white"
                             onClick={debounce(() => {
                               startTransition(() => {
                                 try {

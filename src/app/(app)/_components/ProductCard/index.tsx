@@ -1,8 +1,9 @@
-/** @file
- * @module ProductCard
- * @description Product card component for displaying product details
- * @overview This file contains the ProductCard component, which renders a product card with details such as image, title, price, description, and add/remove from cart functionality. It uses hooks like useState and useEffect to manage the state of the product being in the cart or not. It also handles cases like low stock, out of stock, and sale prices.
- */
+// This file contains a React component called `ProductCard` that displays information and actions for a single product.
+// It is designed to be used in a Next.js 14 application with App Router and Server Components.
+// The component utilizes various hooks and utilities to provide a responsive and interactive product card experience.
+// It showcases product details such as title, description, price, stock status, and image.
+// Based on the product's availability and cart status, it dynamically renders different action buttons (Add to Cart, View in Cart, Remove from Cart).
+// The component also handles various states and side effects related to the product's presence in the cart.
 
 'use client'
 
@@ -20,32 +21,38 @@ import { AddToCartButton } from '../ProductActions/AddToCart'
 import { ViewInCartButton } from '../ProductActions/ViewInCart'
 import { RemoveFromCartButton } from '../ProductActions/RemoveFromCart'
 
-/** @component
- * @description Renders a product card
- * @param {Product} product - The product data
- * @returns {JSX.Element}
- */
-export const ProductCard: React.FC<any> = (product: Product) => {
-  const { isProductInCart, cart } = useCart()
-  const [inCart, setInCart] = useState(isProductInCart(product.id))
+// Type for ProductCard component props
+export interface ProductCardProps extends Product {}
 
-  // @note Update the inCart state when the order or product changes
+// ProductCard component
+export const ProductCard: React.FC<ProductCardProps> = (product: Product) => {
+  // Hook to access cart-related state and functions
+  const { isProductInCart, cart } = useCart()
+
+  // State to track if the product is in the cart
+  const [inCart, setInCart] = useState<boolean>(isProductInCart(product.id))
+
+  // Side effect to update the `inCart` state when the cart or product changes
   useEffect(() => {
     setInCart(isProductInCart(product.id))
   }, [cart, product.id, isProductInCart])
 
+  // Destructure product prices
   const {
     prices: { salePrice, basePrice },
   } = product
 
+  // Calculate if the product is on sale
   const onSale =
     salePrice !== null && salePrice !== undefined && salePrice !== 0 && salePrice < basePrice
 
+  // Check if the product is out of stock
   const outOfStock =
     product.stock?.stockOnHand === 0 ||
     product.stock?.stockOnHand === null ||
     product.stock?.stockOnHand === undefined
 
+  // Check if the product has low stock
   const lowStock =
     product.stock?.stockOnHand &&
     product.stock?.lowStockThreshold &&
