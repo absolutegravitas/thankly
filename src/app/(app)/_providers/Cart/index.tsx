@@ -1,11 +1,3 @@
-/**
- * @file index.tsx
- * @module CartProvider
- * @description Cart management system for an e-commerce application
- * @overview
- * This file implements a custom cart management system using React's Context API. It provides a centralized state management solution for handling carts in an e-commerce application. The CartProvider component manages the cart state, including adding/removing products, managing receivers, updating shipping methods, and synchronizing with local storage. It uses a reducer pattern for state updates and exposes various utility functions through the CartContext.
- */
-
 import React, {
   createContext,
   useContext,
@@ -20,12 +12,14 @@ import { Cart, Product } from '@/payload-types'
 import { CartItem, cartReducer, CartAction } from './reducer'
 import { debounce } from 'lodash'
 
+// Type aliases for common types used throughout the file
 type ShippingMethod = 'standardMail' | 'expressMail' | 'standardParcel' | 'expressParcel' | null
 type Receiver = NonNullable<CartItem['receivers']>[number]
 type UpdateReceiverFields = Partial<Omit<Receiver, 'id' | 'totals' | 'delivery'>> & {
   delivery?: Partial<Receiver['delivery']>
 }
 
+// Interface defining the CartContext shape
 export type CartContext = {
   cart: Cart
   cartIsEmpty: boolean
@@ -62,6 +56,7 @@ const debouncedUpdateLocalStorage = debounce((cart) => {
   localStorage.setItem('cart', JSON.stringify(cart))
 }, 300)
 
+// Custom hook to access the CartContext
 export const useCart = () => {
   const context = useContext(Context)
   if (context === undefined) {
@@ -70,7 +65,9 @@ export const useCart = () => {
   return context
 }
 
+// CartProvider component
 export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  // Cart state and reducer
   const [cart, dispatchCart] = useReducer<React.Reducer<Cart, CartAction>>(cartReducer, {
     id: 0,
     items: [],
@@ -84,6 +81,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     createdAt: new Date().toISOString(),
   })
 
+  // Total state for formatted and raw total values
   const [total, setTotal] = useState<{ formatted: string; raw: number }>({
     formatted: '0.00',
     raw: 0,
@@ -92,6 +90,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const hasInitialized = useRef(false)
   const [hasInitializedCart, setHasInitialized] = useState(false)
 
+  // Validates the cart by checking if all receivers have required fields
   const validateCart = useCallback((): boolean => {
     if (!cart.items || cart.items.length === 0) return false
 
@@ -108,6 +107,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     )
   }, [cart])
 
+  // Adds a product to the cart
   const addProduct = useCallback((product: Product | number, price: number) => {
     dispatchCart({
       type: 'ADD_PRODUCT',
@@ -118,6 +118,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     })
   }, [])
 
+  // Adds a receiver to a product in the cart
   const addReceiver = useCallback(
     (productId: number | string, receiver: NonNullable<CartItem['receivers']>[number]) => {
       dispatchCart({
@@ -128,6 +129,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     [],
   )
 
+  // Copies a receiver for a product in the cart
   const copyReceiver = useCallback((productId: number | string, receiverId: string) => {
     dispatchCart({
       type: 'COPY_RECEIVER',
@@ -135,6 +137,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     })
   }, [])
 
+  // Updates a receiver for a product in the cart
   const updateReceiver = useCallback(
     (productId: number | string, receiverId: string, updatedFields: UpdateReceiverFields) => {
       dispatchCart({
@@ -145,6 +148,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     [],
   )
 
+  // Removes a receiver from a product in the cart
   const removeReceiver = useCallback((productId: number | string, receiverId: string) => {
     dispatchCart({
       type: 'REMOVE_RECEIVER',
@@ -152,6 +156,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     })
   }, [])
 
+  // Updates the shipping method for a receiver
   const updateShippingMethod = useCallback(
     (productId: number | string, receiverId: string, shippingMethod: ShippingMethod) => {
       dispatchCart({
@@ -162,6 +167,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     [],
   )
 
+  // Removes a product from the cart
   const removeProduct = useCallback((productId: number | string) => {
     dispatchCart({
       type: 'REMOVE_PRODUCT',
@@ -169,12 +175,14 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     })
   }, [])
 
+  // Clears the entire cart
   const clearCart = useCallback(() => {
     dispatchCart({
       type: 'CLEAR_ORDER',
     })
   }, [])
 
+  // Checks if a product is in the cart
   const isProductInCart = useCallback(
     (productId: string | number): boolean => {
       return (
@@ -188,8 +196,10 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     [cart.items],
   )
 
+  // Memoized value for checking if the cart is empty
   const cartIsEmpty = useMemo(() => cart.items?.length === 0, [cart.items])
 
+  // Memoized value for the CartContext
   const contextValue = useMemo(
     () => ({
       addProduct,
@@ -226,6 +236,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     ],
   )
 
+  // Effect to initialize the cart from local storage
   useEffect(() => {
     if (!hasInitialized.current) {
       hasInitialized.current = true
@@ -254,11 +265,13 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, [])
 
+  // Effect to update local storage with cart changes
   useEffect(() => {
     if (!hasInitialized.current) return
     debouncedUpdateLocalStorage(cart)
   }, [cart])
 
+  // Effect to update the formatted total in state
   useEffect(() => {
     if (!hasInitializedCart) return
 

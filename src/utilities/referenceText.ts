@@ -13,6 +13,7 @@ export const cartPageText = {
   heading: `Your Cart`,
   receiverMessage: `Send this thankly to as many people as you like. Simply add a receiver and we'll take care of the rest`,
   shippingMessage: `Allow VIC (5 business days), Interstate (6-8 business days) due to AusPost letter delivery changes. `,
+  shippingFreeMessage: `Your order is over $150 so Shipping is on us!`,
   // sendTo: `Sending this thankly to:`,
 }
 
