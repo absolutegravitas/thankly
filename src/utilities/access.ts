@@ -41,19 +41,26 @@ export const makeFirstUserAdmin: FieldHook<User> = async ({ req, operation, valu
 
   return value
 }
-
-// published collection only
 export const publishedOnly: Access = ({ req: { user } }) => {
-  if (!user || !user.roles) {
-    return false
+  // Allow access to published documents for all users (including unauthenticated)
+  const publishedAccess = {
+    _status: {
+      equals: 'published',
+    },
   }
 
-  // allow users with a role of 'admin'
-  if (user.roles.includes('admin')) {
+  // If there's no user, only allow access to published documents
+  if (!user) {
+    return publishedAccess
+  }
+
+  // Allow users with a role of 'admin' to access all documents
+  if (user.roles && user.roles.includes('admin')) {
     return true
   }
-  // using a query constraint, guest users can access when a field named 'isPublished' is set to true
-  return { _status: { equals: 'published' } }
+
+  // For authenticated non-admin users, still only allow access to published documents
+  return publishedAccess
 }
 
 // admins only

@@ -1,115 +1,71 @@
-/**
- * @file page.tsx
- * @module ShopPage
- * @description Renders the Thankly shop page with a list of available products.
- * @overview
- * This file exports two main components: the `ShopPage` component and the `generateMetadata` function. The `ShopPage` component is responsible for fetching and displaying a list of available products from the PayloadCMS backend. If no products are available, it displays a message informing the user. The `generateMetadata` function is a Next.js utility function that generates metadata for the page, including the title, description, and open graph data.
- *
- * The `ShopPage` component uses the `fetchProductsList` function to fetch the list of products from the PayloadCMS backend. The `fetchProductsList` function utilizes Next.js's `unstable_cache` to cache the fetched data and improve performance. If the cached data is not available or has expired, it fetches fresh data from the backend and caches the result.
- *
- * Once the product data is fetched, the `ShopPage` component checks if there are any products available. If no products are found, it renders a message informing the user that there are no products in the shop. Otherwise, it renders the `ProductGrid` component, passing the fetched products as a prop.
- *
- * The `generateMetadata` function generates static metadata for the page, including the title, description, and open graph data. This metadata is used by search engines and social media platforms to display preview information about the page.
- */
-
+// This file is a server component in Next.js 14 that renders the Shop page of a web application.
+// It displays a grid of available products fetched from a content management system (CMS) called Payload.
+// If no products are available, it shows a message indicating an empty shop.
 import React from 'react'
-import { draftMode } from 'next/headers'
 import { Metadata } from 'next'
-import ProductGrid from '@app/_blocks/ProductGrid'
-import { BlockWrapper } from '../../_components/BlockWrapper'
-import { contentFormats, getPaddingClasses } from '../../_css/tailwindClasses'
-import { Gutter } from '../../_components/Gutter'
-import { unstable_cache } from 'next/cache'
-import { getPayloadHMR } from '@payloadcms/next/utilities'
-import configPromise from '@payload-config'
-import { Product } from '@/payload-types'
+import { BlockWrapper } from '@app/_components/BlockWrapper'
+import { Gutter } from '@app/_components/Gutter'
+import { notFound } from 'next/navigation'
+import { getPaddingClasses } from '../../_css/tailwindClasses'
+import { Suspense } from 'react'
+import LoadingShop from './loading'
+import ProductGrid from '../../_blocks/ProductGrid'
+import Filters from '../../_blocks/Shop/Filters'
 
-const fetchProductsList = (): Promise<Product[] | null> => {
-  const cachedFetchProductsList = unstable_cache(
-    async (): Promise<Product[] | null> => {
-      const config = await configPromise
-      let payload: any = await getPayloadHMR({ config })
-      let products = null
-      try {
-        const { docs } = await payload.find({
-          collection: 'products',
-          depth: 1,
-          pagination: false,
-          context: {
-            select: [
-              'id',
-              'slug',
-              'title',
-              'media',
-              'prices',
-              'productType',
-              'shippingSize',
-              'stock',
-              'meta',
-              'stripe',
-            ],
-          },
-        })
+// Define a type alias for the sort options
+export type SortOption = 'name_asc' | 'name_desc' | 'price_asc' | 'price_desc'
 
-        products = docs
-      } catch (error) {
-        console.error(`Error fetching products...`, error)
-      } finally {
-        return products
-      }
-    },
-    [`fetchProductsList`],
-    {
-      revalidate: 10,
-      tags: [`fetchProductsList`],
-    },
-  )
-
-  return cachedFetchProductsList()
+// Define a type alias for the filter options
+export type FilterOptions = {
+  categories?: string[]
+  tags?: string[]
+  productType?: string[]
 }
 
-export default async function ShopPage() {
-  const products: Product[] | null = await fetchProductsList()
+export default async function ShopPage({
+  searchParams,
+}: {
+  searchParams?: {
+    query?: string
+    page?: string
+    sort?: SortOption
+    category?: string[]
+    tags?: string[]
+    productType?: string[]
+  }
+}) {
+  console.log('Updated searchParams in page.tsx:', searchParams)
+  console.log('ShopPage rendered with searchParams:', searchParams)
 
-  // console.log('fetchedProducts -- ', products)
-  if (!products || products.length === 0) {
-    return (
-      <BlockWrapper className={getPaddingClasses('hero')}>
-        <Gutter>
-          <div className="flex flex-col md:flex-row">
-            <div className="sm:basis-3/6 md:basis-3/6 lg:basis-4/6 flex align-middle items-center justify-middle pb-3 pt-6 sm:pt-0">
-              <span
-                className={[
-                  contentFormats.global,
-                  contentFormats.p,
-                  'tracking-tighter sm:tracking-tight text-2xl sm:text-3xl font-medium',
-                ].join(' ')}
-              >
-                Thankly Shop
-              </span>
-            </div>
-          </div>
-          <p className="mt-4 text-gray-500">There are no products in the shop.</p>
-        </Gutter>
-      </BlockWrapper>
-    )
+  const page = searchParams?.page ? parseInt(searchParams.page, 10) : 1
+  const sort = searchParams?.sort as SortOption | undefined
+  const filters: FilterOptions = {
+    categories: searchParams?.category,
+    tags: searchParams?.tags,
+    productType: searchParams?.productType,
   }
 
   return (
     <BlockWrapper className={getPaddingClasses('hero')}>
       <Gutter>
-        <h1 className={[contentFormats.global, contentFormats.h1].join(' ')}>Thankly Shop</h1>
-        <p className={[contentFormats.global, contentFormats.text].join(' ')}>
-          {`Our full range of currently available Thankly Gifts and Cards.`}
+        <h1 className="text-3xl font-bold tracking-tight text-gray-900">{`Thankly Shop`}</h1>
+        <p className="mt-4 max-w-xl text-sm text-gray-700">
+          {`Our thoughtfully curated thankly gifts and cards.`}
         </p>
 
-        {products && products.length > 0 && <ProductGrid products={products} />}
+        <main>
+          <Filters />
+
+          <Suspense fallback={<LoadingShop />}>
+            <ProductGrid page={page} sort={sort} filters={filters} />
+          </Suspense>
+        </main>
       </Gutter>
     </BlockWrapper>
   )
 }
 
-// export basic ShopPage metadata
+// Generates metadata for the Shop page
 export async function generateMetadata(): Promise<Metadata> {
   // Static metadata values
   const defaultTitle = 'thankly shop'

@@ -18,6 +18,8 @@ export interface Config {
     media: Media;
     users: User;
     carts: Cart;
+    tags: Tag;
+    categories: Category;
     forms: Form;
     'form-submissions': FormSubmission;
     'payload-preferences': PayloadPreference;
@@ -244,6 +246,8 @@ export interface Product {
   id: number;
   title: string;
   productType?: ('card' | 'gift') | null;
+  categories?: (number | null) | Category;
+  tags?: (number | Tag)[] | null;
   shippingSize?: ('mini' | 'small' | 'medium' | 'large') | null;
   prices: {
     basePrice: number;
@@ -289,6 +293,26 @@ export interface Product {
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "categories".
+ */
+export interface Category {
+  id: number;
+  title?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tags".
+ */
+export interface Tag {
+  id: number;
+  title?: string | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

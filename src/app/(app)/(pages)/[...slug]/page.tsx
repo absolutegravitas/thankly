@@ -27,38 +27,6 @@ import { generateMeta } from '@/utilities/generateMeta'
 import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
 import Blocks from '@app/_blocks'
 
-const fetchPage = (slug: string): Promise<Page | null> => {
-  const cachedFetchPage = unstable_cache(
-    async (): Promise<Page | null> => {
-      const config = await configPromise
-      let payload: any = await getPayloadHMR({ config })
-      let page = null
-      try {
-        const { docs } = await payload.find({
-          collection: 'pages',
-          where: { slug: { equals: slug || 'home' } },
-          depth: 3,
-          limit: 1,
-          pagination: false,
-        })
-
-        page = docs[0]
-      } catch (error) {
-        console.error(`Error fetching page: ${slug}`, error)
-      } finally {
-        return page
-      }
-    },
-    [`fetchPage-${slug}`],
-    {
-      revalidate: 10,
-      tags: [`fetchPage-${slug}`],
-    },
-  )
-
-  return cachedFetchPage()
-}
-
 const Page = async ({ params: { slug = 'home' } }) => {
   const page: Page | null = await fetchPage(slug || 'home') //, isDraftMode)
 
@@ -145,4 +113,36 @@ export async function generateMetadata({
         : undefined,
     }),
   }
+}
+
+const fetchPage = (slug: string): Promise<Page | null> => {
+  const cachedFetchPage = unstable_cache(
+    async (): Promise<Page | null> => {
+      const config = await configPromise
+      let payload: any = await getPayloadHMR({ config })
+      let page = null
+      try {
+        const { docs } = await payload.find({
+          collection: 'pages',
+          where: { slug: { equals: slug || 'home' } },
+          depth: 3,
+          limit: 1,
+          pagination: false,
+        })
+
+        page = docs[0]
+      } catch (error) {
+        console.error(`Error fetching page: ${slug}`, error)
+      } finally {
+        return page
+      }
+    },
+    [`fetchPage-${slug}`],
+    {
+      revalidate: 10,
+      tags: [`fetchPage-${slug}`],
+    },
+  )
+
+  return cachedFetchPage()
 }

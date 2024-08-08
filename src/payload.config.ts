@@ -19,6 +19,9 @@ import { Carts } from '@cms/_collections/carts'
 import { Orders } from '@cms/_collections/orders'
 import { Settings } from '@cms/_collections/settings'
 import { Users } from '@cms/_collections/users'
+import { Tags } from '@cms/_collections/tags'
+
+import { Categories } from '@cms/_collections/categories'
 
 // import { buildConfig } from 'payload/config' // deprecated
 import { buildConfig } from 'payload'
@@ -30,7 +33,7 @@ const dirname = path.dirname(filename)
 
 export default buildConfig({
   // needs to be ordered in a specific way otherwise the admin grouping fucks up
-  collections: [Pages, Orders, Products, Reusable, Media, Users, Carts],
+  collections: [Pages, Orders, Products, Reusable, Media, Users, Carts, Tags, Categories],
   globals: [Settings],
   editor: lexicalEditor({}),
   db: postgresAdapter({ pool: { connectionString: process.env.POSTGRES_URL } }),

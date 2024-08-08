@@ -56,6 +56,18 @@ export const Products: CollectionConfig = {
             { label: 'Gift', value: 'gift' },
           ],
         },
+        {
+          name: 'categories',
+          type: 'relationship',
+          relationTo: 'categories',
+          // hasMany: true,
+        },
+        {
+          name: 'tags',
+          type: 'relationship',
+          relationTo: 'tags',
+          hasMany: true,
+        },
         // basically shipping size/weight determines what the predefault base ship price is for a gift
         {
           name: 'shippingSize',
