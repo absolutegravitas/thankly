@@ -19,7 +19,6 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { BlockWrapper } from '@app/_components/BlockWrapper'
 import { Gutter } from '@app/_components/Gutter'
-import { ProductActions } from '@app/_components/ProductActions'
 import { Product, Media } from '@payload-types' // Types for product and media data
 import { contentFormats, getPaddingClasses } from '@app/_css/tailwindClasses'
 import cn from '@/utilities/cn'

@@ -22,7 +22,7 @@
 
 import React, { useState, useCallback, useEffect, Fragment } from 'react'
 import { useSearchParams, usePathname, useRouter } from 'next/navigation'
-import { ChevronDownIcon, X } from 'lucide-react'
+import { ChevronDownIcon, Loader2, X } from 'lucide-react'
 import {
   Menu,
   MenuButton,
@@ -77,20 +77,7 @@ export default function Filters() {
   const [selectedProductTypes, setSelectedProductTypes] = useState<string[]>([])
   const [selectedTags, setSelectedTags] = useState<number[]>([])
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false)
-
-  /**
-   * Updates the URL search params based on the selected filters and sorting options
-   * @param newParams - Object containing the new params to be set
-   */
-  useEffect(() => {
-    const categories = searchParams.getAll('category')
-    const tags = searchParams.getAll('tags')
-    const productTypes = searchParams.getAll('productType')
-    setSelectedCategories(categories.map((category) => parseInt(category, 10)))
-    setSelectedTags(tags.map((tag) => parseInt(tag, 10)))
-    setSelectedProductTypes(productTypes)
-  }, [searchParams])
-
+  const [isLoading, setIsLoading] = useState(true)
   const updateSearchParams = useCallback(
     (newParams: Record<string, string | string[] | null>) => {
       const params = new URLSearchParams(searchParams.toString())
@@ -176,10 +163,13 @@ export default function Filters() {
   useEffect(() => {
     const getFilters = async () => {
       try {
+        setIsLoading(true)
         const fetchedFilters = await fetchFilters()
         setFilters(fetchedFilters)
       } catch (error) {
         console.error('Error fetching filters:', error)
+      } finally {
+        setIsLoading(false)
       }
     }
     getFilters()
@@ -269,6 +259,26 @@ export default function Filters() {
     </Popover>
   )
 
+  const SkeletonLoader = () => (
+    <div className="flex items-center justify-center space-x-2">
+      <Loader2 className="h-5 w-5 animate-spin text-gray-500" />
+      <span className="text-sm font-medium text-gray-500">{`Loading filter and sorting options...`}</span>
+    </div>
+  )
+
+  if (isLoading) {
+    return (
+      <section aria-labelledby="filter-heading" className="bg-white pb-4 pt-6">
+        <h2 id="filter-heading" className="sr-only">
+          Filters
+        </h2>
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+          <SkeletonLoader />
+        </div>
+      </section>
+    )
+  }
+
   return (
     <section aria-labelledby="filter-heading" className="bg-white pb-4 pt-6">
       <h2 id="filter-heading" className="sr-only">
@@ -299,7 +309,7 @@ export default function Filters() {
                     }}
                     className={`${
                       active ? 'bg-gray-100' : ''
-                    } block px-4 py-2 text-sm font-medium text-gray-900`}
+                    } no-underline block px-4 py-2 text-sm font-medium text-gray-900`}
                   >
                     {option.name}
                   </a>

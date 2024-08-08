@@ -89,28 +89,42 @@ export async function generateMetadata({
   params: { slug?: string | string[] }
 }): Promise<Metadata> {
   const slugString = Array.isArray(slug) ? slug.join('/') : slug
+
+  // Default metadata
+  const defaultTitle = 'Thankly'
+  const defaultDescription =
+    'Express your gratitude with Thankly - Your one-stop shop for thoughtful gifts and cards.'
+  const defaultImageURL = `${process.env.NEXT_PUBLIC_SERVER_URL}/images/og-image.png`
+
   const page = await fetchPage(slugString)
 
+  if (!page || !page.meta) {
+    return {
+      title: defaultTitle,
+      description: defaultDescription,
+      openGraph: mergeOpenGraph({
+        title: defaultTitle,
+        description: defaultDescription,
+        url: '/',
+        images: [{ url: defaultImageURL }],
+      }),
+    }
+  }
+
   const ogImage =
-    typeof page?.meta?.image === 'object' &&
-    page?.meta?.image !== null &&
-    'url' in page?.meta?.image &&
+    typeof page.meta.image === 'object' &&
+    page.meta.image !== null &&
+    'url' in page.meta.image &&
     `${process.env.NEXT_PUBLIC_SERVER_URL}${page.meta.image.url}`
 
   return {
-    title: page?.meta?.title || 'thankly',
-    description: page?.meta?.description,
+    title: page.meta.title || defaultTitle,
+    description: page.meta.description || defaultDescription,
     openGraph: mergeOpenGraph({
-      title: page?.meta?.title || 'thankly',
-      description: page?.meta?.description ?? undefined,
+      title: page.meta.title || defaultTitle,
+      description: page.meta.description || defaultDescription,
       url: Array.isArray(slug) ? slug.join('/') : '/',
-      images: ogImage
-        ? [
-            {
-              url: ogImage,
-            },
-          ]
-        : undefined,
+      images: ogImage ? [{ url: ogImage }] : [{ url: defaultImageURL }],
     }),
   }
 }

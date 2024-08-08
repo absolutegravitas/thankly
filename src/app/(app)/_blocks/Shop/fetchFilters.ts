@@ -9,7 +9,6 @@ import configPromise from '@payload-config'
 import { Product, Category, Tag } from '@/payload-types'
 
 export const fetchFilters = (): Promise<{ categories: Category[]; tags: Tag[] } | null> => {
-  'use server'
   const cachedFetchPage = unstable_cache(
     async (): Promise<{ categories: Category[]; tags: Tag[] } | null> => {
       const config = await configPromise
@@ -21,17 +20,17 @@ export const fetchFilters = (): Promise<{ categories: Category[]; tags: Tag[] } 
       try {
         const categoriesResponse = await payload.find({
           collection: 'categories',
-          limit: 100,
+          limit: 10,
           pagination: false,
-          depth: 1,
+          depth: 0,
         })
         categoriesResult = categoriesResponse.docs
 
         const tagsResponse = await payload.find({
           collection: 'tags',
-          limit: 100,
+          limit: 10,
           pagination: false,
-          depth: 1,
+          depth: 0,
         })
         tagsResult = tagsResponse.docs
 
