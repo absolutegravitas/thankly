@@ -29,6 +29,10 @@ const nextConfig = {
       { protocol: 'https', hostname: '**google.com.au**' },
       { protocol: 'https', hostname: '**api.radar.io**' },
       { protocol: 'https', hostname: '**placehold.co**' },
+      { protocol: 'https', hostname: '**authjs.dev**' }, // for auth providers
+      { protocol: 'https', hostname: '**lh3.googleusercontent.com**' }, // for user avatars - google
+      { protocol: 'https', hostname: '**media.licdn.com**' }, // for user avatars - linkedin
+      { protocol: 'https', hostname: '**platform-lookaside.fbsbx.com**' }, // for user avatars - facebook
     ],
   },
   async headers() {

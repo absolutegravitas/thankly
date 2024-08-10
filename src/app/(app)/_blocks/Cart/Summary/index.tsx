@@ -1,7 +1,3 @@
-// This file contains React components related to the shopping cart summary and checkout process.
-// It provides the CartSummary component which displays the cart totals, discount information, and checkout/clear cart buttons.
-// It also includes the SummaryItem component for rendering individual summary items and the CheckoutProcessing component for displaying a processing modal during checkout.
-
 import React, { useEffect, useState, useTransition } from 'react'
 import { buttonLook, contentFormats } from '@app/_css/tailwindClasses'
 import { DollarSignIcon, MailWarningIcon, SmileIcon, XIcon, ArrowLeftIcon } from 'lucide-react'
@@ -14,22 +10,26 @@ import { useCart } from '@app/_providers/Cart'
 import { LoaderCircleIcon } from 'lucide-react'
 import { FullLogo } from '@app/_graphics/FullLogo'
 import { cartPageText } from '@/utilities/referenceText'
+import { Elements } from '@stripe/react-stripe-js'
+import { loadStripe, StripeElementsOptions } from '@stripe/stripe-js'
+import { createPaymentIntent } from './createPaymentIntent'
 
-// The CartSummary component renders the cart summary section
-// It displays the total cost, shipping cost, and any applicable discounts
-// It also provides buttons for proceeding to checkout or clearing the cart
+// Make sure to call loadStripe outside of a component’s render to avoid
+// recreating the Stripe object on every render.
+// This is your test publishable API key.
+const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
+
 export const CartSummary: React.FC<{ cart: Cart }> = ({ cart }) => {
-  // If the cart or cart totals are not available, return null
   if (!cart || !cart.totals) return null
 
-  const router = useRouter()
   const { validateCart, clearCart } = useCart()
   const [isValid, setIsValid] = useState<boolean>(true)
   const [validationMessage, setValidationMessage] = useState<string>('')
   const [isProcessing, setIsProcessing] = useState<boolean>(false)
   const [isPending, startTransition] = useTransition()
+  const [clientSecret, setClientSecret] = useState<string | undefined>(undefined)
 
-  // Validate the cart on component mount and whenever the cart or validateCart function changes
+  // check if cart is valid
   useEffect(() => {
     const orderValidity = validateCart()
     setIsValid(orderValidity)
@@ -38,145 +38,147 @@ export const CartSummary: React.FC<{ cart: Cart }> = ({ cart }) => {
     )
   }, [cart, validateCart])
 
-  // Handle the checkout process
-  // If the cart is valid, navigate to the checkout page
-  // If the cart is invalid, display an alert with the validation message
-  const handleCheckout = async (event?: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-    if (event) event.preventDefault()
+  // create payment intent if cart is valid
+  useEffect(() => {
     if (isValid) {
-      setIsProcessing(true)
-      try {
-        router.push(`/shop/checkout`)
-      } catch (error) {
-        console.error('Error during checkout:', error)
-        setIsProcessing(false)
-        alert('An error occurred during checkout. Please try again.')
+      const fetchClientSecret = async () => {
+        const { clientSecret } = await createPaymentIntent(cart.totals.total)
+        setClientSecret(clientSecret || undefined)
       }
-    } else {
-      alert(validationMessage)
+      fetchClientSecret()
     }
+  }, [isValid, cart.totals.total])
+
+  const appearance = {
+    theme: 'flat' as const,
+    variables: {
+      colorPrimary: '#557755',
+      colorBackground: '#f9fafb',
+      colorText: '#111827',
+      colorDanger: '#dc2626',
+      fontFamily:
+        'ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
+      spacingUnit: '4px',
+      borderRadius: '0px',
+    },
+    rules: {
+      '.Input': {
+        border: 'none',
+        borderBottom: '1px solid #d1d5db',
+        boxShadow: 'none',
+        fontSize: '14px',
+        padding: '8px 4px',
+      },
+      '.Input:focus': {
+        border: 'none',
+        borderBottom: '2px solid #557755',
+        boxShadow: 'none',
+      },
+      '.Input::placeholder': {
+        color: '#9ca3af',
+      },
+      '.Label': {
+        fontSize: '14px',
+        fontWeight: '500',
+        color: '#111827',
+      },
+      '.Error': {
+        color: '#dc2626',
+        fontSize: '14px',
+      },
+    },
+  }
+
+  const options: StripeElementsOptions = {
+    clientSecret,
+    appearance,
   }
 
   return (
-    <div id="summary-heading" className="sticky top-4 scroll-py-28 scroll-mt-24 lg:px-60">
-      <h2 className={cn(contentFormats.global, contentFormats.h3, 'mb-6')}>Cart Summary</h2>
+    <div className="flex sm:flex-row flex-col">
+      <div
+        id="summary-heading"
+        className="sticky top-4 scroll-py-28 scroll-mt-24 sm:basis-1/2 py-4 space-y-6 sm:space-y-8 pl-0 sm:px-8"
+      >
+        <h2 className={cn(contentFormats.global, contentFormats.h3, 'mt-0 mb-6')}>Summary</h2>
 
-      <div className="space-y-4">
-        <SummaryItem
-          label="Total (inc. taxes)"
-          value={cart.totals.total + (cart.totals.discount || 0)}
-          isBold
-        />
-        <SummaryItem label="Thanklys" value={cart.totals.cost} />
-        <SummaryItem label="+ Shipping" value={cart.totals.shipping || 0} />
-
-        {(cart.totals.discount || 0) < 0 && (
+        <div className="space-y-4">
           <SummaryItem
-            label={
-              <span className="flex items-center">
-                <SmileIcon className="mr-2" />
-                Your order is over $150 so Shipping is on us!
-              </span>
-            }
-            value={cart.totals.discount || 0}
+            label="Total (inc. taxes)"
+            value={cart.totals.total + (cart.totals.discount || 0)}
+            isBold
           />
-        )}
-      </div>
+          <SummaryItem label="Thanklys" value={cart.totals.cost} />
+          <SummaryItem label="+ Shipping" value={cart.totals.shipping || 0} />
 
-      <div className="mt-6 space-y-4">
-        {!isValid && <div className="text-red-500 text-sm">{validationMessage}</div>}
-
-        <div className={cn(contentFormats.global, contentFormats.text, 'text-sm flex items-start')}>
-          <MailWarningIcon className="mr-2 flex-shrink-0 mt-1" />
-          <span>
-            <span className="font-semibold">Thankly Cards: </span>
-            {cartPageText.shippingMessage}{' '}
-            <Link
-              className={cn(contentFormats.global, contentFormats.a, '!text-sm')}
-              href="https://auspost.com.au/about-us/supporting-communities/services-all-communities/our-future"
-              target="_blank"
-            >
-              Learn More
-            </Link>
-          </span>
+          {(cart.totals.discount || 0) < 0 && (
+            <SummaryItem
+              label={
+                <span className="flex items-center">
+                  <SmileIcon className="mr-2" />
+                  {cartPageText.shippingFreeMessage}
+                </span>
+              }
+              value={cart.totals.discount || 0}
+            />
+          )}
         </div>
 
-        <div className="flex flex-col gap-2 items-center">
+        <div className="mt-6 space-y-4">
+          {!isValid && <div className="text-red-500 text-sm">{validationMessage}</div>}
+
+          <div
+            className={cn(contentFormats.global, contentFormats.text, 'text-sm flex items-start')}
+          >
+            <MailWarningIcon className="mr-2 flex-shrink-0 mt-1" />
+            <span>
+              <span className="font-semibold">Thankly Cards: </span>
+              {cartPageText.shippingMessage}{' '}
+              <Link
+                className={cn(contentFormats.global, contentFormats.a, '!text-sm')}
+                href="https://auspost.com.au/about-us/supporting-communities/services-all-communities/our-future"
+                target="_blank"
+              >
+                Learn More
+              </Link>
+            </span>
+          </div>
+
           <CMSLink
-            className={cn(
-              'block w-full #sm:w-1/4',
-              isValid ? '!bg-green' : '!bg-gray-400',
-              '!text-white',
-            )}
             data={{
-              label: 'Checkout',
+              label: 'Continue Shopping',
               type: 'custom',
-              url: `/shop/checkout`,
+              url: '/shop',
             }}
             look={{
-              theme: 'dark',
+              theme: 'light',
               type: 'button',
               size: 'medium',
               width: 'full',
               variant: 'blocks',
               icon: {
-                content: <DollarSignIcon strokeWidth={1.25} />,
-                iconPosition: 'right',
+                content: <ArrowLeftIcon strokeWidth={1.25} />,
+                iconPosition: 'left',
               },
             }}
-            actions={{ onClick: handleCheckout }}
-            pending={isProcessing}
+            // actions={{
+            //   onClick: async () => {
+            //     startTransition(async () => {
+            //       router.push('/shop')
+            //     })
+            //   },
+            // }}
           />
-
-          <div className="flex flex-col sm:flex-row gap-4">
-            {/* <CMSLink
-              data={{
-                label: !isPending ? 'Clear Cart' : 'Clearing Cart... please wait',
-              }}
-              look={{
-                theme: 'light',
-                type: 'button',
-                size: 'small',
-                width: 'full',
-                variant: 'blocks',
-                icon: {
-                  content: <XIcon strokeWidth={1.25} />,
-                  iconPosition: 'right',
-                },
-              }}
-              actions={{
-                onClick: async () => {
-                  startTransition(async () => {
-                    clearCart()
-                    router.push('/shop')
-                  })
-                },
-              }}
-            /> */}
-
-            <CMSLink
-              data={{
-                label: 'or Continue Shopping',
-                type: 'custom',
-                url: '/shop',
-              }}
-              look={{
-                theme: 'light',
-                type: 'link',
-                size: 'small',
-                width: 'full',
-                variant: 'blocks',
-                icon: {
-                  content: <ArrowLeftIcon strokeWidth={1.25} />,
-                  iconPosition: 'left',
-                },
-              }}
-            />
-          </div>
         </div>
       </div>
-
-      {isProcessing && <CheckoutProcessing />}
+      <div id="summary-heading" className="basis-1/2 py-4 space-y-6 sm:space-y-8 pl-0 sm:px-8">
+        <h2 className={cn(contentFormats.global, contentFormats.h3, 'mt-0 mb-6')}>Pay</h2>
+        {clientSecret && (
+          <Elements stripe={stripePromise} options={options}>
+            <CheckoutForm isValid={isValid} />
+          </Elements>
+        )}
+      </div>
     </div>
   )
 }
@@ -204,21 +206,90 @@ const SummaryItem: React.FC<SummaryItemProps> = ({ label, value, isBold }) => (
   </div>
 )
 
-// The CheckoutProcessing component displays a modal with a loading spinner during the checkout process
-const CheckoutProcessing: React.FC = () => (
-  <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900/75">
-    <div className="bg-white p-8 rounded-lg shadow-xl text-center max-w-md w-full">
-      <FullLogo className="h-12 w-12 mx-auto mb-4" />
-      <LoaderCircleIcon
-        className="animate-spin h-12 w-12 text-green-500 mx-auto mb-4"
-        strokeWidth={1.25}
-        aria-hidden="true"
-      />
-      <h2 className="text-2xl font-semibold mb-2">Preparing Checkout</h2>
-      <p className="text-gray-600 mb-4">
-        Please do not close this window or click the back button.
-      </p>
-      <div className="text-sm text-gray-500">This may take a few moments...</div>
-    </div>
-  </div>
-)
+import { PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js'
+
+const CheckoutForm: React.FC<{ isValid: boolean }> = ({ isValid }) => {
+  const stripe = useStripe()
+  const elements = useElements()
+  const [message, setMessage] = useState<string | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
+
+  useEffect(() => {
+    if (!stripe) return
+    const clientSecret = new URLSearchParams(window.location.search).get(
+      'payment_intent_client_secret',
+    )
+    if (!clientSecret) return
+
+    stripe.retrievePaymentIntent(clientSecret).then(({ paymentIntent }) => {
+      if (paymentIntent) {
+        switch (paymentIntent.status) {
+          case 'succeeded':
+            setMessage('Payment succeeded!')
+            break
+          case 'processing':
+            setMessage('Your payment is processing.')
+            break
+          case 'requires_payment_method':
+            setMessage('Your payment was not successful, please try again.')
+            break
+          default:
+            setMessage('Something went wrong.')
+            break
+        }
+      }
+    })
+  }, [stripe])
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!stripe || !elements) return
+    setIsLoading(true)
+
+    const { error } = await stripe.confirmPayment({
+      elements,
+      confirmParams: {
+        return_url: `${window.location.origin}/confirmation`,
+      },
+    })
+
+    if (error) {
+      setMessage(error.message ?? 'An unexpected error occurred.')
+    } else {
+      setMessage('An unexpected error occurred.')
+    }
+    setIsLoading(false)
+  }
+
+  const paymentElementOptions = {
+    layout: 'tabs' as const,
+  }
+
+  return (
+    <form id="payment-form" onSubmit={handleSubmit}>
+      <PaymentElement id="payment-element" options={paymentElementOptions} />
+      <button
+        disabled={isLoading || !stripe || !elements || !isValid}
+        id="submit"
+        className={cn(
+          'w-full mt-6 py-3 cursor-pointer border border-transparent bg-green px-4 text-sm font-medium text-white shadow-sm hover:bg-black hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50',
+          buttonLook.base,
+          buttonLook.sizes.medium,
+          buttonLook.widths.full,
+          (!isValid || isLoading || !stripe || !elements) && 'opacity-50 cursor-not-allowed',
+        )}
+      >
+        <span id="button-text">
+          {isLoading ? <div className="spinner" id="spinner"></div> : 'Pay now'}
+        </span>
+      </button>
+      {message && (
+        <div id="payment-message" className="mt-4 text-red-500">
+          {message}
+        </div>
+      )}
+    </form>
+  )
+}
+
+export default CheckoutForm

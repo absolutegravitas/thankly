@@ -1,6 +1,25 @@
 import type { CollectionConfig } from 'payload'
 import { adminsAndUserOnly, adminsOnly } from '@/utilities/access'
 
+let lastTimestamp = 0
+let counter = 1
+
+function generateOrderNumber() {
+  const now = Date.now()
+
+  if (now === lastTimestamp) {
+    counter++
+  } else {
+    counter = 1
+    lastTimestamp = now
+  }
+
+  const timestampPart = now.toString().slice(-8) // Last 8 digits of timestamp
+  const counterPart = counter.toString().padStart(3, '0') // 4-digit counter
+
+  return `${timestampPart}-${counterPart}`
+}
+
 export const Orders: CollectionConfig = {
   slug: 'orders',
   admin: {
@@ -9,7 +28,7 @@ export const Orders: CollectionConfig = {
     group: '2. Shop',
   },
   hooks: {
-    // beforeChange: [getOrderNumber],
+    beforeChange: [],
     afterChange: [],
   },
 
@@ -28,28 +47,11 @@ export const Orders: CollectionConfig = {
         // global
         {
           name: 'orderNumber',
-          type: 'number',
-          unique: true,
-          hooks: {
-            beforeValidate: [
-              async ({ data, operation, req }) => {
-                if (operation === 'create') {
-                  const lastOrder = await req.payload.find({
-                    collection: 'orders',
-                    sort: '-orderNumber',
-                    limit: 1,
-                  })
-
-                  // console.log(lastOrder)
-                  const lastOrderNumber = lastOrder.docs[0]?.orderNumber ?? 0
-                  return lastOrderNumber > 0 ? lastOrderNumber + 1 : data?.orderNumber
-                }
-
-                return data?.orderNumber
-              },
-            ],
-          },
+          type: 'text',
+          required: false,
+          admin: { width: '25%', readOnly: true },
         },
+
         {
           name: 'status',
           type: 'select',

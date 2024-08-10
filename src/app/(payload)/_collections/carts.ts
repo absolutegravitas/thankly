@@ -1,9 +1,15 @@
 import type { CollectionConfig } from 'payload'
 import { adminsAndUserOnly, adminsOnly } from '@/utilities/access'
+import { randomUUID } from 'crypto'
 
 export const Carts: CollectionConfig = {
   slug: 'carts',
-  admin: { group: '2. Shop' },
+
+  admin: {
+    group: '2. Shop',
+    useAsTitle: `orderNumber`,
+    defaultColumns: ['cartNumber', 'createdAt'],
+  },
 
   access: {
     create: adminsOnly,
@@ -17,6 +23,12 @@ export const Carts: CollectionConfig = {
       type: 'row',
       fields: [
         // global
+        {
+          name: 'cartNumber',
+          type: 'text',
+          required: false,
+          admin: { width: '25%', readOnly: true },
+        },
         {
           name: 'status',
           type: 'select',

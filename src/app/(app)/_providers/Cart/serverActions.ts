@@ -6,49 +6,53 @@ import { Cart } from '@/payload-types'
 import { getPayloadHMR } from '@payloadcms/next/utilities'
 import configPromise from '@payload-config'
 
-export async function syncCartToPayload(cart: Cart): Promise<Cart> {
+export async function upsertPayloadCart(cart: Cart): Promise<Cart | null> {
   const config = await configPromise
   let payload: any = await getPayloadHMR({ config })
+  let payloadCart: Cart | null = null
 
-  try {
-    if (cart.id) {
-      const updatedCart = await payload.update({
-        collection: 'carts',
-        id: cart.id,
-        data: cart,
-      })
-      return updatedCart
-    } else {
-      const newCart = await payload.create({
-        collection: 'carts',
-        data: cart,
-      })
-      return newCart
-    }
-  } catch (error) {
-    console.error('Error syncing cart to Payload:', error)
-    throw new Error('Failed to sync cart')
+  const transformedCart = {
+    ...cart,
+    items: cart.items?.map((item) => ({
+      ...item,
+      product: typeof item.product === 'object' ? item.product.id : item.product,
+    })),
   }
-}
 
-export async function fetchCartFromPayload(): Promise<Cart | null> {
-  const config = await configPromise
-  let payload: any = await getPayloadHMR({ config })
+  console.log('upsert cart -- ', JSON.stringify(transformedCart))
 
   try {
-    const result = await payload.find({
-      collection: 'carts',
-      // Add your condition to find the user's cart
-      // For example: where: { user: { equals: userId } }
-    })
+    if (cart.cartNumber) {
+      const result = await payload.find({
+        collection: 'carts',
+        cartNumber: cart.cartNumber,
+        depth: 0,
+      })
 
-    if (result.docs.length > 0) {
-      return result.docs[0] as Cart
-    } else {
-      return null
+      console.log('result ', result)
+
+      if (result) {
+        // Update existing cart
+        payloadCart = await payload.update({
+          collection: 'carts',
+          cartNumber: cart.cartNumber,
+          data: transformedCart,
+        })
+
+        console.log('payloadCart -- ', payloadCart)
+      } else {
+        // Create new cart
+        payloadCart = await payload.create({
+          collection: 'carts',
+          data: transformedCart,
+        })
+
+        console.log('payloadCart -- ', payloadCart)
+      }
     }
+    return payloadCart
   } catch (error) {
-    console.error('Error fetching cart from Payload:', error)
-    throw new Error('Failed to fetch cart')
+    console.error('Error upserting cart:', error)
+    throw new Error('Failed to upsert cart')
   }
 }

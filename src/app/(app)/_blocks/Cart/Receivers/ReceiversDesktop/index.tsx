@@ -267,7 +267,7 @@ export const ReceiversDesktop = (item: CartItem) => {
                       {(index + 1).toString().padStart(2, '0')}
                     </span>
                     <div>
-                      <div className="font-medium text-gray-900 w-full">
+                      <div className="font-medium text-gray-900 w-full pb-2">
                         <input
                           id={`name-${receiver.id}`}
                           name="name"
@@ -295,35 +295,7 @@ export const ReceiversDesktop = (item: CartItem) => {
                           </span>
                         )}
                       </div>
-                      <div className="text-sm text-gray-500  w-full">
-                        {/* <div>
-                          <label
-                            htmlFor="email"
-                            className="block text-sm font-medium leading-6 text-gray-900"
-                          >
-                            Email
-                          </label>
-                          <div className="relative mt-2 rounded-md shadow-sm">
-                            <textarea
-                              defaultValue="adamwathan"
-                              id="email"
-                              name="email"
-                              placeholder="you@example.com"
-                              aria-invalid="true"
-                              aria-describedby="email-error"
-                              className="block w-full rounded-md border-0 py-1.5 pr-10 text-red-900 ring-1 ring-inset ring-red-300 placeholder:text-red-300 focus:ring-2 focus:ring-inset focus:ring-red-500 sm:text-sm sm:leading-6"
-                            />
-                            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3">
-                              <MessageCircleWarningIcon
-                                aria-hidden="true"
-                                className="h-5 w-5 text-red-500"
-                              />
-                            </div>
-                          </div>
-                          <p id="email-error" className="mt-2 text-sm text-red-600">
-                            Not a valid email address.
-                          </p>
-                        </div> */}
+                      <div className="text-sm text-gray-500 w-full pt-2">
                         <textarea
                           id={`message-${receiver.id}`}
                           name="message"
@@ -358,80 +330,6 @@ export const ReceiversDesktop = (item: CartItem) => {
 
                 {/* Address */}
                 <div className="flex-1 p-3 space-y-2 w-full">
-                  <div className="text-sm text-gray-500">
-                    <Field className="flex items-center py-2">
-                      <Switch
-                        checked={poBoxFlags[receiver.id] ?? false}
-                        onChange={() => {
-                          setPoBoxFlags((prev) => {
-                            const newState = { ...prev, [receiver.id]: !prev[receiver.id] }
-                            updateReceiver(item.product.id, receiver.id, {
-                              delivery: {
-                                address: {
-                                  ...receiver.delivery?.address,
-                                  addressLine1: newState[receiver.id] ? '' : null,
-                                },
-                              },
-                            })
-                            return newState
-                          })
-                        }}
-                        className="group relative inline-flex h-5 w-10 sm:h-5 sm:w-10 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent bg-gray-200 transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-green focus:ring-offset-2 data-[checked]:bg-green"
-                      >
-                        <span
-                          aria-hidden="true"
-                          className="pointer-events-none inline-block h-4.5 w-4 sm:h-4.5 sm:w-4.5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out group-data-[checked]:translate-x-4 sm:group-data-[checked]:translate-x-3.5"
-                        />
-                      </Switch>
-                      <Label as="span" className="ml-3 text-xs">
-                        <span className="font-semibold text-gray-500">{` Sending to AusPost Parcel Collect / Locker / PO Box?`}</span>{' '}
-                      </Label>
-                    </Field>
-                    {(poBoxFlags[receiver.id] || addressesLine1[receiver.id]) && (
-                      <>
-                        <input
-                          id={`addressLine1-${receiver.id}`}
-                          name="addressLine1"
-                          type="text"
-                          placeholder="Parcel Collect / Locker / PO Box"
-                          value={addressesLine1[receiver.id] || ''}
-                          onChange={(e) => {
-                            const newAddressLine1 = e.target.value
-                            setLine1Addresses((prev) => ({
-                              ...prev,
-                              [receiver.id]: newAddressLine1,
-                            }))
-                            updateReceiver(item.product.id, receiver.id, {
-                              delivery: {
-                                address: {
-                                  ...receiver.delivery?.address,
-                                  addressLine1: newAddressLine1,
-                                },
-                              },
-                            })
-                          }}
-                          className={cn(
-                            'block w-full border-0 focus:outline-none border-b focus:border-b-2 border-gray-300 bg-gray-50 px-1  placeholder-gray-400 focus:border-green/75 focus:ring-0 text-base sm:text-sm',
-                            validationErrors[receiver.id]?.addressLine1 && 'border-red-500',
-                          )}
-                          aria-invalid={!!validationErrors[receiver.id]?.addressLine1}
-                          aria-describedby={
-                            validationErrors[receiver.id]?.addressLine1
-                              ? `addressLine1-error-${receiver.id}`
-                              : undefined
-                          }
-                        />
-                        {validationErrors[receiver.id]?.addressLine1 && (
-                          <span
-                            className="block mt-1 text-sm text-red-600"
-                            id={`addressLine1-error-${receiver.id}`}
-                          >
-                            {validationErrors[receiver.id].addressLine1}
-                          </span>
-                        )}
-                      </>
-                    )}
-                  </div>
                   <div className="text-sm text-gray-900">
                     <input
                       id={`address-${receiver.id}`}
@@ -494,6 +392,80 @@ export const ReceiversDesktop = (item: CartItem) => {
                           </div>
                         ))}
                       </div>
+                    )}
+                  </div>
+                  <div className="text-sm text-gray-500">
+                    <Field className="flex items-center py-2">
+                      <Switch
+                        checked={poBoxFlags[receiver.id] ?? false}
+                        onChange={() => {
+                          setPoBoxFlags((prev) => {
+                            const newState = { ...prev, [receiver.id]: !prev[receiver.id] }
+                            updateReceiver(item.product.id, receiver.id, {
+                              delivery: {
+                                address: {
+                                  ...receiver.delivery?.address,
+                                  addressLine1: newState[receiver.id] ? '' : null,
+                                },
+                              },
+                            })
+                            return newState
+                          })
+                        }}
+                        className="group relative inline-flex h-5 w-10 sm:h-5 sm:w-10 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent bg-gray-200 transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-green focus:ring-offset-2 data-[checked]:bg-green"
+                      >
+                        <span
+                          aria-hidden="true"
+                          className="pointer-events-none inline-block h-4.5 w-4 sm:h-4.5 sm:w-4.5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out group-data-[checked]:translate-x-4 sm:group-data-[checked]:translate-x-3.5"
+                        />
+                      </Switch>
+                      <Label as="span" className="ml-3 text-xs">
+                        <span className="text-gray-500">{` Sending to AusPost Parcel Collect / Locker / PO Box?`}</span>{' '}
+                      </Label>
+                    </Field>
+                    {(poBoxFlags[receiver.id] || addressesLine1[receiver.id]) && (
+                      <>
+                        <input
+                          id={`addressLine1-${receiver.id}`}
+                          name="addressLine1"
+                          type="text"
+                          placeholder="Parcel Collect / Locker / PO Box"
+                          value={addressesLine1[receiver.id] || ''}
+                          onChange={(e) => {
+                            const newAddressLine1 = e.target.value
+                            setLine1Addresses((prev) => ({
+                              ...prev,
+                              [receiver.id]: newAddressLine1,
+                            }))
+                            updateReceiver(item.product.id, receiver.id, {
+                              delivery: {
+                                address: {
+                                  ...receiver.delivery?.address,
+                                  addressLine1: newAddressLine1,
+                                },
+                              },
+                            })
+                          }}
+                          className={cn(
+                            'block w-full border-0 focus:outline-none border-b focus:border-b-2 border-gray-300 bg-gray-50 px-1  placeholder-gray-400 focus:border-green/75 focus:ring-0 text-base sm:text-sm',
+                            validationErrors[receiver.id]?.addressLine1 && 'border-red-500',
+                          )}
+                          aria-invalid={!!validationErrors[receiver.id]?.addressLine1}
+                          aria-describedby={
+                            validationErrors[receiver.id]?.addressLine1
+                              ? `addressLine1-error-${receiver.id}`
+                              : undefined
+                          }
+                        />
+                        {validationErrors[receiver.id]?.addressLine1 && (
+                          <span
+                            className="block mt-1 text-sm text-red-600"
+                            id={`addressLine1-error-${receiver.id}`}
+                          >
+                            {validationErrors[receiver.id].addressLine1}
+                          </span>
+                        )}
+                      </>
                     )}
                   </div>
                 </div>

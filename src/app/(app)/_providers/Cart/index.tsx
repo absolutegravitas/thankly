@@ -11,32 +11,32 @@ import React, {
 import { Cart, Product } from '@/payload-types'
 import { CartItem, cartReducer, CartAction } from './reducer'
 import { debounce } from 'lodash'
+import { randomUUID } from 'crypto'
 
 // Type aliases for common types used throughout the file
-type ShippingMethod = 'standardMail' | 'expressMail' | 'standardParcel' | 'expressParcel' | null
 type Receiver = NonNullable<CartItem['receivers']>[number]
 type UpdateReceiverFields = Partial<Omit<Receiver, 'id' | 'totals' | 'delivery'>> & {
   delivery?: Partial<Receiver['delivery']>
 }
 
 // Interface defining the CartContext shape
+// exposes objects and methods for use on the client
 export type CartContext = {
   cart: Cart
-  cartIsEmpty: boolean
+
+  // checking methods
   hasInitializedCart: boolean
+  cartIsEmpty: boolean
+  isProductInCart: (productId: string | number) => boolean
   validateCart: () => boolean
 
-  isProductInCart: (productId: string | number) => boolean
-
+  // cart actions
   addProduct: (product: Product, price: number) => void
   removeProduct: (productId: number | string) => void
-  clearCart: () => void
-
   addReceiver: (
     productId: number | string,
     receiver: NonNullable<CartItem['receivers']>[number],
   ) => void
-
   updateReceiver: (
     productId: number | string,
     receiverId: string,
@@ -44,14 +44,12 @@ export type CartContext = {
   ) => void
   removeReceiver: (productId: number | string, receiverId: string) => void
   copyReceiver: (productId: number | string, receiverId: string) => void
-  updateShippingMethod: (
-    productId: number | string,
-    receiverId: string,
-    shippingMethod: ShippingMethod,
-  ) => void
+
+  clearCart: () => void
 }
 
 const Context = createContext<CartContext | undefined>(undefined)
+
 const debouncedUpdateLocalStorage = debounce((cart) => {
   localStorage.setItem('cart', JSON.stringify(cart))
 }, 300)
@@ -65,10 +63,30 @@ export const useCart = () => {
   return context
 }
 
+let lastTimestamp = 0
+let counter = 1
+
+function generateCartNumber() {
+  const now = Date.now()
+
+  if (now === lastTimestamp) {
+    counter++
+  } else {
+    counter = 1
+    lastTimestamp = now
+  }
+
+  const timestampPart = now.toString().slice(-8) // Last 8 digits of timestamp
+  const counterPart = counter.toString().padStart(3, '0') // 4-digit counter
+
+  return `${timestampPart}-${counterPart}`
+}
+
 // CartProvider component
 export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   // Cart state and reducer
   const [cart, dispatchCart] = useReducer<React.Reducer<Cart, CartAction>>(cartReducer, {
+    cartNumber: generateCartNumber(),
     id: 0,
     items: [],
     status: 'pending' as const,
@@ -81,14 +99,26 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     createdAt: new Date().toISOString(),
   })
 
-  // Total state for formatted and raw total values
-  const [total, setTotal] = useState<{ formatted: string; raw: number }>({
-    formatted: '0.00',
-    raw: 0,
-  })
-
+  // checking methods
   const hasInitialized = useRef(false)
   const [hasInitializedCart, setHasInitialized] = useState(false)
+
+  // Memoized value for checking if the cart is empty
+  const cartIsEmpty = useMemo(() => cart.items?.length === 0, [cart.items])
+
+  // Checks if a product is in the cart
+  const isProductInCart = useCallback(
+    (productId: string | number): boolean => {
+      return (
+        cart.items?.some((item) =>
+          typeof item.product === 'object'
+            ? item.product.id === productId
+            : item.product === productId,
+        ) || false
+      )
+    },
+    [cart.items],
+  )
 
   // Validates the cart by checking if all receivers have required fields
   const validateCart = useCallback((): boolean => {
@@ -107,6 +137,10 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     )
   }, [cart])
 
+  //
+  //
+  //
+  // cart actions
   // Adds a product to the cart
   const addProduct = useCallback((product: Product | number, price: number) => {
     dispatchCart({
@@ -115,6 +149,14 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         product,
         price,
       },
+    })
+  }, [])
+
+  // Removes a product from the cart
+  const removeProduct = useCallback((productId: number | string) => {
+    dispatchCart({
+      type: 'REMOVE_PRODUCT',
+      payload: { productId },
     })
   }, [])
 
@@ -128,14 +170,6 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     },
     [],
   )
-
-  // Copies a receiver for a product in the cart
-  const copyReceiver = useCallback((productId: number | string, receiverId: string) => {
-    dispatchCart({
-      type: 'COPY_RECEIVER',
-      payload: { productId, receiverId },
-    })
-  }, [])
 
   // Updates a receiver for a product in the cart
   const updateReceiver = useCallback(
@@ -156,48 +190,20 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     })
   }, [])
 
-  // Updates the shipping method for a receiver
-  const updateShippingMethod = useCallback(
-    (productId: number | string, receiverId: string, shippingMethod: ShippingMethod) => {
-      dispatchCart({
-        type: 'UPDATE_SHIPPING_METHOD',
-        payload: { productId, receiverId, delivery: { shippingMethod } },
-      })
-    },
-    [],
-  )
-
-  // Removes a product from the cart
-  const removeProduct = useCallback((productId: number | string) => {
+  // Copies a receiver for a product in the cart
+  const copyReceiver = useCallback((productId: number | string, receiverId: string) => {
     dispatchCart({
-      type: 'REMOVE_PRODUCT',
-      payload: { productId },
+      type: 'COPY_RECEIVER',
+      payload: { productId, receiverId },
     })
   }, [])
 
   // Clears the entire cart
   const clearCart = useCallback(() => {
     dispatchCart({
-      type: 'CLEAR_ORDER',
+      type: 'CLEAR_CART',
     })
   }, [])
-
-  // Checks if a product is in the cart
-  const isProductInCart = useCallback(
-    (productId: string | number): boolean => {
-      return (
-        cart.items?.some((item) =>
-          typeof item.product === 'object'
-            ? item.product.id === productId
-            : item.product === productId,
-        ) || false
-      )
-    },
-    [cart.items],
-  )
-
-  // Memoized value for checking if the cart is empty
-  const cartIsEmpty = useMemo(() => cart.items?.length === 0, [cart.items])
 
   // Memoized value for the CartContext
   const contextValue = useMemo(
@@ -206,7 +212,6 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       addReceiver,
       cart,
       cartIsEmpty,
-      total: total,
       clearCart,
       copyReceiver,
 
@@ -215,7 +220,6 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       removeProduct,
       removeReceiver,
       updateReceiver,
-      updateShippingMethod,
       validateCart,
     }),
     [
@@ -229,9 +233,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       isProductInCart,
       removeProduct,
       removeReceiver,
-      total,
       updateReceiver,
-      updateShippingMethod,
       validateCart,
     ],
   )
@@ -246,16 +248,16 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
           const localCart = localStorage.getItem('cart')
           const parsedCart = JSON.parse(localCart || '{}')
 
-          if (parsedCart?.items && parsedCart.items.length > 0) {
-            dispatchCart({
-              type: 'SET_ORDER',
-              payload: parsedCart,
-            })
-          } else {
-            // console.log('CartProvider: No items in local storage')
-          }
+          // if (parsedCart?.items && parsedCart.items.length > 0) {
+          //   dispatchCart({
+          //     type: 'UPSERT_CART',
+          //     payload: parsedCart,
+          //   })
+          // } else {
+          //   console.log('CartProvider: No items in local storage')
+          // }
         } catch (error) {
-          // console.error('CartProvider: Error initializing cart:', error)
+          console.error('CartProvider: Error initializing cart:', error)
         } finally {
           setHasInitialized(true)
         }
@@ -270,21 +272,6 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     if (!hasInitialized.current) return
     debouncedUpdateLocalStorage(cart)
   }, [cart])
-
-  // Effect to update the formatted total in state
-  useEffect(() => {
-    if (!hasInitializedCart) return
-
-    setTotal({
-      formatted: cart.totals.total.toLocaleString('en-AU', {
-        style: 'currency',
-        currency: 'AUD',
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2,
-      }),
-      raw: cart.totals.total,
-    })
-  }, [cart, hasInitializedCart])
 
   return <Context.Provider value={contextValue}>{children}</Context.Provider>
 }

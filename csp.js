@@ -13,6 +13,7 @@ const policies = {
     'http://cdn.jsdelivr.net',
     'https://js.radar.com',
     'https://www.googletagmanager.com',
+    'https://unpkg.com',
   ],
   'child-src': ["'self'", 'http://cdn.jsdelivr.net'],
   'style-src': [
@@ -36,7 +37,11 @@ const policies = {
     'https://maps.gstatic.com',
     'https://google.com.au',
     'https://www.gravatar.com',
-    'https://placehold.co/',
+    'https://placehold.co',
+    'https://authjs.dev', // for auth providers
+    'https://lh3.googleusercontent.com', // for user avatars - google
+    'https://media.licdn.com', // for user avatars - linkedin
+    'https://platform-lookaside.fbsbx.com', // for user avatars - facebook
   ],
   'font-src': [
     "'self'",

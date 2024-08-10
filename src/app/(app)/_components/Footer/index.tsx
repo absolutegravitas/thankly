@@ -175,7 +175,7 @@ export const Footer: React.FC<FooterType> = (props) => {
             })}
 
             <div className={['cols-4 cols-m-4 cols-s-8'].filter(Boolean).join(' ')}>
-              <h3
+              {/* <h3
                 className={[
                   contentFormats.global,
                   `font-title text-lg font-semibold tracking-tighter`,
@@ -201,7 +201,6 @@ export const Footer: React.FC<FooterType> = (props) => {
                   />
                   <div className={classes.inputWrap}>
                     <label className="visually-hidden" htmlFor={newsletterId}>
-                      {/* // Subscribe to our newsletter */}
                     </label>
                     <Text
                       type="text"
@@ -223,14 +222,13 @@ export const Footer: React.FC<FooterType> = (props) => {
                   <div className={classes.subscribeAction}>
                     <p
                       className={[contentFormats.global, contentFormats.text].join(' ')}
-                      // className={classes.subscribeDesc}
                     >
                       Sign up to receive periodic updates to your email.
                     </p>
                   </div>
                   {error && <div>{`${error.status || '500'}: ${error.message || ''}`}</div>}
                 </FormComponent>
-              </div>
+              </div> */}
 
               <div className="grid space-x-3 justify-start">
                 <Link

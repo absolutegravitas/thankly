@@ -1,22 +1,30 @@
+// This file contains utility types, interfaces, and a reducer function for managing a shopping cart in a Next.js 14 application with server components.
+// It handles various actions such as adding/removing products, updating receivers (recipients), calculating totals, and managing shipping methods.
+
+// Import type definitions for Cart and Product
 import type { Cart, Product } from '@/payload-types'
 import { shippingPrices } from '@/utilities/referenceText'
 import { isMetroPostcode, isRegionalPostcode, isRemotePostcode } from './shippingCalcs'
+import { upsertPayloadCart } from './serverActions'
+
+// Type alias for a single item in the Cart
 export type CartItem = NonNullable<Cart['items']>[number]
+
+// Type aliases for Cart and ShippingMethod
 type CartType = Cart
 type ShippingMethod =
   // | 'free'
   'standardMail' | 'registeredMail' | 'expressMail' | 'standardParcel' | 'expressParcel' | null
 
+// Union type for different cart actions
 export type CartAction =
-  | { type: 'SET_ORDER'; payload: Cart }
-  | { type: 'MERGE_ORDER'; payload: Cart }
-  | { type: 'FORCE_UPDATE' }
   | {
       type: 'ADD_PRODUCT'
-      payload: {
-        product: Product | number
-        price: number
-      }
+      payload: { product: Product | number; price: number }
+    }
+  | {
+      type: 'REMOVE_PRODUCT'
+      payload: { productId: number | string }
     }
   | {
       type: 'ADD_RECEIVER'
@@ -27,10 +35,7 @@ export type CartAction =
     }
   | {
       type: 'COPY_RECEIVER'
-      payload: {
-        productId: number | string
-        receiverId: string
-      }
+      payload: { productId: number | string; receiverId: string }
     }
   | {
       type: 'UPDATE_RECEIVER'
@@ -42,31 +47,16 @@ export type CartAction =
     }
   | {
       type: 'REMOVE_RECEIVER'
-      payload: {
-        productId: number | string
-        receiverId: string
-      }
+      payload: { productId: number | string; receiverId: string }
     }
-  | {
-      type: 'UPDATE_SHIPPING_METHOD'
-      payload: {
-        productId: number | string
-        receiverId: string
-        delivery: { shippingMethod: ShippingMethod }
-      }
-    }
-  | {
-      type: 'REMOVE_PRODUCT'
-      payload: {
-        productId: number | string
-      }
-    }
-  | { type: 'CLEAR_ORDER' }
+  | { type: 'CLEAR_CART' }
 
+// Helper function to get the product ID from a CartItem
 const getProductId = (product: CartItem['product']): string | number => {
   return typeof product === 'object' ? product.id : product
 }
 
+// Function to calculate the totals for the entire cart
 const calculateCartTotals = (items: CartItem[] | undefined): Cart['totals'] => {
   if (!items) return { total: 0, cost: 0, shipping: 0 }
   items.forEach((item) => {
@@ -128,6 +118,9 @@ const calculateCartTotals = (items: CartItem[] | undefined): Cart['totals'] => {
     }
   })
 
+  // also sync to payloadcms coz claudeai is dogshit
+
+  // return the totals
   return items.reduce(
     (totals, item) => ({
       cost: totals.cost + (item.totals?.cost || 0),
@@ -142,46 +135,9 @@ const calculateCartTotals = (items: CartItem[] | undefined): Cart['totals'] => {
   )
 }
 
+// Cart reducer function to handle different actions
 export const cartReducer = (cart: Cart, action: CartAction): Cart => {
   switch (action.type) {
-    case 'SET_ORDER': {
-      return action.payload
-    }
-
-    case 'MERGE_ORDER': {
-      const { payload: incomingCart } = action
-      const mergedItems = [...(cart.items || []), ...(incomingCart.items || [])].reduce(
-        (acc: CartItem[], item) => {
-          const existingItemIndex = acc.findIndex(
-            (accItem) => getProductId(accItem.product) === getProductId(item.product),
-          )
-          if (existingItemIndex > -1) {
-            acc[existingItemIndex] = {
-              ...acc[existingItemIndex],
-              receivers: [...(acc[existingItemIndex].receivers || []), ...(item.receivers || [])],
-              totals: {
-                subTotal:
-                  (acc[existingItemIndex].totals?.subTotal || 0) + (item.totals?.subTotal || 0),
-                cost: (acc[existingItemIndex].totals?.cost || 0) + (item.totals?.cost || 0),
-                shipping:
-                  (acc[existingItemIndex].totals?.shipping || 0) + (item.totals?.shipping || 0),
-              },
-            }
-          } else {
-            acc.push(item)
-          }
-          return acc
-        },
-        [],
-      )
-
-      return {
-        ...cart,
-        items: mergedItems,
-        totals: calculateCartTotals(mergedItems),
-      }
-    }
-
     case 'ADD_PRODUCT': {
       const { product, price } = action.payload
       const productId = typeof product === 'object' ? product.id : product
@@ -196,6 +152,7 @@ export const cartReducer = (cart: Cart, action: CartAction): Cart => {
         return cart
       }
 
+      // add a new product to existing cart
       const newItem: CartItem = {
         product: product,
         price: price,
@@ -215,9 +172,6 @@ export const cartReducer = (cart: Cart, action: CartAction): Cart => {
         items: updatedItems,
       }
 
-      // also create Cart on PayloadCMS
-
-      // return cart with 1x added receiver
       return cartReducer(updatedCart, {
         type: 'ADD_RECEIVER',
         payload: {
@@ -375,34 +329,9 @@ export const cartReducer = (cart: Cart, action: CartAction): Cart => {
       }
     }
 
-    case 'UPDATE_SHIPPING_METHOD': {
-      const { productId, receiverId, delivery } = action.payload
-      const updatedItems = cart.items?.map((item) => {
-        if (getProductId(item.product) === productId) {
-          const updatedReceivers = item.receivers?.map((receiver) =>
-            receiver.id === receiverId
-              ? {
-                  ...receiver,
-                  delivery: {
-                    ...receiver.delivery,
-                    ...delivery,
-                  },
-                }
-              : receiver,
-          )
-          return { ...item, receivers: updatedReceivers }
-        }
-        return item
-      }) as CartItem[]
+    case 'CLEAR_CART': {
+      // also clear / delete the cart on payloadCMS
 
-      return {
-        ...cart,
-        items: updatedItems,
-        totals: calculateCartTotals(updatedItems),
-      }
-    }
-
-    case 'CLEAR_ORDER': {
       return {
         ...cart,
         items: [],

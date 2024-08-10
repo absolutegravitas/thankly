@@ -118,7 +118,7 @@ export interface Media {
  */
 export interface Order {
   id: number;
-  orderNumber?: number | null;
+  orderNumber?: string | null;
   status: 'pending' | 'processing' | 'completed' | 'cancelled' | 'onhold';
   stripePaymentIntentID?: string | null;
   totals: {
@@ -345,6 +345,7 @@ export interface Reusable {
  */
 export interface Cart {
   id: number;
+  cartNumber?: string | null;
   status: 'pending' | 'completed' | 'cancelled';
   totals: {
     cost: number;

@@ -27,6 +27,8 @@ export default function CartPage() {
     hasInitializedCart: boolean
   } = useCart()
 
+  console.log('cart --', cart)
+
   // Show a loading skeleton if the cart hasn't been initialized yet
   if (!hasInitializedCart) {
     return <CartLoadingSkeleton />
@@ -53,12 +55,12 @@ export default function CartPage() {
           </h1>
 
           <div className="flex flex-col #gap-8">
-            <div className="w-full sm:w-full md:w-full ">
+            <div className="">
               <Suspense fallback={<CartItemsSkeleton />}>
                 <CartItems />
               </Suspense>
             </div>
-            <div className="w-full sm:w-full md:w-full">
+            <div className="">
               <Suspense fallback={<CartSummarySkeleton />}>
                 <CartSummary cart={cart} />
               </Suspense>
@@ -80,7 +82,7 @@ const CartLoadingSkeleton = () => (
           <div className="w-full sm:w-full md:w-full lg:w-2/3">
             <CartItemsSkeleton />
           </div>
-          <div className="w-full sm:w-full md:w-full lg:w-1/3">
+          <div className="w-full sm:w-full md:w-full #lg:w-1/3 flex sm:flex-row flex-col">
             <CartSummarySkeleton />
           </div>
         </div>

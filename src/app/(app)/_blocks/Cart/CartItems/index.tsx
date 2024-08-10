@@ -37,9 +37,8 @@ export const CartItems: React.FC = () => {
             const { product } = item
             const isExpanded = expandedItems[index] || false
             return (
-              <>
+              <div key={index}>
                 <li
-                  key={index}
                   onClick={() => toggleExpand(index)}
                   className="relative flex sm:flex-row sm:flex-nowrap flex-col flex-wrap  justify-between gap-x-6 mb-3  p-3  bg-neutral-200 hover:bg-neutral-100 hover:cursor-pointer "
                 >
@@ -96,14 +95,22 @@ export const CartItems: React.FC = () => {
                   </div>
                   <div className="flex flex-nowrap shrink-0 items-center gap-x-4">
                     <div className="sm:flex sm:flex-col sm:items-end">
-                      <p className="my-0  font-body font-semibold leading-6 text-gray-900">{`Total for this Thankly: ${
-                        item.totals.subTotal.toLocaleString('en-AU', {
-                          style: 'currency',
-                          currency: 'AUD',
-                          minimumFractionDigits: 0,
-                          maximumFractionDigits: 2,
-                        }) || 0
-                      }`}</p>
+                      <p
+                        className={[
+                          `my-0 leading-6 text-gray-900`,
+                          contentFormats.global,
+                          contentFormats.p,
+                        ].join(' ')}
+                      >
+                        {`Total for this Thankly: ${
+                          item.totals.subTotal.toLocaleString('en-AU', {
+                            style: 'currency',
+                            currency: 'AUD',
+                            minimumFractionDigits: 0,
+                            maximumFractionDigits: 2,
+                          }) || 0
+                        }`}
+                      </p>
                       <p className="my-0 text-xs leading-5 text-gray-500">{`Sending to ${item.receivers.length} ${item.receivers.length === 1 ? 'person' : 'people'}`}</p>
                     </div>
 
@@ -112,7 +119,7 @@ export const CartItems: React.FC = () => {
                 </li>
 
                 {isExpanded && <Receivers item={item} />}
-              </>
+              </div>
             )
           })}
         </ul>
