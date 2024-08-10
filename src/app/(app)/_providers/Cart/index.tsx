@@ -8,10 +8,10 @@ import React, {
   useMemo,
   useCallback,
 } from 'react'
-import { Cart, Product } from '@/payload-types'
+import { Cart, Order, Product } from '@/payload-types'
 import { CartItem, cartReducer, CartAction } from './reducer'
 import { debounce } from 'lodash'
-import { randomUUID } from 'crypto'
+import { auth } from '@/utilities/auth'
 
 // Type aliases for common types used throughout the file
 type Receiver = NonNullable<CartItem['receivers']>[number]
@@ -45,6 +45,7 @@ export type CartContext = {
   removeReceiver: (productId: number | string, receiverId: string) => void
   copyReceiver: (productId: number | string, receiverId: string) => void
 
+  // convertCartToOrder: () => Promise<Order | null>
   clearCart: () => void
 }
 
@@ -205,6 +206,24 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     })
   }, [])
 
+  // const convertCartToOrder = useCallback(async () => {
+  //   if (!validateCart()) return null
+
+  //   const orderData = {
+  //     ...cart,
+  //     status: 'pending' as const,
+  //   }
+
+  //   try {
+  //     const newOrder = await createOrder(orderData)
+  //     clearCart()
+  //     return newOrder
+  //   } catch (error) {
+  //     console.error('Error creating order:', error)
+  //     return null
+  //   }
+  // }, [cart, validateCart, clearCart])
+
   // Memoized value for the CartContext
   const contextValue = useMemo(
     () => ({
@@ -221,6 +240,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       removeReceiver,
       updateReceiver,
       validateCart,
+      // convertCartToOrder,
     }),
     [
       addProduct,
@@ -235,6 +255,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       removeReceiver,
       updateReceiver,
       validateCart,
+      // convertCartToOrder,
     ],
   )
 
@@ -275,3 +296,23 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   return <Context.Provider value={contextValue}>{children}</Context.Provider>
 }
+
+// import { getPayloadHMR } from '@payloadcms/next/utilities'
+// import configPromise from '@payload-config'
+
+// export async function createOrder(orderData: Cart): Promise<Order | null> {
+//   const config = await configPromise
+//   const payload = await getPayloadHMR({ config })
+
+//   try {
+//     const newOrder = await payload.create({
+//       collection: 'orders',
+//       data: orderData,
+//     })
+
+//     return newOrder
+//   } catch (error) {
+//     console.error('Error creating order:', error)
+//     throw new Error('Failed to create order')
+//   }
+// }

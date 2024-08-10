@@ -10,13 +10,17 @@ import { useCart } from '@app/_providers/Cart'
 import { LoaderCircleIcon } from 'lucide-react'
 import { FullLogo } from '@app/_graphics/FullLogo'
 import { cartPageText } from '@/utilities/referenceText'
-import { Elements } from '@stripe/react-stripe-js'
+import { Elements, ExpressCheckoutElement } from '@stripe/react-stripe-js'
 import { loadStripe, StripeElementsOptions } from '@stripe/stripe-js'
 import { createPaymentIntent } from './createPaymentIntent'
+import {
+  StripeExpressCheckoutElementReadyEvent,
+  AvailablePaymentMethods,
+  StripeExpressCheckoutElementConfirmEvent,
+} from '@stripe/stripe-js'
 
 // Make sure to call loadStripe outside of a component’s render to avoid
 // recreating the Stripe object on every render.
-// This is your test publishable API key.
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
 
 export const CartSummary: React.FC<{ cart: Cart }> = ({ cart }) => {
@@ -161,13 +165,6 @@ export const CartSummary: React.FC<{ cart: Cart }> = ({ cart }) => {
                 iconPosition: 'left',
               },
             }}
-            // actions={{
-            //   onClick: async () => {
-            //     startTransition(async () => {
-            //       router.push('/shop')
-            //     })
-            //   },
-            // }}
           />
         </div>
       </div>
@@ -175,7 +172,7 @@ export const CartSummary: React.FC<{ cart: Cart }> = ({ cart }) => {
         <h2 className={cn(contentFormats.global, contentFormats.h3, 'mt-0 mb-6')}>Pay</h2>
         {clientSecret && (
           <Elements stripe={stripePromise} options={options}>
-            <CheckoutForm isValid={isValid} />
+            <CheckoutForm isValid={isValid} clientSecret={clientSecret} />{' '}
           </Elements>
         )}
       </div>
@@ -208,12 +205,172 @@ const SummaryItem: React.FC<SummaryItemProps> = ({ label, value, isBold }) => (
 
 import { PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js'
 
-const CheckoutForm: React.FC<{ isValid: boolean }> = ({ isValid }) => {
+const CheckoutForm: React.FC<{ isValid: boolean; clientSecret: string }> = ({
+  isValid,
+  clientSecret,
+}) => {
   const stripe = useStripe()
   const elements = useElements()
   const [message, setMessage] = useState<string | null>(null)
   const [isLoading, setIsLoading] = useState(false)
 
+  // STRIPE EXPRESS CHECKOUT ELEMENT
+  const [expressVisibility, setExpressVisibility] = useState<'hidden' | 'visible'>('hidden')
+
+  useEffect(() => {
+    if (!stripe) return
+
+    if (!clientSecret) {
+      setMessage("Couldn't initialize payment. Please try again.")
+      return
+    }
+
+    stripe.retrievePaymentIntent(clientSecret).then(({ paymentIntent }) => {
+      switch (paymentIntent?.status) {
+        case 'succeeded':
+          setMessage('Payment succeeded!')
+          break
+        case 'processing':
+          setMessage('Your payment is processing.')
+          break
+        case 'requires_payment_method':
+          setMessage('Please provide a payment method.')
+          break
+        default:
+          setMessage('Something went wrong.')
+          break
+      }
+    })
+  }, [stripe, clientSecret])
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!stripe || !elements || !isValid) return
+    setIsLoading(true)
+
+    const { error } = await stripe.confirmPayment({
+      elements,
+      confirmParams: {
+        return_url: `${window.location.origin}/confirmation`,
+      },
+    })
+
+    if (error) {
+      setMessage(error.message ?? 'An unexpected error occurred.')
+    } else {
+      setMessage('An unexpected error occurred.')
+    }
+    setIsLoading(false)
+  }
+
+  const onExpressCheckoutReady = ({ availablePaymentMethods }: any) => {
+    if (!availablePaymentMethods) {
+      // No buttons will show
+    } else {
+      // Optional: Animate in the Element
+      setExpressVisibility('visible')
+    }
+  }
+
+  const onExpressCheckoutConfirm = async (event: StripeExpressCheckoutElementConfirmEvent) => {
+    if (!stripe || !elements) return
+
+    const { error: submitError } = await elements.submit()
+    if (submitError) {
+      setMessage(submitError.message ?? 'An error occurred while submitting the form.')
+      return
+    }
+
+    const { error } = await stripe.confirmPayment({
+      elements,
+      confirmParams: {
+        return_url: `${window.location.origin}/confirmation`,
+      },
+    })
+
+    if (error) {
+      setMessage(error.message ?? 'An unexpected error occurred.')
+    }
+  }
+
+  // const paymentElementOptions = {
+  //   layout: 'tabs' as const,
+  // }
+
+  // const onConfirm = async (event) => {
+  //   if (!stripe) {
+  //     // Stripe.js hasn't loaded yet.
+  //     // Make sure to disable form submission until Stripe.js has loaded.
+  //     return
+  //   }
+
+  //   const { error: submitError } = await elements.submit()
+  //   if (submitError) {
+  //     setErrorMessage(submitError.message)
+  //     return
+  //   }
+
+  //   //  // should already be creted by the useffect // Create the PaymentIntent and obtain clientSecret
+  //   //   const res = await fetch('/create-intent', {
+  //   //     method: 'POST',
+  //   //   });
+  //   //   const {client_secret: clientSecret} = await res.json();
+
+  //   // Confirm the PaymentIntent using the details collected by the Express Checkout Element
+  //   const { error } = await stripe.confirmPayment({
+  //     // `elements` instance used to create the Express Checkout Element
+  //     elements,
+  //     // `clientSecret` from the created PaymentIntent
+  //     clientSecret,
+  //     confirmParams: {
+  //       return_url: 'https://example.com/order/123/complete',
+  //     },
+  //   })
+
+  //   if (error) {
+  //     // This point is only reached if there's an immediate error when
+  //     // confirming the payment. Show the error to your customer (for example, payment details incomplete)
+  //     setErrorMessage(error.message)
+  //   } else {
+  //     // The payment UI automatically closes with a success animation.
+  //     // Your customer is redirected to your `return_url`.
+  //   }
+  // }
+
+  // const onReady = ({ availablePaymentMethods }: any) => {
+  //   if (!availablePaymentMethods) {
+  //     // No buttons will show
+  //   } else {
+  //     // Optional: Animate in the Element
+  //     setVisibility('initial')
+  //   }
+  // }
+
+  // const onClick = ({ resolve }: any) => {
+  //   const options = {
+  //     emailRequired: true,
+  //     phoneNumberRequired: false,
+  //     lineItems: [
+  //       {
+  //         name: 'Sample item',
+  //         amount: 1000,
+  //       },
+  //       {
+  //         name: 'Tax',
+  //         amount: 100,
+  //       },
+  //       {
+  //         name: 'Shipping cost',
+  //         amount: 1000,
+  //       },
+  //     ],
+  //   }
+  //   resolve(options)
+  // }
+  // const onCancel = () => {
+  //   elements?.update({ amount: 1099 })
+  // }
+  ///////////////
   useEffect(() => {
     if (!stripe) return
     const clientSecret = new URLSearchParams(window.location.search).get(
@@ -241,25 +398,25 @@ const CheckoutForm: React.FC<{ isValid: boolean }> = ({ isValid }) => {
     })
   }, [stripe])
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!stripe || !elements) return
-    setIsLoading(true)
+  // const handleSubmit = async (e: React.FormEvent) => {
+  //   e.preventDefault()
+  //   if (!stripe || !elements) return
+  //   setIsLoading(true)
 
-    const { error } = await stripe.confirmPayment({
-      elements,
-      confirmParams: {
-        return_url: `${window.location.origin}/confirmation`,
-      },
-    })
+  //   const { error } = await stripe.confirmPayment({
+  //     elements,
+  //     confirmParams: {
+  //       return_url: `${window.location.origin}/confirmation`,
+  //     },
+  //   })
 
-    if (error) {
-      setMessage(error.message ?? 'An unexpected error occurred.')
-    } else {
-      setMessage('An unexpected error occurred.')
-    }
-    setIsLoading(false)
-  }
+  //   if (error) {
+  //     setMessage(error.message ?? 'An unexpected error occurred.')
+  //   } else {
+  //     setMessage('An unexpected error occurred.')
+  //   }
+  //   setIsLoading(false)
+  // }
 
   const paymentElementOptions = {
     layout: 'tabs' as const,
@@ -267,6 +424,16 @@ const CheckoutForm: React.FC<{ isValid: boolean }> = ({ isValid }) => {
 
   return (
     <form id="payment-form" onSubmit={handleSubmit}>
+      <div
+        id="express-checkout-element"
+        style={{ visibility: expressVisibility, marginBottom: '20px' }}
+      >
+        <ExpressCheckoutElement
+          onReady={onExpressCheckoutReady}
+          onConfirm={onExpressCheckoutConfirm}
+        />
+      </div>
+
       <PaymentElement id="payment-element" options={paymentElementOptions} />
       <button
         disabled={isLoading || !stripe || !elements || !isValid}
@@ -293,3 +460,5 @@ const CheckoutForm: React.FC<{ isValid: boolean }> = ({ isValid }) => {
 }
 
 export default CheckoutForm
+
+// const CheckoutFormExpress: React.FC<{ isValid: boolean }> = ({ isValid }) => {}

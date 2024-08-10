@@ -111,52 +111,6 @@ export async function generateMetadata({
   }
 }
 
-// Function to generate static parameters (product slugs) for static site generation
-// export async function generateStaticParams() {
-//   const fetchProductSlugs = unstable_cache(
-//     async (): Promise<{ slug: string }[]> => {
-//       const config = await configPromise
-//       let payload: any = await getPayloadHMR({ config })
-
-//       try {
-//         const { docs } = await payload.find({
-//           collection: 'products',
-//           depth: 0,
-//           pagination: false,
-//           context: {
-//             select: ['slug', 'title', 'meta'],
-//           },
-//         })
-
-//         console.log('products - ', docs)
-//         if (!docs || docs.length === 0) {
-//           return []
-//         }
-
-//         return docs
-//           .filter((product: Product) => product.slug && typeof product.slug === 'string')
-//           .map((product: Product) => ({
-//             slug: product.slug,
-//           }))
-//       } catch (error) {
-//         console.error('Error fetching products:', error)
-//         return []
-//       }
-//     },
-//     ['fetchProductSlugs'],
-//     {
-//       revalidate: 60,
-//       tags: ['fetchProductSlugs'],
-//     },
-//   )
-
-//   const products = await fetchProductSlugs()
-
-//   return products.map(({ slug }) => ({
-//     slug: slug, // Return the slug as is, without splitting
-//   }))
-// }
-
 // Utility function to fetch product data from the Payload CMS
 const fetchProduct = async (slug: string): Promise<any | null> => {
   const cachedFetchProduct = unstable_cache(
