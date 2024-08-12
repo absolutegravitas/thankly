@@ -72,24 +72,6 @@ export const Content: Block = {
             condition: (_: any, siblingData: any) => siblingData.layout === 'threeColumns',
           },
         }),
-        // richText({
-        //   name: 'columnOne',
-        // }),
-        // richText({
-        //   name: 'columnTwo',
-        //   admin: {
-        //     condition: (_: any, siblingData:any) =>
-        //       ['twoColumns', 'twoThirdsOneThird', 'halfAndHalf', 'threeColumns'].includes(
-        //         siblingData.layout,
-        //       ),
-        //   },
-        // }),
-        // richText({
-        //   name: 'columnThree',
-        //   admin: {
-        //     condition: (_: any, siblingData:any) => siblingData.layout === 'threeColumns',
-        //   },
-        // }),
       ],
     }),
   ],

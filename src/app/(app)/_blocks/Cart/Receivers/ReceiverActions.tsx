@@ -8,28 +8,34 @@ import { useCart } from '@/app/(app)/_providers/Cart'
 import { CartItem } from '@/app/(app)/_providers/Cart/reducer'
 import { useRouter } from 'next/navigation'
 
+// This component renders a button to add a new receiver for a specific product.
 interface AddReceiverProps {
-  productId: number | string
+  productId: number | string // The ID of the product for which a receiver needs to be added
 }
 
 export const AddReceiver: React.FC<AddReceiverProps> = ({ productId }) => {
-  const [isPending, startTransition] = useTransition()
-  const [error, setError] = useState<string | null>(null)
-  const { addReceiver, cart } = useCart()
+  const [isPending, startTransition] = useTransition() // State for tracking the pending state of an asynchronous operation
+  const [error, setError] = useState<string | null>(null) // State for storing any error messages
+  const { addReceiver, cart } = useCart() // Destructuring the `addReceiver` function and `cart` object from the `useCart` hook
 
+  // Function to handle the click event for adding a new receiver
   const handleClick = () => {
     startTransition(() => {
+      // Find the cart item corresponding to the given `productId`
       const cartItem = cart.items?.find(
         (item) => typeof item.product === 'object' && item.product.id === productId,
       )
+      // Determine the product type based on the cart item
       const productType =
         typeof cartItem?.product === 'object' ? cartItem.product.productType : null
 
+      // Set the default shipping method based on the product type
       const defaultShippingMethod =
         productType === 'gift' ? 'standardParcel' : productType === 'card' ? 'standardMail' : null
 
+      // Create a new receiver object with default values
       const newReceiver: NonNullable<CartItem['receivers']>[number] = {
-        id: `${Date.now()}`,
+        id: `${Date.now()}`, // Generate a unique ID for the receiver
         name: null,
         message: null,
         delivery: {
@@ -40,11 +46,11 @@ export const AddReceiver: React.FC<AddReceiverProps> = ({ productId }) => {
       }
 
       try {
-        addReceiver(productId, newReceiver)
-        setError(null)
+        addReceiver(productId, newReceiver) // Add the new receiver to the cart
+        setError(null) // Reset any previous error
       } catch (error) {
         console.error('Error adding receiver:', error)
-        setError('Failed to add receiver. Please try again.')
+        setError('Failed to add receiver. Please try again.') // Set an error message
       }
     })
   }
@@ -76,23 +82,25 @@ export const AddReceiver: React.FC<AddReceiverProps> = ({ productId }) => {
   )
 }
 
+// This component renders a button to copy an existing receiver for a specific cart item.
 interface CopyReceiverProps {
-  cartItemId: string | number
-  receiverId: string
+  cartItemId: string | number // The ID of the cart item for which the receiver needs to be copied
+  receiverId: string // The ID of the receiver to be copied
 }
 export const CopyReceiver: React.FC<CopyReceiverProps> = ({ cartItemId, receiverId }) => {
-  const [isPending, startTransition] = useTransition()
-  const [error, setError] = useState<string | null>(null)
-  const { copyReceiver } = useCart()
+  const [isPending, startTransition] = useTransition() // State for tracking the pending state of an asynchronous operation
+  const [error, setError] = useState<string | null>(null) // State for storing any error messages
+  const { copyReceiver } = useCart() // Destructuring the `copyReceiver` function from the `useCart` hook
 
+  // Function to handle the click event for copying a receiver
   const handleClick = () => {
     startTransition(() => {
       try {
-        copyReceiver(cartItemId, receiverId)
-        setError(null)
+        copyReceiver(cartItemId, receiverId) // Copy the receiver for the given cart item and receiver IDs
+        setError(null) // Reset any previous error
       } catch (error) {
         console.error('Error copying receiver:', error)
-        setError('Failed to copy receiver. Please try again.')
+        setError('Failed to copy receiver. Please try again.') // Set an error message
       }
     })
   }
@@ -111,10 +119,11 @@ export const CopyReceiver: React.FC<CopyReceiverProps> = ({ cartItemId, receiver
   )
 }
 
+// This component renders a button to remove an existing receiver from a specific cart item.
 interface RemoveReceiverProps {
-  cartItemId: string | number // Changed from just string to string | number
-  receiverId: string
-  removeReceiver: (productId: string | number, receiverId: string) => void // Matches CartContext
+  cartItemId: string | number // The ID of the cart item from which the receiver needs to be removed
+  receiverId: string // The ID of the receiver to be removed
+  removeReceiver: (productId: string | number, receiverId: string) => void // Function to remove a receiver, matching the signature from the CartContext
 }
 
 export const RemoveReceiver: React.FC<RemoveReceiverProps> = ({
@@ -122,11 +131,12 @@ export const RemoveReceiver: React.FC<RemoveReceiverProps> = ({
   receiverId,
   removeReceiver,
 }) => {
-  const [isPending, startTransition] = useTransition()
+  const [isPending, startTransition] = useTransition() // State for tracking the pending state of an asynchronous operation
 
+  // Function to handle the click event for removing a receiver
   const handleClick = () => {
     startTransition(() => {
-      removeReceiver(cartItemId, receiverId)
+      removeReceiver(cartItemId, receiverId) // Remove the receiver for the given cart item and receiver IDs
     })
   }
 
@@ -142,19 +152,21 @@ export const RemoveReceiver: React.FC<RemoveReceiverProps> = ({
   )
 }
 
+// This component renders a button to remove a product from the cart.
 interface RemoveProductProps {
-  productId: string | number
+  productId: string | number // The ID of the product to be removed
 }
 
 export const RemoveProduct: React.FC<RemoveProductProps> = ({ productId }) => {
-  const [isPending, startTransition] = useTransition()
-  const { removeProduct } = useCart()
-  const router = useRouter()
+  const [isPending, startTransition] = useTransition() // State for tracking the pending state of an asynchronous operation
+  const { removeProduct } = useCart() // Destructuring the `removeProduct` function from the `useCart` hook
+  const router = useRouter() // Accessing the Next.js router instance
 
+  // Function to handle the click event for removing a product
   const handleClick = () => {
     startTransition(() => {
-      removeProduct(productId)
-      router.refresh()
+      removeProduct(productId) // Remove the product from the cart
+      router.refresh() // Refresh the current page after removing the product
     })
   }
 

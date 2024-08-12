@@ -7,9 +7,7 @@
 // - Rendering a large number of items can potentially cause performance issues, so consider techniques like virtualization or pagination.
 
 import React, { useState } from 'react'
-import Image from 'next/image'
 import { contentFormats } from '@app/_css/tailwindClasses'
-import cn from '@/utilities/cn'
 import { Receivers } from '../Receivers'
 import { getImageUrl } from '@/utilities/getImageDetails'
 import { AddReceiver, RemoveProduct } from '../Receivers/ReceiverActions'

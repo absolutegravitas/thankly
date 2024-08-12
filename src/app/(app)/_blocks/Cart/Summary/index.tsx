@@ -29,9 +29,9 @@ export const CartSummary: React.FC<{ cart: Cart }> = ({ cart }) => {
   const { validateCart, clearCart } = useCart()
   const [isValid, setIsValid] = useState<boolean>(true)
   const [validationMessage, setValidationMessage] = useState<string>('')
-  const [isProcessing, setIsProcessing] = useState<boolean>(false)
-  const [isPending, startTransition] = useTransition()
-  const [clientSecret, setClientSecret] = useState<string | undefined>(undefined)
+  // const [isProcessing, setIsProcessing] = useState<boolean>(false)
+  // const [isPending, startTransition] = useTransition()
+  // const [clientSecret, setClientSecret] = useState<string | undefined>(undefined)
 
   // check if cart is valid
   useEffect(() => {
@@ -43,60 +43,60 @@ export const CartSummary: React.FC<{ cart: Cart }> = ({ cart }) => {
   }, [cart, validateCart])
 
   // create payment intent if cart is valid
-  useEffect(() => {
-    if (isValid) {
-      const fetchClientSecret = async () => {
-        const { clientSecret } = await createPaymentIntent(cart.totals.total)
-        setClientSecret(clientSecret || undefined)
-      }
-      fetchClientSecret()
-    }
-  }, [isValid, cart.totals.total])
+  // useEffect(() => {
+  //   if (isValid) {
+  //     const fetchClientSecret = async () => {
+  //       const { clientSecret } = await createPaymentIntent(cart.totals.total)
+  //       setClientSecret(clientSecret || undefined)
+  //     }
+  //     fetchClientSecret()
+  //   }
+  // }, [isValid, cart.totals.total])
 
-  const appearance = {
-    theme: 'flat' as const,
-    variables: {
-      colorPrimary: '#557755',
-      colorBackground: '#f9fafb',
-      colorText: '#111827',
-      colorDanger: '#dc2626',
-      fontFamily:
-        'ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
-      spacingUnit: '4px',
-      borderRadius: '0px',
-    },
-    rules: {
-      '.Input': {
-        border: 'none',
-        borderBottom: '1px solid #d1d5db',
-        boxShadow: 'none',
-        fontSize: '14px',
-        padding: '8px 4px',
-      },
-      '.Input:focus': {
-        border: 'none',
-        borderBottom: '2px solid #557755',
-        boxShadow: 'none',
-      },
-      '.Input::placeholder': {
-        color: '#9ca3af',
-      },
-      '.Label': {
-        fontSize: '14px',
-        fontWeight: '500',
-        color: '#111827',
-      },
-      '.Error': {
-        color: '#dc2626',
-        fontSize: '14px',
-      },
-    },
-  }
+  // const appearance = {
+  //   theme: 'flat' as const,
+  //   variables: {
+  //     colorPrimary: '#557755',
+  //     colorBackground: '#f9fafb',
+  //     colorText: '#111827',
+  //     colorDanger: '#dc2626',
+  //     fontFamily:
+  //       'ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
+  //     spacingUnit: '4px',
+  //     borderRadius: '0px',
+  //   },
+  //   rules: {
+  //     '.Input': {
+  //       border: 'none',
+  //       borderBottom: '1px solid #d1d5db',
+  //       boxShadow: 'none',
+  //       fontSize: '14px',
+  //       padding: '8px 4px',
+  //     },
+  //     '.Input:focus': {
+  //       border: 'none',
+  //       borderBottom: '2px solid #557755',
+  //       boxShadow: 'none',
+  //     },
+  //     '.Input::placeholder': {
+  //       color: '#9ca3af',
+  //     },
+  //     '.Label': {
+  //       fontSize: '14px',
+  //       fontWeight: '500',
+  //       color: '#111827',
+  //     },
+  //     '.Error': {
+  //       color: '#dc2626',
+  //       fontSize: '14px',
+  //     },
+  //   },
+  // }
 
-  const options: StripeElementsOptions = {
-    clientSecret,
-    appearance,
-  }
+  // const options: StripeElementsOptions = {
+  //   clientSecret,
+  //   appearance,
+  // }
 
   return (
     <div className="flex sm:flex-row flex-col">
@@ -170,11 +170,12 @@ export const CartSummary: React.FC<{ cart: Cart }> = ({ cart }) => {
       </div>
       <div id="summary-heading" className="basis-1/2 py-4 space-y-6 sm:space-y-8 pl-0 sm:px-8">
         <h2 className={cn(contentFormats.global, contentFormats.h3, 'mt-0 mb-6')}>Pay</h2>
-        {clientSecret && (
+        {/* Stripe Elements Implementation -- we're using Stripe Checkout instead */}
+        {/* {clientSecret && (
           <Elements stripe={stripePromise} options={options}>
             <CheckoutForm isValid={isValid} clientSecret={clientSecret} />{' '}
           </Elements>
-        )}
+        )} */}
       </div>
     </div>
   )
@@ -203,150 +204,150 @@ const SummaryItem: React.FC<SummaryItemProps> = ({ label, value, isBold }) => (
   </div>
 )
 
-import { PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js'
+// import { PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js'
 
-const CheckoutForm: React.FC<{ isValid: boolean; clientSecret: string }> = ({
-  isValid,
-  clientSecret,
-}) => {
-  const stripe = useStripe()
-  const elements = useElements()
-  const [message, setMessage] = useState<string | null>(null)
-  const [isLoading, setIsLoading] = useState(false)
+// const CheckoutForm: React.FC<{ isValid: boolean; clientSecret: string }> = ({
+//   isValid,
+//   clientSecret,
+// }) => {
+//   const stripe = useStripe()
+//   const elements = useElements()
+//   const [message, setMessage] = useState<string | null>(null)
+//   const [isLoading, setIsLoading] = useState(false)
 
-  // STRIPE EXPRESS CHECKOUT ELEMENT
-  const [expressVisibility, setExpressVisibility] = useState<'hidden' | 'visible'>('hidden')
+//   // STRIPE EXPRESS CHECKOUT ELEMENT
+//   const [expressVisibility, setExpressVisibility] = useState<'hidden' | 'visible'>('hidden')
 
-  useEffect(() => {
-    if (!stripe) return
+//   useEffect(() => {
+//     if (!stripe) return
 
-    if (!clientSecret) {
-      setMessage("Couldn't initialize payment. Please try again.")
-      return
-    }
+//     if (!clientSecret) {
+//       setMessage("Couldn't initialize payment. Please try again.")
+//       return
+//     }
 
-    stripe.retrievePaymentIntent(clientSecret).then(({ paymentIntent }) => {
-      switch (paymentIntent?.status) {
-        case 'succeeded':
-          setMessage('Payment succeeded!')
-          break
-        case 'processing':
-          setMessage('Your payment is processing.')
-          break
-        case 'requires_payment_method':
-          setMessage('Please provide a payment method.')
-          break
-        default:
-          setMessage('Something went wrong.')
-          break
-      }
-    })
-  }, [stripe, clientSecret])
+//     stripe.retrievePaymentIntent(clientSecret).then(({ paymentIntent }) => {
+//       switch (paymentIntent?.status) {
+//         case 'succeeded':
+//           setMessage('Payment succeeded!')
+//           break
+//         case 'processing':
+//           setMessage('Your payment is processing.')
+//           break
+//         case 'requires_payment_method':
+//           setMessage('Please provide a payment method.')
+//           break
+//         default:
+//           setMessage('Something went wrong.')
+//           break
+//       }
+//     })
+//   }, [stripe, clientSecret])
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!stripe || !elements || !isValid) return
-    setIsLoading(true)
+//   const handleSubmit = async (e: React.FormEvent) => {
+//     e.preventDefault()
+//     if (!stripe || !elements || !isValid) return
+//     setIsLoading(true)
 
-    const { error } = await stripe.confirmPayment({
-      elements,
-      confirmParams: {
-        return_url: `${window.location.origin}/confirmation`,
-      },
-    })
+//     const { error } = await stripe.confirmPayment({
+//       elements,
+//       confirmParams: {
+//         return_url: `${window.location.origin}/confirmation`,
+//       },
+//     })
 
-    if (error) {
-      setMessage(error.message ?? 'An unexpected error occurred.')
-    } else {
-      setMessage('An unexpected error occurred.')
-    }
-    setIsLoading(false)
-  }
+//     if (error) {
+//       setMessage(error.message ?? 'An unexpected error occurred.')
+//     } else {
+//       setMessage('An unexpected error occurred.')
+//     }
+//     setIsLoading(false)
+//   }
 
-  const onExpressCheckoutConfirm = async (event: StripeExpressCheckoutElementConfirmEvent) => {
-    if (!stripe || !elements) return
-    const { error: submitError } = await elements.submit()
-    if (submitError) {
-      setMessage(submitError.message ?? 'An error occurred while submitting the form.')
-      return
-    }
+//   const onExpressCheckoutConfirm = async (event: StripeExpressCheckoutElementConfirmEvent) => {
+//     if (!stripe || !elements) return
+//     const { error: submitError } = await elements.submit()
+//     if (submitError) {
+//       setMessage(submitError.message ?? 'An error occurred while submitting the form.')
+//       return
+//     }
 
-    const { error } = await stripe.confirmPayment({
-      elements,
-      confirmParams: {
-        return_url: `${window.location.origin}/confirmation`,
-      },
-    })
+//     const { error } = await stripe.confirmPayment({
+//       elements,
+//       confirmParams: {
+//         return_url: `${window.location.origin}/confirmation`,
+//       },
+//     })
 
-    if (error) {
-      setMessage(error.message ?? 'An unexpected error occurred.')
-    }
-  }
+//     if (error) {
+//       setMessage(error.message ?? 'An unexpected error occurred.')
+//     }
+//   }
 
-  ///////////////
-  useEffect(() => {
-    if (!stripe) return
-    const clientSecret = new URLSearchParams(window.location.search).get(
-      'payment_intent_client_secret',
-    )
-    if (!clientSecret) return
+//   ///////////////
+//   useEffect(() => {
+//     if (!stripe) return
+//     const clientSecret = new URLSearchParams(window.location.search).get(
+//       'payment_intent_client_secret',
+//     )
+//     if (!clientSecret) return
 
-    stripe.retrievePaymentIntent(clientSecret).then(({ paymentIntent }) => {
-      if (paymentIntent) {
-        switch (paymentIntent.status) {
-          case 'succeeded':
-            setMessage('Payment succeeded!')
-            break
-          case 'processing':
-            setMessage('Your payment is processing.')
-            break
-          case 'requires_payment_method':
-            setMessage('Your payment was not successful, please try again.')
-            break
-          default:
-            setMessage('Something went wrong.')
-            break
-        }
-      }
-    })
-  }, [stripe])
+//     stripe.retrievePaymentIntent(clientSecret).then(({ paymentIntent }) => {
+//       if (paymentIntent) {
+//         switch (paymentIntent.status) {
+//           case 'succeeded':
+//             setMessage('Payment succeeded!')
+//             break
+//           case 'processing':
+//             setMessage('Your payment is processing.')
+//             break
+//           case 'requires_payment_method':
+//             setMessage('Your payment was not successful, please try again.')
+//             break
+//           default:
+//             setMessage('Something went wrong.')
+//             break
+//         }
+//       }
+//     })
+//   }, [stripe])
 
-  const paymentElementOptions = {
-    layout: 'tabs' as const,
-  }
+//   const paymentElementOptions = {
+//     layout: 'tabs' as const,
+//   }
 
-  return (
-    <form id="payment-form" onSubmit={handleSubmit} className="flex flex-col">
-      <div
-        id="express-checkout-element"
-        style={{ visibility: expressVisibility, marginBottom: '20px' }}
-      >
-        <ExpressCheckoutElement onConfirm={onExpressCheckoutConfirm} />
-      </div>
-      <div>{` or `}</div>
-      <PaymentElement id="payment-element" options={paymentElementOptions} />
-      <button
-        disabled={isLoading || !stripe || !elements || !isValid}
-        id="submit"
-        className={cn(
-          'w-full mt-6 py-3 cursor-pointer border border-transparent bg-green px-4 text-sm font-medium text-white shadow-sm hover:bg-black hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50',
-          buttonLook.base,
-          buttonLook.sizes.medium,
-          buttonLook.widths.full,
-          (!isValid || isLoading || !stripe || !elements) && 'opacity-50 cursor-not-allowed',
-        )}
-      >
-        <span id="button-text">
-          {isLoading ? <div className="spinner" id="spinner"></div> : 'Pay now'}
-        </span>
-      </button>
-      {message && (
-        <div id="payment-message" className="mt-4 text-red-500">
-          {message}
-        </div>
-      )}
-    </form>
-  )
-}
+//   return (
+//     <form id="payment-form" onSubmit={handleSubmit} className="flex flex-col">
+//       <div
+//         id="express-checkout-element"
+//         style={{ visibility: expressVisibility, marginBottom: '20px' }}
+//       >
+//         <ExpressCheckoutElement onConfirm={onExpressCheckoutConfirm} />
+//       </div>
+//       <div>{` or `}</div>
+//       <PaymentElement id="payment-element" options={paymentElementOptions} />
+//       <button
+//         disabled={isLoading || !stripe || !elements || !isValid}
+//         id="submit"
+//         className={cn(
+//           'w-full mt-6 py-3 cursor-pointer border border-transparent bg-green px-4 text-sm font-medium text-white shadow-sm hover:bg-black hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50',
+//           buttonLook.base,
+//           buttonLook.sizes.medium,
+//           buttonLook.widths.full,
+//           (!isValid || isLoading || !stripe || !elements) && 'opacity-50 cursor-not-allowed',
+//         )}
+//       >
+//         <span id="button-text">
+//           {isLoading ? <div className="spinner" id="spinner"></div> : 'Pay now'}
+//         </span>
+//       </button>
+//       {message && (
+//         <div id="payment-message" className="mt-4 text-red-500">
+//           {message}
+//         </div>
+//       )}
+//     </form>
+//   )
+// }
 
-export default CheckoutForm
+// export default CheckoutForm
