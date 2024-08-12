@@ -5,6 +5,7 @@ import { Cart } from '@/payload-types'
 // Import utility functions from the @payloadcms/next package for server-side data management
 import { getPayloadHMR } from '@payloadcms/next/utilities'
 import configPromise from '@payload-config'
+import { unstable_cache } from 'next/cache'
 
 /**
  * Function to create or update a cart in the Payload CMS database.
@@ -23,6 +24,7 @@ import configPromise from '@payload-config'
  * Side effects:
  * - Creates or updates a cart in the Payload CMS database.
  */
+
 export async function upsertPayloadCart(cart: Cart) {
   const config = await configPromise
   let payload: any = await getPayloadHMR({ config })

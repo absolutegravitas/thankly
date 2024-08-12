@@ -7,6 +7,10 @@ import { shippingPrices } from '@/utilities/referenceText'
 import { isMetroPostcode, isRegionalPostcode, isRemotePostcode } from './shippingCalcs'
 import { upsertPayloadCart } from './upsertPayloadCart'
 import { deletePayloadCart } from './deletePayloadCart'
+import { debounce } from 'lodash' // You'll need to install lodash if not already present
+
+// Create a debounced version of the upsertPayloadCart function
+const debouncedUpsertPayloadCart = debounce(upsertPayloadCart, 1000)
 
 // Type alias for a single item in the Cart
 export type CartItem = NonNullable<Cart['items']>[number]
@@ -53,6 +57,8 @@ const getProductId = (product: CartItem['product']): string | number => {
 
 // Cart reducer function to handle different actions
 export const cartReducer = (cart: Cart, action: CartAction): Cart => {
+  let updatedCart: Cart
+
   switch (action.type) {
     case 'ADD_PRODUCT': {
       const { product, price } = action.payload
@@ -115,7 +121,7 @@ export const cartReducer = (cart: Cart, action: CartAction): Cart => {
 
       // upsert the server cart
       console.log('product added, upsert cart -- ')
-      upsertPayloadCart(cartToReturn)
+      debouncedUpsertPayloadCart(cartToReturn)
 
       return cartToReturn
     }
@@ -139,7 +145,8 @@ export const cartReducer = (cart: Cart, action: CartAction): Cart => {
       } else {
         // upsert the server cart
         console.log('product added, upsert cart -- ')
-        upsertPayloadCart(cartToReturn)
+        debouncedUpsertPayloadCart(cartToReturn)
+
         return cartToReturn
       }
     }
@@ -170,7 +177,7 @@ export const cartReducer = (cart: Cart, action: CartAction): Cart => {
 
       // upsert the server cart
       console.log('product added, upsert cart -- ')
-      upsertPayloadCart(cartToReturn)
+      debouncedUpsertPayloadCart(cartToReturn)
 
       return cartToReturn
     }
@@ -216,7 +223,7 @@ export const cartReducer = (cart: Cart, action: CartAction): Cart => {
 
       // upsert the server cart
       console.log('product added, upsert cart -- ')
-      upsertPayloadCart(cartToReturn)
+      debouncedUpsertPayloadCart(cartToReturn)
 
       return cartToReturn
     }
@@ -254,7 +261,9 @@ export const cartReducer = (cart: Cart, action: CartAction): Cart => {
 
       // upsert the server cart
       console.log('product added, upsert cart -- ')
-      upsertPayloadCart(cartToReturn)
+      // upsertPayloadCart(cartToReturn)
+      // Use the debounced function for updating the server cart
+      debouncedUpsertPayloadCart(cartToReturn)
 
       return cartToReturn
     }
@@ -281,7 +290,7 @@ export const cartReducer = (cart: Cart, action: CartAction): Cart => {
 
       // upsert the server cart
       console.log('product added, upsert cart -- ')
-      upsertPayloadCart(cartToReturn)
+      debouncedUpsertPayloadCart(cartToReturn)
 
       return cartToReturn
     }
@@ -346,10 +355,21 @@ const calculateCartTotals = (items: CartItem[] | undefined): Cart['totals'] => {
           }
         }
       }
+
+      // stupid sale v base price calcs
+      let itemPrice = 0
+      if (typeof item.product !== 'number') {
+        if (item.product.prices.salePrice === undefined || item.product.prices.salePrice === null) {
+          itemPrice = item.product.prices.basePrice
+        } else {
+          itemPrice = Math.min(item.product.prices.basePrice, item.product.prices.salePrice)
+        }
+      }
+
       receiver.totals = {
-        cost: item.price || 0,
         shipping,
-        subTotal: (item.price || 0) + (shipping || 0),
+        cost: itemPrice,
+        subTotal: itemPrice + (shipping || 0),
       }
     })
     item.totals = {
