@@ -11,10 +11,8 @@ import ProductBlock from '@app/_blocks/ProductBlock'
 import type { Product } from '@payload-types'
 import Blocks from '@app/_blocks'
 import { Metadata } from 'next'
-import { unstable_cache } from 'next/cache'
-import { getPayloadHMR } from '@payloadcms/next/utilities'
-import configPromise from '@payload-config'
 import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
+import FetchItem from '@/utilities/PayloadQueries/fetchItem'
 
 // Component that renders the product details page
 export default async function ProductPage({
@@ -113,36 +111,11 @@ export async function generateMetadata({
 
 // Utility function to fetch product data from the Payload CMS
 const fetchProduct = async (slug: string): Promise<any | null> => {
-  const cachedFetchProduct = unstable_cache(
-    async (): Promise<any | null> => {
-      const config = await configPromise
-      let payload: any = await getPayloadHMR({ config })
-      let product: any | null = null
+  let product = await FetchItem({ collection: 'products', slug: slug })
 
-      try {
-        const { docs } = await payload.find({
-          collection: 'products',
-          where: { slug: { equals: slug } },
-          depth: 3,
-          limit: 1,
-          pagination: false,
-        })
+  // set the inCart key so that browser cart can update
+  const inCart: boolean = false
+  product = { ...product, inCart }
 
-        product = docs[0]
-        const inCart: boolean = false
-        product = { ...product, inCart } // set the inCart key so that browser cart can update
-      } catch (error) {
-        console.error(`Error fetching product: ${slug}`, error)
-      } finally {
-        return product // cant return Product coz inCart doesnt exist on type
-      }
-    },
-    [`fetchProduct-${slug}`], // Include the slug in the cache key
-    {
-      revalidate: 60, // 60 seconds
-      tags: [`fetchProduct-${slug}`], // Include the slug in the tags for easier invalidation
-    },
-  )
-
-  return cachedFetchProduct()
+  return product
 }

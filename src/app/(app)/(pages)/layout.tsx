@@ -32,47 +32,14 @@ import { inter, leaguespartan, raleway } from '@/utilities/fonts'
 
 import '@app/_css/app.scss'
 
-import { unstable_cache } from 'next/cache'
-import { getPayloadHMR } from '@payloadcms/next/utilities'
-import configPromise from '@payload-config'
-
 import { Header } from '@app/_components/Header'
 import { Footer } from '@app/_components/Footer'
 import { Menu, Setting } from '@payload-types'
 
-const fetchSettings = (): Promise<Setting | null> => {
-  const cachedSettings = unstable_cache(
-    async (): Promise<Setting | null> => {
-      const config = await configPromise
-      let payload: any = await getPayloadHMR({ config })
-      let settings = null
-
-      // console.log('settings -- ', JSON.stringify(settings))
-
-      try {
-        settings = await payload.findGlobal({
-          slug: 'settings',
-          depth: 1,
-        })
-      } catch (error) {
-        console.error(`Error fetching settings`, error)
-      }
-      return settings
-    },
-    ['settings'],
-    {
-      revalidate: 10, // 60 seconds
-
-      // revalidate: 60, // 60 seconds
-      tags: ['settings'],
-    },
-  )
-
-  return cachedSettings()
-}
+import FetchGlobal from '@/utilities/PayloadQueries/fetchGlobal'
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const settings = await fetchSettings()
+  const settings = await FetchGlobal({ slug: 'settings', depth: 1 })
 
   return (
     <html lang="en" suppressHydrationWarning>
