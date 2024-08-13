@@ -104,6 +104,22 @@ import { v4 as uuidv4 } from 'uuid'
 import { getPayloadHMR } from '@payloadcms/next/utilities'
 import configPromise from '@payload-config'
 
+function generateOrderNumber(): string {
+  return `${Math.floor(1000 + Math.random() * 9000)}-${Math.floor(1000 + Math.random() * 9000)}`
+}
+
+async function isOrderNumberUnique(payload: any, orderNumber: string): Promise<boolean> {
+  const existingOrder = await payload.find({
+    collection: 'orders',
+    where: {
+      orderNumber: {
+        equals: orderNumber,
+      },
+    },
+  })
+  return existingOrder.totalDocs === 0
+}
+
 export async function createOrder(cart: Cart, stripeSessionId: string) {
   const config = await configPromise
   let payload: any = await getPayloadHMR({ config })
@@ -116,13 +132,18 @@ export async function createOrder(cart: Cart, stripeSessionId: string) {
       product: typeof item.product === 'object' ? item.product.id : item.product,
       receivers: item.receivers?.map((receiver) => ({
         ...receiver,
-        errors: undefined, // Remove errors field
+        errors: undefined,
       })),
     })),
   }
 
+  let orderNumber: string
+  do {
+    orderNumber = generateOrderNumber()
+  } while (!(await isOrderNumberUnique(payload, orderNumber)))
+
   const orderData = {
-    orderNumber: uuidv4(),
+    orderNumber,
     status: 'pending' as const,
     stripeId: stripeSessionId,
     totals: transformedCart.totals,
