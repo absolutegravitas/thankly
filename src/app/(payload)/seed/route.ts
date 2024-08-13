@@ -38,6 +38,13 @@ export async function GET(request: NextRequest) {
   const config = await configPromise
   let payload: any = await getPayloadHMR({ config })
 
+  if (!process.env.PAYLOAD_SEED_ENABLED) {
+    const message = 'Payload database seeding is disabled.';
+    payload.logger.info(message)
+    return NextResponse.json({ message: message }, { status: 503});
+  }
+
+
   // console.log('request --',request);
 
   // const me = await fetchMe();
@@ -409,8 +416,9 @@ export async function GET(request: NextRequest) {
   //   },
   // })
 
-  payload.logger.info('Seeded database successfully!')
 
-  return NextResponse.json({});
+  const message = 'Seeded database successfully!';
+  payload.logger.info(message)
+  return NextResponse.json({ message: message }, { status: 200});
 }
 
