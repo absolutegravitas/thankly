@@ -1,4 +1,4 @@
-import { Page } from "@/payload-types";
+import { Media, Page } from "@/payload-types";
 
 export const home: Partial<Page> = {
   title: 'Home',
@@ -50,7 +50,7 @@ export const home: Partial<Page> = {
                     children: [
                       {
                         mode: 'normal',
-                        text: "IT'S GOOD TO BE BACK",
+                        text: "IT'S GOOD TO BE BACK!",
                         type: 'text',
                         style: '',
                         detail: 0,
@@ -134,6 +134,7 @@ export const home: Partial<Page> = {
   meta: {
     title: 'Thankly',
     description: 'Send a thankly to the special people in your life.',
-    image: '{{IMAGE_HERO}}',
+    image: '{{IMAGE_HERO}}' as any,
   },
 }
+
