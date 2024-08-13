@@ -59,7 +59,7 @@
     "lodash": "^4.17.21",
     "lucide-react": "^0.424.0",
     "next": "15.0.0-rc.0",
-    "next-auth": "beta",
+    "next-auth": "^4.24.7",
     "next-sitemap": "^4.2.3",
     "nodemailer": "^6.9.14",
     "oslo": "^1.2.1",

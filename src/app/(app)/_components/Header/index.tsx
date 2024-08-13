@@ -12,6 +12,7 @@ import { DesktopNav } from './DesktopNav'
 import { MobileNav, modalSlug as mobileNavModalSlug } from './MobileNav'
 
 import classes from './index.module.scss'
+import Link from 'next/link'
 
 export const Header: React.FC<any> = ({ menu, topBar }: any) => {
   const { isModalOpen } = useModal()
@@ -53,9 +54,9 @@ export const Header: React.FC<any> = ({ menu, topBar }: any) => {
           .join(' ')}
       >
         {topBar && <TopBar {...topBar} />}
-
         <DesktopNav tabs={menu?.tabs} hideBackground={hideBackground} />
         <MobileNav tabs={menu?.tabs} />
+        <Link href="/api/auth/signin">Login</Link>
         <React.Suspense>
           <UniversalTruth />
         </React.Suspense>
