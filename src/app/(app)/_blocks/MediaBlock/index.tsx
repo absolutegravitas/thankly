@@ -7,8 +7,7 @@ import { Media } from '@app/_components/Media'
 import { RichText } from '@app/_blocks/RichText'
 import { Reusable } from '@payload-types'
 
-import classes from './index.module.scss'
-import { getPaddingClasses } from '../../_css/tailwindClasses'
+import { contentFormats, getPaddingClasses } from '../../_css/tailwindClasses'
 
 // type Props = Extract<Reusable['layout'][0], { blockType: 'mediaBlock' }> & {
 //   padding: PaddingProps
@@ -26,7 +25,7 @@ export const MediaBlock: React.FC<any & { disableGutter?: boolean; marginAdjustm
   return (
     <BlockWrapper settings={settings} className={getPaddingClasses('mediaBlock')}>
       <div
-        className={classes.mediaBlock}
+        className="relative"
         style={{
           marginRight: marginAdjustment.marginRight,
           marginLeft: marginAdjustment.marginLeft,
@@ -35,27 +34,21 @@ export const MediaBlock: React.FC<any & { disableGutter?: boolean; marginAdjustm
         {disableGutter ? (
           <Media
             resource={media}
-            className={[classes.mediaResource, classes[`position--${position}`]]
-              .filter(Boolean)
-              .join(' ')}
+            className={`${position === 'wide' ? '-ml-[calc(var(--gutter-h)/-2)] w-[calc(100%+var(--gutter-h))]' : ''}`}
           />
         ) : (
-          <Gutter className={classes.mediaWrapper}>
+          <Gutter className="relative">
             <Media
               resource={media}
-              className={[classes.mediaResource, classes[`position--${position}`]]
-                .filter(Boolean)
-                .join(' ')}
+              className={`${position === 'wide' ? '-ml-[calc(var(--gutter-h)/-2)] w-[calc(100%+var(--gutter-h))]' : ''}`}
             />
 
             {caption && (
-              <div className={['grid'].filter(Boolean).join(' ')}>
+              <div className="grid">
                 <div
-                  className={[classes.caption, 'cols-8 start-5 cols-m-8 start-m-1']
-                    .filter(Boolean)
-                    .join(' ')}
+                  className={`${contentFormats.alignCenter} pt-5`}
                 >
-                  <small>
+                  <small className={contentFormats.smallText}>
                     <RichText content={caption} />
                   </small>
                 </div>

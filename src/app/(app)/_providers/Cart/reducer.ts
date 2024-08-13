@@ -5,16 +5,15 @@
 import type { Cart, Product } from '@/payload-types'
 import { shippingPrices } from '@/utilities/referenceText'
 import { isMetroPostcode, isRegionalPostcode, isRemotePostcode } from './shippingCalcs'
-import { upsertPayloadCart } from './serverActions'
+import { upsertPayloadCart } from './upsertPayloadCart'
+import { deletePayloadCart } from './deletePayloadCart'
+import { debounce } from 'lodash' // You'll need to install lodash if not already present
+
+// Create a debounced version of the upsertPayloadCart function
+const debouncedUpsertPayloadCart = debounce(upsertPayloadCart, 1000)
 
 // Type alias for a single item in the Cart
 export type CartItem = NonNullable<Cart['items']>[number]
-
-// Type aliases for Cart and ShippingMethod
-type CartType = Cart
-type ShippingMethod =
-  // | 'free'
-  'standardMail' | 'registeredMail' | 'expressMail' | 'standardParcel' | 'expressParcel' | null
 
 // Union type for different cart actions
 export type CartAction =
@@ -54,6 +53,258 @@ export type CartAction =
 // Helper function to get the product ID from a CartItem
 const getProductId = (product: CartItem['product']): string | number => {
   return typeof product === 'object' ? product.id : product
+}
+
+// Cart reducer function to handle different actions
+export const cartReducer = (cart: Cart, action: CartAction): Cart => {
+  let updatedCart: Cart
+
+  switch (action.type) {
+    case 'ADD_PRODUCT': {
+      const { product, price } = action.payload
+      const productId = typeof product === 'object' ? product.id : product
+
+      const existingItem = cart.items?.find((item) =>
+        typeof item.product === 'object'
+          ? item.product.id === productId
+          : item.product === productId,
+      )
+
+      if (existingItem) return cart
+
+      // add a new product to existing cart
+      const newItem: CartItem = {
+        product: product,
+        price: price,
+        receivers: [],
+        totals: {
+          subTotal: 0,
+          cost: 0,
+          shipping: null,
+        },
+        id: Date.now().toString(),
+      }
+
+      const updatedItems = [...(cart.items || []), newItem]
+
+      const updatedCart = {
+        ...cart,
+        items: updatedItems,
+      }
+
+      // return the updated cart with one empty receiver to get customer started
+      let cartToReturn = cartReducer(updatedCart, {
+        type: 'ADD_RECEIVER',
+        payload: {
+          productId: productId,
+          receiver: {
+            id: Date.now().toString(),
+            name: null,
+            message: null,
+            delivery: {
+              address: {
+                addressLine1: null,
+                addressLine2: null,
+                formattedAddress: null,
+                json: null,
+              },
+              shippingMethod: null,
+            },
+            totals: {
+              subTotal: price,
+              cost: price,
+              shipping: null,
+            },
+          },
+        },
+      })
+
+      // upsert the server cart
+      console.log('product added, upsert cart -- ')
+      debouncedUpsertPayloadCart(cartToReturn)
+
+      return cartToReturn
+    }
+
+    case 'REMOVE_PRODUCT': {
+      const { productId } = action.payload
+      const updatedItems = cart.items?.filter(
+        (item) => getProductId(item.product) !== productId,
+      ) as CartItem[]
+
+      let cartToReturn = {
+        ...cart,
+        items: updatedItems,
+        totals: calculateCartTotals(updatedItems),
+      }
+
+      // if this is the last product removed, then delete the cart client & server, otherwise return the updated cart
+      if (cartToReturn.items?.length === 0) {
+        deletePayloadCart(cartToReturn)
+        return { ...cart, items: [], totals: { total: 0, cost: 0, shipping: 0 } }
+      } else {
+        // upsert the server cart
+        console.log('product added, upsert cart -- ')
+        debouncedUpsertPayloadCart(cartToReturn)
+
+        return cartToReturn
+      }
+    }
+
+    case 'ADD_RECEIVER': {
+      const { productId, receiver } = action.payload
+      const updatedItems =
+        cart.items?.map((item) => {
+          if (getProductId(item.product) === productId) {
+            return {
+              ...item,
+              receivers: [...(item.receivers || []), receiver],
+              totals: {
+                subTotal: (item.totals?.subTotal || 0) + (receiver.totals?.subTotal || 0),
+                cost: (item.totals?.cost || 0) + (receiver.totals?.cost || 0),
+                shipping: (item.totals?.shipping || 0) + (receiver.totals?.shipping || 0),
+              },
+            }
+          }
+          return item
+        }) || []
+
+      let cartToReturn = {
+        ...cart,
+        items: updatedItems,
+        totals: calculateCartTotals(updatedItems),
+      }
+
+      // upsert the server cart
+      console.log('product added, upsert cart -- ')
+      debouncedUpsertPayloadCart(cartToReturn)
+
+      return cartToReturn
+    }
+
+    case 'COPY_RECEIVER': {
+      const { productId, receiverId } = action.payload
+
+      const updatedItems =
+        cart.items?.map((item) => {
+          // find matching product
+
+          if (getProductId(item.product) === productId) {
+            // console.log('product --', productId)
+            // find matching receiver
+            const receiverToCopy = item.receivers?.find((r) => r.id === receiverId)
+            // console.log('copiedreceiver --', receiverToCopy)
+            // receiver found
+            if (receiverToCopy) {
+              const newReceiver: NonNullable<CartItem['receivers']>[number] = {
+                ...receiverToCopy,
+                id: Date.now().toString(),
+              }
+
+              return {
+                ...item,
+                receivers: [...(item.receivers || []), newReceiver],
+                totals: {
+                  subTotal: (item.totals?.subTotal || 0) + (newReceiver.totals?.subTotal || 0),
+                  cost: (item.totals?.cost || 0) + (newReceiver.totals?.cost || 0),
+                  shipping: (item.totals?.shipping || 0) + (newReceiver.totals?.shipping || 0),
+                },
+              }
+            }
+          }
+          return item
+        }) || []
+
+      let cartToReturn = {
+        ...cart,
+        items: updatedItems,
+        totals: calculateCartTotals(updatedItems),
+      }
+
+      // upsert the server cart
+      console.log('product added, upsert cart -- ')
+      debouncedUpsertPayloadCart(cartToReturn)
+
+      return cartToReturn
+    }
+
+    case 'UPDATE_RECEIVER': {
+      const { productId, receiverId, updatedFields } = action.payload
+      const updatedItems = cart.items?.map((item) => {
+        if (getProductId(item.product) === productId) {
+          const updatedReceivers = item.receivers?.map((receiver) =>
+            receiver.id === receiverId
+              ? {
+                  ...receiver,
+                  ...updatedFields,
+                  delivery: {
+                    ...receiver.delivery,
+                    ...updatedFields.delivery,
+                    address: {
+                      ...receiver.delivery?.address,
+                      ...updatedFields.delivery?.address,
+                    },
+                  },
+                }
+              : receiver,
+          )
+          return { ...item, receivers: updatedReceivers }
+        }
+        return item
+      })
+
+      let cartToReturn = {
+        ...cart,
+        items: updatedItems,
+        totals: calculateCartTotals(updatedItems),
+      }
+
+      // upsert the server cart
+      console.log('product added, upsert cart -- ')
+      // upsertPayloadCart(cartToReturn)
+      // Use the debounced function for updating the server cart
+      debouncedUpsertPayloadCart(cartToReturn)
+
+      return cartToReturn
+    }
+
+    case 'REMOVE_RECEIVER': {
+      const { productId, receiverId } = action.payload
+      const updatedItems = cart.items
+        ?.map((item) => {
+          if (getProductId(item.product) === productId) {
+            const updatedReceivers = item.receivers?.filter(
+              (receiver) => receiver.id !== receiverId,
+            )
+            return { ...item, receivers: updatedReceivers }
+          }
+          return item
+        })
+        .filter((item) => item.receivers && item.receivers.length > 0) as CartItem[]
+
+      let cartToReturn = {
+        ...cart,
+        items: updatedItems,
+        totals: calculateCartTotals(updatedItems),
+      }
+
+      // upsert the server cart
+      console.log('product added, upsert cart -- ')
+      debouncedUpsertPayloadCart(cartToReturn)
+
+      return cartToReturn
+    }
+
+    case 'CLEAR_CART': {
+      // also clear / delete the cart on payloadCMS
+      deletePayloadCart(cart)
+      return { ...cart, items: [], totals: { total: 0, cost: 0, shipping: 0 } }
+    }
+
+    default: {
+      return cart
+    }
+  }
 }
 
 // Function to calculate the totals for the entire cart
@@ -104,10 +355,21 @@ const calculateCartTotals = (items: CartItem[] | undefined): Cart['totals'] => {
           }
         }
       }
+
+      // stupid sale v base price calcs
+      let itemPrice = 0
+      if (typeof item.product !== 'number') {
+        if (item.product.prices.salePrice === undefined || item.product.prices.salePrice === null) {
+          itemPrice = item.product.prices.basePrice
+        } else {
+          itemPrice = Math.min(item.product.prices.basePrice, item.product.prices.salePrice)
+        }
+      }
+
       receiver.totals = {
-        cost: item.price || 0,
         shipping,
-        subTotal: (item.price || 0) + (shipping || 0),
+        cost: itemPrice,
+        subTotal: itemPrice + (shipping || 0),
       }
     })
     item.totals = {
@@ -133,218 +395,4 @@ const calculateCartTotals = (items: CartItem[] | undefined): Cart['totals'] => {
     }),
     { total: 0, cost: 0, shipping: 0, discount: 0 },
   )
-}
-
-// Cart reducer function to handle different actions
-export const cartReducer = (cart: Cart, action: CartAction): Cart => {
-  switch (action.type) {
-    case 'ADD_PRODUCT': {
-      const { product, price } = action.payload
-      const productId = typeof product === 'object' ? product.id : product
-
-      const existingItem = cart.items?.find((item) =>
-        typeof item.product === 'object'
-          ? item.product.id === productId
-          : item.product === productId,
-      )
-
-      if (existingItem) {
-        return cart
-      }
-
-      // add a new product to existing cart
-      const newItem: CartItem = {
-        product: product,
-        price: price,
-        receivers: [],
-        totals: {
-          subTotal: 0,
-          cost: 0,
-          shipping: null,
-        },
-        id: Date.now().toString(),
-      }
-
-      const updatedItems = [...(cart.items || []), newItem]
-
-      const updatedCart = {
-        ...cart,
-        items: updatedItems,
-      }
-
-      return cartReducer(updatedCart, {
-        type: 'ADD_RECEIVER',
-        payload: {
-          productId: productId,
-          receiver: {
-            id: Date.now().toString(),
-            name: null,
-            message: null,
-            delivery: {
-              address: {
-                addressLine1: null,
-                addressLine2: null,
-                formattedAddress: null,
-                json: null,
-              },
-              shippingMethod: null,
-            },
-            totals: {
-              subTotal: price,
-              cost: price,
-              shipping: null,
-            },
-          },
-        },
-      })
-    }
-
-    case 'REMOVE_PRODUCT': {
-      const { productId } = action.payload
-      const updatedItems = cart.items?.filter(
-        (item) => getProductId(item.product) !== productId,
-      ) as CartItem[]
-
-      return {
-        ...cart,
-        items: updatedItems,
-        totals: calculateCartTotals(updatedItems),
-      }
-    }
-
-    case 'ADD_RECEIVER': {
-      const { productId, receiver } = action.payload
-      const updatedItems =
-        cart.items?.map((item) => {
-          if (getProductId(item.product) === productId) {
-            return {
-              ...item,
-              receivers: [...(item.receivers || []), receiver],
-              totals: {
-                subTotal: (item.totals?.subTotal || 0) + (receiver.totals?.subTotal || 0),
-                cost: (item.totals?.cost || 0) + (receiver.totals?.cost || 0),
-                shipping: (item.totals?.shipping || 0) + (receiver.totals?.shipping || 0),
-              },
-            }
-          }
-          return item
-        }) || []
-
-      return {
-        ...cart,
-        items: updatedItems,
-        totals: calculateCartTotals(updatedItems),
-      }
-    }
-
-    case 'COPY_RECEIVER': {
-      const { productId, receiverId } = action.payload
-
-      const updatedItems =
-        cart.items?.map((item) => {
-          // find matching product
-
-          if (getProductId(item.product) === productId) {
-            // console.log('product --', productId)
-            // find matching receiver
-            const receiverToCopy = item.receivers?.find((r) => r.id === receiverId)
-            // console.log('copiedreceiver --', receiverToCopy)
-            // receiver found
-            if (receiverToCopy) {
-              const newReceiver: NonNullable<CartItem['receivers']>[number] = {
-                ...receiverToCopy,
-                id: Date.now().toString(),
-              }
-
-              return {
-                ...item,
-                receivers: [...(item.receivers || []), newReceiver],
-                totals: {
-                  subTotal: (item.totals?.subTotal || 0) + (newReceiver.totals?.subTotal || 0),
-                  cost: (item.totals?.cost || 0) + (newReceiver.totals?.cost || 0),
-                  shipping: (item.totals?.shipping || 0) + (newReceiver.totals?.shipping || 0),
-                },
-              }
-            }
-          }
-          return item
-        }) || []
-
-      return {
-        ...cart,
-        items: updatedItems,
-        totals: calculateCartTotals(updatedItems),
-      }
-    }
-
-    case 'UPDATE_RECEIVER': {
-      const { productId, receiverId, updatedFields } = action.payload
-      const updatedItems = cart.items?.map((item) => {
-        if (getProductId(item.product) === productId) {
-          const updatedReceivers = item.receivers?.map((receiver) =>
-            receiver.id === receiverId
-              ? {
-                  ...receiver,
-                  ...updatedFields,
-                  delivery: {
-                    ...receiver.delivery,
-                    ...updatedFields.delivery,
-                    address: {
-                      ...receiver.delivery?.address,
-                      ...updatedFields.delivery?.address,
-                    },
-                  },
-                }
-              : receiver,
-          )
-          return { ...item, receivers: updatedReceivers }
-        }
-        return item
-      })
-      return {
-        ...cart,
-        items: updatedItems,
-        totals: calculateCartTotals(updatedItems),
-      }
-    }
-
-    case 'REMOVE_RECEIVER': {
-      const { productId, receiverId } = action.payload
-      const updatedItems = cart.items
-        ?.map((item) => {
-          if (getProductId(item.product) === productId) {
-            const updatedReceivers = item.receivers?.filter(
-              (receiver) => receiver.id !== receiverId,
-            )
-            return { ...item, receivers: updatedReceivers }
-          }
-          return item
-        })
-        .filter((item) => item.receivers && item.receivers.length > 0) as CartItem[]
-
-      return {
-        ...cart,
-        items: updatedItems,
-        totals: calculateCartTotals(updatedItems),
-      }
-    }
-
-    case 'CLEAR_CART': {
-      // also clear / delete the cart on payloadCMS
-
-      return {
-        ...cart,
-        items: [],
-        totals: {
-          total: 0,
-          cost: 0,
-          shipping: 0,
-        },
-      }
-    }
-
-    default: {
-      return cart
-    }
-  }
 }

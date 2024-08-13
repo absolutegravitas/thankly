@@ -18,6 +18,7 @@ import {
   AvailablePaymentMethods,
   StripeExpressCheckoutElementConfirmEvent,
 } from '@stripe/stripe-js'
+import { createCheckoutSession } from './createCheckoutSession'
 
 // Make sure to call loadStripe outside of a component’s render to avoid
 // recreating the Stripe object on every render.
@@ -25,14 +26,11 @@ const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
 
 export const CartSummary: React.FC<{ cart: Cart }> = ({ cart }) => {
   if (!cart || !cart.totals) return null
-
+  const router = useRouter()
   const { validateCart, clearCart } = useCart()
   const [isValid, setIsValid] = useState<boolean>(true)
   const [validationMessage, setValidationMessage] = useState<string>('')
-  const [isProcessing, setIsProcessing] = useState<boolean>(false)
-  const [isPending, startTransition] = useTransition()
-  const [clientSecret, setClientSecret] = useState<string | undefined>(undefined)
-
+  const [isPending, setIsPending] = useState(false)
   // check if cart is valid
   useEffect(() => {
     const orderValidity = validateCart()
@@ -42,60 +40,20 @@ export const CartSummary: React.FC<{ cart: Cart }> = ({ cart }) => {
     )
   }, [cart, validateCart])
 
-  // create payment intent if cart is valid
-  useEffect(() => {
-    if (isValid) {
-      const fetchClientSecret = async () => {
-        const { clientSecret } = await createPaymentIntent(cart.totals.total)
-        setClientSecret(clientSecret || undefined)
+  const handleCheckout = async () => {
+    if (!isValid) return
+    setIsPending(true)
+    try {
+      const result = await createCheckoutSession(cart)
+      if (result.redirectUrl) {
+        window.location.href = result.redirectUrl
       }
-      fetchClientSecret()
+    } catch (error) {
+      console.error('Checkout error:', error)
+      setValidationMessage('An error occurred during checkout. Please try again.')
+    } finally {
+      setIsPending(false)
     }
-  }, [isValid, cart.totals.total])
-
-  const appearance = {
-    theme: 'flat' as const,
-    variables: {
-      colorPrimary: '#557755',
-      colorBackground: '#f9fafb',
-      colorText: '#111827',
-      colorDanger: '#dc2626',
-      fontFamily:
-        'ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
-      spacingUnit: '4px',
-      borderRadius: '0px',
-    },
-    rules: {
-      '.Input': {
-        border: 'none',
-        borderBottom: '1px solid #d1d5db',
-        boxShadow: 'none',
-        fontSize: '14px',
-        padding: '8px 4px',
-      },
-      '.Input:focus': {
-        border: 'none',
-        borderBottom: '2px solid #557755',
-        boxShadow: 'none',
-      },
-      '.Input::placeholder': {
-        color: '#9ca3af',
-      },
-      '.Label': {
-        fontSize: '14px',
-        fontWeight: '500',
-        color: '#111827',
-      },
-      '.Error': {
-        color: '#dc2626',
-        fontSize: '14px',
-      },
-    },
-  }
-
-  const options: StripeElementsOptions = {
-    clientSecret,
-    appearance,
   }
 
   return (
@@ -147,6 +105,35 @@ export const CartSummary: React.FC<{ cart: Cart }> = ({ cart }) => {
               </Link>
             </span>
           </div>
+          <CMSLink
+            data={{
+              label: 'Proceed to Checkout',
+              type: 'custom',
+              url: '#',
+            }}
+            look={{
+              theme: 'light',
+              type: 'button',
+              size: 'medium',
+              width: 'full',
+              variant: 'blocks',
+              icon: {
+                content: isPending ? (
+                  <LoaderCircleIcon className="animate-spin" />
+                ) : (
+                  <DollarSignIcon strokeWidth={1.25} />
+                ),
+                iconPosition: 'left',
+              },
+            }}
+            actions={{
+              onClick: handleCheckout,
+            }}
+            className={`${!isValid && 'disabled bg-gray-300'}`}
+            pending={isPending}
+          />
+
+          {/* {!isValid && <div className="text-red-500 text-sm">{validationMessage}</div>} */}
 
           <CMSLink
             data={{
@@ -168,14 +155,14 @@ export const CartSummary: React.FC<{ cart: Cart }> = ({ cart }) => {
           />
         </div>
       </div>
-      <div id="summary-heading" className="basis-1/2 py-4 space-y-6 sm:space-y-8 pl-0 sm:px-8">
+      {/* <div id="summary-heading" className="basis-1/2 py-4 space-y-6 sm:space-y-8 pl-0 sm:px-8">
         <h2 className={cn(contentFormats.global, contentFormats.h3, 'mt-0 mb-6')}>Pay</h2>
         {clientSecret && (
           <Elements stripe={stripePromise} options={options}>
             <CheckoutForm isValid={isValid} clientSecret={clientSecret} />{' '}
           </Elements>
         )}
-      </div>
+      </div> */}
     </div>
   )
 }
@@ -202,151 +189,3 @@ const SummaryItem: React.FC<SummaryItemProps> = ({ label, value, isBold }) => (
     </dd>
   </div>
 )
-
-import { PaymentElement, useStripe, useElements } from '@stripe/react-stripe-js'
-
-const CheckoutForm: React.FC<{ isValid: boolean; clientSecret: string }> = ({
-  isValid,
-  clientSecret,
-}) => {
-  const stripe = useStripe()
-  const elements = useElements()
-  const [message, setMessage] = useState<string | null>(null)
-  const [isLoading, setIsLoading] = useState(false)
-
-  // STRIPE EXPRESS CHECKOUT ELEMENT
-  const [expressVisibility, setExpressVisibility] = useState<'hidden' | 'visible'>('hidden')
-
-  useEffect(() => {
-    if (!stripe) return
-
-    if (!clientSecret) {
-      setMessage("Couldn't initialize payment. Please try again.")
-      return
-    }
-
-    stripe.retrievePaymentIntent(clientSecret).then(({ paymentIntent }) => {
-      switch (paymentIntent?.status) {
-        case 'succeeded':
-          setMessage('Payment succeeded!')
-          break
-        case 'processing':
-          setMessage('Your payment is processing.')
-          break
-        case 'requires_payment_method':
-          setMessage('Please provide a payment method.')
-          break
-        default:
-          setMessage('Something went wrong.')
-          break
-      }
-    })
-  }, [stripe, clientSecret])
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!stripe || !elements || !isValid) return
-    setIsLoading(true)
-
-    const { error } = await stripe.confirmPayment({
-      elements,
-      confirmParams: {
-        return_url: `${window.location.origin}/confirmation`,
-      },
-    })
-
-    if (error) {
-      setMessage(error.message ?? 'An unexpected error occurred.')
-    } else {
-      setMessage('An unexpected error occurred.')
-    }
-    setIsLoading(false)
-  }
-
-  const onExpressCheckoutConfirm = async (event: StripeExpressCheckoutElementConfirmEvent) => {
-    if (!stripe || !elements) return
-    const { error: submitError } = await elements.submit()
-    if (submitError) {
-      setMessage(submitError.message ?? 'An error occurred while submitting the form.')
-      return
-    }
-
-    const { error } = await stripe.confirmPayment({
-      elements,
-      confirmParams: {
-        return_url: `${window.location.origin}/confirmation`,
-      },
-    })
-
-    if (error) {
-      setMessage(error.message ?? 'An unexpected error occurred.')
-    }
-  }
-
-  ///////////////
-  useEffect(() => {
-    if (!stripe) return
-    const clientSecret = new URLSearchParams(window.location.search).get(
-      'payment_intent_client_secret',
-    )
-    if (!clientSecret) return
-
-    stripe.retrievePaymentIntent(clientSecret).then(({ paymentIntent }) => {
-      if (paymentIntent) {
-        switch (paymentIntent.status) {
-          case 'succeeded':
-            setMessage('Payment succeeded!')
-            break
-          case 'processing':
-            setMessage('Your payment is processing.')
-            break
-          case 'requires_payment_method':
-            setMessage('Your payment was not successful, please try again.')
-            break
-          default:
-            setMessage('Something went wrong.')
-            break
-        }
-      }
-    })
-  }, [stripe])
-
-  const paymentElementOptions = {
-    layout: 'tabs' as const,
-  }
-
-  return (
-    <form id="payment-form" onSubmit={handleSubmit} className="flex flex-col">
-      <div
-        id="express-checkout-element"
-        style={{ visibility: expressVisibility, marginBottom: '20px' }}
-      >
-        <ExpressCheckoutElement onConfirm={onExpressCheckoutConfirm} />
-      </div>
-      <div>{` or `}</div>
-      <PaymentElement id="payment-element" options={paymentElementOptions} />
-      <button
-        disabled={isLoading || !stripe || !elements || !isValid}
-        id="submit"
-        className={cn(
-          'w-full mt-6 py-3 cursor-pointer border border-transparent bg-green px-4 text-sm font-medium text-white shadow-sm hover:bg-black hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50',
-          buttonLook.base,
-          buttonLook.sizes.medium,
-          buttonLook.widths.full,
-          (!isValid || isLoading || !stripe || !elements) && 'opacity-50 cursor-not-allowed',
-        )}
-      >
-        <span id="button-text">
-          {isLoading ? <div className="spinner" id="spinner"></div> : 'Pay now'}
-        </span>
-      </button>
-      {message && (
-        <div id="payment-message" className="mt-4 text-red-500">
-          {message}
-        </div>
-      )}
-    </form>
-  )
-}
-
-export default CheckoutForm

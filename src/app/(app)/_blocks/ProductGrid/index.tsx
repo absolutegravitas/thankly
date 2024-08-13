@@ -26,6 +26,57 @@ type FetchProductsListParams = {
   filters?: FilterOptions // Filter options
 }
 
+// Server component for rendering the product grid
+export default async function ProductGrid({
+  page, // Page number for pagination
+  sort, // Sorting option
+  filters, // Filter options
+}: {
+  page?: number
+  sort?: SortOption
+  filters?: FilterOptions
+}) {
+  // console.log('ProductGrid rendered wit  h:', { page, sort, filters })
+
+  try {
+    const { products, totalPages, totalDocs } = await fetchProductsList({ page, sort, filters })
+    // console.log('Products fetched:', products.length)
+    return (
+      <React.Fragment>
+        <section
+          aria-labelledby="products-heading"
+          className="mx-auto max-w-2xl px-4 pb-16 pt-12 sm:px-6 sm:pb-24 sm:pt-16 lg:max-w-7xl lg:px-8"
+        >
+          <h2 id="products-heading" className="sr-only">
+            Products
+          </h2>
+          <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 xl:gap-x-8">
+            {(!products || products.length === 0) && (
+              <div className="h-96 rounded-lg border-4 border-dashed border-gray-200 flex items-center justify-center">
+                <p className="text-gray-500">No products found for your filters.</p>
+              </div>
+            )}
+            {products?.map((product) => <ProductCard key={product.id} {...product} />)}
+          </div>
+        </section>
+        <div className="mt-5 flex justify-between items-center">
+          <p className="text-sm text-gray-700">
+            Showing <span className="font-medium">{products.length}</span> of{' '}
+            <span className="font-medium">{totalDocs}</span> products
+          </p>
+          <p className="text-sm text-gray-700">
+            Page <span className="font-medium">{page}</span> of{' '}
+            <span className="font-medium">{totalPages}</span>
+          </p>
+        </div>
+      </React.Fragment>
+    )
+  } catch (error) {
+    console.error('Error in ProductGrid:', error)
+    return <div>Error loading products. Please try again later.</div>
+  }
+}
+
 // Fetches product data from Payload CMS based on provided parameters
 const fetchProductsList = async ({
   page = 1, // Default to page 1 if not provided
@@ -92,56 +143,5 @@ const fetchProductsList = async ({
   } catch (error) {
     console.error('Error fetching products:', error)
     throw error // Re-throw the error for further handling
-  }
-}
-
-// Server component for rendering the product grid
-export default async function ProductGrid({
-  page, // Page number for pagination
-  sort, // Sorting option
-  filters, // Filter options
-}: {
-  page?: number
-  sort?: SortOption
-  filters?: FilterOptions
-}) {
-  // console.log('ProductGrid rendered wit  h:', { page, sort, filters })
-
-  try {
-    const { products, totalPages, totalDocs } = await fetchProductsList({ page, sort, filters })
-    // console.log('Products fetched:', products.length)
-    return (
-      <React.Fragment>
-        <section
-          aria-labelledby="products-heading"
-          className="mx-auto max-w-2xl px-4 pb-16 pt-12 sm:px-6 sm:pb-24 sm:pt-16 lg:max-w-7xl lg:px-8"
-        >
-          <h2 id="products-heading" className="sr-only">
-            Products
-          </h2>
-          <div className="grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 xl:gap-x-8">
-            {(!products || products.length === 0) && (
-              <div className="h-96 rounded-lg border-4 border-dashed border-gray-200 flex items-center justify-center">
-                <p className="text-gray-500">No products found for your filters.</p>
-              </div>
-            )}
-            {products?.map((product) => <ProductCard key={product.id} {...product} />)}
-          </div>
-        </section>
-        <div className="mt-5 flex justify-between items-center">
-          <p className="text-sm text-gray-700">
-            Showing <span className="font-medium">{products.length}</span> of{' '}
-            <span className="font-medium">{totalDocs}</span> products
-          </p>
-          <p className="text-sm text-gray-700">
-            Page <span className="font-medium">{page}</span> of{' '}
-            <span className="font-medium">{totalPages}</span>
-          </p>
-        </div>
-      </React.Fragment>
-    )
-  } catch (error) {
-    console.error('Error in ProductGrid:', error)
-    return <div>Error loading products. Please try again later.</div>
   }
 }

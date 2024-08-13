@@ -12,6 +12,7 @@ import { Cart, Order, Product } from '@/payload-types'
 import { CartItem, cartReducer, CartAction } from './reducer'
 import { debounce } from 'lodash'
 import { auth } from '@/utilities/auth'
+import { v4 as uuidv4 } from 'uuid'
 
 // Type aliases for common types used throughout the file
 type Receiver = NonNullable<CartItem['receivers']>[number]
@@ -64,38 +65,15 @@ export const useCart = () => {
   return context
 }
 
-let lastTimestamp = 0
-let counter = 1
-
-function generateCartNumber() {
-  const now = Date.now()
-
-  if (now === lastTimestamp) {
-    counter++
-  } else {
-    counter = 1
-    lastTimestamp = now
-  }
-
-  const timestampPart = now.toString().slice(-8) // Last 8 digits of timestamp
-  const counterPart = counter.toString().padStart(3, '0') // 4-digit counter
-
-  return `${timestampPart}-${counterPart}`
-}
-
 // CartProvider component
 export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   // Cart state and reducer
   const [cart, dispatchCart] = useReducer<React.Reducer<Cart, CartAction>>(cartReducer, {
-    cartNumber: generateCartNumber(),
+    cartNumber: uuidv4(),
     id: 0,
     items: [],
     status: 'pending' as const,
-    totals: {
-      total: 0,
-      cost: 0,
-      shipping: 0,
-    },
+    totals: { total: 0, cost: 0, shipping: 0 },
     updatedAt: new Date().toISOString(),
     createdAt: new Date().toISOString(),
   })
@@ -144,30 +122,18 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // cart actions
   // Adds a product to the cart
   const addProduct = useCallback((product: Product | number, price: number) => {
-    dispatchCart({
-      type: 'ADD_PRODUCT',
-      payload: {
-        product,
-        price,
-      },
-    })
+    dispatchCart({ type: 'ADD_PRODUCT', payload: { product, price } })
   }, [])
 
   // Removes a product from the cart
   const removeProduct = useCallback((productId: number | string) => {
-    dispatchCart({
-      type: 'REMOVE_PRODUCT',
-      payload: { productId },
-    })
+    dispatchCart({ type: 'REMOVE_PRODUCT', payload: { productId } })
   }, [])
 
   // Adds a receiver to a product in the cart
   const addReceiver = useCallback(
     (productId: number | string, receiver: NonNullable<CartItem['receivers']>[number]) => {
-      dispatchCart({
-        type: 'ADD_RECEIVER',
-        payload: { productId, receiver },
-      })
+      dispatchCart({ type: 'ADD_RECEIVER', payload: { productId, receiver } })
     },
     [],
   )
@@ -175,10 +141,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // Updates a receiver for a product in the cart
   const updateReceiver = useCallback(
     (productId: number | string, receiverId: string, updatedFields: UpdateReceiverFields) => {
-      dispatchCart({
-        type: 'UPDATE_RECEIVER',
-        payload: { productId, receiverId, updatedFields },
-      })
+      dispatchCart({ type: 'UPDATE_RECEIVER', payload: { productId, receiverId, updatedFields } })
     },
     [],
   )
@@ -193,36 +156,13 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   // Copies a receiver for a product in the cart
   const copyReceiver = useCallback((productId: number | string, receiverId: string) => {
-    dispatchCart({
-      type: 'COPY_RECEIVER',
-      payload: { productId, receiverId },
-    })
+    dispatchCart({ type: 'COPY_RECEIVER', payload: { productId, receiverId } })
   }, [])
 
   // Clears the entire cart
   const clearCart = useCallback(() => {
-    dispatchCart({
-      type: 'CLEAR_CART',
-    })
+    dispatchCart({ type: 'CLEAR_CART' })
   }, [])
-
-  // const convertCartToOrder = useCallback(async () => {
-  //   if (!validateCart()) return null
-
-  //   const orderData = {
-  //     ...cart,
-  //     status: 'pending' as const,
-  //   }
-
-  //   try {
-  //     const newOrder = await createOrder(orderData)
-  //     clearCart()
-  //     return newOrder
-  //   } catch (error) {
-  //     console.error('Error creating order:', error)
-  //     return null
-  //   }
-  // }, [cart, validateCart, clearCart])
 
   // Memoized value for the CartContext
   const contextValue = useMemo(
@@ -240,7 +180,6 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       removeReceiver,
       updateReceiver,
       validateCart,
-      // convertCartToOrder,
     }),
     [
       addProduct,
@@ -255,7 +194,6 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       removeReceiver,
       updateReceiver,
       validateCart,
-      // convertCartToOrder,
     ],
   )
 
@@ -268,15 +206,6 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         try {
           const localCart = localStorage.getItem('cart')
           const parsedCart = JSON.parse(localCart || '{}')
-
-          // if (parsedCart?.items && parsedCart.items.length > 0) {
-          //   dispatchCart({
-          //     type: 'UPSERT_CART',
-          //     payload: parsedCart,
-          //   })
-          // } else {
-          //   console.log('CartProvider: No items in local storage')
-          // }
         } catch (error) {
           console.error('CartProvider: Error initializing cart:', error)
         } finally {
@@ -296,23 +225,3 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   return <Context.Provider value={contextValue}>{children}</Context.Provider>
 }
-
-// import { getPayloadHMR } from '@payloadcms/next/utilities'
-// import configPromise from '@payload-config'
-
-// export async function createOrder(orderData: Cart): Promise<Order | null> {
-//   const config = await configPromise
-//   const payload = await getPayloadHMR({ config })
-
-//   try {
-//     const newOrder = await payload.create({
-//       collection: 'orders',
-//       data: orderData,
-//     })
-
-//     return newOrder
-//   } catch (error) {
-//     console.error('Error creating order:', error)
-//     throw new Error('Failed to create order')
-//   }
-// }
