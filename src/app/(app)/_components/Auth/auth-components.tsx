@@ -1,4 +1,4 @@
-import { signIn, signOut } from '@/utilities/auth'
+import { signIn, signOut } from '@/utilities/auth/auth'
 import { Button } from './ui/button'
 
 export function SignIn({

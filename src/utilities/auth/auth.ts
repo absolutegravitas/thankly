@@ -1,13 +1,14 @@
-import NextAuth from "next-auth"
 
+import NextAuth from 'next-auth'
 import { getPayloadHMR } from '@payloadcms/next/utilities'
 import configPromise from '@payload-config'
-
-import { PayloadAdapter } from '@/utilities/auth/adapter'
+import { PayloadAdapter } from './adapter'
 
 import GoogleProvider from "next-auth/providers/google";
 import LinkedIn from 'next-auth/providers/linkedin'
 import Facebook from 'next-auth/providers/facebook'
+
+// export const { handlers, auth, signIn, signOut } = NextAuth(config)
 
 async function getPayload() {
   const config = await configPromise
@@ -15,7 +16,7 @@ async function getPayload() {
   return payload
 } 
 
-const handler = NextAuth({
+export const handlers = NextAuth({
   adapter: PayloadAdapter(getPayload()),
   providers: [
     GoogleProvider({
@@ -33,4 +34,3 @@ const handler = NextAuth({
   ]
 })
 
-export { handler as GET, handler as POST }

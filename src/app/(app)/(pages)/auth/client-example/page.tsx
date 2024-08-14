@@ -1,4 +1,4 @@
-import { auth } from '@/utilities/auth'
+import { auth } from '@/utilities/auth/auth'
 import ClientExample from '@app/_components/Auth/client-example'
 import { SessionProvider } from 'next-auth/react'
 

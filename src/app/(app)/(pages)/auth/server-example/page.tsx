@@ -1,6 +1,6 @@
 import CustomLink from '@app/_components/Auth/custom-link'
 import SessionData from '@app/_components/Auth/session-data'
-import { auth } from '@/utilities/auth'
+import { auth } from '@/utilities/auth/auth'
 import Header from '../../../_components/Auth/header'
 import Footer from '../../../_components/Auth/footer'
 import { getPaddingClasses } from '../../../_css/tailwindClasses'

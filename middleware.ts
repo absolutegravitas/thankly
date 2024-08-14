@@ -1,4 +1,4 @@
-export { auth as middleware } from '@/utilities/auth'
+export { auth as middleware } from '@/utilities/auth/auth'
 
 // Or like this if you need to do something here.
 // export default auth((req) => {

@@ -20,6 +20,7 @@ export interface Config {
     carts: Cart;
     tags: Tag;
     categories: Category;
+    sessions: Session;
     forms: Form;
     'form-submissions': FormSubmission;
     'payload-preferences': PayloadPreference;
@@ -219,11 +220,28 @@ export interface User {
   orgName?: string | null;
   orgId?: string | null;
   website?: string | null;
+  imageUrl?: string | null;
   status?: ('active' | 'inactive') | null;
   type?: ('staff' | 'guest' | 'retail' | 'business' | 'partner')[] | null;
-  roles: ('admin' | 'public')[];
+  roles: ('admin' | 'public' | 'customer')[];
   stripeId?: string | null;
   orders?: (number | Order)[] | null;
+  accounts?:
+    | {
+        provider?: string | null;
+        providerAccountId?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  verificationTokens?:
+    | {
+        identifier?: string | null;
+        token?: string | null;
+        expires?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  emailVerified?: string | null;
   updatedAt: string;
   createdAt: string;
   enableAPIKey?: boolean | null;
@@ -431,6 +449,18 @@ export interface Cart {
         id?: string | null;
       }[]
     | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sessions".
+ */
+export interface Session {
+  id: number;
+  user: number | User;
+  sessionToken: string;
+  expires?: string | null;
   updatedAt: string;
   createdAt: string;
 }
