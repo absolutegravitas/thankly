@@ -8,7 +8,7 @@ import {
   useCollapsible,
 } from '@faceless-ui/collapsibles'
 
-import { ChevronIcon } from '@app/_graphics/ChevronIcon'
+import { ChevronIcon } from '@app/_icons/ChevronIcon'
 import { EyeIcon } from '@app/_icons/EyeIcon'
 
 import classes from './index.module.scss'
