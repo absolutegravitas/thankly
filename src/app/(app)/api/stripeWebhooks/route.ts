@@ -94,7 +94,7 @@ async function sendConfirmationEmail(order: Order) {
     await resend.emails.send({
       from: process.env.RESEND_DEFAULT_EMAIL || 'orders@thankly.co',
       to: [
-        order.billing?.email,
+        // order.billing?.email||null,
         'code@prasit.co',
         'orders@thankly.co',
         'alexanderbowes@gmail.com',
