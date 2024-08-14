@@ -93,7 +93,13 @@ async function sendConfirmationEmail(order: Order) {
   try {
     await resend.emails.send({
       from: process.env.RESEND_DEFAULT_EMAIL || 'orders@thankly.co',
-      to: order.billing?.email || 'code@prasit.co',
+      to: [
+        order.billing?.email,
+        'code@prasit.co',
+        'orders@thankly.co',
+        'alexanderbowes@gmail.com',
+        'kathy@thankly.co',
+      ].filter(Boolean),
       subject: `Order Confirmation #${order.orderNumber}`,
       react: OrderConfirmationEmail(order),
     })
