@@ -68,6 +68,7 @@ export async function createCheckoutSession(cart: Cart) {
       billing_address_collection: 'required', // Collect billing address
       metadata: {
         cartId: cart.id.toString(), // Store the cart ID as metadata
+        cartNumber: cart.cartNumber || '',
       },
     })
 
@@ -75,6 +76,7 @@ export async function createCheckoutSession(cart: Cart) {
     if (session.url) {
       // create a payload order  as well
       const newOrder = await createOrder(cart, session.id)
+      // update the session on stripe with order info ???
       console.log('newOrder --', newOrder)
       return { redirectUrl: session.url }
     } else {

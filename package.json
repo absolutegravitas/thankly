@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "email": "email dev",
     "ci": "payload migrate && pnpm build",
     "payload": "cross-env NODE_OPTIONS=--no-deprecation payload",
     "generate:types": "payload generate:types"
@@ -71,6 +72,7 @@
     "react-facebook-pixel": "^1.0.4",
     "react-hook-form": "^7.52.2",
     "react-select": "^5.8.0",
+    "resend": "^3.5.0",
     "server-only": "^0.0.1",
     "sharp": "0.33.4",
     "sonner": "^1.5.0",

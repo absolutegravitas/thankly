@@ -4,12 +4,15 @@ import { headers } from 'next/headers'
 import { getPayloadHMR } from '@payloadcms/next/utilities'
 import configPromise from '@payload-config'
 import { Cart, Order } from '@/payload-types'
+import { Resend } from 'resend'
+import OrderConfirmationEmail from '@app/_emails/order-confirmation'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2024-06-20',
 })
 
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!
+const resend = new Resend(process.env.RESEND_KEY)
 
 export async function POST(req: NextRequest) {
   const body = await req.text()
@@ -25,18 +28,11 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    switch (event.type) {
-      case 'payment_intent.succeeded':
-        await handlePaymentIntentSucceeded(event.data.object as Stripe.PaymentIntent)
-        break
-      case 'payment_intent.processing':
-        await handlePaymentIntentProcessing(event.data.object as Stripe.PaymentIntent)
-        break
-      case 'payment_intent.payment_failed':
-        await handlePaymentIntentFailed(event.data.object as Stripe.PaymentIntent)
-        break
-      default:
-        console.log(`Unhandled event type ${event.type}`)
+    if (event.type === 'checkout.session.completed') {
+      const session = event.data.object as Stripe.Checkout.Session
+      await handleCheckoutSessionCompleted(session)
+    } else {
+      console.log(`Unhandled event type ${event.type}`)
     }
 
     return NextResponse.json({ received: true })
@@ -46,116 +42,183 @@ export async function POST(req: NextRequest) {
   }
 }
 
-async function handlePaymentIntentSucceeded(paymentIntent: Stripe.PaymentIntent) {
-  console.log('PaymentIntent was successful!')
+async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) {
+  console.log('Checkout session was completed!')
   const config = await configPromise
   let payload: any = await getPayloadHMR({ config })
 
   try {
-    // 1. Retrieve the cart using the metadata from the PaymentIntent
-    const cartId = paymentIntent.metadata.cartId
-    if (!cartId) {
-      throw new Error('No cartId found in PaymentIntent metadata')
-    }
-
-    let cart: Cart | null = null
-
-    const { docs } = await payload.find({
-      collection: 'products',
-      where: { id: { equals: cartId } },
-      depth: 1,
-      limit: 1,
-      pagination: false,
-    })
-
-    cart = docs[0]
-
-    if (!cart) {
-      throw new Error(`No cart found with id ${cartId}`)
-    }
-
-    // 2. Create a new order based on the cart data
-    const newOrder = (await payload.create({
+    const { docs: orders } = await payload.find({
       collection: 'orders',
-      data: {
-        orderNumber: await generateOrderNumber(),
-        status: 'completed',
-        stripePaymentIntentID: paymentIntent.id,
-        totals: cart.totals,
-        billing: cart.billing,
-        items: cart.items,
-      },
-    })) as Order
+      where: { stripeId: { equals: session.id } },
+      depth: 2,
+      limit: 1,
+    })
 
-    // 3. Update the cart status to 'completed'
+    if (orders.length === 0) {
+      throw new Error(`No order found with Stripe Checkout Session ID ${session.id}`)
+    }
+
+    const order = orders[0] as Order
+
     await payload.update({
-      collection: 'carts',
-      id: cartId,
+      collection: 'orders',
+      id: order.id,
       data: {
-        status: 'completed',
+        status: 'processing' as const,
       },
     })
 
-    // 4. Send confirmation email to customer
-    await sendConfirmationEmail(newOrder)
+    await sendConfirmationEmail(order)
 
-    // 5. Start shipping process if applicable
-    await startShippingProcess(newOrder)
+    await processShipping(order)
 
-    console.log(`Order ${newOrder.id} created successfully`)
+    console.log(`Order ${order.id} processed successfully`)
   } catch (error) {
-    console.error('Error handling successful payment:', error)
-    // You might want to implement some error handling or retry logic here
+    console.error('Error handling completed checkout session:', error)
   }
 }
 
-async function generateOrderNumber() {
-  // Implement your order number generation logic
-  // This could be a simple incremental number or a more complex unique identifier
-}
-
 async function sendConfirmationEmail(order: Order) {
-  // Implement your email sending logic
-  // You might want to use a service like SendGrid or a custom SMTP setup
+  try {
+    await resend.emails.send({
+      from: process.env.RESEND_DEFAULT_EMAIL || 'orders@thankly.co',
+      to: order.billing?.email || 'code@prasit.co',
+      subject: `Order Confirmation #${order.orderNumber}`,
+      react: OrderConfirmationEmail(order),
+    })
+    console.log(`Confirmation email sent for order ${order.id}`)
+  } catch (error) {
+    console.error('Error sending confirmation email:', error)
+  }
 }
 
-async function startShippingProcess(order: Order) {
-  // Implement your shipping process logic
-  // This could involve updating the order status, notifying a fulfillment service, etc.
+async function processShipping(order: Order) {
+  for (const item of order.items || []) {
+    for (const receiver of item.receivers || []) {
+      try {
+        const trackingInfo = await createSendleShipment(order, item, receiver)
+        if (trackingInfo) {
+          await updateOrderTracking(order.id, item.id!, receiver.id!, trackingInfo)
+        }
+      } catch (error) {
+        console.error(
+          `Error processing shipping for order ${order.id}, item ${item.id}, receiver ${receiver.id}:`,
+          error,
+        )
+      }
+    }
+  }
 }
 
-async function handlePaymentIntentProcessing(paymentIntent: Stripe.PaymentIntent) {
-  console.log('PaymentIntent is processing')
-  // TODO: Update order status to 'processing'
-  // await updateOrderStatus(paymentIntent.id, 'processing')
+async function createSendleShipment(order: Order, item: any, receiver: any) {
+  const sendleApiUrl = 'https://sandbox.sendle.com/api/orders'
+  const sendleId = process.env.SENDLE_ID_TEST
+  const sendleKey = process.env.SENDLE_KEY_TEST
+
+  const payload = {
+    sender: {
+      contact: {
+        name: 'Thankly',
+        email: 'orders@thankly.co',
+        phone: '+61 404 361 476',
+      },
+      address: {
+        address_line1: '20 Canterbury Road',
+        suburb: 'Camberwell',
+        postcode: '3124',
+        state_name: 'VIC',
+        country: 'AU',
+      },
+    },
+    receiver: {
+      contact: {
+        name: receiver.name,
+        email: order.billing?.email,
+        // phone: receiver.delivery?.phone || order.billing?.contactNumber,
+      },
+      address: {
+        address_line1: receiver.delivery?.address?.addressLine1,
+        address_line2: receiver.delivery?.address?.addressLine2 || '',
+        suburb: receiver.delivery?.address?.suburb,
+        postcode: receiver.delivery?.address?.postcode,
+        state_name: receiver.delivery?.address?.state,
+        country: receiver.delivery?.address?.country || 'AU',
+      },
+      instructions: receiver.delivery?.instructions || 'Leave at front door if no answer',
+    },
+    description: `Order #${order.orderNumber} - ${item.product.title}`,
+    weight: {
+      value: item.product.weight?.value || '1',
+      units: item.product.weight?.units || 'kg',
+    },
+    dimensions: {
+      length: item.product.dimensions?.length || '20',
+      width: item.product.dimensions?.width || '15',
+      height: item.product.dimensions?.height || '10',
+      units: item.product.dimensions?.units || 'cm',
+    },
+    product_code: receiver.delivery?.shippingMethod || 'STANDARD-DROPOFF',
+    customer_reference: `Order #${order.orderNumber} - Item #${item.id}`,
+  }
+
+  try {
+    const response = await fetch(sendleApiUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Basic ${Buffer.from(`${sendleId}:${sendleKey}`).toString('base64')}`,
+      },
+      body: JSON.stringify(payload),
+    })
+
+    if (!response.ok) {
+      throw new Error(`Sendle API error: ${response.statusText}`)
+    }
+
+    const data = await response.json()
+    return {
+      trackingId: data.tracking_id,
+      trackingLink: data.tracking_url,
+    }
+  } catch (error) {
+    console.error('Error creating Sendle shipment:', error)
+    throw error
+  }
 }
 
-async function handlePaymentIntentFailed(paymentIntent: Stripe.PaymentIntent) {
-  console.log('PaymentIntent failed')
-  // TODO: Update order status to 'failed'
-  // await updateOrderStatus(paymentIntent.id, 'failed')
+async function updateOrderTracking(
+  orderId: number,
+  itemId: string,
+  receiverId: string,
+  trackingInfo: any,
+) {
+  const config = await configPromise
+  let payload: any = await getPayloadHMR({ config })
 
-  // TODO: Send failure notification to customer
-  // await sendPaymentFailureNotification(paymentIntent.receipt_email)
+  try {
+    await payload.update({
+      collection: 'orders',
+      id: orderId,
+      data: {
+        items: {
+          [itemId]: {
+            receivers: {
+              [receiverId]: {
+                delivery: {
+                  tracking: {
+                    id: trackingInfo.trackingId,
+                    link: trackingInfo.trackingLink,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    })
+    console.log(`Updated tracking for order ${orderId}, item ${itemId}, receiver ${receiverId}`)
+  } catch (error) {
+    console.error('Error updating order tracking:', error)
+  }
 }
-
-// Helper functions (implement these according to your needs)
-// async function updateOrderStatus(orderId: string, status: string) {
-//   // Implementation
-// }
-
-// async function createOrUpdateOrder(paymentIntent: Stripe.PaymentIntent) {
-//   // Implementation
-// }
-
-// async function sendConfirmationEmail(email: string | null) {
-//   // Implementation
-// }
-
-// async function startShippingProcess(orderId: string) {
-//   // Implementation
-// }
-
-// async function sendPaymentFailureNotification(email: string | null) {
-//   // Implementation
-// }
