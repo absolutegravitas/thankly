@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import { cn } from '@/utilities/cn'
+import cn from '@/utilities/cn'
 import { contentFormats } from '@app/_css/tailwindClasses'
 import { CheckCircleIcon, ClockIcon } from 'lucide-react'
 import { unstable_cache } from 'next/cache'
