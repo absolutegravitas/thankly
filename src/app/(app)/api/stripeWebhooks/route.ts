@@ -16,7 +16,17 @@ const resend = new Resend(process.env.RESEND_KEY)
 
 export async function POST(req: NextRequest) {
   const body = await req.text()
-  const signature = headers().get('stripe-signature') as string
+  const signature = headers().get('stripe-signature')
+
+  if (!webhookSecret) {
+    console.error('Missing STRIPE_WEBHOOK_SECRET')
+    return NextResponse.json({ error: 'Webhook secret is not configured' }, { status: 500 })
+  }
+
+  if (!signature) {
+    console.error('Missing Stripe signature')
+    return NextResponse.json({ error: 'No Stripe signature found' }, { status: 400 })
+  }
 
   let event: Stripe.Event
 
