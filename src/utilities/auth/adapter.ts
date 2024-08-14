@@ -104,12 +104,12 @@ export function PayloadAdapter(payload: any, options = {}): Adapter {
   
       //check if user already exists
       try {
-        const { docs } = await (await payload.find({
+        const { docs } = await (await payload).find({
           collection: USER_COLLECTION,
           where: {email: { equals: user.email }},
           depth: 0,
           limit: 1,
-        }))
+        })
 
         //if user exists, return that user
         if (docs.length !== 0) {
@@ -132,7 +132,7 @@ export function PayloadAdapter(payload: any, options = {}): Adapter {
       const {firstName, lastName} = splitName(user.name);
 
       //otherwise create user
-      const newPayloadUser : User = await (await payload.create({
+      const newPayloadUser : User = await (await payload).create({
         collection: USER_COLLECTION,
         data: {
           email: user.email,
@@ -142,7 +142,7 @@ export function PayloadAdapter(payload: any, options = {}): Adapter {
           roles: [DEFAULT_USER_ROLE],
           status: 'active',
         }
-      }))
+      })
 
       if (process.env.AUTH_VERBOSE) {
         BrightConsoleLog(`PayloadAdapter: createUser: User ${newPayloadUser.id} (${newPayloadUser.email}) created.`)
@@ -154,11 +154,11 @@ export function PayloadAdapter(payload: any, options = {}): Adapter {
     async getUser(id: string) : Promise<AdapterUser | null> {
       process.env.AUTH_VERBOSE ? BrightConsoleLog('PayloadAdapter: createUser input:', id) : undefined;
       try {
-        const payloadUser = await (await payload.findByID({
+        const payloadUser = await (await payload).findByID({
           collection: USER_COLLECTION,
           id: id,
           depth: 0,
-        }))
+        })
 
         //if user not found or is inactive, return null
         if (!payloadUser) {
@@ -185,14 +185,14 @@ export function PayloadAdapter(payload: any, options = {}): Adapter {
     async getUserByEmail(email : string) : Promise<AdapterUser | null> {
       process.env.AUTH_VERBOSE ? BrightConsoleLog('PayloadAdapter: getUserByEmail input:', email) : undefined;
       try {
-        const { docs } = await ( await payload.find({
+        const { docs } = await (await payload).find({
           collection: USER_COLLECTION,
           where: { email: { equals: email }},
           depth: 0,
           limit: 1,
-        }))
-        const payloadUser = docs.at(0)
-          
+        })
+        const payloadUser = docs[0]
+
         //if user not found or is inactive, return null
         if (!payloadUser) {
           process.env.AUTH_VERBOSE ? BrightConsoleLog(`PayloadAdapter: getUserByEmail: User email ${email} not found.`) : undefined
@@ -281,6 +281,7 @@ export function PayloadAdapter(payload: any, options = {}): Adapter {
 
     async linkAccount(account : AdapterAccount) : Promise<AdapterAccount | null | undefined> {
       process.env.AUTH_VERBOSE ? BrightConsoleLog('PayloadAdapter: linkAccount input:', account) : undefined;
+
       //fetch user
       const payloadUser = await (
         await payload
@@ -303,7 +304,7 @@ export function PayloadAdapter(payload: any, options = {}): Adapter {
       //check if account to unlink exists, and return the adapter if it does
       //TODO: Confirm if this logic is required.
       const existingAccount = payloadUser.accounts.filter((acc : AdapterAccount) => acc.provider === account.provider && acc.providerAccountId === account.providerAccountId)
-      if (existingAccount) {
+      if (existingAccount.length > 0) {
         process.env.AUTH_VERBOSE ? BrightConsoleLog(`PayloadAdapter: linkAccount: User ${payloadUser.id} (${payloadUser.email}) found but already has account for ${account.provider} linked.`) : undefined;
         return existingAccount;
       }
@@ -318,7 +319,6 @@ export function PayloadAdapter(payload: any, options = {}): Adapter {
           accounts: [...(payloadUser.accounts || []), toPayloadAccount(account)]
         }
       })
-      
       process.env.AUTH_VERBOSE ? BrightConsoleLog(`PayloadAdapter: linkAccount: User ${payloadUser.id} (${payloadUser.email}) now linked to provider ${account.provider}`) : undefined;
 
       return
@@ -368,7 +368,7 @@ export function PayloadAdapter(payload: any, options = {}): Adapter {
 
     async createSession({ sessionToken, userId, expires }) : Promise<AdapterSession> {
       process.env.AUTH_VERBOSE ? BrightConsoleLog(`PayloadAdapter: createSession input: sessionToken ${sessionToken} userId: ${userId} expires: ${expires}`) : undefined;
-
+console.log("DEBUG1")
       //fetch user to check if active first
       const user = await (
         await payload
@@ -377,7 +377,7 @@ export function PayloadAdapter(payload: any, options = {}): Adapter {
         id: userId,
         depth: 0,
       })
-
+      console.log("DEBUG2")
       //check if user found
       if (process.env.AUTH_VERBOSE) {
         if (!user)
@@ -386,18 +386,23 @@ export function PayloadAdapter(payload: any, options = {}): Adapter {
           BrightConsoleLog(`PayloadAdapter: createSession output: User found but is inactive.`)
       }
       if(!user || user.status !== 'active') throw new Error(`Could not create session for user ${userId}. User not found or is inactive.`);
-
+      console.log("DEBUG3")
       const session = await (
         await payload
       ).create({
         collection: SESSION_COLLECTION,
-        data: { sessionToken, user: userId, expires: expires.toISOString() }
+        data: {
+          sessionToken:sessionToken,
+          user: parseInt(userId),
+          expires: expires.toISOString() 
+        }
       })
+      console.log("DEBUG4")
       const sessionUserId = typeof session?.user === 'string' ? session?.user : session?.user?.id
       const sessionExpires = session?.expires ? new Date(session.expires) : createDate(new TimeSpan(SESSION_MAX_AGE, 's'));
       
       process.env.AUTH_VERBOSE ? BrightConsoleLog(`PayloadAdapter: createSession output: sessionToken ${session?.sessionToken} userId: ${sessionUserId} expires: ${sessionExpires}`) : undefined;
-      
+      console.log("DEBUG5")
       return {
         sessionToken: session?.sessionToken,
         userId: sessionUserId,
