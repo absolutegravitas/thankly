@@ -197,8 +197,9 @@ export const Users: CollectionConfig = {
                 {
                   type: 'row',
                   fields: [
-                    { name: 'provider', type: 'text', admin: { readOnly: true } },
-                    { name: 'providerAccountId', type: 'text', admin: { readOnly: true } }
+                    { name: 'provider', type: 'text', admin: { readOnly: true }},
+                    { name: 'providerAccountId', type: 'text', admin: { readOnly: true } },
+                    { name: 'providerSearchString', type: 'text', admin: { readOnly: true } },
                   ]
                 }
               ]

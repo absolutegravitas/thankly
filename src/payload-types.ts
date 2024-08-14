@@ -230,6 +230,7 @@ export interface User {
     | {
         provider?: string | null;
         providerAccountId?: string | null;
+        providerSearchString?: string | null;
         id?: string | null;
       }[]
     | null;

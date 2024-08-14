@@ -5,6 +5,7 @@ import type { Adapter, AdapterUser, AdapterAccount, AdapterSession, Verification
 import { User } from '@/payload-types';
 import { userAgent } from 'next/server';
 import { createDate, isWithinExpirationDate, TimeSpan } from '../isWithinExperationDate';
+import { BrightConsoleLog } from '../brightConsoleLog';
 
 // const SESSION_STRATEGY = 'jwt' as 'jwt' | 'database'
 const SESSION_MAX_AGE = 86400 //in seconds (86400 = 60 * 60 * 24 = 24 hours)
@@ -12,6 +13,7 @@ const USER_COLLECTION = 'users' as const
 const SESSION_COLLECTION = 'sessions' as const
 const DEFAULT_USER_ROLE = 'customer' as const
 const FIELDS_USER_IS_ALLOWED_TO_CHANGE = ['name']
+const PROVIDER_SEARCH_STRING_SPLITTER = '===='
 // const ADMIN_ACCESS_ROLES = ['admin']
 
 
@@ -46,7 +48,22 @@ function splitName(fullName: string | null | undefined): { firstName: string; la
   return { firstName, lastName };
 }
 
-export const getUserByAccount = async ({
+function getProviderSearchString(providerId: string, providerAccountId: string) : string {
+  return providerId + PROVIDER_SEARCH_STRING_SPLITTER + providerAccountId;
+}
+
+function splitProviderSearch(searchString: string): { providerId: string, providerAccountId: string } {
+  const [providerId, providerAccountId] = searchString.split(PROVIDER_SEARCH_STRING_SPLITTER);
+  return { providerId, providerAccountId };
+}
+
+const toPayloadAccount = (adapterAccount: AdapterAccount) => ({
+  provider: adapterAccount.provider,
+  providerAccountId: adapterAccount.providerAccountId,
+  providerSearchString: getProviderSearchString(adapterAccount.provider, adapterAccount.providerAccountId)
+})
+
+const getUserByAcc = async ({
   payload,
   providerAccountId,
   provider
@@ -55,23 +72,35 @@ export const getUserByAccount = async ({
   providerAccountId: string
   provider: string
 }): Promise<User | null> => {
-  const { docs } = await (
-    await payload
-  ).find({
-    collection: USER_COLLECTION,
-    where: {
-      'accounts.provider': { equals: provider },
-      'accounts.providerAccountId': { equals: providerAccountId }
-    }
-  })
-  return docs.at(0) ?? null
+
+  const provderSearchString = { providerAccountId, provider }
+
+  try {
+    const { docs } = await (
+      await payload
+    ).find({
+      collection: USER_COLLECTION,
+      depth: 1,
+      limit: 1,
+      where: {
+        'accounts.providerSearchString': { equals: getProviderSearchString(provider, providerAccountId) }
+      }
+    })
+
+    process.env.AUTH_VERBOSE ? console.error("DEBUG: payload returned was:", docs) : undefined;
+
+    return docs.at(0) ?? null
+  } catch (error) {
+    console.error(`Error fetching user by account id (id=${providerAccountId})`, error)
+  }
+  return null
 }
   
 export function PayloadAdapter(payload: any, options = {}): Adapter {
 
   return {
     async createUser(user: Omit<AdapterUser, "id">) : Promise<AdapterUser> {
-      process.env.AUTH_VERBOSE ? payload.info('PayloadAdapter: createUser:', user) : undefined;
+      process.env.AUTH_VERBOSE ? BrightConsoleLog('PayloadAdapter: createUser input:', user) : undefined;
   
       //check if user already exists
       try {
@@ -88,9 +117,9 @@ export function PayloadAdapter(payload: any, options = {}): Adapter {
           const adapterUser = toAdapterUser(payloadUser);
           
           if (payloadUser.status !== 'active') {
-            process.env.AUTH_VERBOSE ? payload.info(`PayloadAdapter: createUser: User ${payloadUser.id} (${payloadUser.email}) already exists and is inactive.`) : undefined;
+            process.env.AUTH_VERBOSE ? BrightConsoleLog(`PayloadAdapter: createUser: User ${payloadUser.id} (${payloadUser.email}) already exists and is inactive.`) : undefined;
           } else {
-            process.env.AUTH_VERBOSE ? payload.info(`PayloadAdapter: createUser: User ${payloadUser.id} (${payloadUser.email}) already exists.`) : undefined;
+            process.env.AUTH_VERBOSE ? BrightConsoleLog(`PayloadAdapter: createUser: User ${payloadUser.id} (${payloadUser.email}) already exists.`) : undefined;
           }
 
           return adapterUser;
@@ -110,19 +139,20 @@ export function PayloadAdapter(payload: any, options = {}): Adapter {
           firstName: firstName,
           lastName: lastName,
           password: 'password',
-          roles: ['public'],
+          roles: [DEFAULT_USER_ROLE],
           status: 'active',
         }
       }))
 
       if (process.env.AUTH_VERBOSE) {
-        payload.info(`PayloadAdapter: createUser: User ${newPayloadUser.id} (${newPayloadUser.email}) created.`)
+        BrightConsoleLog(`PayloadAdapter: createUser: User ${newPayloadUser.id} (${newPayloadUser.email}) created.`)
       }
 
       return toAdapterUser(newPayloadUser);
     },
 
     async getUser(id: string) : Promise<AdapterUser | null> {
+      process.env.AUTH_VERBOSE ? BrightConsoleLog('PayloadAdapter: createUser input:', id) : undefined;
       try {
         const payloadUser = await (await payload.findByID({
           collection: USER_COLLECTION,
@@ -132,16 +162,16 @@ export function PayloadAdapter(payload: any, options = {}): Adapter {
 
         //if user not found or is inactive, return null
         if (!payloadUser) {
-          process.env.AUTH_VERBOSE ? payload.info(`PayloadAdapter: getUser: User ${id} not found.`) : undefined
+          process.env.AUTH_VERBOSE ? BrightConsoleLog(`PayloadAdapter: getUser: User ${id} not found.`) : undefined
           return null;
         } else if (payloadUser.status !== 'active') {
-          process.env.AUTH_VERBOSE ? payload.info(`PayloadAdapter: getUser: User ${id} (${payloadUser.email}) found but is inactive`) : undefined
+          process.env.AUTH_VERBOSE ? BrightConsoleLog(`PayloadAdapter: getUser: User ${id} (${payloadUser.email}) found but is inactive`) : undefined
           return null;
         }
 
         //else return found user
         const user = toAdapterUser(payloadUser);
-        process.env.AUTH_VERBOSE ? payload.info(`PayloadAdapter: getUser: User ${user.id} (${user.email}) found.`) : undefined;
+        process.env.AUTH_VERBOSE ? BrightConsoleLog(`PayloadAdapter: getUser: User ${user.id} (${user.email}) found.`) : undefined;
 
         return user;
         
@@ -153,6 +183,7 @@ export function PayloadAdapter(payload: any, options = {}): Adapter {
     },
 
     async getUserByEmail(email : string) : Promise<AdapterUser | null> {
+      process.env.AUTH_VERBOSE ? BrightConsoleLog('PayloadAdapter: getUserByEmail input:', email) : undefined;
       try {
         const { docs } = await ( await payload.find({
           collection: USER_COLLECTION,
@@ -164,16 +195,16 @@ export function PayloadAdapter(payload: any, options = {}): Adapter {
           
         //if user not found or is inactive, return null
         if (!payloadUser) {
-          process.env.AUTH_VERBOSE ? payload.info(`PayloadAdapter: getUserByEmail: User email ${email} not found.`) : undefined
+          process.env.AUTH_VERBOSE ? BrightConsoleLog(`PayloadAdapter: getUserByEmail: User email ${email} not found.`) : undefined
           return null;
         } else if (payloadUser.status !== 'active') {
-          process.env.AUTH_VERBOSE ? payload.info(`PayloadAdapter: getUserByEmail: User ${payloadUser.id} (${payloadUser.email}) found but is inactive`) : undefined
+          process.env.AUTH_VERBOSE ? BrightConsoleLog(`PayloadAdapter: getUserByEmail: User ${payloadUser.id} (${payloadUser.email}) found but is inactive`) : undefined
           return null;
         }
 
         //else return found user
         const user = toAdapterUser(docs[0]);
-        process.env.AUTH_VERBOSE ? payload.info(`PayloadAdapter: getUserByEmail: User ${user.id} (${user.email}) found.`) : undefined;
+        process.env.AUTH_VERBOSE ? BrightConsoleLog(`PayloadAdapter: getUserByEmail: User ${user.id} (${user.email}) found.`) : undefined;
         return user;
         
       } catch (error) {
@@ -184,22 +215,25 @@ export function PayloadAdapter(payload: any, options = {}): Adapter {
     },
 
     async getUserByAccount({ providerAccountId, provider }) : Promise<AdapterUser | null> {
-      //fetch user by account
-      const user = await getUserByAccount({payload, providerAccountId, provider})
+      process.env.AUTH_VERBOSE ? BrightConsoleLog(`PayloadAdapter: getUserByAccount input: ProviderAccountId:${providerAccountId}, Provider:${provider}.`) : undefined
       
+      //fetch user by account
+      const user = await getUserByAcc({payload, providerAccountId, provider})
+
       if (process.env.AUTH_VERBOSE) {
         if (!user)
-          payload.info(`PayloadAdapter: getUserByAccount: User not found (ProviderAccountId:${providerAccountId}, Provider:${provider}.`)
+          BrightConsoleLog(`PayloadAdapter: getUserByAccount: User not found (ProviderAccountId:${providerAccountId}, Provider:${provider}.`)
         else if (user.status !== 'active')
-          payload.info(`PayloadAdapter: getUserByAccount: User ${user.id} (${user.email}) found but is inactive.`)
+          BrightConsoleLog(`PayloadAdapter: getUserByAccount: User ${user.id} (${user.email}) found but is inactive.`)
         else
-          payload.info(`PayloadAdapter: getUserByAccount: User ${user.id} (${user.email}) found.`)
+          BrightConsoleLog(`PayloadAdapter: getUserByAccount: User ${user.id} (${user.email}) found.`)
       }
 
       return (user && user.status === 'active') ? toAdapterUser(user) : null
     },
 
     async updateUser(data : Partial<AdapterUser> & Pick<AdapterUser, "id">) : Promise<AdapterUser> {
+      process.env.AUTH_VERBOSE ? BrightConsoleLog('PayloadAdapter: updateUser input:', data) : undefined;
       //filter out data that is not allowed to be changed by the user
       const userId = data.id
       Object.keys(data).forEach((key) => {
@@ -222,12 +256,13 @@ export function PayloadAdapter(payload: any, options = {}): Adapter {
         throw new Error('PayloadAdapter: updateUser: no user found')
       }
 
-      process.env.AUTH_VERBOSE ? payload.info(`PayloadAdapter: updateUser: User ${user.id} (${user.email}) has been updated.`) : undefined
+      process.env.AUTH_VERBOSE ? BrightConsoleLog(`PayloadAdapter: updateUser: User ${user.id} (${user.email}) has been updated.`) : undefined
 
       return toAdapterUser(user)
     },
 
     async deleteUser(userId: string) : Promise<AdapterUser | null | undefined> {
+      process.env.AUTH_VERBOSE ? BrightConsoleLog('PayloadAdapter: deleteUser input:', userId) : undefined;
       //don't actually delete - just mark as Inactive... TODO... handle this elsewhere
       await (
         await payload
@@ -239,12 +274,13 @@ export function PayloadAdapter(payload: any, options = {}): Adapter {
         }
       })
 
-      process.env.AUTH_VERBOSE ? payload.info(`PayloadAdapter: deleteUser: User ${userId} has been updated to now be inactive.`) : undefined
+      process.env.AUTH_VERBOSE ? BrightConsoleLog(`PayloadAdapter: deleteUser: User ${userId} has been updated to now be inactive.`) : undefined
 
       return
     },
 
     async linkAccount(account : AdapterAccount) : Promise<AdapterAccount | null | undefined> {
+      process.env.AUTH_VERBOSE ? BrightConsoleLog('PayloadAdapter: linkAccount input:', account) : undefined;
       //fetch user
       const payloadUser = await (
         await payload
@@ -255,20 +291,20 @@ export function PayloadAdapter(payload: any, options = {}): Adapter {
 
       //if user not found or is inactive, return null
       if (!payloadUser) {
-        process.env.AUTH_VERBOSE ? payload.info(`PayloadAdapter: linkAccount: User ${account.userId} not found.`) : undefined
+        process.env.AUTH_VERBOSE ? BrightConsoleLog(`PayloadAdapter: linkAccount: User ${account.userId} not found.`) : undefined
         return null;
       } else if (payloadUser.status !== 'active') {
-        process.env.AUTH_VERBOSE ? payload.info(`PayloadAdapter: linkAccount: User ${payloadUser.id} (${payloadUser.email}) found but is inactive`) : undefined
+        process.env.AUTH_VERBOSE ? BrightConsoleLog(`PayloadAdapter: linkAccount: User ${payloadUser.id} (${payloadUser.email}) found but is inactive`) : undefined
         return null;
       }
 
-      process.env.AUTH_VERBOSE ? payload.info(`PayloadAdapter: linkAccount: User ${payloadUser.id} (${payloadUser.email}) found`) : undefined
+      process.env.AUTH_VERBOSE ? BrightConsoleLog(`PayloadAdapter: linkAccount: User ${payloadUser.id} (${payloadUser.email}) found`) : undefined
 
       //check if account to unlink exists, and return the adapter if it does
       //TODO: Confirm if this logic is required.
       const existingAccount = payloadUser.accounts.filter((acc : AdapterAccount) => acc.provider === account.provider && acc.providerAccountId === account.providerAccountId)
       if (existingAccount) {
-        process.env.AUTH_VERBOSE ? payload.info(`PayloadAdapter: linkAccount: User ${payloadUser.id} (${payloadUser.email}) found but already has account for ${account.provider} linked.`) : undefined;
+        process.env.AUTH_VERBOSE ? BrightConsoleLog(`PayloadAdapter: linkAccount: User ${payloadUser.id} (${payloadUser.email}) found but already has account for ${account.provider} linked.`) : undefined;
         return existingAccount;
       }
 
@@ -279,27 +315,28 @@ export function PayloadAdapter(payload: any, options = {}): Adapter {
         collection: USER_COLLECTION,
         id: account.userId,
         data: {
-          accounts: [...(payloadUser.accounts || []), account]
+          accounts: [...(payloadUser.accounts || []), toPayloadAccount(account)]
         }
       })
       
-      process.env.AUTH_VERBOSE ? payload.info(`PayloadAdapter: linkAccount: User ${payloadUser.id} (${payloadUser.email}) now linked to provider ${account.provider}`) : undefined;
+      process.env.AUTH_VERBOSE ? BrightConsoleLog(`PayloadAdapter: linkAccount: User ${payloadUser.id} (${payloadUser.email}) now linked to provider ${account.provider}`) : undefined;
 
       return
     },
     
     async unlinkAccount({ providerAccountId, provider }) : Promise<AdapterAccount | undefined> {
-      const user = await getUserByAccount({ payload, providerAccountId, provider })
+      process.env.AUTH_VERBOSE ? BrightConsoleLog('PayloadAdapter: unlinkAccount input:', 'providerAccountId:', providerAccountId, 'provider', provider) : undefined;
+      const user = await getUserByAcc({ payload, providerAccountId, provider })
       
       if (process.env.AUTH_VERBOSE) {
         if (!user)
-          payload.info(`PayloadAdapter: unlinkAccount: User not found (ProviderAccountId:${providerAccountId}, Provider:${provider}.`)
+          BrightConsoleLog(`PayloadAdapter: unlinkAccount: User not found (ProviderAccountId:${providerAccountId}, Provider:${provider}.`)
         else if (user.status !== 'active')
-          payload.info(`PayloadAdapter: unlinkAccount: User ${user.id} (${user.email}) found but is inactive.`)
+          BrightConsoleLog(`PayloadAdapter: unlinkAccount: User ${user.id} (${user.email}) found but is inactive.`)
         else if (!Array.isArray(user?.accounts))
-          payload.info(`PayloadAdapter: unlinkAccount: User ${user.id} (${user.email}) found but is missing account links.`)
+          BrightConsoleLog(`PayloadAdapter: unlinkAccount: User ${user.id} (${user.email}) found but is missing account links.`)
         else
-          payload.info(`PayloadAdapter: unlinkAccount: User ${user.id} (${user.email}) found.`)
+          BrightConsoleLog(`PayloadAdapter: unlinkAccount: User ${user.id} (${user.email}) found.`)
       }
       
       //if user not found, is inactive, or has not account links, return null
@@ -308,7 +345,7 @@ export function PayloadAdapter(payload: any, options = {}): Adapter {
       //check if account to unlink exists, if it doesn't return null
       const filteredAccount = user.accounts.filter((account) => account.provider === provider && account.providerAccountId === providerAccountId)
       if (!filteredAccount) {
-        process.env.AUTH_VERBOSE ? payload.info(`PayloadAdapter: unlinkAccount: User ${user.id} (${user.email}) found but no account for ${provider} is linked.`) : undefined;
+        process.env.AUTH_VERBOSE ? BrightConsoleLog(`PayloadAdapter: unlinkAccount: User ${user.id} (${user.email}) found but no account for ${provider} is linked.`) : undefined;
         return;
       }
 
@@ -324,13 +361,13 @@ export function PayloadAdapter(payload: any, options = {}): Adapter {
         }
       })
 
-      process.env.AUTH_VERBOSE ? payload.info(`PayloadAdapter: unlinkAccount: User ${user.id} (${user.email}) found.`) : undefined
+      process.env.AUTH_VERBOSE ? BrightConsoleLog(`PayloadAdapter: unlinkAccount: User ${user.id} (${user.email}) found.`) : undefined
       
       return
     },
 
     async createSession({ sessionToken, userId, expires }) : Promise<AdapterSession> {
-      process.env.AUTH_VERBOSE ? payload.info(`PayloadAdapter: createSession input: sessionToken ${sessionToken} userId: ${userId} expires: ${expires}`) : undefined;
+      process.env.AUTH_VERBOSE ? BrightConsoleLog(`PayloadAdapter: createSession input: sessionToken ${sessionToken} userId: ${userId} expires: ${expires}`) : undefined;
 
       //fetch user to check if active first
       const user = await (
@@ -344,9 +381,9 @@ export function PayloadAdapter(payload: any, options = {}): Adapter {
       //check if user found
       if (process.env.AUTH_VERBOSE) {
         if (!user)
-          payload.info(`PayloadAdapter: createSession output: User not found.`)
+          BrightConsoleLog(`PayloadAdapter: createSession output: User not found.`)
         else if (user.status !== 'active')
-          payload.info(`PayloadAdapter: createSession output: User found but is inactive.`)
+          BrightConsoleLog(`PayloadAdapter: createSession output: User found but is inactive.`)
       }
       if(!user || user.status !== 'active') throw new Error(`Could not create session for user ${userId}. User not found or is inactive.`);
 
@@ -359,7 +396,7 @@ export function PayloadAdapter(payload: any, options = {}): Adapter {
       const sessionUserId = typeof session?.user === 'string' ? session?.user : session?.user?.id
       const sessionExpires = session?.expires ? new Date(session.expires) : createDate(new TimeSpan(SESSION_MAX_AGE, 's'));
       
-      process.env.AUTH_VERBOSE ? payload.info(`PayloadAdapter: createSession output: sessionToken ${session?.sessionToken} userId: ${sessionUserId} expires: ${sessionExpires}`) : undefined;
+      process.env.AUTH_VERBOSE ? BrightConsoleLog(`PayloadAdapter: createSession output: sessionToken ${session?.sessionToken} userId: ${sessionUserId} expires: ${sessionExpires}`) : undefined;
       
       return {
         sessionToken: session?.sessionToken,
@@ -369,6 +406,8 @@ export function PayloadAdapter(payload: any, options = {}): Adapter {
     },
 
     async getSessionAndUser(sessionToken : string) : Promise<{ session: AdapterSession; user: AdapterUser; } | null> {
+      process.env.AUTH_VERBOSE ? BrightConsoleLog('PayloadAdapter: getSessionAndUser input:', sessionToken) : undefined;
+
       const { docs: sessions } = await (
         await payload
       ).find({
@@ -380,11 +419,11 @@ export function PayloadAdapter(payload: any, options = {}): Adapter {
 
       if (process.env.AUTH_VERBOSE) {
         if (!session)
-          payload.info(`PayloadAdapter: getSessionAndUser: Session ${sessionToken} not found.`)
+          BrightConsoleLog(`PayloadAdapter: getSessionAndUser: Session ${sessionToken} not found.`)
         else if (!session.user || typeof session.user !== 'object')
-          payload.info(`PayloadAdapter: getSessionAndUser: User for session ${sessionToken} not found.`)
+          BrightConsoleLog(`PayloadAdapter: getSessionAndUser: User for session ${sessionToken} not found.`)
         else if (session.user.status !== 'active')
-          payload.info(`PayloadAdapter: getSessionAndUser: User ${session.user.id} (${session.user.email}) for session ${sessionToken} is inactive.`)
+          BrightConsoleLog(`PayloadAdapter: getSessionAndUser: User ${session.user.id} (${session.user.email}) for session ${sessionToken} is inactive.`)
       }
 
       if (!session || !session.user || typeof session.user !== 'object' || session.user.status !== 'active') return null
@@ -398,12 +437,12 @@ export function PayloadAdapter(payload: any, options = {}): Adapter {
           collection: SESSION_COLLECTION,
           where: { sessionToken: { equals: sessionToken } }
         })
-        process.env.AUTH_VERBOSE ? payload.info(`PayloadAdapter: getSessionAndUser: Deleted expired session ${sessionToken} for user ${session.user.id} (${session.user.email}).`) : undefined
+        process.env.AUTH_VERBOSE ? BrightConsoleLog(`PayloadAdapter: getSessionAndUser: Deleted expired session ${sessionToken} for user ${session.user.id} (${session.user.email}).`) : undefined
         return null
       }
 
       //otherwise
-      process.env.AUTH_VERBOSE ? payload.info(`PayloadAdapter: getSessionAndUser: Valid session ${sessionToken} found, expires: ${session.expires.toISOString()}`) : undefined;
+      process.env.AUTH_VERBOSE ? BrightConsoleLog(`PayloadAdapter: getSessionAndUser: Valid session ${sessionToken} found, expires: ${session.expires.toISOString()}`) : undefined;
 
       return {
         session: {
@@ -416,6 +455,8 @@ export function PayloadAdapter(payload: any, options = {}): Adapter {
     },
 
     async updateSession({ sessionToken, expires }) : Promise<undefined | null | AdapterSession> {
+      process.env.AUTH_VERBOSE ? BrightConsoleLog('PayloadAdapter: updateSession input:', 'sessionToken:', sessionToken, 'expires', expires) : undefined;
+
       //fetch session from payload
       const { docs } = await (
         await payload
@@ -427,7 +468,7 @@ export function PayloadAdapter(payload: any, options = {}): Adapter {
       
       //If session can not be found, return null
       if (!session || !expires) {
-        process.env.AUTH_VERBOSE ? payload.info(`PayloadAdapter: updateSession: Session ${sessionToken} not found or new expiry (${expires}) was undefined.`) : undefined;
+        process.env.AUTH_VERBOSE ? BrightConsoleLog(`PayloadAdapter: updateSession: Session ${sessionToken} not found or new expiry (${expires}) was undefined.`) : undefined;
         return null
       }
 
@@ -440,7 +481,7 @@ export function PayloadAdapter(payload: any, options = {}): Adapter {
       })
       const sessionUserId = typeof updatedSession?.user === 'string' ? updatedSession?.user : updatedSession?.user?.id
 
-      payload.info(`PayloadAdapter: updateSession: Valid session ${sessionToken} found and has been updated.`);
+      BrightConsoleLog(`PayloadAdapter: updateSession: Valid session ${sessionToken} found and has been updated.`);
 
       return {
         sessionToken: updatedSession?.sessionToken,
@@ -450,16 +491,18 @@ export function PayloadAdapter(payload: any, options = {}): Adapter {
     },
 
     async deleteSession(sessionToken) : Promise<void> {
+      process.env.AUTH_VERBOSE ? BrightConsoleLog('PayloadAdapter: deleteSession input:', 'sessionToken:', sessionToken) : undefined;
       await (
         await payload
       ).delete({
         collection: SESSION_COLLECTION,
         where: { sessionToken: { equals: sessionToken } }
       })
-      process.env.AUTH_VERBOSE ? payload.info(`PayloadAdapter: deleteSession: Session ${sessionToken} deleted.`) : undefined;
+      process.env.AUTH_VERBOSE ? BrightConsoleLog(`PayloadAdapter: deleteSession: Session ${sessionToken} deleted.`) : undefined;
     },    
 
     async createVerificationToken({ identifier, expires, token }) : Promise<undefined | null | VerificationToken> {
+      process.env.AUTH_VERBOSE ? BrightConsoleLog('PayloadAdapter: createVerificationToken input:', 'identifier:', identifier, 'expires:', expires, 'token:', token) : undefined;
       //fetch user
       const { docs } = await (
         await payload
@@ -472,9 +515,9 @@ export function PayloadAdapter(payload: any, options = {}): Adapter {
       //check if user found
       if (process.env.AUTH_VERBOSE) {
         if (!user)
-          payload.info(`PayloadAdapter: createVerificationToken output: User ${identifier} not found.`)
+          BrightConsoleLog(`PayloadAdapter: createVerificationToken output: User ${identifier} not found.`)
         else if (user.status !== 'active')
-          payload.info(`PayloadAdapter: createVerificationToken output: User ${identifier} found but is inactive.`)
+          BrightConsoleLog(`PayloadAdapter: createVerificationToken output: User ${identifier} found but is inactive.`)
       }
       if(!user || user.status !== 'active') return null;
       
@@ -488,7 +531,7 @@ export function PayloadAdapter(payload: any, options = {}): Adapter {
         }
       })
 
-      process.env.AUTH_VERBOSE ? payload.info(`createVerificationToken: createVerificationToken: New verification token created for User ${user.id}.`) : undefined;
+      process.env.AUTH_VERBOSE ? BrightConsoleLog(`createVerificationToken: createVerificationToken: New verification token created for User ${user.id}.`) : undefined;
 
       return {
         token,
@@ -498,6 +541,7 @@ export function PayloadAdapter(payload: any, options = {}): Adapter {
     },
 
     async useVerificationToken({ identifier, token }) : Promise<null | VerificationToken> {
+      process.env.AUTH_VERBOSE ? BrightConsoleLog('PayloadAdapter: useVerificationToken input:', 'identifier:', identifier, 'token:', token) : undefined;
       //fetch user
       const { docs } = await (
         await payload
@@ -510,16 +554,16 @@ export function PayloadAdapter(payload: any, options = {}): Adapter {
       //check if user found
       if (process.env.AUTH_VERBOSE) {
         if (!user)
-          payload.info(`PayloadAdapter: useVerificationToken output: User ${identifier} not found.`)
+          BrightConsoleLog(`PayloadAdapter: useVerificationToken output: User ${identifier} not found.`)
         else if (user.status !== 'active')
-          payload.info(`PayloadAdapter: useVerificationToken output: User ${identifier} found but is inactive.`)
+          BrightConsoleLog(`PayloadAdapter: useVerificationToken output: User ${identifier} found but is inactive.`)
       }
       if(!user || user.status !== 'active') return null;
       
       //check if token exists, if it doesn't return null
       const filteredToken = user.verificationTokens.filter((t : any) => t.identifier === identifier && t.token === t.token)
       if (!filteredToken) {
-        process.env.AUTH_VERBOSE ? payload.info(`PayloadAdapter: useVerificationToken: Token ${token} not found for user ${user.id} (${user.email}).`) : undefined;
+        process.env.AUTH_VERBOSE ? BrightConsoleLog(`PayloadAdapter: useVerificationToken: Token ${token} not found for user ${user.id} (${user.email}).`) : undefined;
         return null;
       }
 
@@ -534,7 +578,7 @@ export function PayloadAdapter(payload: any, options = {}): Adapter {
           verificationTokens: [...updatedTokens]
         }
       })
-      process.env.AUTH_VERBOSE ? payload.info(`PayloadAdapter: useVerificationToken: Token found and use been removed for User ${user}.`) : undefined;
+      process.env.AUTH_VERBOSE ? BrightConsoleLog(`PayloadAdapter: useVerificationToken: Token found and use been removed for User ${user}.`) : undefined;
       return filteredToken;
     },
   }
