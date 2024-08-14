@@ -9,9 +9,9 @@ import { ScrollInfoProvider } from '@faceless-ui/scroll-info'
 import { WindowInfoProvider } from '@faceless-ui/window-info'
 import { CartProvider } from '@/app/(app)/_providers/Cart'
 import { HeaderIntersectionObserver } from '@app/_providers/HeaderIntersectionObserver'
-import { AuthProvider } from './Auth'
 import { PageTransition } from './PageTransition'
 import { ThemePreferenceProvider } from './Theme'
+import AuthProvider from './Auth'
 
 export const Providers: React.FC<{
   children: React.ReactNode

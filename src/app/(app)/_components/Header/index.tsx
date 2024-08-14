@@ -13,8 +13,10 @@ import { MobileNav, modalSlug as mobileNavModalSlug } from './MobileNav'
 
 import classes from './index.module.scss'
 import Link from 'next/link'
+import { useSession } from 'next-auth/react'
 
 export const Header: React.FC<any> = ({ menu, topBar }: any) => {
+  const { status, data: session } = useSession()
   const { isModalOpen } = useModal()
   const isMobileNavOpen = isModalOpen(mobileNavModalSlug)
   const { headerTheme } = useHeaderObserver()
@@ -40,6 +42,8 @@ export const Header: React.FC<any> = ({ menu, topBar }: any) => {
     return null
   }
 
+  if (status === 'loading') return null
+
   return (
     <div data-theme={headerTheme}>
       <header
@@ -56,7 +60,13 @@ export const Header: React.FC<any> = ({ menu, topBar }: any) => {
         {topBar && <TopBar {...topBar} />}
         <DesktopNav tabs={menu?.tabs} hideBackground={hideBackground} />
         <MobileNav tabs={menu?.tabs} />
-        <Link href="/api/auth/signin">Login</Link>
+        {status === 'authenticated' && (
+          <div>
+            {session.user!.name}
+            <Link href="/api/auth/signout">Logout</Link>
+          </div>
+        )}
+        {status === 'unauthenticated' && <Link href="/api/auth/signin">Login</Link>}
         <React.Suspense>
           <UniversalTruth />
         </React.Suspense>

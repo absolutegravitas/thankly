@@ -368,7 +368,6 @@ export function PayloadAdapter(payload: any, options = {}): Adapter {
 
     async createSession({ sessionToken, userId, expires }) : Promise<AdapterSession> {
       process.env.AUTH_VERBOSE ? BrightConsoleLog(`PayloadAdapter: createSession input: sessionToken ${sessionToken} userId: ${userId} expires: ${expires}`) : undefined;
-console.log("DEBUG1")
       //fetch user to check if active first
       const user = await (
         await payload
@@ -377,7 +376,6 @@ console.log("DEBUG1")
         id: userId,
         depth: 0,
       })
-      console.log("DEBUG2")
       //check if user found
       if (process.env.AUTH_VERBOSE) {
         if (!user)
@@ -386,7 +384,6 @@ console.log("DEBUG1")
           BrightConsoleLog(`PayloadAdapter: createSession output: User found but is inactive.`)
       }
       if(!user || user.status !== 'active') throw new Error(`Could not create session for user ${userId}. User not found or is inactive.`);
-      console.log("DEBUG3")
       const session = await (
         await payload
       ).create({
@@ -397,12 +394,10 @@ console.log("DEBUG1")
           expires: expires.toISOString() 
         }
       })
-      console.log("DEBUG4")
       const sessionUserId = typeof session?.user === 'string' ? session?.user : session?.user?.id
       const sessionExpires = session?.expires ? new Date(session.expires) : createDate(new TimeSpan(SESSION_MAX_AGE, 's'));
       
       process.env.AUTH_VERBOSE ? BrightConsoleLog(`PayloadAdapter: createSession output: sessionToken ${session?.sessionToken} userId: ${sessionUserId} expires: ${sessionExpires}`) : undefined;
-      console.log("DEBUG5")
       return {
         sessionToken: session?.sessionToken,
         userId: sessionUserId,
@@ -447,7 +442,7 @@ console.log("DEBUG1")
       }
 
       //otherwise
-      process.env.AUTH_VERBOSE ? BrightConsoleLog(`PayloadAdapter: getSessionAndUser: Valid session ${sessionToken} found, expires: ${session.expires.toISOString()}`) : undefined;
+      process.env.AUTH_VERBOSE ? BrightConsoleLog(`PayloadAdapter: getSessionAndUser: Valid session ${sessionToken} found`) : undefined;
 
       return {
         session: {
