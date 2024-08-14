@@ -13,6 +13,7 @@ import { CMSLink } from '../../CMSLink'
 
 import classes from './index.module.scss'
 import { CartNotification } from '@app/_components/CartNotification'
+import UserButton from '../../Auth/user-button'
 
 type DesktopNavType = Pick<Menu, 'tabs'> & { hideBackground?: boolean }
 export const DesktopNav: React.FC<DesktopNavType> = ({ tabs, hideBackground }) => {

@@ -11,7 +11,7 @@ import React, {
 import { Cart, Order, Product } from '@/payload-types'
 import { CartItem, cartReducer, CartAction } from './reducer'
 import { debounce } from 'lodash'
-import { auth } from '@/utilities/auth/auth'
+import { auth } from '@/utilities/auth'
 import { v4 as uuidv4 } from 'uuid'
 
 // Type aliases for common types used throughout the file

@@ -1,26 +1,15 @@
 
-import type { BasePayload, CustomPayloadRequestProperties } from 'payload'
 import type { Adapter, AdapterUser, AdapterAccount, AdapterSession, VerificationToken } from 'next-auth/adapters'
-// import { Awaitable } from 'next-auth';
 import { User } from '@/payload-types';
-import { userAgent } from 'next/server';
 import { createDate, isWithinExpirationDate, TimeSpan } from '../isWithinExperationDate';
 import { BrightConsoleLog } from '../brightConsoleLog';
 
-// const SESSION_STRATEGY = 'jwt' as 'jwt' | 'database'
 const SESSION_MAX_AGE = 86400 //in seconds (86400 = 60 * 60 * 24 = 24 hours)
 const USER_COLLECTION = 'users' as const
 const SESSION_COLLECTION = 'sessions' as const
 const DEFAULT_USER_ROLE = 'customer' as const
 const FIELDS_USER_IS_ALLOWED_TO_CHANGE = ['name']
 const PROVIDER_SEARCH_STRING_SPLITTER = '===='
-// const ADMIN_ACCESS_ROLES = ['admin']
-
-
-// declare module '@auth/core/adapters' {
-//   // @ts-ignore
-//   interface AdapterUser extends BaseAdapterUser, User {}
-// }
 
 const toAdapterUser = (payloadUser: User) : AdapterUser => ({
   ...payloadUser,
