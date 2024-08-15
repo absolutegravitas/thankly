@@ -10,6 +10,7 @@ import Facebook from 'next-auth/providers/facebook'
 // import Resend from "next-auth/providers/resend"
 
 
+
 async function getPayload() {
   const config = await configPromise
   const payload: any = await getPayloadHMR({ config })
@@ -37,19 +38,30 @@ export const handlers = NextAuth({
     // }),
   ],
   callbacks: {
-    async signIn({ user, account, profile, email, credentials }) {
-      return true
+    async session({ session, user }) {
+      console.log(user);
+      session.user.id = user.id;
+      return session;
     },
-    async redirect({ url, baseUrl }) {
-      return 'localhost:3000/different'
-    },
-    async session({ session, user, token }) {
-      return session
-    },
-    async jwt({ token, user, account, profile, isNewUser }) {
-      return token
-    }
-  }
+    // async signIn({ user, account, profile, email, credentials }) {
+    //   return true
+    // },
+    // async session({ session, user, token }) {
+    //   return {
+    //     ...session,
+    //     user: {
+    //       ...session.user,
+    //       id: token.sub
+    //     }
+    //   }
+    // },
+    // async jwt({ token, user, account, profile, isNewUser }) {
+    //   return token
+    // }
+  },
+  // session: {
+  //   strategy: 'jwt',
+  // },
 })
 
 

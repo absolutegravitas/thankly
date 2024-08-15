@@ -1,12 +1,5 @@
 // app/shop/order/page.tsx
 import { notFound } from 'next/navigation'
-<<<<<<< HEAD
-import Link from 'next/link'
-import cn from '@/utilities/cn'
-import { contentFormats } from '@app/_css/tailwindClasses'
-import { CheckCircleIcon, ClockIcon } from 'lucide-react'
-=======
->>>>>>> b843998173401c5d6f03f483871947818128c4e5
 import { unstable_cache } from 'next/cache'
 import { getPayloadHMR } from '@payloadcms/next/utilities'
 import configPromise from '@payload-config'

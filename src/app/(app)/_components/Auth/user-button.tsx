@@ -15,6 +15,12 @@ import Link from 'next/link'
 
 export default function UserButton() {
   const { status, data: session } = useSession()
+
+  if (status == 'authenticated') {
+    console.log('user is authenticated!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+    console.log(session)
+  }
+
   return (
     <>
       {status !== 'loading' && (
