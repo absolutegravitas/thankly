@@ -17,19 +17,6 @@ export const cartPageText = {
   // sendTo: `Sending this thankly to:`,
 }
 
-export const deliveryMethods = [
-  { id: 'free', title: 'Free', turnaround: '4–10 business days', price: 0, checked: false },
-
-  {
-    id: 'standard',
-    title: 'Standard',
-    turnaround: '4–10 business days',
-    price: 5,
-    checked: true,
-  },
-  { id: 'express', title: 'Express', turnaround: '2–5 business days', price: 16, checked: false },
-]
-
 export const shippingPrices = {
   free: 0, // implement in future for large orders
 

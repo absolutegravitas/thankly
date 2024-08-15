@@ -8,7 +8,7 @@ import { ArrowIcon } from '@app/_icons/ArrowIcon'
 import { Menu } from '@payload-types'
 // import { useAuth } from '@app/_providers/Auth'
 import { useHeaderObserver } from '@app/_providers/HeaderIntersectionObserver'
-import { FullLogo } from '@app/_graphics/FullLogo'
+import { FullLogo } from '@/app/(app)/_icons/FullLogo'
 import { CMSLink } from '../../CMSLink'
 
 import classes from './index.module.scss'

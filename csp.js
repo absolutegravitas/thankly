@@ -8,6 +8,7 @@ const policies = {
     'https://checkout.stripe.com',
     'https://js.stripe.com',
     'https://maps.googleapis.com',
+    'https://*.maps.googleapis.com', // Added wildcard for subdomains
     'https://fonts.googleapis.com',
     'https://fonts.gstatic.com',
     'http://cdn.jsdelivr.net',
@@ -35,31 +36,34 @@ const policies = {
     'https://images.unsplash.com',
     'http://cdn.jsdelivr.net',
     'https://maps.gstatic.com',
+    'https://*.maps.gstatic.com', // Added wildcard for subdomains
     'https://google.com.au',
     'https://www.gravatar.com',
     'https://placehold.co',
-    'https://authjs.dev', // for auth providers
-    'https://lh3.googleusercontent.com', // for user avatars - google
-    'https://media.licdn.com', // for user avatars - linkedin
-    'https://platform-lookaside.fbsbx.com', // for user avatars - facebook
+    'https://authjs.dev',
+    'https://lh3.googleusercontent.com',
+    'https://media.licdn.com',
+    'https://platform-lookaside.fbsbx.com',
   ],
   'font-src': [
     "'self'",
     'https://fonts.googleapis.com',
     'https://fonts.gstatic.com',
-    'https://cdn.jsdeliver.net',
+    'https://cdn.jsdelivr.net',
   ],
   'frame-src': [
     "'self'",
     'https://checkout.stripe.com',
     'https://js.stripe.com',
     'https://hooks.stripe.com',
+    'https://maps.googleapis.com', // Added for Google Maps
   ],
   'connect-src': [
     "'self'",
     'https://checkout.stripe.com',
     'https://api.stripe.com',
     'https://maps.googleapis.com',
+    'https://*.maps.googleapis.com', // Added wildcard for subdomains
     'https://analytics.google.com',
     'https://js.radar.com',
     'https://api.radar.io',

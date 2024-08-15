@@ -4,22 +4,6 @@ import { adminsAndUserOnly, adminsOnly } from '@/utilities/access'
 let lastTimestamp = 0
 let counter = 1
 
-function generateOrderNumber() {
-  const now = Date.now()
-
-  if (now === lastTimestamp) {
-    counter++
-  } else {
-    counter = 1
-    lastTimestamp = now
-  }
-
-  const timestampPart = now.toString().slice(-8) // Last 8 digits of timestamp
-  const counterPart = counter.toString().padStart(3, '0') // 4-digit counter
-
-  return `${timestampPart}-${counterPart}`
-}
-
 export const Orders: CollectionConfig = {
   slug: 'orders',
   admin: {
@@ -67,8 +51,8 @@ export const Orders: CollectionConfig = {
           ],
         },
         {
-          name: 'stripePaymentIntentID',
-          label: 'Stripe Payment Intent ID',
+          name: 'stripeId', // this will be the session id
+          label: 'Stripe ID',
           type: 'text',
         },
       ],

@@ -121,7 +121,7 @@ export interface Order {
   id: number;
   orderNumber?: string | null;
   status: 'pending' | 'processing' | 'completed' | 'cancelled' | 'onhold';
-  stripePaymentIntentID?: string | null;
+  stripeId?: string | null;
   totals: {
     cost: number;
     shipping?: number | null;
