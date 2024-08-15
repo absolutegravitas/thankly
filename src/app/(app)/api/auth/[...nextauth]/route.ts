@@ -8,6 +8,9 @@ import { PayloadAdapter } from '@/utilities/auth/adapter'
 import GoogleProvider from "next-auth/providers/google";
 import LinkedIn from 'next-auth/providers/linkedin'
 import Facebook from 'next-auth/providers/facebook'
+// import Resend from "next-auth/providers/resend"
+import EmailProvider from 'next-auth/providers/email';
+import { sendVerificationRequest } from "@/utilities/auth/resend";
 
 async function getPayload() {
   const config = await configPromise
@@ -20,26 +23,77 @@ const handler = NextAuth({
   providers: [
     GoogleProvider({
       clientId: process.env.GOOGLE_ID!,
-      clientSecret: process.env.GOOGLE_SECRET!
+      clientSecret: process.env.GOOGLE_SECRET!,
+      allowDangerousEmailAccountLinking: true
     }),
     LinkedIn({
       clientId: process.env.LINKEDIN_ID!,
       clientSecret: process.env.LINKEDIN_SECRET!,
+      allowDangerousEmailAccountLinking: true,
+      client: { token_endpoint_auth_method: "client_secret_post" },
+      // scope: "r_liteprofile r_emailaddress",
+      issuer: "https://www.linkedin.com",
+      userinfo: {
+        url: "https://api.linkedin.com/v2/userinfo",
+      },
+      // tokenUri: "https://www.linkedin.com/oauth/v2/accessToken",
+      wellKnown:
+        "https://www.linkedin.com/oauth/.well-known/openid-configuration",
+      authorization: {
+        url: "https://www.linkedin.com/oauth/v2/authorization",
+        params: {
+          scope: "profile email openid",
+          prompt: "consent",
+          access_type: "offline",
+          response_type: "code",
+        },
+      },
+      token: {
+        url: "https://www.linkedin.com/oauth/v2/accessToken",
+      },
+      jwks_endpoint: "https://www.linkedin.com/oauth/openid/jwks",
+      async profile(profile) {
+        return {
+          id: profile.sub,
+          name: profile.name,
+          firstname: profile.given_name,
+          lastname: profile.family_name,
+          email: profile.email,
+        };
+      },
     }),
     Facebook({
       clientId: process.env.FACEBOOK_ID!,
       clientSecret: process.env.FACEBOOK_SECRET!,
+      allowDangerousEmailAccountLinking: true,
+    }),
+    // Resend({
+    //   apiKey: process.env.RESEND_KEY,
+    //   from: 'no-reply@thankly.co',
+    // }),
+    EmailProvider({
+      from: process.env.RESEND_DEFAULT_EMAIL || 'no-reply@thankly.co',
+      // Custom sendVerificationRequest() function
+      sendVerificationRequest: sendVerificationRequest,   
     }),
   ],
   callbacks: {
     async session({ session, user }) {
-      console.log("---------------------MAYBE WORK THIS TIME-------------------!!!!!!!!!!!!!!!")
-      console.log("---------------------MAYBE WORK THIS TIME-------------------!!!!!!!!!!!!!!!")
-      console.log("---------------------MAYBE WORK THIS TIME-------------------!!!!!!!!!!!!!!!")
-      console.log(user);
+      // console.log(user);
       session.user.id = user.id;
       return session;
     },
+    // async signIn({ user, account, email }) {
+    //   await db.connect();
+    //   const userExists = await User.findOne({
+    //     email: user.email,  //the user object has an email property, which contains the email the user entered.
+    //   });
+    //   if (userExists) {
+    //     return true;   //if the email exists in the User collection, email them a magic login link
+    //   } else {
+    //     return "/register";
+    //   }
+    // },
   },
 })
 

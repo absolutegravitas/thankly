@@ -214,7 +214,7 @@ export const Users: CollectionConfig = {
                   fields: [
                     { name: 'identifier', type: 'text', admin: { readOnly: true } },
                     { name: 'token', type: 'text', admin: { readOnly: true } },
-                    { name: 'expires', type: 'date', admin: { readOnly: true } }
+                    { name: 'expires', type: 'date', admin: { readOnly: true, date: { pickerAppearance: 'dayAndTime' } } }
                   ]
                 }
               ]

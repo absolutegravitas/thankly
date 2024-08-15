@@ -8,7 +8,7 @@ const SESSION_MAX_AGE = 86400 //in seconds (86400 = 60 * 60 * 24 = 24 hours)
 const USER_COLLECTION = 'users' as const
 const SESSION_COLLECTION = 'sessions' as const
 const DEFAULT_USER_ROLE = 'customer' as const
-const FIELDS_USER_IS_ALLOWED_TO_CHANGE = ['name']
+const FIELDS_USER_IS_ALLOWED_TO_CHANGE = ['name', 'emailVerified']
 const PROVIDER_SEARCH_STRING_SPLITTER = '===='
 
 const toAdapterUser = (payloadUser: User) : AdapterUser => ({
@@ -78,7 +78,7 @@ const getUserByAcc = async ({
 
     process.env.AUTH_VERBOSE ? console.error("DEBUG: payload returned was:", docs) : undefined;
 
-    return docs.at(0) ?? null
+    return docs[0] ?? null
   } catch (error) {
     console.error(`Error fetching user by account id (id=${providerAccountId})`, error)
   }
@@ -232,7 +232,9 @@ export function PayloadAdapter(payload: any, options = {}): Adapter {
         }
       })
 
-      const { docs } = await (
+      console.log('filtered data:',data)
+
+      const updatedUser = await (
         await payload
       ).update({
         collection: USER_COLLECTION,
@@ -240,14 +242,14 @@ export function PayloadAdapter(payload: any, options = {}): Adapter {
         // @ts-ignore
         data
       })
-      const user = docs.at(0)
-      if (!user) {
+      console.log('docs:',updatedUser)
+      if (!updatedUser) {
         throw new Error('PayloadAdapter: updateUser: no user found')
       }
 
-      process.env.AUTH_VERBOSE ? BrightConsoleLog(`PayloadAdapter: updateUser: User ${user.id} (${user.email}) has been updated.`) : undefined
+      process.env.AUTH_VERBOSE ? BrightConsoleLog(`PayloadAdapter: updateUser: User ${updatedUser.id} (${updatedUser.email}) has been updated.`) : undefined
 
-      return toAdapterUser(user)
+      return toAdapterUser(updatedUser)
     },
 
     async deleteUser(userId: string) : Promise<AdapterUser | null | undefined> {
@@ -404,7 +406,7 @@ export function PayloadAdapter(payload: any, options = {}): Adapter {
         depth: 1, // So that we get user object aswell.
         where: { sessionToken: { equals: sessionToken } }
       })
-      const session = sessions.at(0)
+      const session = sessions[0]
 
       if (process.env.AUTH_VERBOSE) {
         if (!session)
@@ -453,7 +455,7 @@ export function PayloadAdapter(payload: any, options = {}): Adapter {
         collection: SESSION_COLLECTION,
         where: { sessionToken: { equals: sessionToken }}
       })
-      const session = docs.at(0)
+      const session = docs[0]
       
       //If session can not be found, return null
       if (!session || !expires) {
@@ -499,7 +501,7 @@ export function PayloadAdapter(payload: any, options = {}): Adapter {
         collection: USER_COLLECTION,
         where: { email: { equals: identifier } }
       })
-      const user = docs.at(0)
+      const user = docs[0]
       
       //check if user found
       if (process.env.AUTH_VERBOSE) {
@@ -538,7 +540,7 @@ export function PayloadAdapter(payload: any, options = {}): Adapter {
         collection: USER_COLLECTION,
         where: { email: { equals: identifier } }
       })
-      const user = docs.at(0)
+      const user = docs[0]
       
       //check if user found
       if (process.env.AUTH_VERBOSE) {
@@ -551,7 +553,7 @@ export function PayloadAdapter(payload: any, options = {}): Adapter {
       
       //check if token exists, if it doesn't return null
       const filteredToken = user.verificationTokens.filter((t : any) => t.identifier === identifier && t.token === t.token)
-      if (!filteredToken) {
+      if (filteredToken.length === 0) {
         process.env.AUTH_VERBOSE ? BrightConsoleLog(`PayloadAdapter: useVerificationToken: Token ${token} not found for user ${user.id} (${user.email}).`) : undefined;
         return null;
       }
@@ -568,7 +570,8 @@ export function PayloadAdapter(payload: any, options = {}): Adapter {
         }
       })
       process.env.AUTH_VERBOSE ? BrightConsoleLog(`PayloadAdapter: useVerificationToken: Token found and use been removed for User ${user}.`) : undefined;
-      return filteredToken;
+      console.log("filteredToken:",filteredToken[0]);
+      return filteredToken[0];
     },
   }
 }
