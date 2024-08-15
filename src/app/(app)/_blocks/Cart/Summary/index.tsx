@@ -1,3 +1,12 @@
+// This file contains the CartSummary component and its related utilities for displaying the cart summary in a Next.js 14 application using the App Router and server components.
+// The CartSummary component is responsible for rendering the cart summary, including the total cost, shipping charges, and the checkout button.
+// It also handles the checkout process by creating a Stripe checkout session and redirecting the user to the Stripe payment page.
+// The component uses the useCart hook from the Cart context to access cart-related functionality.
+// Performance Considerations:
+// - Memoizing expensive calculations or components could improve performance.
+// - Optimizing data fetching and limiting unnecessary re-renders could enhance efficiency.
+// - Handling large cart data sets efficiently may require additional optimizations.
+
 import React, { useEffect, useState, useTransition } from 'react'
 import { buttonLook, contentFormats } from '@app/_css/tailwindClasses'
 import { DollarSignIcon, MailWarningIcon, SmileIcon, XIcon, ArrowLeftIcon } from 'lucide-react'
@@ -12,10 +21,13 @@ import { cartPageText } from '@/utilities/referenceText'
 import { loadStripe } from '@stripe/stripe-js'
 import { createCheckoutSession } from './createCheckoutSession'
 
-// Make sure to call loadStripe outside of a component’s render to avoid
+// Make sure to call loadStripe outside of a component's render to avoid
 // recreating the Stripe object on every render.
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
 
+// The CartSummary component is a React functional component that displays the cart summary and handles the checkout process.
+// Props:
+// - cart: Cart (required) - The cart object containing the cart data and totals.
 export const CartSummary: React.FC<{ cart: Cart }> = ({ cart }) => {
   if (!cart || !cart.totals) return null
   const router = useRouter()
@@ -24,7 +36,8 @@ export const CartSummary: React.FC<{ cart: Cart }> = ({ cart }) => {
   const [validationMessage, setValidationMessage] = useState<string>('')
   const [isPending, setIsPending] = useState(false)
 
-  // check if cart is valid
+  // Check if the cart is valid by calling the validateCart function from the useCart hook
+  // This effect runs whenever the cart or validateCart function changes
   useEffect(() => {
     const orderValidity = validateCart()
     setIsValid(orderValidity)
@@ -33,6 +46,7 @@ export const CartSummary: React.FC<{ cart: Cart }> = ({ cart }) => {
     )
   }, [cart, validateCart])
 
+  // Handle the checkout process by creating a Stripe checkout session
   const handleCheckout = async () => {
     if (!isValid) return
     setIsPending(true)
@@ -150,7 +164,11 @@ export const CartSummary: React.FC<{ cart: Cart }> = ({ cart }) => {
   )
 }
 
-// The SummaryItem component renders an individual summary item with a label and value
+// The SummaryItem component is a React functional component that renders an individual summary item with a label and value.
+// Props:
+// - label: ReactNode (required) - The label for the summary item.
+// - value: number (required) - The value for the summary item.
+// - isBold?: boolean (optional) - Whether the label and value should be displayed in bold.
 interface SummaryItemProps {
   label: React.ReactNode
   value: number
