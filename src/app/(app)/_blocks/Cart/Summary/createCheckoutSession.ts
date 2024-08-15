@@ -61,6 +61,17 @@ export async function createCheckoutSession(cart: Cart) {
     }
 
     // Check for Stripe customer ID or use email for guest checkout
+    //     client_reference_idnullable string
+
+    // A unique string to reference the Checkout Session. This can be a customer ID, a cart ID, or similar, and can be used to reconcile the Session with your internal systems.
+
+    // customernullable stringExpandable
+
+    // The ID of the customer for this Session. For Checkout Sessions in subscription mode or Checkout Sessions with customer_creation set as always in payment mode, Checkout will create a new customer object based on information provided during the payment flow unless an existing customer was provided when the Session was created.
+    // customer_emailnullable string
+
+    // If provided, this value will be used when the Customer object is created. If not provided, customers will be asked to enter their email address. Use this parameter to prefill customer data if you already have an email on file. To access information about the customer once the payment flow is complete, use the customer attribute.
+
     if (
       cart.billing?.orderedBy &&
       typeof cart.billing.orderedBy === 'object' &&
