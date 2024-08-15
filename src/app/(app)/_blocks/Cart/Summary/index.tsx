@@ -8,16 +8,8 @@ import cn from '@/utilities/cn'
 import { useRouter } from 'next/navigation'
 import { useCart } from '@app/_providers/Cart'
 import { LoaderCircleIcon } from 'lucide-react'
-import { FullLogo } from '@/app/(app)/_icons/FullLogo'
 import { cartPageText } from '@/utilities/referenceText'
-import { Elements, ExpressCheckoutElement } from '@stripe/react-stripe-js'
-import { loadStripe, StripeElementsOptions } from '@stripe/stripe-js'
-import { createPaymentIntent } from './createPaymentIntent'
-import {
-  StripeExpressCheckoutElementReadyEvent,
-  AvailablePaymentMethods,
-  StripeExpressCheckoutElementConfirmEvent,
-} from '@stripe/stripe-js'
+import { loadStripe } from '@stripe/stripe-js'
 import { createCheckoutSession } from './createCheckoutSession'
 
 // Make sure to call loadStripe outside of a component’s render to avoid
@@ -31,6 +23,7 @@ export const CartSummary: React.FC<{ cart: Cart }> = ({ cart }) => {
   const [isValid, setIsValid] = useState<boolean>(true)
   const [validationMessage, setValidationMessage] = useState<string>('')
   const [isPending, setIsPending] = useState(false)
+
   // check if cart is valid
   useEffect(() => {
     const orderValidity = validateCart()
@@ -133,8 +126,6 @@ export const CartSummary: React.FC<{ cart: Cart }> = ({ cart }) => {
             pending={isPending}
           />
 
-          {/* {!isValid && <div className="text-red-500 text-sm">{validationMessage}</div>} */}
-
           <CMSLink
             data={{
               label: 'Continue Shopping',
@@ -155,14 +146,6 @@ export const CartSummary: React.FC<{ cart: Cart }> = ({ cart }) => {
           />
         </div>
       </div>
-      {/* <div id="summary-heading" className="basis-1/2 py-4 space-y-6 sm:space-y-8 pl-0 sm:px-8">
-        <h2 className={cn(contentFormats.global, contentFormats.h3, 'mt-0 mb-6')}>Pay</h2>
-        {clientSecret && (
-          <Elements stripe={stripePromise} options={options}>
-            <CheckoutForm isValid={isValid} clientSecret={clientSecret} />{' '}
-          </Elements>
-        )}
-      </div> */}
     </div>
   )
 }

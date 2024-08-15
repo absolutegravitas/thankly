@@ -48,6 +48,7 @@ export type CartAction =
       type: 'REMOVE_RECEIVER'
       payload: { productId: number | string; receiverId: string }
     }
+  | { type: 'SET_CART'; payload: Cart }
   | { type: 'CLEAR_CART' }
 
 // Helper function to get the product ID from a CartItem
@@ -301,6 +302,10 @@ export const cartReducer = (cart: Cart, action: CartAction): Cart => {
       return { ...cart, items: [], totals: { total: 0, cost: 0, shipping: 0 } }
     }
 
+    case 'SET_CART': {
+      return action.payload
+    }
+
     default: {
       return cart
     }
@@ -379,8 +384,6 @@ const calculateCartTotals = (items: CartItem[] | undefined): Cart['totals'] => {
       subTotal: item.receivers?.reduce((sum, receiver) => sum + receiver.totals.subTotal, 0) || 0,
     }
   })
-
-  // also sync to payloadcms coz claudeai is dogshit
 
   // return the totals
   return items.reduce(

@@ -45,8 +45,7 @@ export type CartContext = {
   ) => void
   removeReceiver: (productId: number | string, receiverId: string) => void
   copyReceiver: (productId: number | string, receiverId: string) => void
-
-  // convertCartToOrder: () => Promise<Order | null>
+  setCart: (newCart: Cart) => void
   clearCart: () => void
 }
 
@@ -67,6 +66,10 @@ export const useCart = () => {
 
 // CartProvider component
 export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const setCart = useCallback((newCart: Cart) => {
+    dispatchCart({ type: 'SET_CART', payload: newCart })
+  }, [])
+
   // Cart state and reducer
   const [cart, dispatchCart] = useReducer<React.Reducer<Cart, CartAction>>(cartReducer, {
     cartNumber: uuidv4(),
@@ -180,6 +183,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       removeReceiver,
       updateReceiver,
       validateCart,
+      setCart,
     }),
     [
       addProduct,
@@ -194,6 +198,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       removeReceiver,
       updateReceiver,
       validateCart,
+      setCart,
     ],
   )
 
@@ -206,6 +211,9 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
         try {
           const localCart = localStorage.getItem('cart')
           const parsedCart = JSON.parse(localCart || '{}')
+          if (Object.keys(parsedCart).length > 0) {
+            dispatchCart({ type: 'SET_CART', payload: parsedCart })
+          }
         } catch (error) {
           console.error('CartProvider: Error initializing cart:', error)
         } finally {
