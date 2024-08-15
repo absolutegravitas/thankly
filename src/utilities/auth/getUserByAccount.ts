@@ -45,8 +45,6 @@ export const getPayloadUserByAccount = async ({
       }
     })
 
-    process.env.AUTH_VERBOSE ? console.error("DEBUG: payload returned was:", docs) : undefined;
-
     return docs[0] ?? null
   } catch (error) {
     console.error(`Error fetching user by account id (id=${providerAccountId})`, error)

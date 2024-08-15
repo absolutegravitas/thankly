@@ -10,12 +10,16 @@ import {
 
 import { signIn, signOut, useSession } from 'next-auth/react'
 import Link from 'next/link'
+import Image from 'next/image'
 
 export default function UserButton() {
   const { status, data: session } = useSession()
 
+  //check if image available
+  const hasProfileImage = session?.user.image !== null && session?.user.image.length > 0
+
   if (status == 'authenticated') {
-    process.env.AUTH_VERBOSE ? console.log(session) : undefined
+    console.log(session)
   }
 
   return (
@@ -25,7 +29,21 @@ export default function UserButton() {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button className="inline-flex items-center justify-center p-0 w-fit h-fit bg-transparent border-none">
-                <Avatar name={session?.user.name} variant="beam" size={26} />
+                {!hasProfileImage && <Avatar name={session?.user.name} variant="beam" size={26} />}
+                {hasProfileImage && (
+                  <div
+                    className="relative rounded-full overflow-hidden"
+                    // style={{ width: 26, height: 26 }}
+                  >
+                    <Image
+                      src={session?.user.image}
+                      alt="User avatar"
+                      className="w-full h-full object-cover"
+                      width={20}
+                      height={20}
+                    />
+                  </div>
+                )}
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent

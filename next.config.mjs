@@ -34,6 +34,7 @@ const nextConfig = {
       { protocol: 'https', hostname: '**media.licdn.com**' }, // for user avatars - linkedin
       { protocol: 'https', hostname: '**platform-lookaside.fbsbx.com**' }, // for user avatars - facebook
     ],
+    domains: ['lh3.googleusercontent.com'],
   },
   async headers() {
     const headers = []

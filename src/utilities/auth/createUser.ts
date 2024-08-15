@@ -1,6 +1,6 @@
 import { AdapterUser } from "next-auth/adapters";
 import { BrightConsoleLog } from "../brightConsoleLog";
-import { DEFAULT_USER_ROLE, splitName, toAdapterUser, USER_COLLECTION } from "./helperFunctions";
+import { DEFAULT_USER_ROLE, generateRandomCode, splitName, toAdapterUser, USER_COLLECTION } from "./helperFunctions";
 import { User } from "@/payload-types";
 
 export async function createUser(payload : any, user: Omit<AdapterUser, "id">) : Promise<AdapterUser> {
@@ -42,7 +42,8 @@ export async function createUser(payload : any, user: Omit<AdapterUser, "id">) :
       email: user.email,
       firstName: firstName,
       lastName: lastName,
-      password: 'password',
+      imageUrl: user.image,
+      password: generateRandomCode(32),
       roles: [DEFAULT_USER_ROLE],
       status: 'active',
     }

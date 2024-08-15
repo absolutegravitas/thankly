@@ -8,8 +8,8 @@ import { PayloadAdapter } from '@/utilities/auth/adapter'
 import GoogleProvider from "next-auth/providers/google";
 import LinkedIn from 'next-auth/providers/linkedin'
 import Facebook from 'next-auth/providers/facebook'
-// import Resend from "next-auth/providers/resend"
 import EmailProvider from 'next-auth/providers/email';
+
 import { sendVerificationRequest } from "@/utilities/auth/resend";
 
 async function getPayload() {
@@ -59,6 +59,7 @@ const handler = NextAuth({
           firstname: profile.given_name,
           lastname: profile.family_name,
           email: profile.email,
+          image: profile.picture
         };
       },
     }),
@@ -67,10 +68,6 @@ const handler = NextAuth({
       clientSecret: process.env.FACEBOOK_SECRET!,
       allowDangerousEmailAccountLinking: true,
     }),
-    // Resend({
-    //   apiKey: process.env.RESEND_KEY,
-    //   from: 'no-reply@thankly.co',
-    // }),
     EmailProvider({
       from: process.env.RESEND_DEFAULT_EMAIL || 'no-reply@thankly.co',
       // Custom sendVerificationRequest() function
@@ -81,19 +78,9 @@ const handler = NextAuth({
     async session({ session, user }) {
       // console.log(user);
       session.user.id = user.id;
+      session.user.image = user.image;
       return session;
     },
-    // async signIn({ user, account, email }) {
-    //   await db.connect();
-    //   const userExists = await User.findOne({
-    //     email: user.email,  //the user object has an email property, which contains the email the user entered.
-    //   });
-    //   if (userExists) {
-    //     return true;   //if the email exists in the User collection, email them a magic login link
-    //   } else {
-    //     return "/register";
-    //   }
-    // },
   },
 })
 

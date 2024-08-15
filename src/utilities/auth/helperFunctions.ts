@@ -8,6 +8,15 @@ export const DEFAULT_USER_ROLE = 'customer' as const
 export const FIELDS_USER_IS_ALLOWED_TO_CHANGE = ['name', 'emailVerified']
 export const PROVIDER_SEARCH_STRING_SPLITTER = '===='
 
+export function generateRandomCode(length : number) {
+  const characters = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!@#$%^&*()_+-=[]{}|;:,.<>?';
+  let result = '';
+  for (let i = 0; i < length; i++) {
+    result += characters.charAt(Math.floor(Math.random() * characters.length));
+  }
+  return result;
+}
+
 export const toAdapterUser = (payloadUser: User) : AdapterUser => ({
   ...payloadUser,
   id: String(payloadUser.id),
