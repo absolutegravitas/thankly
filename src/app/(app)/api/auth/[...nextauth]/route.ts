@@ -30,7 +30,19 @@ const handler = NextAuth({
       clientId: process.env.FACEBOOK_ID!,
       clientSecret: process.env.FACEBOOK_SECRET!,
     }),
-  ]
+  ],
+  callbacks: {
+    async session({ session, user }) {
+      console.log("---------------------MAYBE WORK THIS TIME-------------------!!!!!!!!!!!!!!!")
+      console.log("---------------------MAYBE WORK THIS TIME-------------------!!!!!!!!!!!!!!!")
+      console.log("---------------------MAYBE WORK THIS TIME-------------------!!!!!!!!!!!!!!!")
+      console.log(user);
+      session.user.id = user.id;
+      return session;
+    },
+  },
 })
 
 export { handler as GET, handler as POST }
+
+
