@@ -1,8 +1,5 @@
 import NextAuth from "next-auth"
 
-import { getPayloadHMR } from '@payloadcms/next/utilities'
-import configPromise from '@payload-config'
-
 import { PayloadAdapter } from '@/utilities/auth/adapter'
 
 import GoogleProvider from "next-auth/providers/google";
@@ -11,12 +8,7 @@ import Facebook from 'next-auth/providers/facebook'
 import EmailProvider from 'next-auth/providers/email';
 
 import { sendVerificationRequest } from "@/utilities/auth/resend";
-
-async function getPayload() {
-  const config = await configPromise
-  const payload: any = await getPayloadHMR({ config })
-  return payload
-} 
+import { getPayload } from "@/utilities/PayloadQueries/getPayload";
 
 const handler = NextAuth({
   adapter: PayloadAdapter(getPayload()),
@@ -75,10 +67,13 @@ const handler = NextAuth({
     }),
   ],
   callbacks: {
-    async session({ session, user }) {
+    async session({ session, user}) {
       // console.log(user);
+      console.log("DEBUG: SESSION:", session, "USER:", user)
       session.user.id = user.id;
       session.user.image = user.image;
+      // session.user.stripeId = user.stripeId;
+
       return session;
     },
   },
