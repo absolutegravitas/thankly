@@ -27,7 +27,7 @@ export default function CartPage() {
     hasInitializedCart: boolean
   } = useCart()
 
-  // console.log('cart --', cart)
+  //console.log('cart --', cart)
 
   // Show a loading skeleton if the cart hasn't been initialized yet
   if (!hasInitializedCart) {

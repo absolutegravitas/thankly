@@ -35,6 +35,7 @@
   "include": [
     "next-env.d.ts",
     "src/next-auth.d.ts",
+    // "src/utilities/next-auth-extensions.d.ts",
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",

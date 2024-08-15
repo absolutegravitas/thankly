@@ -76,7 +76,14 @@ export async function generateStaticParams() {
   )
 
   const pages = await fetchPageSlugs()
-  // console.log('pages', pages)
+  console.log(
+    'pages ==',
+    pages,
+    '==',
+    pages.map(({ slug }) => ({
+      slug: slug.split('/').filter(Boolean),
+    })),
+  )
 
   return pages.map(({ slug }) => ({
     slug: slug.split('/').filter(Boolean),

@@ -4,6 +4,6 @@ module.exports = {
   generateRobotsTxt: true, // (optional)
   generateIndexSitemap: false,
   sitemapSize: 100,
-  exclude: ['/payload', '/admin', '/login', '/logout'],
+  exclude: ['/payload', '/admin', '/login', '/logout', '/seed'],
   // ...other options
 }
