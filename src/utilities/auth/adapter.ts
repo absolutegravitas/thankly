@@ -84,61 +84,63 @@ const getUserByAcc = async ({
   }
   return null
 }
+
+async function createUser(payload : any, user: Omit<AdapterUser, "id">) : Promise<AdapterUser> {
+  process.env.AUTH_VERBOSE ? BrightConsoleLog('PayloadAdapter: createUser input:', user) : undefined;
+
+  //check if user already exists
+  try {
+    const { docs } = await (await payload).find({
+      collection: USER_COLLECTION,
+      where: {email: { equals: user.email }},
+      depth: 0,
+      limit: 1,
+    })
+
+    //if user exists, return that user
+    if (docs.length !== 0) {
+      const payloadUser = docs[0]
+      const adapterUser = toAdapterUser(payloadUser);
+      
+      if (payloadUser.status !== 'active') {
+        process.env.AUTH_VERBOSE ? BrightConsoleLog(`PayloadAdapter: createUser: User ${payloadUser.id} (${payloadUser.email}) already exists and is inactive.`) : undefined;
+      } else {
+        process.env.AUTH_VERBOSE ? BrightConsoleLog(`PayloadAdapter: createUser: User ${payloadUser.id} (${payloadUser.email}) already exists.`) : undefined;
+      }
+
+      return adapterUser;
+    }
+  } catch (error) {
+    console.error(`Error fetching user: ${user.email}`, error)
+  }
+
+  //split name
+  const {firstName, lastName} = splitName(user.name);
+
+  //otherwise create user
+  const newPayloadUser : User = await (await payload).create({
+    collection: USER_COLLECTION,
+    data: {
+      email: user.email,
+      firstName: firstName,
+      lastName: lastName,
+      password: 'password',
+      roles: [DEFAULT_USER_ROLE],
+      status: 'active',
+    }
+  })
+
+  if (process.env.AUTH_VERBOSE) {
+    BrightConsoleLog(`PayloadAdapter: createUser: User ${newPayloadUser.id} (${newPayloadUser.email}) created.`)
+  }
+
+  return toAdapterUser(newPayloadUser);
+}
   
 export function PayloadAdapter(payload: any, options = {}): Adapter {
 
   return {
-    async createUser(user: Omit<AdapterUser, "id">) : Promise<AdapterUser> {
-      process.env.AUTH_VERBOSE ? BrightConsoleLog('PayloadAdapter: createUser input:', user) : undefined;
-  
-      //check if user already exists
-      try {
-        const { docs } = await (await payload).find({
-          collection: USER_COLLECTION,
-          where: {email: { equals: user.email }},
-          depth: 0,
-          limit: 1,
-        })
-
-        //if user exists, return that user
-        if (docs.length !== 0) {
-          const payloadUser = docs[0]
-          const adapterUser = toAdapterUser(payloadUser);
-          
-          if (payloadUser.status !== 'active') {
-            process.env.AUTH_VERBOSE ? BrightConsoleLog(`PayloadAdapter: createUser: User ${payloadUser.id} (${payloadUser.email}) already exists and is inactive.`) : undefined;
-          } else {
-            process.env.AUTH_VERBOSE ? BrightConsoleLog(`PayloadAdapter: createUser: User ${payloadUser.id} (${payloadUser.email}) already exists.`) : undefined;
-          }
-
-          return adapterUser;
-        }
-      } catch (error) {
-        console.error(`Error fetching user: ${user.email}`, error)
-      }
-
-      //split name
-      const {firstName, lastName} = splitName(user.name);
-
-      //otherwise create user
-      const newPayloadUser : User = await (await payload).create({
-        collection: USER_COLLECTION,
-        data: {
-          email: user.email,
-          firstName: firstName,
-          lastName: lastName,
-          password: 'password',
-          roles: [DEFAULT_USER_ROLE],
-          status: 'active',
-        }
-      })
-
-      if (process.env.AUTH_VERBOSE) {
-        BrightConsoleLog(`PayloadAdapter: createUser: User ${newPayloadUser.id} (${newPayloadUser.email}) created.`)
-      }
-
-      return toAdapterUser(newPayloadUser);
-    },
+    async createUser(user: Omit<AdapterUser, "id">) : Promise<AdapterUser> {return await createUser(payload, user)},
 
     async getUser(id: string) : Promise<AdapterUser | null> {
       process.env.AUTH_VERBOSE ? BrightConsoleLog('PayloadAdapter: createUser input:', id) : undefined;
@@ -502,15 +504,20 @@ export function PayloadAdapter(payload: any, options = {}): Adapter {
         where: { email: { equals: identifier } }
       })
       const user = docs[0]
-      
-      //check if user found
-      if (process.env.AUTH_VERBOSE) {
-        if (!user)
-          BrightConsoleLog(`PayloadAdapter: createVerificationToken output: User ${identifier} not found.`)
-        else if (user.status !== 'active')
-          BrightConsoleLog(`PayloadAdapter: createVerificationToken output: User ${identifier} found but is inactive.`)
+
+      //If user doesn't exist, then create one
+      if(!user) {
+        //create user
+        BrightConsoleLog(`PayloadAdapter: createVerificationToken output: User ${identifier} not found.`)
+        const user = await createUser(payload, {
+          email: identifier,
+          emailVerified: null
+        })
+      } else if (user.status !== 'active')
+      {
+        BrightConsoleLog(`PayloadAdapter: createVerificationToken output: User ${identifier} found but is inactive.`)
+        return null;
       }
-      if(!user || user.status !== 'active') return null;
       
       await (
         await payload
