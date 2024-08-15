@@ -1,8 +1,7 @@
 'use client'
-// import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
+
 import { Button } from './ui/button'
 import Avatar from 'boring-avatars'
-// import { auth } from '@/utilities/auth'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -10,11 +9,9 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger,
 } from './ui/dropdown-menu'
-// import { SignIn, SignOut } from './auth-components'
+
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
-import { signOut } from '@/utilities/auth'
-import SignOutButton from './sign-out'
 
 export default function UserButton() {
   const { status, data: session } = useSession()
@@ -60,7 +57,6 @@ export default function UserButton() {
                     >
                       Sign Out
                     </Link>
-                    <SignOutButton />
                   </DropdownMenuItem>
                 </>
               )}
