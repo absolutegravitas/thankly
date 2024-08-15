@@ -1,9 +1,8 @@
 // This file contains the main Cart page component and related UI skeletons for the Next.js 14 app with the App Router and server components.
 // The Cart page displays the user's current cart, including cart items and a summary with totals.
 // If the cart is empty or not initialized, appropriate placeholders or skeletons are shown.
-
 'use client'
-import React, { Suspense } from 'react'
+import React, { Suspense, useEffect, useState } from 'react'
 import { BlockWrapper } from '@app/_components/BlockWrapper'
 import { Gutter } from '@app/_components/Gutter'
 import { EmptyCart } from '@/app/(app)/_blocks/Cart/EmptyCart'
@@ -13,33 +12,39 @@ import { CartItems } from '@app/_blocks/Cart/CartItems'
 import { CartSummary } from '@app/_blocks/Cart/Summary'
 import cn from '@/utilities/cn'
 import { Cart } from '@/payload-types'
+import { useSearchParams } from 'next/navigation'
+import { getCartByNumber } from '@/app/(app)/_providers/Cart/getCart'
 
-// The main Cart page component
 export default function CartPage() {
-  // Destructure cart state and helper values from the useCart custom hook
-  const {
-    cart,
-    cartIsEmpty,
-    hasInitializedCart,
-  }: {
-    cart: Cart // Assuming 'Cart' is a type or interface defined elsewhere
-    cartIsEmpty: boolean
-    hasInitializedCart: boolean
-  } = useCart()
+  const searchParams = useSearchParams()
+  const { cart, cartIsEmpty, hasInitializedCart, setCart } = useCart()
+  const [isLoading, setIsLoading] = useState(true)
 
-  //console.log('cart --', cart)
+  useEffect(() => {
+    const fetchCart = async () => {
+      setIsLoading(true)
+      const cartNumber = searchParams.get('id')
+      if (cartNumber) {
+        const fetchedCart = await getCartByNumber(cartNumber)
+        if (fetchedCart) {
+          localStorage.setItem('cart', JSON.stringify(fetchedCart))
+          setCart(fetchedCart)
+        }
+      }
+      setIsLoading(false)
+    }
 
-  // Show a loading skeleton if the cart hasn't been initialized yet
-  if (!hasInitializedCart) {
+    fetchCart()
+  }, [searchParams, setCart])
+
+  if (isLoading || !hasInitializedCart) {
     return <CartLoadingSkeleton />
   }
 
-  // Show an empty cart placeholder if the cart is empty
   if (cartIsEmpty) {
     return <EmptyCart />
   }
 
-  // Render the Cart page with cart items and summary
   return (
     <BlockWrapper className={getPaddingClasses('hero')}>
       <Gutter>

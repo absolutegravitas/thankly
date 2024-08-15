@@ -16,29 +16,23 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 })
 
 // Function to create a Stripe checkout session for the given cart
+
 export async function createCheckoutSession(cart: Cart) {
-  // Ensure the cart is not empty before proceeding
   if (!cart.items || cart.items.length === 0) {
     throw new Error('Cart is empty')
   }
 
   try {
-    // Map the cart items to Stripe line items
     const line_items = cart.items.map((item) => {
-      // Ensure the product object is fully expanded (not just the ID)
       if (typeof item.product === 'number') {
         throw new Error('Product is not expanded')
       }
-
-      // Ensure the product has valid Stripe price IDs
       if (
         !item.product.stripe ||
         (!item.product.stripe.basePriceId && !item.product.stripe.salePriceId)
       ) {
         throw new Error('Stripe price IDs are not set for the product')
       }
-
-      // Determine the Stripe price ID to use based on base or sale price
       let priceId: string
       if (item.product.stripe.salePriceId) {
         priceId = item.product.stripe.salePriceId
@@ -47,36 +41,56 @@ export async function createCheckoutSession(cart: Cart) {
       } else {
         throw new Error('No valid Stripe price ID found for the product')
       }
-
-      // Determine the quantity based on the number of receivers (or 0 if none)
       const qty = item.receivers?.length || 0
-
-      // Return the line item object for Stripe
       return {
         price: priceId,
         quantity: qty,
       }
     })
 
-    // Create the Stripe checkout session
-    const session = await stripe.checkout.sessions.create({
-      payment_method_types: ['card'], // Accept card payments
-      line_items, // The mapped line items from above
-      mode: 'payment', // Set the session mode to payment
-      success_url: `${process.env.NEXT_PUBLIC_SERVER_URL}/shop/order?session_id={CHECKOUT_SESSION_ID}`, // URL for successful payment
-      cancel_url: `${process.env.NEXT_PUBLIC_SERVER_URL}/shop/cart`, // URL for canceled payment
-      billing_address_collection: 'required', // Collect billing address
-      metadata: {
-        cartId: cart.id.toString(), // Store the cart ID as metadata
-        cartNumber: cart.cartNumber || '',
-      },
-    })
+    const sessionParams: Stripe.Checkout.SessionCreateParams = {
+      line_items,
+      mode: 'payment',
+      allow_promotion_codes: true,
+      automatic_tax: { enabled: true },
+      phone_number_collection: { enabled: true },
+      billing_address_collection: 'required',
+      metadata: { cartId: cart.id.toString(), cartNumber: cart.cartNumber || '' },
+      success_url: `${process.env.NEXT_PUBLIC_SERVER_URL}/shop/order?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.NEXT_PUBLIC_SERVER_URL}/shop/cart?id=${cart.cartNumber}`,
+    }
+    //
 
-    // If the session URL is available, return it for redirection
+    // https://docs.stripe.com/api/checkout/sessions
+
+    // Check for Stripe customer ID or use email for guest checkout
+    //     client_reference_idnullable string
+
+    // A unique string to reference the Checkout Session. This can be a customer ID, a cart ID, or similar, and can be used to reconcile the Session with your internal systems.
+
+    // customernullable stringExpandable
+
+    // The ID of the customer for this Session. For Checkout Sessions in subscription mode or Checkout Sessions with customer_creation set as always in payment mode, Checkout will create a new customer object based on information provided during the payment flow unless an existing customer was provided when the Session was created.
+    // customer_emailnullable string`
+
+    // If provided, this value will be used when the Customer object is created. If not provided, customers will be asked to enter their email address. Use this parameter to prefill customer data if you already have an email on file. To access information about the customer once the payment flow is complete, use the customer attribute.
+
+    if (
+      cart.billing?.orderedBy &&
+      typeof cart.billing.orderedBy === 'object' &&
+      cart.billing.orderedBy.stripeId
+    ) {
+      sessionParams.customer = cart.billing.orderedBy.stripeId
+    } else if (cart.billing?.email) {
+      sessionParams.customer_email = cart.billing.email
+    }
+
+    const session = await stripe.checkout.sessions.create(sessionParams)
+
     if (session.url) {
-      // create a payload order  as well
+      // create a payload order as well
       const newOrder = await createOrder(cart, session.id)
-      // update the session on stripe with order info ???
+      // update the session on stripe with order info
       console.log('newOrder --', newOrder)
       return { redirectUrl: session.url }
     } else {
@@ -84,7 +98,7 @@ export async function createCheckoutSession(cart: Cart) {
     }
   } catch (error) {
     console.error('Error creating checkout session:', error)
-    throw error // Re-throw the original error for better debugging
+    throw error
   }
 }
 
@@ -102,7 +116,6 @@ export async function createCheckoutSession(cart: Cart) {
 // - This function has the side effect of creating a Stripe checkout session and potentially an invoice in the future.
 
 import { Order } from '@/payload-types'
-import { v4 as uuidv4 } from 'uuid'
 import { getPayloadHMR } from '@payloadcms/next/utilities'
 import configPromise from '@payload-config'
 

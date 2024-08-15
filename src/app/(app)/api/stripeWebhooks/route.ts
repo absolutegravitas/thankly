@@ -80,8 +80,7 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
     })
 
     await sendConfirmationEmail(order)
-
-    await processShipping(order)
+    // await processShipping(order)
 
     console.log(`Order ${order.id} processed successfully`)
   } catch (error) {
@@ -91,16 +90,19 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
 
 async function sendConfirmationEmail(order: Order) {
   try {
+    const recipientEmail = order.billing?.email || null
+    const recipientName = order.billing?.name || null
+    const toEmails: string[] = ['code@prasit.co', 'alexanderbowes@gmail.com']
+
+    if (recipientEmail) {
+      toEmails.unshift(recipientEmail)
+    }
+
     await resend.emails.send({
-      from: process.env.RESEND_DEFAULT_EMAIL || 'orders@thankly.co',
-      to: [
-        // order.billing?.email||null,
-        'code@prasit.co',
-        'orders@thankly.co',
-        'alexanderbowes@gmail.com',
-        'kathy@thankly.co',
-      ].filter(Boolean),
-      subject: `Order Confirmation #${order.orderNumber}`,
+      from: process.env.RESEND_DEFAULT_EMAIL || 'no-reply@thankly.co',
+      to: toEmails,
+      subject: `${recipientName ? recipientName + ', y' : 'Y'}our order is confirmed #${order.orderNumber}`,
+
       react: OrderConfirmationEmail(order),
     })
     console.log(`Confirmation email sent for order ${order.id}`)
@@ -108,6 +110,17 @@ async function sendConfirmationEmail(order: Order) {
     console.error('Error sending confirmation email:', error)
   }
 }
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 async function processShipping(order: Order) {
   for (const item of order.items || []) {
