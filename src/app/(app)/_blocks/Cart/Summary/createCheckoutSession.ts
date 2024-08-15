@@ -59,6 +59,9 @@ export async function createCheckoutSession(cart: Cart) {
       success_url: `${process.env.NEXT_PUBLIC_SERVER_URL}/shop/order?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.NEXT_PUBLIC_SERVER_URL}/shop/cart?id=${cart.cartNumber}`,
     }
+    //
+
+    // https://docs.stripe.com/api/checkout/sessions
 
     // Check for Stripe customer ID or use email for guest checkout
     //     client_reference_idnullable string
@@ -68,7 +71,7 @@ export async function createCheckoutSession(cart: Cart) {
     // customernullable stringExpandable
 
     // The ID of the customer for this Session. For Checkout Sessions in subscription mode or Checkout Sessions with customer_creation set as always in payment mode, Checkout will create a new customer object based on information provided during the payment flow unless an existing customer was provided when the Session was created.
-    // customer_emailnullable string
+    // customer_emailnullable string`
 
     // If provided, this value will be used when the Customer object is created. If not provided, customers will be asked to enter their email address. Use this parameter to prefill customer data if you already have an email on file. To access information about the customer once the payment flow is complete, use the customer attribute.
 

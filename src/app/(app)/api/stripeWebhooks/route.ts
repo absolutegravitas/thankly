@@ -92,7 +92,7 @@ async function sendConfirmationEmail(order: Order) {
   try {
     const recipientEmail = order.billing?.email || null
     const recipientName = order.billing?.name || null
-    const toEmails: string[] = ['orders@thankly.co']
+    const toEmails: string[] = ['code@prasit.co', 'alexanderbowes@gmail.com']
 
     if (recipientEmail) {
       toEmails.unshift(recipientEmail)
