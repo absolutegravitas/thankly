@@ -1,5 +1,5 @@
 import React from 'react'
-import { Order, Product } from '@/payload-types'
+import { Order, Product, Media } from '@/payload-types'
 import {
   Body,
   Button,
@@ -24,7 +24,18 @@ const formatDate = (dateString: string) => {
   return date.toLocaleDateString('en-AU', { day: '2-digit', month: '2-digit', year: '2-digit' })
 }
 
-export default function OrderConfirmationEmail({ order }: { order: Order }) {
+const getFirstProductImage = (product: Product): string | undefined => {
+  if (product.media && product.media.length > 0) {
+    const firstMedia = product.media[0]
+    if (typeof firstMedia === 'object' && 'mediaItem' in firstMedia) {
+      const mediaItem = firstMedia.mediaItem as Media
+      return mediaItem.url || undefined
+    }
+  }
+  return undefined
+}
+
+export default function OrderConfirmationEmail(order: Order) {
   return (
     <Html>
       <Head />
@@ -35,7 +46,7 @@ export default function OrderConfirmationEmail({ order }: { order: Order }) {
             <Row className="bg-green-700 p-4">
               <Column>
                 <Img
-                  src={`${baseUrl}/logo.png`}
+                  src={`${baseUrl}/images/fullLogo.png`}
                   width="100"
                   height="50"
                   alt="Thankly logo"
@@ -69,19 +80,27 @@ export default function OrderConfirmationEmail({ order }: { order: Order }) {
 
               {order.items && order.items.length > 0 && (
                 <table className="w-full mb-4">
-                  <thead>
-                    <tr>
-                      <th className="text-left text-gray-700">Item</th>
-                      <th className="text-right text-gray-700">Price</th>
-                    </tr>
-                  </thead>
                   <tbody>
-                    {order.items.map((item, index) => (
-                      <tr key={index}>
-                        <td className="text-gray-700">{(item.product as Product).title}</td>
-                        <td className="text-right text-gray-700">${item.price?.toFixed(2)}</td>
-                      </tr>
-                    ))}
+                    {order.items.map((item, index) => {
+                      const product = item.product as Product
+                      const imageUrl = getFirstProductImage(product)
+                      return (
+                        <tr key={index}>
+                          <td className="pr-4 pb-4" style={{ width: '80px' }}>
+                            {imageUrl && (
+                              <Img
+                                src={imageUrl}
+                                width="80"
+                                height="80"
+                                alt={product.title}
+                                className="rounded"
+                              />
+                            )}
+                          </td>
+                          <td className="text-gray-700">{product.title}</td>
+                        </tr>
+                      )
+                    })}
                   </tbody>
                 </table>
               )}
@@ -141,7 +160,7 @@ export default function OrderConfirmationEmail({ order }: { order: Order }) {
                 <Column className="text-center">
                   <Link href="https://www.instagram.com/thankly.co/">
                     <Img
-                      src={`${baseUrl}/instagram-icon.svg`}
+                      src={`${baseUrl}/icons/instagram.svg`}
                       width="32"
                       height="32"
                       alt="Instagram"
@@ -152,7 +171,7 @@ export default function OrderConfirmationEmail({ order }: { order: Order }) {
                 <Column className="text-center">
                   <Link href="https://www.facebook.com/thankly.co">
                     <Img
-                      src={`${baseUrl}/facebook-icon.svg`}
+                      src={`${baseUrl}/icons/facebook.svg`}
                       width="32"
                       height="32"
                       alt="Facebook"
@@ -163,7 +182,7 @@ export default function OrderConfirmationEmail({ order }: { order: Order }) {
                 <Column className="text-center">
                   <Link href="https://au.linkedin.com/company/thankly-personalisedgifts">
                     <Img
-                      src={`${baseUrl}/linkedin-icon.svg`}
+                      src={`${baseUrl}/icons/linkedin.svg`}
                       width="32"
                       height="32"
                       alt="LinkedIn"
@@ -175,11 +194,17 @@ export default function OrderConfirmationEmail({ order }: { order: Order }) {
             </Section>
 
             <Section className="px-8 py-6 bg-gray-100">
-              <Text className="text-center text-gray-600 text-xs">
-                © 2024 Thankly. All rights reserved.
-                <br />
-                [Footer placeholder for additional information]
-              </Text>
+              <div>
+                <div className="text-center">
+                  <span className="font-logo text-lg font-bold tracking-[-.055em] text-green-700">
+                    thankly{' '}
+                  </span>
+                  <span className="text-xs uppercase text-gray-600">
+                    {' | ABN 84 662 101 859 | '} &copy; {new Date().getFullYear()}{' '}
+                    {` All Rights Reserved`}
+                  </span>
+                </div>
+              </div>
             </Section>
           </Section>
         </Container>
