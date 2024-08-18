@@ -1,3 +1,4 @@
+'use server'
 // This file contains a function to generate a shipping label using the Sendle API
 // for a given order, item, and receiver details.
 
@@ -14,9 +15,6 @@ interface Product {
     units?: string
   }
 }
-
-// Use the 'use server' directive to mark this file as a server component
-;('use server')
 
 // Import the Order type from a separate file
 import { Order } from '@/payload-types'
