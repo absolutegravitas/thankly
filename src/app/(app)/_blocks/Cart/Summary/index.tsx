@@ -18,8 +18,20 @@ import { useRouter } from 'next/navigation'
 import { useCart } from '@app/_providers/Cart'
 import { LoaderCircleIcon } from 'lucide-react'
 import { cartPageText } from '@/utilities/referenceText'
-import { loadStripe } from '@stripe/stripe-js'
+import {
+  loadStripe,
+  StripeElementsOptions,
+  StripeExpressCheckoutElementConfirmEvent,
+} from '@stripe/stripe-js'
 import { createCheckoutSession } from './createCheckoutSession'
+import { createPaymentIntent } from './createPaymentIntent'
+import {
+  Elements,
+  PaymentElement,
+  useStripe,
+  useElements,
+  ExpressCheckoutElement,
+} from '@stripe/react-stripe-js'
 
 // Make sure to call loadStripe outside of a component's render to avoid
 // recreating the Stripe object on every render.
@@ -35,14 +47,61 @@ export const CartSummary: React.FC<{ cart: Cart }> = ({ cart }) => {
   const [isValid, setIsValid] = useState<boolean>(true)
   const [validationMessage, setValidationMessage] = useState<string>('')
   const [isPending, setIsPending] = useState(false)
+  const [clientSecret, setClientSecret] = useState<string | undefined>(undefined)
+  const [isLoading, setIsLoading] = useState(false)
+
+  const appearance = {
+    theme: 'flat' as const,
+    variables: {
+      colorPrimary: '#557755',
+      colorBackground: '#f9fafb',
+      colorText: '#111827',
+      colorDanger: '#dc2626',
+      fontFamily:
+        'ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
+      spacingUnit: '4px',
+      borderRadius: '0px',
+    },
+    rules: {
+      '.Input': {
+        border: 'none',
+        borderBottom: '1px solid #d1d5db',
+        boxShadow: 'none',
+        fontSize: '14px',
+        padding: '8px 4px',
+      },
+      '.Input:focus': {
+        border: 'none',
+        borderBottom: '2px solid #557755',
+        boxShadow: 'none',
+      },
+      '.Input::placeholder': {
+        color: '#9ca3af',
+      },
+      '.Label': {
+        fontSize: '14px',
+        fontWeight: '500',
+        color: '#111827',
+      },
+      '.Error': {
+        color: '#dc2626',
+        fontSize: '14px',
+      },
+    },
+  }
+
+  const options: StripeElementsOptions = {
+    clientSecret,
+    appearance,
+  }
 
   // Check if the cart is valid by calling the validateCart function from the useCart hook
   // This effect runs whenever the cart or validateCart function changes
   useEffect(() => {
-    const orderValidity = validateCart()
-    setIsValid(orderValidity)
+    const cartValidity = validateCart()
+    setIsValid(cartValidity)
     setValidationMessage(
-      orderValidity ? '' : 'Please complete all receiver details before proceeding to checkout.',
+      cartValidity ? '' : 'Please complete all receiver details before proceeding to checkout.',
     )
   }, [cart, validateCart])
 
@@ -63,8 +122,137 @@ export const CartSummary: React.FC<{ cart: Cart }> = ({ cart }) => {
     }
   }
 
+  // create payment intent if cart is valid
+  useEffect(() => {
+    if (isValid) {
+      const fetchClientSecret = async () => {
+        const { clientSecret } = await createPaymentIntent(cart.totals.total)
+        setClientSecret(clientSecret || undefined)
+      }
+      fetchClientSecret()
+    }
+  }, [isValid, cart.totals.total])
+
+  const StripeElementsForm = ({ clientSecret }: any) => {
+    const stripe = useStripe()
+    const elements = useElements()
+    const [processing, setProcessing] = useState(false)
+    const [error, setError] = useState<string | null>(null)
+    const [expressVisibility, setExpressVisibility] = useState<'hidden' | 'visible'>('hidden')
+    const [message, setMessage] = useState<string | null>(null)
+
+    const handleSubmit = async (event: any) => {
+      event.preventDefault()
+      if (!stripe || !elements || !isValid) return
+      setIsLoading(true)
+      setProcessing(true)
+
+      const { error: submitError } = await stripe.confirmPayment({
+        elements,
+        confirmParams: {
+          return_url: `${window.location.origin}/shop/order`,
+          // `${process.env.NEXT_PUBLIC_SERVER_URL}/shop/order?session_id={CHECKOUT_SESSION_ID}`
+        },
+      })
+
+      if (submitError) {
+        setError(submitError.message ?? 'An unknown error occurred')
+      } else {
+        setMessage('An unexpected error occurred.')
+      }
+      setIsLoading(false)
+      setProcessing(false)
+    }
+
+    const onExpressCheckoutConfirm = async (event: StripeExpressCheckoutElementConfirmEvent) => {
+      if (!stripe || !elements) return
+      const { error: submitError } = await elements.submit()
+      if (submitError) {
+        setMessage(submitError.message ?? 'An error occurred while submitting the form.')
+        return
+      }
+
+      const { error } = await stripe.confirmPayment({
+        elements,
+        confirmParams: {
+          return_url: `${window.location.origin}/confirmation`,
+        },
+      })
+
+      if (error) {
+        setMessage(error.message ?? 'An unexpected error occurred.')
+      }
+    }
+
+    useEffect(() => {
+      if (!stripe) return
+
+      if (!clientSecret) {
+        setMessage("Couldn't initialize payment. Please try again.")
+        return
+      }
+
+      stripe.retrievePaymentIntent(clientSecret).then(({ paymentIntent }) => {
+        switch (paymentIntent?.status) {
+          case 'succeeded':
+            setMessage('Payment succeeded!')
+            break
+          case 'processing':
+            setMessage('Your payment is processing.')
+            break
+          case 'requires_payment_method':
+            setMessage('Please provide a payment method.')
+            break
+          default:
+            setMessage('Something went wrong.')
+            break
+        }
+      })
+    }, [stripe, clientSecret])
+
+    const paymentElementOptions = {
+      layout: 'tabs' as const,
+    }
+
+    return (
+      <form id="payment-form" onSubmit={handleSubmit} className="flex flex-col">
+        <div
+          id="express-checkout-element"
+          style={{ visibility: expressVisibility, marginBottom: '20px', paddingBottom: '20px' }}
+        >
+          <ExpressCheckoutElement onConfirm={onExpressCheckoutConfirm} />
+          <div>{` or `}</div>
+        </div>
+
+        <PaymentElement id="payment-element" options={paymentElementOptions} />
+        <button
+          disabled={isLoading || !stripe || !elements || !isValid}
+          id="submit"
+          className={cn(
+            'w-full mt-6 py-3 cursor-pointer border border-transparent bg-green px-4 text-sm font-medium text-white shadow-sm hover:bg-black hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50',
+            buttonLook.base,
+            buttonLook.sizes.medium,
+            buttonLook.widths.full,
+            (!isValid || isLoading || !stripe || !elements) && 'opacity-50 cursor-not-allowed',
+          )}
+        >
+          <span id="button-text">
+            {isLoading ? <div className="spinner" id="spinner"></div> : 'Pay now'}
+          </span>
+          {processing ? 'Processing...' : 'Pay now'}
+        </button>
+        {error && <div>{error}</div>}
+        {/* {message && (
+          <div id="payment-message" classNam  e="mt-4 text-red-500">
+            {message}
+          </div>
+        )} */}
+      </form>
+    )
+  }
+
   return (
-    <div className="flex sm:flex-row flex-col">
+    <div className="flex #sm:flex-row flex-col">
       <div
         id="summary-heading"
         className="sticky top-4 scroll-py-28 scroll-mt-24 sm:basis-1/2 py-4 space-y-6 sm:space-y-8 pl-0 sm:px-8"
@@ -72,30 +260,36 @@ export const CartSummary: React.FC<{ cart: Cart }> = ({ cart }) => {
         <h2 className={cn(contentFormats.global, contentFormats.h3, 'mt-0 mb-6')}>Summary</h2>
 
         <div className="space-y-4">
-          <SummaryItem
+          {/* <SummaryItem
             label="Total (inc. taxes)"
             value={cart.totals.total + (cart.totals.discount || 0)}
             isBold
           />
           <SummaryItem label="Thanklys" value={cart.totals.cost} />
-          <SummaryItem label="+ Shipping" value={cart.totals.shipping || 0} />
+          <SummaryItem label="+ Shipping" value={cart.totals.shipping || 0} /> */}
 
           {(cart.totals.discount || 0) < 0 && (
-            <SummaryItem
-              label={
+            <div className="flex items-center justify-between">
+              <dt className={cn(contentFormats.global, contentFormats.text)}>
                 <span className="flex items-center">
                   <SmileIcon className="mr-2" />
                   {cartPageText.shippingFreeMessage}
                 </span>
-              }
-              value={cart.totals.discount || 0}
-            />
+              </dt>
+              <dd className={cn(contentFormats.global, contentFormats.text)}>
+                {(cart.totals.discount || 0).toLocaleString('en-AU', {
+                  style: 'currency',
+                  currency: 'AUD',
+                  minimumFractionDigits: 0,
+                  maximumFractionDigits: 2,
+                })}
+              </dd>
+            </div>
           )}
         </div>
 
         <div className="mt-6 space-y-4">
           {!isValid && <div className="text-red-500 text-sm">{validationMessage}</div>}
-
           <div
             className={cn(contentFormats.global, contentFormats.text, 'text-sm flex items-start')}
           >
@@ -139,7 +333,6 @@ export const CartSummary: React.FC<{ cart: Cart }> = ({ cart }) => {
             className={`${!isValid && 'disabled bg-gray-300'}`}
             pending={isPending}
           />
-
           <CMSLink
             data={{
               label: 'Continue Shopping',
@@ -158,35 +351,14 @@ export const CartSummary: React.FC<{ cart: Cart }> = ({ cart }) => {
               },
             }}
           />
+
+          {clientSecret && (
+            <Elements stripe={stripePromise} options={options}>
+              <StripeElementsForm clientSecret={clientSecret} />
+            </Elements>
+          )}
         </div>
       </div>
     </div>
   )
 }
-
-// The SummaryItem component is a React functional component that renders an individual summary item with a label and value.
-// Props:
-// - label: ReactNode (required) - The label for the summary item.
-// - value: number (required) - The value for the summary item.
-// - isBold?: boolean (optional) - Whether the label and value should be displayed in bold.
-interface SummaryItemProps {
-  label: React.ReactNode
-  value: number
-  isBold?: boolean
-}
-
-const SummaryItem: React.FC<SummaryItemProps> = ({ label, value, isBold }) => (
-  <div className="flex items-center justify-between">
-    <dt className={cn(contentFormats.global, contentFormats.text, isBold && 'font-semibold')}>
-      {label}
-    </dt>
-    <dd className={cn(contentFormats.global, contentFormats.text, isBold && 'font-semibold')}>
-      {value.toLocaleString('en-AU', {
-        style: 'currency',
-        currency: 'AUD',
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 2,
-      })}
-    </dd>
-  </div>
-)
