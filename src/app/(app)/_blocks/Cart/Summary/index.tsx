@@ -114,7 +114,7 @@ export const CartSummary: React.FC<{ cart: Cart }> = ({ cart }) => {
           </div>
           <CMSLink
             data={{
-              label: 'Proceed to Checkout',
+              label: 'Proceed to Stripe Checkout',
               type: 'custom',
               url: '#',
             }}

@@ -280,19 +280,19 @@ dialog {
   margin: 0 !important;
 }
 
-.payload__modal-item {
-  min-height: 100%;
-  background: transparent;
-}
+// .payload__modal-item {
+//   min-height: 100%;
+//   background: transparent;
+// }
 
-.payload__modal-container--enterDone {
-  overflow: auto;
-}
+// .payload__modal-container--enterDone {
+//   overflow: auto;
+// }
 
-.payload__modal-item--enter,
-.payload__modal-item--enterDone {
-  z-index: var(--z-modal);
-}
+// .payload__modal-item--enter,
+// .payload__modal-item--enterDone {
+//   z-index: var(--z-modal);
+// }
 
 ::selection {
   background: var(--color-warning-500);

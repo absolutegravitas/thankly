@@ -1,5 +1,11 @@
+// This file contains the logic for handling Stripe webhook events, specifically the "checkout.session.completed" event.
+// It is responsible for processing a completed order, updating the order status, sending confirmation emails,
+// generating shipping labels, and updating order tracking information.
+
 import { NextRequest, NextResponse } from 'next/server'
 import Stripe from 'stripe'
+
+// Import necessary utilities and types from various modules
 import { headers } from 'next/headers'
 import { getPayloadHMR } from '@payloadcms/next/utilities'
 import configPromise from '@payload-config'
@@ -8,21 +14,26 @@ import { sendConfirmationEmail } from './sendConfirmationEmail'
 import { genSendleLabel } from './genSendleLabel'
 import { updateOrderTracking } from './updateOrderTracking'
 
+// Initialize Stripe with the secret key and API version
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: '2024-06-20',
 })
 
+// Retrieve the Stripe webhook secret from the environment variable
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!
 
+// Handle POST requests (Stripe webhook events)
 export async function POST(req: NextRequest) {
   const body = await req.text()
   const signature = headers().get('stripe-signature')
 
+  // Validate the Stripe webhook secret
   if (!webhookSecret) {
     console.error('Missing STRIPE_WEBHOOK_SECRET')
     return NextResponse.json({ error: 'Webhook secret is not configured' }, { status: 500 })
   }
 
+  // Validate the Stripe signature
   if (!signature) {
     console.error('Missing Stripe signature')
     return NextResponse.json({ error: 'No Stripe signature found' }, { status: 400 })
@@ -31,6 +42,7 @@ export async function POST(req: NextRequest) {
   let event: Stripe.Event
 
   try {
+    // Construct the Stripe event object from the request body and signature
     event = stripe.webhooks.constructEvent(body, signature, webhookSecret)
   } catch (err: any) {
     console.error(`⚠️  Webhook signature verification failed.`, err.message)
@@ -38,6 +50,7 @@ export async function POST(req: NextRequest) {
   }
 
   try {
+    // Handle the "checkout.session.completed" event type
     if (event.type === 'checkout.session.completed') {
       const session = event.data.object as Stripe.Checkout.Session
       await handleCheckoutSessionCompleted(session)
@@ -52,12 +65,14 @@ export async function POST(req: NextRequest) {
   }
 }
 
+// Handle a completed Stripe checkout session
 async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) {
   console.log('Checkout session was completed!')
   const config = await configPromise
   let payload: any = await getPayloadHMR({ config })
 
   try {
+    // Find the order associated with the Stripe checkout session
     const { docs: orders } = await payload.find({
       collection: 'orders',
       where: { stripeId: { equals: session.id } },
@@ -71,6 +86,7 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
 
     const order = orders[0] as Order
 
+    // Update the order status to "processing"
     await payload.update({
       collection: 'orders',
       id: order.id,
@@ -79,7 +95,10 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
       },
     })
 
+    // Send confirmation email for the order
     await sendConfirmationEmail(order)
+
+    // Process shipping for each item and receiver in the order
     for (const item of order.items || []) {
       for (const receiver of item.receivers || []) {
         try {
@@ -101,3 +120,22 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
     console.error('Error handling completed checkout session:', error)
   }
 }
+
+// Performance considerations:
+// - This file handles webhook events from Stripe, so performance is critical for timely processing of orders.
+// - The `handleCheckoutSessionCompleted` function may be resource-intensive, especially for large orders with many items and receivers.
+// - Potential bottlenecks include database operations, generating shipping labels, and sending confirmation emails.
+// - Horizontal scaling or background task processing (e.g., queues) may be necessary for high load scenarios.
+
+// Accessibility (a11y) considerations:
+// - No specific accessibility features are implemented in this file, as it focuses on server-side order processing.
+
+// State management:
+// - No explicit state management is required in this file, as it handles individual requests.
+
+// Side effects:
+// - The `handleCheckoutSessionCompleted` function has side effects, including updating the order status, sending emails, and generating shipping labels.
+
+// Future compatibility:
+// - The Stripe API version is hardcoded, but it should be updated when new versions are released.
+// - The code may need to be adapted if the Stripe webhook event structure or payload changes in the future.
