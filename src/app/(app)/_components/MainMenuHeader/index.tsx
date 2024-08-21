@@ -12,7 +12,7 @@ import { Button } from '@app/_components/ui/button'
 export const MainMenuHeader: React.FC<any> = ({ menu }: any) => {
   return (
     <header className="flex h-16 w-full items-center justify-between bg-background px-4 md:px-6">
-      <Link href="#" className="text-2xl font-bold font-['leaguespartan']" prefetch={false}>
+      <Link href="/" className="text-2xl font-bold font-['leaguespartan']" prefetch={false}>
         thankly
       </Link>
       <div className="flex items-center gap-6">
