@@ -29,8 +29,8 @@ const ProductPersonaliser = () => {
               className="min-h-[145px]"
             />
           </div>
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
+          <div className="grid gap-4 sm:flex sm:items-center sm:justify-between">
+            <div className="grid gap-2 sm:flex sm:items-center sm:gap-2">
               <Label htmlFor="writing-style">Writing Style</Label>
               <Select id="writing-style" defaultValue="regular">
                 <SelectTrigger className="w-52">
@@ -42,11 +42,11 @@ const ProductPersonaliser = () => {
                 </SelectContent>
               </Select>
             </div>
-            <div className="flex gap-2">
-              <Button variant="primary" className="rounded-full">
+            <div className="grid grid-cols-2 gap-2 sm:flex">
+              <Button variant="primary" className="rounded-full sm:w-auto">
                 Ship another
               </Button>
-              <Button variant="outline" className="rounded-full">
+              <Button variant="outline" className="rounded-full sm:w-auto">
                 Remove
               </Button>
             </div>

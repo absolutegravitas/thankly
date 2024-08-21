@@ -164,10 +164,9 @@ export default function AddressPicker(): JSX.Element {
 
   return (
     <div className="w-full max-w-md">
-      {/* <div className="mb-4"> */}
-      <div className="grid gap-2 sm:max-w-md">
+      <div className="grid gap-2 ">
         <label htmlFor="delivery-address" className="font-semibold text-sm dark:text-slate-400">
-          Delivery Address
+          To
         </label>
         <div className="relative">
           <DropdownMenu>
