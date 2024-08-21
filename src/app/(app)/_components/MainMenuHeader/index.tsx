@@ -24,6 +24,7 @@ export const MainMenuHeader: React.FC<any> = ({ menu }: any) => {
           {(menu?.tabs || []).map((tab: any, tabIndex: any) => {
             return (
               <Link
+                key={tabIndex}
                 href={tab.link.url}
                 className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
                 prefetch={false}
@@ -69,6 +70,7 @@ export const MainMenuHeader: React.FC<any> = ({ menu }: any) => {
                 {(menu?.tabs || []).map((tab: any, tabIndex: any) => {
                   return (
                     <Link
+                      key={tabIndex}
                       href={tab.link.url}
                       className="flex w-full items-center py-2 text-lg font-semibold"
                       prefetch={false}
