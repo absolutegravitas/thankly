@@ -24,7 +24,7 @@ export type AddressWithoutName = Omit<Address, 'firstName' | 'lastName'>
 export const AddressText = (address: AddressWithoutName | null): string | undefined => {
   if (address === null) return undefined
   //else
-  const addresslines = address.address2 ? `${address.address1} $(address.address2)` : address.address1
+  const addresslines = address.address2 ? `${address.address1} ${address.address2}` : address.address1
   return `${addresslines}, ${address.city} ${address.state} ${address.postcode}`
 }
 

@@ -31,7 +31,7 @@ import { debounce, fromPairs } from 'lodash'
 import { addressAutocomplete } from '../Cart/Receivers/addressAutocomplete'
 import { randomBytes } from 'crypto'
 import { useCart } from '../../_providers/Cart'
-import { useForm } from 'react-hook-form'
+import { useForm, Controller } from 'react-hook-form'
 import { Address, AddressWithoutName, AddressText } from '@app/_providers/Cart/address'
 
 function generateUniqueId(): string {
@@ -48,11 +48,7 @@ export default function AddressPicker(): JSX.Element {
 
   const [addressInputValue, setAddressInputValue] = useState<string>('')
 
-  const [newAddressFirstName, setNewAddressFirstName] = useState<string>('')
-  const [newAddressLastName, setNewAddressLastName] = useState<string>('')
-  const [newAddress, setNewAddress] = useState<AddressWithoutName | null>(null)
-
-  const { register, handleSubmit, setValue, getValues } = useForm<Address>()
+  const { register, handleSubmit, setValue, control } = useForm<Address>()
 
   const handleSuggestedAddressSelection = (suggestion: any) => {
     console.log('DEBUG: handleSuggestedAddressSelection input', suggestion)
@@ -65,7 +61,7 @@ export default function AddressPicker(): JSX.Element {
       state: suggestion.stateCode,
       postcode: suggestion.postalCode,
     }
-    setNewAddress(address)
+
     setAddressInputValue(suggestion.formattedAddress)
 
     setValue('id', generateUniqueId())
@@ -95,7 +91,7 @@ export default function AddressPicker(): JSX.Element {
       const suggestions = await addressAutocomplete(value)
       setAddressSuggestions(suggestions)
       setShowAddressSearchMenu(true)
-    }, 300),
+    }, 150),
     [],
   )
 
@@ -149,7 +145,7 @@ export default function AddressPicker(): JSX.Element {
     setShowAddressForm(false)
     setShowAddressSearchMenu(false)
     setAddressSuggestions([])
-    setNewAddress(null)
+    clearNewAddress()
   }
 
   const handleSaveNewAddress = (newAddress: Address): void => {
@@ -166,10 +162,7 @@ export default function AddressPicker(): JSX.Element {
     setValue('city', '')
     setValue('state', '')
     setValue('postcode', '')
-
-    //clear newaddress state
-    setNewAddress(null)
-
+    //clear address input value
     setAddressInputValue('')
   }
 
@@ -191,10 +184,7 @@ export default function AddressPicker(): JSX.Element {
                     <p className="font-medium">
                       {selectedAddress.firstName} {selectedAddress.lastName}
                     </p>
-                    <p className="text-gray-500 text-sm">
-                      {selectedAddress.address1}, {selectedAddress.city}, {selectedAddress.state}{' '}
-                      {selectedAddress.postcode}
-                    </p>
+                    <p className="text-gray-500 text-sm">{AddressText(selectedAddress)}</p>
                   </div>
                 ) : (
                   <span className="text-gray-400">Select a delivery address</span>
@@ -213,9 +203,7 @@ export default function AddressPicker(): JSX.Element {
                     <p className="font-medium">
                       {address.firstName} {address.lastName}
                     </p>
-                    <p className="text-gray-500 text-sm">
-                      {address.address1}, {address.city}, {address.state} {address.postcode}
-                    </p>
+                    <p className="text-gray-500 text-sm">{AddressText(address)}</p>
                   </div>
                 </DropdownMenuItem>
               ))}
@@ -239,7 +227,13 @@ export default function AddressPicker(): JSX.Element {
                 Please fill in the details for your new delivery address.
               </DialogDescription>
             </DialogHeader>
-            <form onSubmit={handleSubmit((data) => console.log(data))}>
+            <form
+              onSubmit={handleSubmit((address) => {
+                addAddress(address)
+                setSelectedAddress(address)
+                handleCloseAddressModal()
+              })}
+            >
               <div className="space-y-4 py-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
@@ -248,7 +242,6 @@ export default function AddressPicker(): JSX.Element {
                       id="firstName"
                       placeholder="Enter recipient's first name"
                       {...register('firstName')}
-                      onChange={(e) => setNewAddressFirstName(e.target.value)}
                     />
                   </div>
                   <div>
@@ -257,7 +250,6 @@ export default function AddressPicker(): JSX.Element {
                       id="lastName"
                       placeholder="Enter recipient's last name"
                       {...register('lastName')}
-                      onChange={(e) => setNewAddressLastName(e.target.value)}
                     />
                   </div>
                 </div>
@@ -313,8 +305,12 @@ export default function AddressPicker(): JSX.Element {
                 {showAddressForm && (
                   <div>
                     <div>
-                      <Label htmlFor="address">Address</Label>
+                      <Label htmlFor="address">Address Line 1</Label>
                       <Input id="address" placeholder="Enter address" {...register('address1')} />
+                    </div>
+                    <div>
+                      <Label htmlFor="address">Address Line 2</Label>
+                      <Input id="address" placeholder="Enter address" {...register('address2')} />
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
@@ -323,20 +319,26 @@ export default function AddressPicker(): JSX.Element {
                       </div>
                       <div>
                         <Label htmlFor="state">State</Label>
-                        <Select>
-                          <SelectTrigger id="state">
-                            <SelectValue placeholder="Select state" {...register('state')} />
-                          </SelectTrigger>
-                          <SelectContent>
-                            <SelectItem value="NSW">New South Wales</SelectItem>
-                            <SelectItem value="VIC">Victoria</SelectItem>
-                            <SelectItem value="QLD">Queensland</SelectItem>
-                            <SelectItem value="SA">South Australia</SelectItem>
-                            <SelectItem value="WA">Western Australia</SelectItem>
-                            <SelectItem value="TAS">Tasmania</SelectItem>
-                            <SelectItem value="NT">Northern Territory</SelectItem>
-                          </SelectContent>
-                        </Select>
+                        <Controller
+                          name="state"
+                          control={control}
+                          render={({ field }) => (
+                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                              <SelectTrigger id="state">
+                                <SelectValue placeholder="Select state" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                <SelectItem value="NSW">New South Wales</SelectItem>
+                                <SelectItem value="VIC">Victoria</SelectItem>
+                                <SelectItem value="QLD">Queensland</SelectItem>
+                                <SelectItem value="SA">South Australia</SelectItem>
+                                <SelectItem value="WA">Western Australia</SelectItem>
+                                <SelectItem value="TAS">Tasmania</SelectItem>
+                                <SelectItem value="NT">Northern Territory</SelectItem>
+                              </SelectContent>
+                            </Select>
+                          )}
+                        />
                       </div>
                     </div>
                     <div>
