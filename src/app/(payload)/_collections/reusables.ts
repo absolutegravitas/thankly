@@ -18,7 +18,7 @@ export const Reusable: CollectionConfig = {
   admin: { useAsTitle: 'title', group: '1. Website' },
   access: {
     create: adminsOnly, // @payloadHook Access control hook for create operation
-    read: adminsOnly, // Allow read access for everyone
+    read: () => true, // Allow read access for everyone
     update: adminsOnly, // @payloadHook Access control hook for update operation
     delete: adminsOnly, // @payloadHook Access control hook for delete operation
   },

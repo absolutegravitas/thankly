@@ -13,8 +13,8 @@ export const Carts: CollectionConfig = {
 
   access: {
     create: adminsOnly,
-    read: adminsOnly,
-    update: adminsOnly,
+    read: adminsAndUserOnly,
+    update: adminsAndUserOnly,
     delete: adminsOnly,
   },
 

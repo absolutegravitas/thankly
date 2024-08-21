@@ -38,7 +38,7 @@ export const Products: CollectionConfig = {
   versions: { drafts: true },
   access: {
     create: adminsOnly,
-    read: adminsOnly,
+    read: publishedOnly,
     update: adminsOnly,
     delete: adminsOnly,
   },

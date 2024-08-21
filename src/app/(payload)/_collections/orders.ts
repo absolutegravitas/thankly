@@ -19,8 +19,8 @@ export const Orders: CollectionConfig = {
   access: {
     // create: () => true,
     create: adminsOnly,
-    read: adminsOnly,
-    update: adminsOnly,
+    read: adminsAndUserOnly,
+    update: adminsAndUserOnly,
     delete: adminsOnly,
   },
 
