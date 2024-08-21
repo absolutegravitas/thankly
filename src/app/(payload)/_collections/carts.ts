@@ -13,8 +13,8 @@ export const Carts: CollectionConfig = {
 
   access: {
     create: adminsOnly,
-    read: adminsAndUserOnly,
-    update: adminsAndUserOnly,
+    read: adminsOnly,
+    update: adminsOnly,
     delete: adminsOnly,
   },
 
@@ -36,7 +36,7 @@ export const Carts: CollectionConfig = {
           hasMany: false,
           required: true,
           options: [
-            { label: 'Draft', value: 'pending' }, // draft, created upon checkout
+            { label: 'Pending', value: 'pending' }, // draft, created upon checkout
             { label: 'Completed', value: 'completed' }, // converted to order
             { label: 'Cancelled', value: 'cancelled' }, // not ordered, deleted by user, expired
           ],
@@ -66,7 +66,7 @@ export const Carts: CollectionConfig = {
       tabs: [
         {
           name: 'billing',
-          label: 'Billing',
+          label: 'Billing Details',
           fields: [
             {
               type: 'row',
@@ -98,6 +98,7 @@ export const Carts: CollectionConfig = {
             },
             {
               name: 'address',
+              label: 'Billing Address',
               type: 'group',
               fields: [
                 { name: 'formattedAddress', type: 'text', admin: { width: '100%' } },

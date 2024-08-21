@@ -15,7 +15,7 @@ export const Media: CollectionConfig = {
 
   access: {
     create: adminsOnly,
-    read: () => true,
+    read: adminsOnly,
     update: adminsOnly,
     delete: adminsOnly,
   },

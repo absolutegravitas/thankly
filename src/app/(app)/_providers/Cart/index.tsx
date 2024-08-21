@@ -13,6 +13,7 @@ import { CartItem, cartReducer, CartAction } from './reducer'
 import { debounce } from 'lodash'
 // import { auth } from '@/utilities/auth'
 import { v4 as uuidv4 } from 'uuid'
+import { Address, AddressAction, addressReducer } from './address'
 
 // Type aliases for common types used throughout the file
 type Receiver = NonNullable<CartItem['receivers']>[number]
@@ -23,7 +24,10 @@ type UpdateReceiverFields = Partial<Omit<Receiver, 'id' | 'totals' | 'delivery'>
 // Interface defining the CartContext shape
 // exposes objects and methods for use on the client
 export type CartContext = {
+  //objects
   cart: Cart
+  addresses: Address[]
+  multipleAddresses: boolean
 
   // checking methods
   hasInitializedCart: boolean
@@ -47,8 +51,13 @@ export type CartContext = {
   copyReceiver: (productId: number | string, receiverId: string) => void
   setCart: (newCart: Cart) => void
   clearCart: () => void
+
+  // address array actions
+  addAddress: (newAddress: Address) => void
+  setMultipleAddresses: (multipleAddresses: boolean) => void
 }
 
+//initialising cart context locally (which starts off as undefined)
 const Context = createContext<CartContext | undefined>(undefined)
 
 const debouncedUpdateLocalStorage = debounce((cart) => {
@@ -87,6 +96,8 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   // Memoized value for checking if the cart is empty
   const cartIsEmpty = useMemo(() => cart.items?.length === 0, [cart.items])
+
+  // state for managing
 
   // Checks if a product is in the cart
   const isProductInCart = useCallback(
@@ -167,25 +178,47 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     dispatchCart({ type: 'CLEAR_CART' })
   }, [])
 
+  // addresses state and context (initially empty string)
+  const [addresses, dispatchAddresses] = useReducer<React.Reducer<Address[], AddressAction>>(
+    addressReducer,
+    [],
+  )
+
+  //
+  //
+  //
+  // address actions
+  const addAddress = useCallback((address: Address) => {
+    dispatchAddresses({ type: 'ADD_ADDRESS', payload: { address } })
+  }, [])
+  //multiple addresses state
+  const [multipleAddresses, setMultipleAddresses] = useState(false) //initial value is false
+
   // Memoized value for the CartContext
   const contextValue = useMemo(
     () => ({
+      addresses,
+      addAddress,
       addProduct,
       addReceiver,
       cart,
       cartIsEmpty,
       clearCart,
       copyReceiver,
-
       hasInitializedCart,
       isProductInCart,
+      multipleAddresses,
       removeProduct,
       removeReceiver,
+      setMultipleAddresses,
       updateReceiver,
       validateCart,
       setCart,
     }),
     [
+      addresses,
+      addAddress,
+      multipleAddresses,
       addProduct,
       addReceiver,
       cart,

@@ -9,7 +9,7 @@ export const Settings: GlobalConfig = {
   slug: 'settings',
   admin: { group: '9. Common' },
   access: {
-    read: () => true,
+    read: adminsOnly,
     update: adminsOnly,
   },
   hooks: {
