@@ -85,7 +85,7 @@ const Blocks = ({ blocks, locale }: any) => {
               <RichText key={ix} content={{ root: { ...block } }} />
             )
           case 'block':
-            console.log('block -- ', JSON.stringify(block))
+            // console.log('block -- ', JSON.stringify(block))
             if (block.fields && block.fields.blockType) {
               // Handle 'block' type blocks by dynamically selecting and rendering the appropriate component
               // @ts-ignore

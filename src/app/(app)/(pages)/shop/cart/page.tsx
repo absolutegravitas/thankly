@@ -59,13 +59,13 @@ export default function CartPage() {
             {`Your Cart`}
           </h1>
 
-          <div className="flex flex-col #gap-8">
-            <div className="">
+          <div className="flex flex-col min-[1024px]:flex-row">
+            <div className="min-[1024px]:basis-2/3">
               <Suspense fallback={<CartItemsSkeleton />}>
                 <CartItems />
               </Suspense>
             </div>
-            <div className="">
+            <div className="min-[1024px]:basis-1/3">
               <Suspense fallback={<CartSummarySkeleton />}>
                 <CartSummary cart={cart} />
               </Suspense>

@@ -6,7 +6,6 @@ import { Gutter } from '@app/_components/Gutter'
 import { RichText } from '@app/_blocks/RichText'
 import { ArrowIcon } from '@app/_icons/ArrowIcon'
 import { Menu } from '@payload-types'
-// import { useAuth } from '@app/_providers/Auth'
 import { useHeaderObserver } from '@app/_providers/HeaderIntersectionObserver'
 import { FullLogo } from '@/app/(app)/_icons/FullLogo'
 import { CMSLink } from '../../CMSLink'
@@ -16,8 +15,9 @@ import { CartNotification } from '@app/_components/CartNotification'
 import UserButton from '../../Auth/user-button'
 
 type DesktopNavType = Pick<Menu, 'tabs'> & { hideBackground?: boolean }
+
 export const DesktopNav: React.FC<DesktopNavType> = ({ tabs, hideBackground }) => {
-  // const { user } = useAuth()
+  console.log('tabs --', tabs)
   const [activeTab, setActiveTab] = React.useState<number | undefined>()
   const [activeDropdown, setActiveDropdown] = React.useState<boolean | undefined>(false)
   const [backgroundStyles, setBackgroundStyles] = React.useState<any>({
@@ -30,8 +30,6 @@ export const DesktopNav: React.FC<DesktopNavType> = ({ tabs, hideBackground }) =
 
   const menuItemRefs = [] as (HTMLButtonElement | null)[]
   const dropdownMenuRefs = [] as (HTMLDivElement | null)[]
-
-  // const starCount = useStarCount()
 
   React.useEffect(() => {
     if (activeTab !== undefined) {
@@ -84,7 +82,11 @@ export const DesktopNav: React.FC<DesktopNavType> = ({ tabs, hideBackground }) =
 
   return (
     <div
-      className={[classes.desktopNav, headerTheme && classes[headerTheme]]
+      className={[
+        'fixed top-0 flex items-center w-full z-40 transition-colors duration-300 max-w-full',
+        'before:content-[""] before:absolute before:top-0 before:left-0 before:w-full before:h-full #before:bg-white before:backdrop-blur-md before:opacity-100 before:z-[-1] before:transition-opacity before:duration-500 before:ease-out',
+        'after:content-[""] after:block after:absolute after:top-0 after:left-0 after:w-full after:h-full after:z-[-1] after:opacity-100 after:transition-opacity after:duration-500 after:ease-out',
+      ]
         .filter(Boolean)
         .join(' ')}
       style={{ width: '100%' }}
@@ -102,6 +104,7 @@ export const DesktopNav: React.FC<DesktopNavType> = ({ tabs, hideBackground }) =
             <div className={classes.tabs} onMouseLeave={resetHoverStyles}>
               {(tabs || []).map((tab: any, tabIndex: any) => {
                 const { enableDirectLink = false, enableDropdown = false } = tab
+                console.log(tab.label, tab.enableDirectLink, tab.enableDropdown)
                 return (
                   <div key={tabIndex} onMouseEnter={() => handleHoverEnter(tabIndex)}>
                     <button
@@ -111,13 +114,21 @@ export const DesktopNav: React.FC<DesktopNavType> = ({ tabs, hideBackground }) =
                       }}
                     >
                       {enableDirectLink ? (
-                        <CMSLink className={classes.directLink} {...tab.link} label={tab.label}>
+                        <CMSLink
+                          className={`${classes.directLink} `}
+                          data={{
+                            label: tab.label,
+                            ...tab.link,
+                          }}
+                          look={{ variant: 'links' }}
+                        >
+                          {tab.label}
                           {tab.link?.newTab && tab.link.type === 'custom' && (
                             <ArrowIcon className={classes.tabArrow} />
                           )}
                         </CMSLink>
                       ) : (
-                        <React.Fragment>{tab.label}</React.Fragment>
+                        <span>{tab.label}</span>
                       )}
                     </button>
 
@@ -143,7 +154,8 @@ export const DesktopNav: React.FC<DesktopNavType> = ({ tabs, hideBackground }) =
                                 <CMSLink
                                   className={classes.descriptionLink}
                                   key={linkIndex}
-                                  {...link.link}
+                                  data={link.link}
+                                  look={{ variant: 'links' }}
                                 >
                                   <ArrowIcon className={classes.linkArrow} />
                                 </CMSLink>
@@ -164,7 +176,6 @@ export const DesktopNav: React.FC<DesktopNavType> = ({ tabs, hideBackground }) =
                               columnSpan = item.style === 'featured' ? 6 : 3
                             }
 
-                            // console.log('item //', JSON.stringify(item))
                             return (
                               <div
                                 className={[
@@ -178,8 +189,11 @@ export const DesktopNav: React.FC<DesktopNavType> = ({ tabs, hideBackground }) =
                                 {item.style === 'default' && item.defaultLink && (
                                   <CMSLink
                                     className={classes.defaultLink}
-                                    {...item.defaultLink.link}
-                                    label=""
+                                    data={{
+                                      label: item.defaultLink.link.label,
+                                      ...item.defaultLink.link,
+                                    }}
+                                    look={{ variant: 'links' }}
                                   >
                                     <div className={classes.defaultLinkLabel}>
                                       {item.defaultLink.link.label}
@@ -198,7 +212,8 @@ export const DesktopNav: React.FC<DesktopNavType> = ({ tabs, hideBackground }) =
                                         <CMSLink
                                           className={classes.link}
                                           key={linkIndex}
-                                          {...link.link}
+                                          data={link.link}
+                                          look={{ variant: 'links' }}
                                         >
                                           {link.link?.newTab && link.link?.type === 'custom' && (
                                             <ArrowIcon className={classes.linkArrow} />
@@ -222,7 +237,8 @@ export const DesktopNav: React.FC<DesktopNavType> = ({ tabs, hideBackground }) =
                                           <CMSLink
                                             className={classes.featuredLinks}
                                             key={linkIndex}
-                                            {...link.link}
+                                            data={link.link}
+                                            look={{ variant: 'links' }}
                                           >
                                             <ArrowIcon className={classes.linkArrow} />
                                           </CMSLink>
@@ -250,26 +266,9 @@ export const DesktopNav: React.FC<DesktopNavType> = ({ tabs, hideBackground }) =
           <div className={'cols-4'}>
             <div className={[classes.secondaryNavItems, classes.show].join(' ')}>
               <CartNotification />
+              <UserButton />
             </div>
           </div>
-
-          {/* <div className={'cols-4'}>
-            <div
-              className={[classes.secondaryNavItems, user !== undefined && classes.show].join(' ')}
-            >
-              <Link href="/account" prefetch={false}>
-                Account
-              </Link>
-              {user ? (
-                <Avatar className={classes.avatar} />
-              ) : (
-                <Link prefetch={false} href="/login">
-                  Login
-                </Link>
-              )}
-              
-            </div>
-          </div> */}
         </div>
         <div className={classes.background} style={{ ...backgroundStyles, ...bgHeight }} />
       </Gutter>

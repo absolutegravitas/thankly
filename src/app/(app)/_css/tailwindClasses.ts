@@ -65,7 +65,7 @@ export const buttonLook = {
   variants: {
     base: `no-underline hover:no-underline border border-solid border-neutral-500 rounded-sm transition hover:border-green hover:shadow-md duration-150 shadow-sm dark:hover:border-green dark:text-dark-text`,
 
-    links: `underline underline-offset-2 decoration-neutral-800 text-neutral-800 dark:text-dark-text hover:font-medium`,
+    links: `underline underline-offset-2 decoration-neutral-800 text-neutral-800 dark:text-dark-text hover:font-medium border-0 border-none shadow-none hover:shadow-none`,
 
     default: ``, // default look button
 

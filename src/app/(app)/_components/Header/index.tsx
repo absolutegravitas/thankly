@@ -1,24 +1,14 @@
 'use client'
 import * as React from 'react'
-import { useModal } from '@faceless-ui/modal'
 import { useScrollInfo } from '@faceless-ui/scroll-info'
-import { useSearchParams } from 'next/navigation'
 import { TopBar } from '@app/_components/TopBar'
-import { UniversalTruth } from '@app/_components/UniversalTruth'
-import { Menu } from '@payload-types'
 import { useHeaderObserver } from '@app/_providers/HeaderIntersectionObserver'
 import { DesktopNav } from './DesktopNav'
-import { MobileNav, modalSlug as mobileNavModalSlug } from './MobileNav'
+import { MobileNav } from './MobileNav'
 
-import classes from './index.module.scss'
-import Link from 'next/link'
-import { useSession } from 'next-auth/react'
-import UserButton from '../Auth/user-button'
+import cn from '@/utilities/cn'
 
 export const Header: React.FC<any> = ({ menu, topBar }: any) => {
-  // const { status, data: session } = useSession()
-  const { isModalOpen } = useModal()
-  const isMobileNavOpen = isModalOpen(mobileNavModalSlug)
   const { headerTheme } = useHeaderObserver()
   const { y } = useScrollInfo()
   const [hideBackground, setHideBackground] = React.useState(true)
@@ -28,49 +18,33 @@ export const Header: React.FC<any> = ({ menu, topBar }: any) => {
     setIsHydrated(true)
   }, [])
 
-  React.useEffect(() => {
-    if (isHydrated) {
-      if (isMobileNavOpen) {
-        setHideBackground(false)
-      } else {
-        setHideBackground(y < 30)
-      }
-    }
-  }, [y, isMobileNavOpen, isHydrated])
-
-  if (!isHydrated) {
-    return null
-  }
+  if (!isHydrated) return null
 
   return (
-    <div data-theme={headerTheme}>
-      <header
-        className={[
-          classes.header,
-          classes.headerSpacing,
-          hideBackground && classes.hideBackground,
-          isMobileNavOpen && classes.mobileNavOpen,
-          headerTheme && classes.themeIsSet,
-        ]
-          .filter(Boolean)
-          .join(' ')}
-      >
-        {topBar && <TopBar {...topBar} />}
-        <DesktopNav tabs={menu?.tabs} hideBackground={hideBackground} />
-        <MobileNav tabs={menu?.tabs} />
-        <UserButton />
-
-        {/* {status === 'authenticated' && (
-          <div>
-            {session.user!.name}
-            <Link href="/api/auth/signout">Logout</Link>
-          </div>
-        )}
-        {status === 'unauthenticated' && <Link href="/api/auth/signin">Login</Link>} */}
-        <React.Suspense>
-          <UniversalTruth />
-        </React.Suspense>
-      </header>
-    </div>
+    // <div data-theme={headerTheme}>
+    <header
+      className={cn()
+      // 'fixed top-0 flex items-center w-full z-40 transition-colors duration-300 max-w-full',
+      // 'before:content-[""] before:absolute before:top-0 before:left-0 before:w-full before:h-full #before:bg-white before:backdrop-blur-md before:opacity-100 before:z-[-1] before:transition-opacity before:duration-500 before:ease-out',
+      // 'after:content-[""] after:block after:absolute after:top-0 after:left-0 after:w-full after:h-full after:z-[-1] after:opacity-100 after:transition-opacity after:duration-500 after:ease-out',
+      // headerTheme && 'themeIsSet',
+      // hideBackground && 'hideBackground',
+      // isMobileNavOpen && 'mobileNavOpen border-b border-neutral-300',
+      // [
+      //   headerTheme && [
+      //     'before:content-[""] before:absolute before:top-0 before:left-0 before:w-full before:h-full #before:bg-white before:backdrop-blur-md before:opacity-100 before:z-[-1] before:transition-opacity before:duration-500 before:ease-out',
+      //     'after:content-[""] after:block after:absolute after:top-0 after:left-0 after:w-full after:h-full after:z-[-1] after:opacity-100 after:transition-opacity after:duration-500 after:ease-out',
+      //   ],
+      // ],
+      // 'sm:[&>*:before,&>*:after]:transition-opacity sm:[&>*:before,&>*:after]:duration-200 sm:[&>*:before,&>*:after]:ease-in-out',
+      // [hideBackground && ['before:opacity-0', 'after:opacity-0']],
+      // [isMobileNavOpen && ['before:opacity-100', 'after:opacity-100']],
+      }
+    >
+      {/* {topBar && <TopBar {...topBar} />} */}
+      <DesktopNav tabs={menu?.tabs} hideBackground={hideBackground} />
+      <MobileNav tabs={menu?.tabs} />
+    </header>
+    // </div>
   )
 }
