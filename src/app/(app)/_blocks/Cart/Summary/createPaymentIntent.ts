@@ -28,9 +28,9 @@ export async function createPaymentIntent(
       // Convert the amount to the smallest currency unit
       amount: Math.round(amount * 100),
       currency: 'aud', // Set the currency to Australian Dollars
-      automatic_payment_methods: {
-        enabled: true, // Enable automatic payment methods (e.g., cards, wallets)
-      },
+      // automatic_payment_methods: {
+      //   enabled: true, // Enable automatic payment methods (e.g., cards, wallets)
+      // },
       ...(email && { receipt_email: email }), // Include the email for receipt if provided
       ...(metadata && { metadata }), // Include metadata if provided
     })

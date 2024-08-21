@@ -128,14 +128,7 @@ export const DesktopNav: React.FC<DesktopNavType> = ({ tabs, hideBackground }) =
                           )}
                         </CMSLink>
                       ) : (
-                        <button
-                          className={classes.tab}
-                          ref={(ref: HTMLButtonElement | null) => {
-                            if (ref) menuItemRefs[tabIndex] = ref
-                          }}
-                        >
-                          {tab.label}
-                        </button>
+                        <span>{tab.label}</span>
                       )}
                     </button>
 
