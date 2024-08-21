@@ -38,7 +38,11 @@ import {
   AddressText,
   NullableAddress,
   generateAddressId,
+  AddressSchema,
+  toValidAddress,
+  clearAddress,
 } from '@app/_providers/Cart/address'
+import { zodResolver } from '@hookform/resolvers/zod'
 
 export default function AddressPicker(): JSX.Element {
   const { addresses, addAddress } = useCart()
@@ -47,14 +51,24 @@ export default function AddressPicker(): JSX.Element {
   const [showAddressForm, setShowAddressForm] = useState(false)
   const [showAddressSearchMenu, setShowAddressSearchMenu] = useState(false)
   const [addressSuggestions, setAddressSuggestions] = useState<any[]>([])
-
   const [addressInputValue, setAddressInputValue] = useState<string>('')
+  const [showGenericAddressError, setShowGenericAddressError] = useState(false)
 
-  const { register, handleSubmit, setValue, control } = useForm<NullableAddress>()
+  const {
+    register,
+    handleSubmit,
+    setValue,
+    getValues,
+    control,
+    reset,
+    trigger,
+    formState: { errors },
+  } = useForm<NullableAddress>({
+    resolver: zodResolver(AddressSchema),
+    defaultValues: toValidAddress(clearAddress()),
+  })
 
   const handleSuggestedAddressSelection = (suggestion: any) => {
-    console.log('DEBUG: handleSuggestedAddressSelection input', suggestion)
-
     const address: AddressWithoutName = {
       id: generateAddressId(),
       address1: suggestion.addressLabel,
@@ -64,18 +78,20 @@ export default function AddressPicker(): JSX.Element {
       postcode: suggestion.postalCode,
     }
 
-    console.log('DEBUG1')
     setAddressInputValue(suggestion.formattedAddress)
-    console.log('DEBUG2')
     setValue('id', address.id)
     setValue('address1', address.address1)
     setValue('address2', address.address2)
     setValue('city', address.city)
     setValue('state', address.state)
     setValue('postcode', address.postcode)
-    console.log('DEBUG3')
     setShowAddressSearchMenu(false)
-    console.log('DEBUG4')
+  }
+
+  const validateMandatoryAddressFields = async () => {
+    const result = await trigger(['address1', 'city', 'state', 'postcode'])
+    setShowGenericAddressError(!result)
+    return result
   }
 
   const handleAddressInputChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -95,7 +111,7 @@ export default function AddressPicker(): JSX.Element {
       const suggestions = await addressAutocomplete(value)
       setAddressSuggestions(suggestions)
       setShowAddressSearchMenu(true)
-    }, 150),
+    }, 300),
     [],
   )
 
@@ -111,26 +127,39 @@ export default function AddressPicker(): JSX.Element {
     setShowAddressModal(false)
     setShowAddressForm(false)
     setShowAddressSearchMenu(false)
+    setShowGenericAddressError(false)
     setAddressSuggestions([])
     clearNewAddress()
   }
 
   const handleSaveNewAddress = (newAddress: Address): void => {
-    console.log('New address:', newAddress)
-
     setShowAddressModal(false)
   }
 
   const clearNewAddress = () => {
     //clear address form data
-    setValue('id', null)
-    setValue('address1', null)
-    setValue('address2', null)
-    setValue('city', null)
-    setValue('state', null)
-    setValue('postcode', null)
+    reset(toValidAddress(clearAddress()))
+
     //clear address input value
     setAddressInputValue('')
+  }
+
+  const handleFormSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    const isValid = await validateMandatoryAddressFields()
+    if (isValid) {
+      handleSubmit(onSubmit, onError)(e)
+    }
+  }
+
+  const onSubmit = (address: NullableAddress) => {
+    addAddress(address as Address)
+    setSelectedAddress(address as Address)
+    handleCloseAddressModal()
+  }
+
+  const onError = (errors: any) => {
+    console.log('Form errors', errors)
   }
 
   return (
@@ -194,13 +223,7 @@ export default function AddressPicker(): JSX.Element {
                 Please fill in the details for your new delivery address.
               </DialogDescription>
             </DialogHeader>
-            <form
-              onSubmit={handleSubmit((address) => {
-                addAddress(address as Address)
-                setSelectedAddress(address as Address)
-                handleCloseAddressModal()
-              })}
-            >
+            <form onSubmit={handleFormSubmit}>
               <div className="space-y-4 py-4">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
@@ -210,6 +233,9 @@ export default function AddressPicker(): JSX.Element {
                       placeholder="Enter recipient's first name"
                       {...register('firstName')}
                     />
+                    {errors.firstName && (
+                      <p className="mt-1 text-sm text-red-600">{errors.firstName.message}</p>
+                    )}
                   </div>
                   <div>
                     <Label htmlFor="lastName">Last Name</Label>
@@ -218,6 +244,9 @@ export default function AddressPicker(): JSX.Element {
                       placeholder="Enter recipient's last name"
                       {...register('lastName')}
                     />
+                    {errors.lastName && (
+                      <p className="mt-1 text-sm text-red-600">{errors.lastName.message}</p>
+                    )}
                   </div>
                 </div>
                 {!showAddressForm && (
@@ -266,6 +295,9 @@ export default function AddressPicker(): JSX.Element {
                         </ul>
                       </div>
                     )}
+                    {showGenericAddressError && (
+                      <p className="mt-2 text-sm text-red-600">Address must be entered</p>
+                    )}
                   </div>
                 )}
 
@@ -274,15 +306,24 @@ export default function AddressPicker(): JSX.Element {
                     <div>
                       <Label htmlFor="address">Address Line 1</Label>
                       <Input id="address" placeholder="Enter address" {...register('address1')} />
+                      {errors.address1 && (
+                        <p className="mt-1 text-sm text-red-600">{errors.address1.message}</p>
+                      )}
                     </div>
                     <div>
                       <Label htmlFor="address">Address Line 2</Label>
                       <Input id="address" placeholder="Enter address" {...register('address2')} />
+                      {errors.address2 && (
+                        <p className="mt-1 text-sm text-red-600">{errors.address2.message}</p>
+                      )}
                     </div>
                     <div className="grid grid-cols-2 gap-4">
                       <div>
                         <Label htmlFor="city">City</Label>
                         <Input id="city" placeholder="Enter city" {...register('city')} />
+                        {errors.city && (
+                          <p className="mt-1 text-sm text-red-600">{errors.city.message}</p>
+                        )}
                       </div>
                       <div>
                         <Label htmlFor="state">State</Label>
@@ -307,11 +348,17 @@ export default function AddressPicker(): JSX.Element {
                             </Select>
                           )}
                         />
+                        {errors.state && (
+                          <p className="mt-1 text-sm text-red-600">{errors.state.message}</p>
+                        )}
                       </div>
                     </div>
                     <div>
                       <Label htmlFor="postcode">Postcode</Label>
                       <Input id="postcode" placeholder="Enter postcode" {...register('postcode')} />
+                      {errors.postcode && (
+                        <p className="mt-1 text-sm text-red-600">{errors.postcode.message}</p>
+                      )}
                     </div>
                     <div className="mt-4">
                       <Link

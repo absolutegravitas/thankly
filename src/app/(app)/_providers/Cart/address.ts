@@ -6,7 +6,7 @@ const postcodeRegex = /^\d{4}$/;
 const stateAbbreviations = ['NSW', 'VIC', 'QLD', 'WA', 'SA', 'TAS', 'ACT', 'NT'] as const;
 
 export const AddressSchema = z.object({
-  id: z.string().uuid({ message: "Invalid ID format. Must be a valid UUID." }),
+  id: z.string(),
   firstName: z.string()
     .min(1, { message: "First name is required." })
     .max(100, { message: "First name must not exceed 100 characters." }),
@@ -37,6 +37,26 @@ export type AddressWithoutName = Omit<Address, 'firstName' | 'lastName'>
 export type NullableAddress = {
   [K in keyof Address]: Address[K] | null;
 };
+
+export function clearAddress(): NullableAddress {
+  return {
+    id: generateAddressId(),
+    firstName: null,
+    lastName: null,
+    address1: null,
+    address2: null,
+    city: null,
+    state: null,
+    postcode: null,
+  };
+}
+
+export function toValidAddress(address: NullableAddress): Partial<Address> {
+  return Object.fromEntries(
+    Object.entries(address)
+      .filter(([_, value]) => value !== null)
+  ) as Partial<Address>;
+}
 
 export function generateAddressId(): string {
   return randomBytes(16).toString('hex')
