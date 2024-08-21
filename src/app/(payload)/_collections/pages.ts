@@ -38,7 +38,7 @@ export const Pages: CollectionConfig = {
   },
   access: {
     create: adminsOnly,
-    read: publishedOnly,
+    read: adminsOnly,
     update: adminsOnly,
     delete: adminsOnly,
   },
