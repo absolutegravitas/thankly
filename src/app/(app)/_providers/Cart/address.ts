@@ -1,25 +1,46 @@
 import { randomBytes } from "crypto"
 import { defaultMaxListeners } from "events"
+import { z } from 'zod'
 
+const postcodeRegex = /^\d{4}$/;
+const stateAbbreviations = ['NSW', 'VIC', 'QLD', 'WA', 'SA', 'TAS', 'ACT', 'NT'] as const;
 
-//Addres type is used to track unique recipient addresses for the cart form logic
-// export type Address = {
-//   formattedAddress: string
-//   json: JSON
-// }
+export const AddressSchema = z.object({
+  id: z.string().uuid({ message: "Invalid ID format. Must be a valid UUID." }),
+  firstName: z.string()
+    .min(1, { message: "First name is required." })
+    .max(100, { message: "First name must not exceed 100 characters." }),
+  lastName: z.string()
+    .min(1, { message: "Last name is required." })
+    .max(100, { message: "Last name must not exceed 100 characters." }),
+  address1: z.string()
+    .min(1, { message: "Address line 1 is required." })
+    .max(100, { message: "Address line 1 must not exceed 100 characters." }),
+  address2: z.string()
+    .max(100, { message: "Address line 2 must not exceed 100 characters." })
+    .optional(),
+  city: z.string()
+    .min(1, { message: "City is required." })
+    .max(100, { message: "City name must not exceed 100 characters." }),
+  state: z.enum(stateAbbreviations, {
+    errorMap: () => ({ message: "Invalid state. Must be a valid Australian state abbreviation." })
+  }),
+  postcode: z.string()
+    .regex(postcodeRegex, { message: "Invalid postcode. Must be 4 digits." }),
+});
 
-export interface Address {
-  id: string
-  firstName: string
-  lastName: string
-  address1: string
-  address2: string
-  city: string
-  state: string
-  postcode: string
-}
+export type Address = z.infer<typeof AddressSchema>;
 
 export type AddressWithoutName = Omit<Address, 'firstName' | 'lastName'>
+
+// Define a type that allows null values for all fields
+export type NullableAddress = {
+  [K in keyof Address]: Address[K] | null;
+};
+
+export function generateAddressId(): string {
+  return randomBytes(16).toString('hex')
+}
 
 export const AddressText = (address: AddressWithoutName | null): string | undefined => {
   if (address === null) return undefined

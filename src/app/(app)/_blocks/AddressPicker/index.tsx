@@ -32,11 +32,13 @@ import { addressAutocomplete } from '../Cart/Receivers/addressAutocomplete'
 import { randomBytes } from 'crypto'
 import { useCart } from '../../_providers/Cart'
 import { useForm, Controller } from 'react-hook-form'
-import { Address, AddressWithoutName, AddressText } from '@app/_providers/Cart/address'
-
-function generateUniqueId(): string {
-  return randomBytes(16).toString('hex')
-}
+import {
+  Address,
+  AddressWithoutName,
+  AddressText,
+  NullableAddress,
+  generateAddressId,
+} from '@app/_providers/Cart/address'
 
 export default function AddressPicker(): JSX.Element {
   const { addresses, addAddress } = useCart()
@@ -48,13 +50,13 @@ export default function AddressPicker(): JSX.Element {
 
   const [addressInputValue, setAddressInputValue] = useState<string>('')
 
-  const { register, handleSubmit, setValue, control } = useForm<Address>()
+  const { register, handleSubmit, setValue, control } = useForm<NullableAddress>()
 
   const handleSuggestedAddressSelection = (suggestion: any) => {
     console.log('DEBUG: handleSuggestedAddressSelection input', suggestion)
 
     const address: AddressWithoutName = {
-      id: generateUniqueId(),
+      id: generateAddressId(),
       address1: suggestion.addressLabel,
       address2: '',
       city: suggestion.city,
@@ -62,16 +64,18 @@ export default function AddressPicker(): JSX.Element {
       postcode: suggestion.postalCode,
     }
 
+    console.log('DEBUG1')
     setAddressInputValue(suggestion.formattedAddress)
-
-    setValue('id', generateUniqueId())
-    setValue('address1', suggestion.addressLabel)
-    setValue('address2', '')
-    setValue('city', suggestion.city)
-    setValue('state', suggestion.stateCode)
-    setValue('postcode', suggestion.postalCode)
-
+    console.log('DEBUG2')
+    setValue('id', address.id)
+    setValue('address1', address.address1)
+    setValue('address2', address.address2)
+    setValue('city', address.city)
+    setValue('state', address.state)
+    setValue('postcode', address.postcode)
+    console.log('DEBUG3')
     setShowAddressSearchMenu(false)
+    console.log('DEBUG4')
   }
 
   const handleAddressInputChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -95,46 +99,9 @@ export default function AddressPicker(): JSX.Element {
     [],
   )
 
-  // const addresses: Address[] = [
-  //   {
-  //     id: '1',
-  //     firstName: 'John',
-  //     lastName: 'Doe',
-  //     address1: '123 Main St',
-  //     address2: 'Apt 456',
-  //     city: 'Sydney',
-  //     state: 'NSW',
-  //     postcode: '2000',
-  //   },
-  //   {
-  //     id: '2',
-  //     firstName: 'Jane',
-  //     lastName: 'Smith',
-  //     address1: '456 Oak Rd',
-  //     address2: '',
-  //     city: 'Melbourne',
-  //     state: 'VIC',
-  //     postcode: '3000',
-  //   },
-  //   {
-  //     id: '3',
-  //     firstName: 'Bob',
-  //     lastName: 'Johnson',
-  //     address1: '789 Elm St',
-  //     address2: 'Suite 789',
-  //     city: 'Brisbane',
-  //     state: 'QLD',
-  //     postcode: '4000',
-  //   },
-  // ]
-
   const handleAddressSelect = (address: Address): void => {
     setSelectedAddress(address)
   }
-
-  // const handleNewAddressSelect = (address: AddressWithoutName): void => {
-  //   setNewAddress(address)
-  // }
 
   const handleAddNewAddress = (): void => {
     setShowAddressModal(true)
@@ -156,12 +123,12 @@ export default function AddressPicker(): JSX.Element {
 
   const clearNewAddress = () => {
     //clear address form data
-    setValue('id', generateUniqueId())
-    setValue('address1', '')
-    setValue('address2', '')
-    setValue('city', '')
-    setValue('state', '')
-    setValue('postcode', '')
+    setValue('id', null)
+    setValue('address1', null)
+    setValue('address2', null)
+    setValue('city', null)
+    setValue('state', null)
+    setValue('postcode', null)
     //clear address input value
     setAddressInputValue('')
   }
@@ -229,8 +196,8 @@ export default function AddressPicker(): JSX.Element {
             </DialogHeader>
             <form
               onSubmit={handleSubmit((address) => {
-                addAddress(address)
-                setSelectedAddress(address)
+                addAddress(address as Address)
+                setSelectedAddress(address as Address)
                 handleCloseAddressModal()
               })}
             >
@@ -323,18 +290,19 @@ export default function AddressPicker(): JSX.Element {
                           name="state"
                           control={control}
                           render={({ field }) => (
-                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                            <Select onValueChange={field.onChange}>
                               <SelectTrigger id="state">
                                 <SelectValue placeholder="Select state" />
                               </SelectTrigger>
                               <SelectContent>
+                                <SelectItem value="ACT">Australian Capital Territory</SelectItem>
                                 <SelectItem value="NSW">New South Wales</SelectItem>
-                                <SelectItem value="VIC">Victoria</SelectItem>
+                                <SelectItem value="NT">Northern Territory</SelectItem>
                                 <SelectItem value="QLD">Queensland</SelectItem>
                                 <SelectItem value="SA">South Australia</SelectItem>
-                                <SelectItem value="WA">Western Australia</SelectItem>
                                 <SelectItem value="TAS">Tasmania</SelectItem>
-                                <SelectItem value="NT">Northern Territory</SelectItem>
+                                <SelectItem value="VIC">Victoria</SelectItem>
+                                <SelectItem value="WA">Western Australia</SelectItem>
                               </SelectContent>
                             </Select>
                           )}
