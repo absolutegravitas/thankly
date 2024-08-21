@@ -164,8 +164,9 @@ export default function AddressPicker(): JSX.Element {
 
   return (
     <div className="w-full max-w-md">
-      <div className="mb-4">
-        <label htmlFor="delivery-address" className="block text-sm font-medium text-gray-700">
+      {/* <div className="mb-4"> */}
+      <div className="grid gap-2 sm:max-w-md">
+        <label htmlFor="delivery-address" className="font-semibold text-sm dark:text-slate-400">
           Delivery Address
         </label>
         <div className="relative">
@@ -183,7 +184,7 @@ export default function AddressPicker(): JSX.Element {
                     <p className="text-gray-500 text-sm">{AddressText(selectedAddress)}</p>
                   </div>
                 ) : (
-                  <span className="text-gray-400">Select a delivery address</span>
+                  <span className="text-gray-500 font-normal">Select a delivery address</span>
                 )}
                 <ChevronDownIcon className="h-5 w-5 text-gray-400" />
               </Button>
@@ -203,7 +204,7 @@ export default function AddressPicker(): JSX.Element {
                   </div>
                 </DropdownMenuItem>
               ))}
-              <DropdownMenuSeparator />
+              {addresses.length > 0 && <DropdownMenuSeparator />}
               <DropdownMenuItem onSelect={handleAddNewAddress}>
                 <div className="flex items-center justify-between">
                   <span>Add New Address</span>

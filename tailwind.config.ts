@@ -54,6 +54,7 @@ const config = {
         },
         'thankly-offwhite': '#FAFAF5',
         'thankly-green': '#426b1f',
+        'thankly-lightgreen': '#548c27',
       },
       borderRadius: {
         lg: "var(--radius)",
