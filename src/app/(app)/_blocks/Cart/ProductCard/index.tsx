@@ -2,22 +2,30 @@ import { Media, Product } from '@/payload-types'
 import React from 'react'
 import { getImageAlt, getImageUrl } from '@/utilities/getImageDetails'
 import { log } from 'console'
+import { Button } from '@/app/(app)/_components/ui/button'
+import { IconProps } from '@/app/(app)/_icons/types'
+import { CartItem } from '@/app/(app)/_providers/Cart/reducer'
 
 interface ProductBlockContentProps {
-  product: Product // The product data to be displayed
-  quantity: number // the quantity of the product in the cart
+  cartItem: CartItem
+  // product: Product // The product data to be displayed
+  // quantity: number // the quantity of the product in the cart
+  onQuantityChange: (cartItemId: string, quantity: number) => void
 }
 
-const ProductCard: React.FC<ProductBlockContentProps> = ({ product, quantity }) => {
-  // Destructure product prices
+const ProductCard: React.FC<ProductBlockContentProps> = ({ cartItem, onQuantityChange }) => {
+  // Destructure product and product prices
+  const { itemId, product, quantity } = cartItem
   const {
     media: images,
     prices: { salePrice, basePrice },
-  } = product
+  } = product as Product
 
   // Calculate if the product is on sale
   const onSale =
     salePrice !== null && salePrice !== undefined && salePrice !== 0 && salePrice < basePrice
+
+  const unitPrice = onSale ? salePrice : basePrice
 
   return (
     <div className="bg-background rounded-2xl shadow-lg overflow-hidden w-full max-w-[240px] aspect-[3/5]  bg-thankly-offwhite">
@@ -36,10 +44,34 @@ const ProductCard: React.FC<ProductBlockContentProps> = ({ product, quantity }) 
       </div>
       <div className="p-4 space-y-2">
         <div className="flex flex-col space-y-0">
-          <h3 className="text-xl font-bold">{product.title}</h3>
-          <div className="text-olive-600 font-bold text-lg text-thankly-green">Qty {quantity}</div>
-          <div className="text-muted-foreground">Price: ${onSale ? salePrice : basePrice}</div>
-          <div className="text-muted-foreground">Total: ${quantity * basePrice}</div>
+          <h3 className="text-xl font-bold">{(product as Product).title}</h3>
+          <div className="flex flex-row">
+            <div className="text-olive-600 font-bold text-lg text-thankly-green">
+              Qty {quantity}
+            </div>
+            <Button
+              variant="outline"
+              className="rounded-full w-5 h-5 p-0 mt-1 ml-2"
+              onClick={() => {
+                onQuantityChange(itemId, cartItem.quantity + 1)
+              }}
+            >
+              <PlusIcon className="w-4 h-4" />
+            </Button>
+            {quantity > 1 && (
+              <Button
+                variant="outline"
+                className="rounded-full w-5 h-5 p-0 mt-1"
+                onClick={() => {
+                  onQuantityChange(itemId, cartItem.quantity - 1)
+                }}
+              >
+                <MinusIcon className="w-4 h-4" />
+              </Button>
+            )}
+          </div>
+          <div className="text-muted-foreground">Price: ${unitPrice}</div>
+          <div className="text-muted-foreground">Total: ${(quantity * unitPrice).toFixed(2)}</div>
         </div>
       </div>
     </div>
@@ -47,3 +79,42 @@ const ProductCard: React.FC<ProductBlockContentProps> = ({ product, quantity }) 
 }
 
 export default ProductCard
+
+function MinusIcon(props: IconProps) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="darkGrey"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M5 12h14" />
+    </svg>
+  )
+}
+
+function PlusIcon(props: IconProps) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="darkGrey"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M5 12h14" />
+      <path d="M12 5v14" />
+    </svg>
+  )
+}
