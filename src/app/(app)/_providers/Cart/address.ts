@@ -1,6 +1,7 @@
 import { randomBytes } from "crypto"
 import { defaultMaxListeners } from "events"
 import { z } from 'zod'
+import { Receiver } from "@app/_blocks/Cart/cart-types";
 
 const postcodeRegex = /^\d{4}$/;
 const stateAbbreviations = ['NSW', 'VIC', 'QLD', 'WA', 'SA', 'TAS', 'ACT', 'NT'] as const;
@@ -32,6 +33,35 @@ export const AddressSchema = z.object({
 export type Address = z.infer<typeof AddressSchema>;
 
 export type AddressWithoutName = Omit<Address, 'firstName' | 'lastName'>
+
+export const getReceiverAddresses = (receivers: Receiver[] | null |  undefined): Address[] => {
+  if (!receivers) return [];
+  return receivers.map(receiver => ({
+    id: receiver.receiverId,
+    firstName: receiver.firstName,
+    lastName: receiver.lastName,
+    address1: receiver.address.addressLine1,
+    address2: receiver.address.addressLine2 || undefined,
+    city: receiver.address.city,
+    state: receiver.address.state as Address['state'], // Type assertion needed here
+    postcode: receiver.address.postcode
+  }));
+};
+
+export const getNewReceiver = (address: Address): Receiver => {
+  return {
+    receiverId: address.id,
+    firstName: address.firstName,
+    lastName: address.lastName,
+    address: {
+      addressLine1: address.address1,
+      addressLine2: address.address2 || null,
+      city: address.city,
+      state: address.state,
+      postcode: address.postcode
+    },
+  };
+};
 
 // Define a type that allows null values for all fields
 export type NullableAddress = {

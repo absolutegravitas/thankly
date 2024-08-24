@@ -1,5 +1,5 @@
 {
-  "id": "6d140318-003a-473a-820b-c2afe508466a",
+  "id": "c0ac8b25-92e3-4eb4-9483-2ff4aabd83c2",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "5",
   "dialect": "pg",
@@ -2236,19 +2236,19 @@
           "name": "first_name",
           "type": "varchar",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "last_name": {
           "name": "last_name",
           "type": "varchar",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "address_address_line1": {
           "name": "address_address_line1",
           "type": "varchar",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "address_address_line2": {
           "name": "address_address_line2",
@@ -2260,19 +2260,19 @@
           "name": "address_city",
           "type": "varchar",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "address_state": {
           "name": "address_state",
           "type": "varchar",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "address_postcode": {
           "name": "address_postcode",
           "type": "varchar",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "delivery_tracking_link": {
           "name": "delivery_tracking_link",

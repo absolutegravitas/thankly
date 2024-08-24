@@ -153,9 +153,9 @@ export const Carts: CollectionConfig = {
               label: 'Receivers',
               type: 'array',
               fields: [
-                { name: 'id', type: 'text'},
-                { name: 'firstName', type: 'text' },
-                { name: 'lastName', type: 'text' },
+                { name: 'receiverId', type: 'text', required: true },
+                { name: 'firstName', type: 'text', required: true },
+                { name: 'lastName', type: 'text', required: true },
                 {
                   name: 'address',
                   label: 'Address',
@@ -167,11 +167,11 @@ export const Carts: CollectionConfig = {
                         {
                           type: 'row',
                           fields: [
-                            { name: 'addressLine1', type: 'text', admin: { width: '50%' } },
-                            { name: 'addressLine2', type: 'text', admin: { width: '50%' } },
-                            { name: 'city', type: 'text', admin: { width: '50%' } },
-                            { name: 'state', type: 'text', admin: { width: '50%' } },
-                            { name: 'postcode', type: 'text', admin: { width: '50%' } },
+                            { name: 'addressLine1', type: 'text', admin: { width: '50%' }, required: true },
+                            { name: 'addressLine2', type: 'text', admin: { width: '50%' }},
+                            { name: 'city', type: 'text', admin: { width: '50%' }, required: true },
+                            { name: 'state', type: 'text', admin: { width: '50%' }, required: true },
+                            { name: 'postcode', type: 'text', admin: { width: '50%' }, required: true },
                           ],
                         },
                       ],

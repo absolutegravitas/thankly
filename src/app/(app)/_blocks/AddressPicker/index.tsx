@@ -29,8 +29,6 @@ import {
 import Link from 'next/link'
 import { debounce, fromPairs } from 'lodash'
 import { addressAutocomplete } from '../Cart/Receivers/addressAutocomplete'
-import { randomBytes } from 'crypto'
-import { useCart } from '../../_providers/Cart'
 import { useForm, Controller } from 'react-hook-form'
 import {
   Address,
@@ -44,8 +42,12 @@ import {
 } from '@app/_providers/Cart/address'
 import { zodResolver } from '@hookform/resolvers/zod'
 
-export default function AddressPicker(): JSX.Element {
-  const { addresses, addAddress } = useCart()
+interface props {
+  addresses: Address[]
+  onAddAddress: (address: Address) => void
+}
+
+export default function AddressPicker({ addresses, onAddAddress }: props): JSX.Element {
   const [selectedAddress, setSelectedAddress] = useState<Address | null>(null)
   const [showAddressModal, setShowAddressModal] = useState<boolean>(false)
   const [showAddressForm, setShowAddressForm] = useState(false)
@@ -153,7 +155,7 @@ export default function AddressPicker(): JSX.Element {
   }
 
   const onSubmit = (address: NullableAddress) => {
-    addAddress(address as Address)
+    onAddAddress(address as Address)
     setSelectedAddress(address as Address)
     handleCloseAddressModal()
   }
@@ -183,7 +185,9 @@ export default function AddressPicker(): JSX.Element {
                     <p className="text-gray-500 text-sm">{AddressText(selectedAddress)}</p>
                   </div>
                 ) : (
-                  <span className="text-gray-500 font-normal">Select a delivery address</span>
+                  <span className="text-gray-500 font-normal">
+                    Enter recipient name and delivery address
+                  </span>
                 )}
                 <ChevronDownIcon className="h-5 w-5 text-gray-400" />
               </Button>
@@ -206,7 +210,7 @@ export default function AddressPicker(): JSX.Element {
               {addresses.length > 0 && <DropdownMenuSeparator />}
               <DropdownMenuItem onSelect={handleAddNewAddress}>
                 <div className="flex items-center justify-between">
-                  <span>Add New Address</span>
+                  <span>Add New Recipient</span>
                   <PlusIcon className="h-5 w-5 text-gray-400" />
                 </div>
               </DropdownMenuItem>

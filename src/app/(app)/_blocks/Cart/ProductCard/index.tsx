@@ -2,9 +2,9 @@ import { Media, Product } from '@/payload-types'
 import React from 'react'
 import { getImageAlt, getImageUrl } from '@/utilities/getImageDetails'
 import { log } from 'console'
-import { Button } from '@/app/(app)/_components/ui/button'
-import { IconProps } from '@/app/(app)/_icons/types'
-import { CartItem } from '@/app/(app)/_providers/Cart/reducer'
+import { Button } from '@app/_components/ui/button'
+import { IconProps } from '@app/_icons/types'
+import { CartItem } from '@app/_blocks/Cart/cart-types'
 
 interface ProductBlockContentProps {
   cartItem: CartItem

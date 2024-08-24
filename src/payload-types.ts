@@ -404,15 +404,15 @@ export interface Cart {
     | null;
   receivers?:
     | {
-        id?: string | null;
-        firstName?: string | null;
-        lastName?: string | null;
-        address?: {
-          addressLine1?: string | null;
+        receiverId: string;
+        firstName: string;
+        lastName: string;
+        address: {
+          addressLine1: string;
           addressLine2?: string | null;
-          city?: string | null;
-          state?: string | null;
-          postcode?: string | null;
+          city: string;
+          state: string;
+          postcode: string;
         };
         delivery?: {
           tracking?: {
@@ -422,6 +422,7 @@ export interface Cart {
           shippingMethod?: ('standardMail' | 'expressMail' | 'standardParcel' | 'expressParcel') | null;
           shippingPrice?: number | null;
         };
+        id?: string | null;
       }[]
     | null;
   updatedAt: string;

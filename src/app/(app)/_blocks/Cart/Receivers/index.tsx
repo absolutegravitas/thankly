@@ -15,6 +15,7 @@ import cn from '@/utilities/cn'
 import { ReceiversMobile } from './ReceiversMobile'
 import { ReceiversDesktop } from './ReceiversDesktop'
 import { AddReceiver } from './ReceiverActions'
+import { CartItem } from '../cart-types'
 
 export const shippingOptions = [
   { name: 'Standard Mail', value: 'standardMail', productType: 'card', cost: true },
@@ -23,40 +24,40 @@ export const shippingOptions = [
   { name: 'Express Parcel', value: 'expressParcel', productType: 'gift', cost: true },
 ]
 
-export interface Receiver {
-  id: string
-  message: string
-  name: string
-  delivery: {
-    address?: {
-      formattedAddress?: string | null
-      addressLine1?: string | null
-      addressLine2?: string | null
-      json?:
-        | {
-            [k: string]: unknown
-          }
-        | unknown[]
-        | string
-        | number
-        | boolean
-        | null
-    }
-    shippingMethod: ShippingMethod
-  }
-  totals: {
-    cost: number
-    shipping: number
-    subTotal: number
-  }
-  errors: JSON
-}
+// export interface Receiver {
+//   id: string
+//   message: string
+//   name: string
+//   delivery: {
+//     address?: {
+//       formattedAddress?: string | null
+//       addressLine1?: string | null
+//       addressLine2?: string | null
+//       json?:
+//         | {
+//             [k: string]: unknown
+//           }
+//         | unknown[]
+//         | string
+//         | number
+//         | boolean
+//         | null
+//     }
+//     shippingMethod: ShippingMethod
+//   }
+//   totals: {
+//     cost: number
+//     shipping: number
+//     subTotal: number
+//   }
+//   errors: JSON
+// }
 
-export interface CartItem {
-  id: string
-  product: Product
-  receivers: Receiver[]
-}
+// export interface CartItem {
+//   id: string
+//   product: Product
+//   receivers: Receiver[]
+// }
 
 export interface ValidationErrors {
   name?: string

@@ -9,33 +9,34 @@ import { upsertPayloadCart } from './upsertPayloadCart'
 import { deletePayloadCart } from './deletePayloadCart'
 import { debounce } from 'lodash' // You'll need to install lodash if not already present
 import { uuid } from '@/utilities/uuid'
-import getCartItem from './getCartItem'
+import { CartItem, Receiver, GiftCard } from '@app/_blocks/Cart/cart-types'
 
 // Create a debounced version of the upsertPayloadCart function
 const debouncedUpsertPayloadCart = debounce(upsertPayloadCart, 1000)
-
-// Type alias for a single item in the Cart
-export type CartItem = NonNullable<Cart['items']>[number]
 
 // Union type for different cart actions
 export type CartAction =
   | {
       type: 'ADD_CART_ITEM'
-      payload: { product: Product | number; price: number }
+      payload: { product: Product; price: number }
     }
   | {
       type: 'REMOVE_CART_ITEM'
       // payload: { productId: number | string }
       payload: { cartItemId: string }
     }
-  | {
+    | {
       type: "UPDATE_QUANTITY"
       payload: { cartItemId: string; quantity: number }
     }
   | {
+      type: "UPDATE_MESSAGE"
+      payload: { cartItemId: string; giftCard: GiftCard }
+    }
+  | {
       type: 'ADD_RECEIVER'
       payload: {
-        receiver: NonNullable<Cart['receivers']>[number];
+        receiver: Receiver;
       }
     }
   | {
@@ -57,7 +58,6 @@ export const cartReducer = (cart: Cart, action: CartAction): Cart => {
   switch (action.type) {
     case 'ADD_CART_ITEM': {
       const { product, price } = action.payload
-      const productId = typeof product === 'object' ? product.id : product
 
       // add a new product to existing cart
       const newItem: CartItem = {
@@ -102,6 +102,25 @@ export const cartReducer = (cart: Cart, action: CartAction): Cart => {
       cartToReturn = {
         ...cartToReturn,
         totals: calculateCartTotals(cart)
+      }
+
+      return cartToReturn;
+    }
+
+    case 'UPDATE_MESSAGE': {
+      const { cartItemId, giftCard } = action.payload
+      const updatedItems =
+        cart.items?.map((item) => {
+          if (item.itemId === cartItemId ) {
+            
+            return {...item, giftCard: giftCard };
+          }
+          return item;
+        });
+
+      const cartToReturn = {
+        ...cart,
+        items: updatedItems,
       }
 
       return cartToReturn;
