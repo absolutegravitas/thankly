@@ -7,9 +7,22 @@ import React from 'react'
 const CartPersonalisePage = () => {
   const { cart } = useCart()
 
+  const Divider = () => (
+    <div className="flex items-center gap-4 md:hidden">
+      <div className="flex-1 h-px bg-slate-300" />
+      <p className="text-muted-foreground text-sm text-slate-400">Next Item</p>
+      <div className="flex-1 h-px bg-slate-300" />
+    </div>
+  )
+
   return (
     <div>
-      {cart.items?.map((item) => <CartItemDisplay key={item.itemId} cartItem={item} />)}
+      {cart.items?.map((item, index) => (
+        <React.Fragment key={item.itemId}>
+          <CartItemDisplay cartItem={item} />
+          {index < cart.items!.length - 1 && <Divider />}
+        </React.Fragment>
+      ))}
       <div className="max-w-5xl mx-auto px-8">
         <div className="flex flex-col items-end">
           <div className="text-right">
