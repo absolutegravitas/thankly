@@ -18,7 +18,7 @@ const debouncedUpsertPayloadCart = debounce(upsertPayloadCart, 1000)
 export type CartAction =
   | {
       type: 'ADD_CART_ITEM'
-      payload: { product: Product; price: number }
+      payload: { product: number | Product; price: number }
     }
   | {
       type: 'REMOVE_CART_ITEM'
@@ -65,6 +65,10 @@ export const cartReducer = (cart: Cart, action: CartAction): Cart => {
         quantity: 1,
         product: product,
         price: price,
+        giftCard: {
+          message: '',
+          writingStyle: 'regular'
+        }
       }
       const updatedItems = [...(cart.items || []), newItem]
 
@@ -122,7 +126,7 @@ export const cartReducer = (cart: Cart, action: CartAction): Cart => {
         ...cart,
         items: updatedItems,
       }
-
+      console.log("cartToReturn",cartToReturn)
       return cartToReturn;
     }
 

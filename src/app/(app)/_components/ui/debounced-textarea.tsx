@@ -1,22 +1,24 @@
 import * as React from 'react'
 import { debounce } from 'lodash'
-import { Textarea, TextareaProps } from '@app/_components/ui/textarea' // Import the original Textarea
+import { Textarea, TextareaProps } from '@app/_components/ui/textarea'
 
-export interface DebouncedTextareaProps extends TextareaProps {
-  onDebounce?: (value: string) => void
+export interface DebouncedTextareaProps extends Omit<TextareaProps, 'onChange'> {
+  value: string
+  onChange: (value: string) => void
   debounceTime?: number
 }
 
 const DebouncedTextarea = React.forwardRef<HTMLTextAreaElement, DebouncedTextareaProps>(
-  ({ onDebounce, debounceTime = 300, onChange, ...props }, ref) => {
+  ({ value, onChange, debounceTime = 300, ...props }, ref) => {
+    const [internalValue, setInternalValue] = React.useState(value)
+
+    React.useEffect(() => {
+      setInternalValue(value)
+    }, [value])
+
     const debouncedCallback = React.useMemo(
-      () =>
-        debounce((value: string) => {
-          if (onDebounce) {
-            onDebounce(value)
-          }
-        }, debounceTime),
-      [onDebounce, debounceTime],
+      () => debounce(onChange, debounceTime),
+      [onChange, debounceTime],
     )
 
     React.useEffect(() => {
@@ -26,13 +28,12 @@ const DebouncedTextarea = React.forwardRef<HTMLTextAreaElement, DebouncedTextare
     }, [debouncedCallback])
 
     const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-      if (onChange) {
-        onChange(event)
-      }
-      debouncedCallback(event.target.value)
+      const newValue = event.target.value
+      setInternalValue(newValue)
+      debouncedCallback(newValue)
     }
 
-    return <Textarea ref={ref} onChange={handleChange} {...props} />
+    return <Textarea ref={ref} value={internalValue} onChange={handleChange} {...props} />
   },
 )
 

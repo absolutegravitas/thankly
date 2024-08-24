@@ -129,15 +129,15 @@ export const Carts: CollectionConfig = {
               fields: [
                 { name: 'itemId', type: 'text', required: true },
                 { name: 'quantity', type: 'number', defaultValue: 1, min: 1, required: true },
-                { name: 'price', type: 'number', defaultValue: 0, min: 0 },
+                { name: 'price', type: 'number', defaultValue: 0, min: 0, required: true },
                 { name: 'product', type: 'relationship', relationTo: 'products', required: true },
                 { name: 'receiverId', type: 'text' },
                 {
                   name: 'giftCard',
                   type: 'group',
                   fields: [
-                    { name: 'message', type: 'textarea' },
-                    { name: 'writingStyle', type: 'text' },
+                    { name: 'message', type: 'textarea', required: true, defaultValue: '' },
+                    { name: 'writingStyle', type: 'text', required: true, defaultValue: 'regular' },
                   ],
                 },
               ],

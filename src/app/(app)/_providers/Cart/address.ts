@@ -1,7 +1,7 @@
 import { randomBytes } from "crypto"
 import { defaultMaxListeners } from "events"
 import { z } from 'zod'
-import { Receiver } from "@app/_blocks/Cart/cart-types";
+import { CartItem, Receiver } from "@app/_blocks/Cart/cart-types";
 
 const postcodeRegex = /^\d{4}$/;
 const stateAbbreviations = ['NSW', 'VIC', 'QLD', 'WA', 'SA', 'TAS', 'ACT', 'NT'] as const;

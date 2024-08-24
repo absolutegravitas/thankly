@@ -14,25 +14,50 @@ import { CartItem } from '@app/_blocks/Cart/cart-types'
 import { Address, getNewReceiver, getReceiverAddresses } from '@/app/(app)/_providers/Cart/address'
 import { useCart } from '@/app/(app)/_providers/Cart'
 import DebouncedTextarea from '@app/_components/ui/debounced-textarea'
+import { Textarea } from '@/app/(app)/_components/ui/textarea'
+import { Product } from '@/payload-types'
 
-interface props {
+interface Props {
   cartItem: CartItem
 }
 
-const CartItemPersonaliser = ({ cartItem }: props) => {
-  const { cart, addReceiver, updateMessage } = useCart()
+const CartItemPersonaliser = ({ cartItem }: Props) => {
+  const { cart, addReceiver, updateMessage, linkReceiver, removeCartItem, addCartItem } = useCart()
 
   const handleAddAddress = (address: Address) => {
     //add a new receiver based on address to cart
     addReceiver(getNewReceiver(address))
   }
 
-  const handleDebounce = (value: string) => {
+  const handleMessageChange = (value: string) => {
     const updatedGiftCard = {
       ...cartItem.giftCard,
       message: value,
     }
     updateMessage(cartItem.itemId, updatedGiftCard)
+  }
+
+  const handleWritingStyleChange = (value: string) => {
+    console.log('writingStyle:', value)
+    const updatedGiftCard = {
+      ...cartItem.giftCard,
+      writingStyle: value,
+    }
+    console.log('updatedGiftCard:', updatedGiftCard)
+    updateMessage(cartItem.itemId, updatedGiftCard)
+  }
+
+  const handleReceiverChange = (addressId: string) => {
+    linkReceiver(cartItem.itemId, addressId)
+  }
+
+  const handleRemove = () => {
+    removeCartItem(cartItem.itemId)
+  }
+
+  const handleShipAnother = () => {
+    addCartItem(cartItem.product, cartItem.price)
+    console.log('CART!:', cart)
   }
 
   return (
@@ -41,8 +66,10 @@ const CartItemPersonaliser = ({ cartItem }: props) => {
         <form className="grid gap-4 pt-4">
           <div className="grid gap-2">
             <AddressPicker
+              selectedAddressId={cartItem.receiverId || null}
               addresses={getReceiverAddresses(cart.receivers)}
               onAddAddress={handleAddAddress}
+              onChange={handleReceiverChange}
             />
           </div>
           <div className="grid gap-2 sm:max-w-md">
@@ -51,15 +78,19 @@ const CartItemPersonaliser = ({ cartItem }: props) => {
               id="message"
               placeholder="Write your personalised message"
               className="min-h-[145px]"
-              // onChange={handleMessageChange}
-              onDebounce={handleDebounce}
+              value={cartItem.giftCard.message}
+              onChange={handleMessageChange}
               debounceTime={500}
             />
           </div>
           <div className="grid gap-4 sm:flex sm:items-center sm:justify-between">
             <div className="grid gap-2 sm:flex sm:items-center sm:gap-2">
               <Label>Writing Style</Label>
-              <Select defaultValue="regular">
+              <Select
+                defaultValue="regular"
+                onValueChange={handleWritingStyleChange}
+                value={cartItem.giftCard.writingStyle}
+              >
                 <SelectTrigger className="w-52">
                   <SelectValue placeholder="Select writing style" />
                 </SelectTrigger>
@@ -70,10 +101,15 @@ const CartItemPersonaliser = ({ cartItem }: props) => {
               </Select>
             </div>
             <div className="grid grid-cols-2 gap-2 sm:flex">
-              <Button variant="primary" className="rounded-full sm:w-auto">
+              <Button
+                variant="primary"
+                type="button"
+                className="rounded-full sm:w-auto"
+                onClick={handleShipAnother}
+              >
                 Ship another
               </Button>
-              <Button variant="outline" className="rounded-full sm:w-auto">
+              <Button variant="outline" className="rounded-full sm:w-auto" onClick={handleRemove}>
                 Remove
               </Button>
             </div>

@@ -43,12 +43,18 @@ import {
 import { zodResolver } from '@hookform/resolvers/zod'
 
 interface props {
+  selectedAddressId: string | null
   addresses: Address[]
   onAddAddress: (address: Address) => void
+  onChange: (addressId: string) => void
 }
 
-export default function AddressPicker({ addresses, onAddAddress }: props): JSX.Element {
-  const [selectedAddress, setSelectedAddress] = useState<Address | null>(null)
+export default function AddressPicker({
+  selectedAddressId,
+  addresses,
+  onAddAddress,
+  onChange,
+}: props): JSX.Element {
   const [showAddressModal, setShowAddressModal] = useState<boolean>(false)
   const [showAddressForm, setShowAddressForm] = useState(false)
   const [showAddressSearchMenu, setShowAddressSearchMenu] = useState(false)
@@ -60,7 +66,6 @@ export default function AddressPicker({ addresses, onAddAddress }: props): JSX.E
     register,
     handleSubmit,
     setValue,
-    getValues,
     control,
     reset,
     trigger,
@@ -69,6 +74,12 @@ export default function AddressPicker({ addresses, onAddAddress }: props): JSX.E
     resolver: zodResolver(AddressSchema),
     defaultValues: toValidAddress(clearAddress()),
   })
+
+  // const [selectedAddress, setSelectedAddress] = useState<Address | null>(null)
+  const selectedAddress = addresses.find((address) => address.id === selectedAddressId) || null
+  const setSelectedAddress = (address: Address) => {
+    onChange(address.id)
+  }
 
   const handleSuggestedAddressSelection = (suggestion: any) => {
     const address: AddressWithoutName = {

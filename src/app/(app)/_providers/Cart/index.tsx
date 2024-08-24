@@ -30,11 +30,12 @@ export type CartContext = {
   // validateCart: () => boolean
 
   // cart actions
-  addCartItem: (product: Product, price: number) => void
+  addCartItem: (product: number | Product, price: number) => void
   updateQuantity: (cartItemId: string, quantity: number) => void
   updateMessage: (cartItemId: string, giftCard: GiftCard) => void
   removeCartItem: (cartItemId: string) => void
   addReceiver: (receiver: Receiver) => void
+  linkReceiver: (cartItemId: string, receiverId: string) => void
   setCart: (newCart: Cart) => void
   clearCart: () => void
 
@@ -118,7 +119,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   //
   // cart actions
   // Adds a product (as a new cart item) to the cart
-  const addCartItem = useCallback((product: Product, price: number) => {
+  const addCartItem = useCallback((product: number | Product, price: number) => {
     dispatchCart({ type: 'ADD_CART_ITEM', payload: { product, price } })
   }, [])
 
@@ -134,7 +135,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   //update message of a cart item
   const updateMessage = useCallback((cartItemId: string, giftCard: GiftCard) => {
-    dispatchCart({ type: 'UPDATE_MESSAGE', payload: { cartItemId, message } })
+    dispatchCart({ type: 'UPDATE_MESSAGE', payload: { cartItemId, giftCard } })
   }, [])
 
   // Adds a receiver to the cart

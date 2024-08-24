@@ -392,12 +392,12 @@ export interface Cart {
     | {
         itemId: string;
         quantity: number;
-        price?: number | null;
+        price: number;
         product: number | Product;
         receiverId?: string | null;
-        giftCard?: {
-          message?: string | null;
-          writingStyle?: string | null;
+        giftCard: {
+          message: string;
+          writingStyle: string;
         };
         id?: string | null;
       }[]
