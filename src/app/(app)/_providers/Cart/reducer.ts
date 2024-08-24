@@ -79,7 +79,7 @@ export const cartReducer = (cart: Cart, action: CartAction): Cart => {
 
       cartToReturn = {
         ...cartToReturn,
-        totals: calculateCartTotals(cart)
+        totals: calculateCartTotals(cartToReturn)
       }
 
       // // upsert the server cart
@@ -105,7 +105,7 @@ export const cartReducer = (cart: Cart, action: CartAction): Cart => {
 
       cartToReturn = {
         ...cartToReturn,
-        totals: calculateCartTotals(cart)
+        totals: calculateCartTotals(cartToReturn)
       }
 
       return cartToReturn;
@@ -143,7 +143,7 @@ export const cartReducer = (cart: Cart, action: CartAction): Cart => {
 
       cartToReturn = {
         ...cartToReturn,
-        totals: calculateCartTotals(cart)
+        totals: calculateCartTotals(cartToReturn)
       }
     
       // // upsert the server cart

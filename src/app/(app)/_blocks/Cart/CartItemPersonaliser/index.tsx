@@ -61,10 +61,10 @@ const CartItemPersonaliser = ({ cartItem }: Props) => {
   }
 
   return (
-    <Card>
-      <CardContent>
-        <form className="grid gap-4 pt-4">
-          <div className="grid gap-2">
+    <Card className="w-full">
+      <CardContent className="p-4 sm:p-6">
+        <form className="grid gap-4">
+          <div className="grid gap-2 w-full">
             <AddressPicker
               selectedAddressId={cartItem.receiverId || null}
               addresses={getReceiverAddresses(cart.receivers)}
@@ -72,12 +72,12 @@ const CartItemPersonaliser = ({ cartItem }: Props) => {
               onChange={handleReceiverChange}
             />
           </div>
-          <div className="grid gap-2 sm:max-w-md">
+          <div className="grid gap-2 w-full">
             <Label htmlFor="message">Message</Label>
             <DebouncedTextarea
               id="message"
               placeholder="Write your personalised message"
-              className="min-h-[145px]"
+              className="min-h-[145px] w-full"
               value={cartItem.giftCard.message}
               onChange={handleMessageChange}
               debounceTime={500}
@@ -91,7 +91,7 @@ const CartItemPersonaliser = ({ cartItem }: Props) => {
                 onValueChange={handleWritingStyleChange}
                 value={cartItem.giftCard.writingStyle}
               >
-                <SelectTrigger className="w-52">
+                <SelectTrigger className="w-full sm:w-52">
                   <SelectValue placeholder="Select writing style" />
                 </SelectTrigger>
                 <SelectContent>
@@ -100,16 +100,20 @@ const CartItemPersonaliser = ({ cartItem }: Props) => {
                 </SelectContent>
               </Select>
             </div>
-            <div className="grid grid-cols-2 gap-2 sm:flex">
+            <div className="grid grid-cols-2 gap-2 sm:flex sm:justify-end">
               <Button
                 variant="primary"
                 type="button"
-                className="rounded-full sm:w-auto"
+                className="w-full sm:w-auto rounded-full"
                 onClick={handleShipAnother}
               >
                 Ship another
               </Button>
-              <Button variant="outline" className="rounded-full sm:w-auto" onClick={handleRemove}>
+              <Button
+                variant="outline"
+                className="w-full sm:w-auto rounded-full"
+                onClick={handleRemove}
+              >
                 Remove
               </Button>
             </div>

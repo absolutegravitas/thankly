@@ -8,13 +8,13 @@ const CartPersonalisePage = () => {
   const { cart } = useCart()
 
   return (
-    <div className="container p-4">
+    <div>
       {cart.items?.map((item) => <CartItemDisplay key={item.itemId} cartItem={item} />)}
       <div className="max-w-5xl mx-auto px-8">
         <div className="flex flex-col items-end">
           <div className="text-right">
             <div className="text-base font-medium text-foreground">Total</div>
-            <div className="text-4xl font-bold text-foreground">${cart.totals.cost}</div>
+            <div className="text-4xl font-bold text-foreground">${cart.totals.cost.toFixed(2)}</div>
             <p className="mt-2 text-sm text-muted-foreground">
               Shipping and taxes calculated at checkout
             </p>

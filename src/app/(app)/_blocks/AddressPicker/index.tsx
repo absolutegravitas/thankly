@@ -177,7 +177,7 @@ export default function AddressPicker({
 
   return (
     <div className="w-full max-w-md">
-      <div className="grid gap-2 ">
+      <div className="grid gap-2">
         <label htmlFor="delivery-address" className="font-semibold text-sm dark:text-slate-400">
           To
         </label>
@@ -186,17 +186,19 @@ export default function AddressPicker({
             <DropdownMenuTrigger asChild>
               <Button
                 variant="outline"
-                className="w-full text-left flex items-center justify-between"
+                className="w-full h-auto text-left items-center justify-between"
               >
                 {selectedAddress ? (
                   <div>
-                    <p className="font-medium">
+                    <p className="font-medium break-words text-wrap">
                       {selectedAddress.firstName} {selectedAddress.lastName}
                     </p>
-                    <p className="text-gray-500 text-sm">{AddressText(selectedAddress)}</p>
+                    <p className="text-gray-500 text-sm break-words text-wrap">
+                      {AddressText(selectedAddress)}
+                    </p>
                   </div>
                 ) : (
-                  <span className="text-gray-500 font-normal">
+                  <span className="text-gray-500 font-normal break-words text-wrap">
                     Enter recipient name and delivery address
                   </span>
                 )}
@@ -231,7 +233,7 @@ export default function AddressPicker({
       </div>
       {showAddressModal && (
         <Dialog open={showAddressModal} onOpenChange={handleCloseAddressModal}>
-          <DialogContent className="sm:max-w-md">
+          <DialogContent className="sm:max-w-md max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>Add New Address</DialogTitle>
               <DialogDescription>
@@ -295,7 +297,6 @@ export default function AddressPicker({
                               </button>
                             </li>
                           ))}
-
                           <li
                             className="px-4 py-2 text-muted-foreground hover:bg-muted"
                             onClick={() => {
@@ -315,7 +316,6 @@ export default function AddressPicker({
                     )}
                   </div>
                 )}
-
                 {showAddressForm && (
                   <div>
                     <div>
@@ -397,12 +397,7 @@ export default function AddressPicker({
                 <Button variant="ghost" type="reset" onClick={handleCloseAddressModal}>
                   Cancel
                 </Button>
-                <Button
-                  type="submit"
-                  // onClick={() => handleSaveNewAddress({} as Address)}
-                >
-                  Save Address
-                </Button>
+                <Button type="submit">Save Address</Button>
               </DialogFooter>
             </form>
           </DialogContent>
