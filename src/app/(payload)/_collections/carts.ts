@@ -52,10 +52,10 @@ export const Carts: CollectionConfig = {
         {
           type: 'row',
           fields: [
-            { name: 'cost', type: 'number', required: true, admin: { width: '25%' } },
-            { name: 'shipping', type: 'number', required: false, admin: { width: '25%' } },
+            { name: 'cost', type: 'number', defaultValue: 0, required: true, admin: { width: '25%' } },
+            { name: 'shipping', type: 'number', defaultValue: 0, required: true, admin: { width: '25%' } },
             { name: 'discount', type: 'number', required: false, admin: { width: '25%' } },
-            { name: 'total', type: 'number', required: true, admin: { width: '25%' } },
+            { name: 'total', type: 'number', defaultValue: 0, required: true, admin: { width: '25%' } },
           ],
         },
       ],

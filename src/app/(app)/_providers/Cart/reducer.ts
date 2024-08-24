@@ -217,7 +217,6 @@ const calculateCartTotals = (cart: Cart): Cart['totals'] => {
     })
   }
 
-
   //add up shipping across receivers
   if (receivers) {
     receivers.forEach((receiver) => {

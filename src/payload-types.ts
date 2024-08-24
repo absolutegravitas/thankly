@@ -368,7 +368,7 @@ export interface Cart {
   status: 'pending' | 'completed' | 'cancelled';
   totals: {
     cost: number;
-    shipping?: number | null;
+    shipping: number;
     discount?: number | null;
     total: number;
   };
