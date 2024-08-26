@@ -28,6 +28,7 @@ const CartItemPersonaliser = ({ cartItem, index }: Props) => {
 
   const {
     setValue,
+    getValues,
     register,
     formState: { errors },
   } = useFormContext<CartPersonalisationForm>()
@@ -43,7 +44,6 @@ const CartItemPersonaliser = ({ cartItem, index }: Props) => {
       message: value,
     }
     updateMessage(cartItem.itemId, updatedGiftCard)
-    console.log('ERRORS -- ', errors)
   }
 
   const handleWritingStyleChange = (value: string) => {
@@ -57,6 +57,7 @@ const CartItemPersonaliser = ({ cartItem, index }: Props) => {
   }
 
   const handleReceiverChange = (addressId: string) => {
+    console.log('handleReceiverChange', addressId, 'index', index)
     //update cart
     linkReceiver(cartItem.itemId, addressId)
     //update form data (for validation logic)
@@ -71,7 +72,8 @@ const CartItemPersonaliser = ({ cartItem, index }: Props) => {
     addCartItem(cartItem.product, cartItem.price)
   }
 
-  if (cartItem.receiverId) {
+  //handle setvalues for form validation at load
+  if (cartItem.receiverId !== undefined && cartItem.receiverId && cartItem.receiverId !== '') {
     //initial set value for delivery address, if already specified in the cart
     setValue(`cartItems.${index}.receiverId`, cartItem.receiverId)
   }

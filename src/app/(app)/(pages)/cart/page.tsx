@@ -24,7 +24,6 @@ const CartPersonalisePage = () => {
   const { cart } = useCart()
   const router = useRouter()
   const [errors, setErrors] = useState({})
-
   const methods = useForm({
     resolver: zodResolver(formSchema),
   })
@@ -38,7 +37,7 @@ const CartPersonalisePage = () => {
   )
 
   const onSubmit = (data: any) => {
-    console.log(data)
+    router.push('/cart/postage')
   }
 
   return (
