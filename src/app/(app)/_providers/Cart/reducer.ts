@@ -126,7 +126,7 @@ export const cartReducer = (cart: Cart, action: CartAction): Cart => {
         ...cart,
         items: updatedItems,
       }
-      console.log("cartToReturn",cartToReturn)
+
       return cartToReturn;
     }
 
