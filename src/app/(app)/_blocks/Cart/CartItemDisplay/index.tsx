@@ -6,9 +6,10 @@ import { useCart } from '@app/_providers/Cart'
 
 interface Props {
   cartItem: CartItem
+  index: number
 }
 
-const CartItemDisplay = ({ cartItem }: Props) => {
+const CartItemDisplay = ({ cartItem, index }: Props) => {
   const { updateQuantity } = useCart()
 
   const handleQuantityChange = (cartItemId: string, quantity: number) => {
@@ -23,10 +24,11 @@ const CartItemDisplay = ({ cartItem }: Props) => {
       >
         <div className="w-[240px] md:w-auto md:flex-shrink-0">
           <ProductCard cartItem={cartItem} onQuantityChange={handleQuantityChange} />
+          {}
         </div>
         {/* <div className="w-full md:flex-grow"> */}
         <div className="w-full md:flex-grow">
-          <CartItemPersonaliser cartItem={cartItem} />
+          <CartItemPersonaliser cartItem={cartItem} index={index} />
         </div>
       </div>
     </div>

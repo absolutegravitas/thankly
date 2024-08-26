@@ -14,15 +14,23 @@ import { CartItem } from '@app/_blocks/Cart/cart-types'
 import { Address, getNewReceiver, getReceiverAddresses } from '@/app/(app)/_providers/Cart/address'
 import { useCart } from '@/app/(app)/_providers/Cart'
 import DebouncedTextarea from '@app/_components/ui/debounced-textarea'
-import { Textarea } from '@/app/(app)/_components/ui/textarea'
-import { Product } from '@/payload-types'
+import { useFormContext } from 'react-hook-form'
+import { CartPersonalisationForm } from '@/app/(app)/(pages)/cart/page'
+import { isEntityHidden } from 'payload'
 
 interface Props {
   cartItem: CartItem
+  index: number
 }
 
-const CartItemPersonaliser = ({ cartItem }: Props) => {
+const CartItemPersonaliser = ({ cartItem, index }: Props) => {
   const { cart, addReceiver, updateMessage, linkReceiver, removeCartItem, addCartItem } = useCart()
+
+  const {
+    setValue,
+    register,
+    formState: { errors },
+  } = useFormContext<CartPersonalisationForm>()
 
   const handleAddAddress = (address: Address) => {
     //add a new receiver based on address to cart
@@ -35,6 +43,7 @@ const CartItemPersonaliser = ({ cartItem }: Props) => {
       message: value,
     }
     updateMessage(cartItem.itemId, updatedGiftCard)
+    console.log('ERRORS -- ', errors)
   }
 
   const handleWritingStyleChange = (value: string) => {
@@ -48,7 +57,10 @@ const CartItemPersonaliser = ({ cartItem }: Props) => {
   }
 
   const handleReceiverChange = (addressId: string) => {
+    //update cart
     linkReceiver(cartItem.itemId, addressId)
+    //update form data (for validation logic)
+    setValue(`cartItems.${index}.receiverId`, addressId)
   }
 
   const handleRemove = () => {
@@ -57,13 +69,17 @@ const CartItemPersonaliser = ({ cartItem }: Props) => {
 
   const handleShipAnother = () => {
     addCartItem(cartItem.product, cartItem.price)
-    console.log('CART!:', cart)
+  }
+
+  if (cartItem.receiverId) {
+    //initial set value for delivery address, if already specified in the cart
+    setValue(`cartItems.${index}.receiverId`, cartItem.receiverId)
   }
 
   return (
     <Card className="w-full">
       <CardContent className="p-4 sm:p-6">
-        <form className="grid gap-4">
+        <div className="grid gap-4">
           <div className="grid gap-2 w-full">
             <AddressPicker
               selectedAddressId={cartItem.receiverId || null}
@@ -71,6 +87,12 @@ const CartItemPersonaliser = ({ cartItem }: Props) => {
               onAddAddress={handleAddAddress}
               onChange={handleReceiverChange}
             />
+            <input type="hidden" {...register(`cartItems.${index}.receiverId`)} />
+            {errors?.cartItems?.[index]?.receiverId && (
+              <p className="mt-1 text-sm text-red-600">
+                {errors.cartItems[index].receiverId.message}
+              </p>
+            )}
           </div>
           <div className="grid gap-2 w-full">
             <Label htmlFor="message">Message</Label>
@@ -79,9 +101,15 @@ const CartItemPersonaliser = ({ cartItem }: Props) => {
               placeholder="Write your personalised message"
               className="min-h-[145px] w-full"
               value={cartItem.giftCard.message}
-              onChange={handleMessageChange}
+              onValueChange={handleMessageChange} //debounced
               debounceTime={500}
+              {...register(`cartItems.${index}.giftMessage`)}
             />
+            {errors?.cartItems?.[index]?.giftMessage && (
+              <p className="mt-1 text-sm text-red-600">
+                {errors.cartItems[index].giftMessage.message}
+              </p>
+            )}
           </div>
           <div className="grid gap-4 sm:flex sm:items-center sm:justify-between">
             <div className="grid gap-2 sm:flex sm:items-center sm:gap-2">
@@ -118,7 +146,7 @@ const CartItemPersonaliser = ({ cartItem }: Props) => {
               </Button>
             </div>
           </div>
-        </form>
+        </div>
       </CardContent>
     </Card>
   )

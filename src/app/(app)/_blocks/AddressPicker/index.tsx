@@ -160,9 +160,9 @@ export default function AddressPicker({
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     const isValid = await validateMandatoryAddressFields()
-    if (isValid) {
-      handleSubmit(onSubmit, onError)(e)
-    }
+    //if (isValid) {
+    handleSubmit(onSubmit, onError)(e)
+    //}
   }
 
   const onSubmit = (address: NullableAddress) => {
