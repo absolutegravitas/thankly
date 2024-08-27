@@ -34,8 +34,8 @@ export default async function ShopPage({
     productType?: string[]
   }
 }) {
-  console.log('Updated searchParams in page.tsx:', searchParams)
-  console.log('ShopPage rendered with searchParams:', searchParams)
+  // console.log('Updated searchParams in page.tsx:', searchParams)
+  // console.log('ShopPage rendered with searchParams:', searchParams)
 
   const page = searchParams?.page ? parseInt(searchParams.page, 10) : 1
   const sort = searchParams?.sort as SortOption | undefined

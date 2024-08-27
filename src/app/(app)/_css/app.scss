@@ -9,3 +9,335 @@
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
+
+// :root {
+//   font-size: 20px;
+//   --base: 20px;
+//   --breakpoint-xs-width: $breakpoint-xs-width;
+//   --breakpoint-s-width: $breakpoint-s-width;
+//   --breakpoint-m-width: $breakpoint-m-width;
+//   --breakpoint-mh-width: $breakpoint-mh-width;
+//   --breakpoint-mp-width: $breakpoint-mp-width;
+//   --breakpoint-lm-width: $breakpoint-lm-width;
+//   --breakpoint-l-width: $breakpoint-l-width;
+//   --breakpoint-xl-width: $breakpoint-xl-width;
+//   --breakpoint-2xl-width: $breakpoint-2xl-width;
+
+//   --breakpoint-l-height: $breakpoint-l-height;
+
+//   --scrollbar-width: 17px;
+//   --page-padding-top: calc(var(--header-height));
+//   --header-height: 90px;
+//   --top-bar-height: 46px;
+
+//   --font-inter-size: 18px;
+
+//   --z-popup: 10;
+//   --z-status: 30;
+//   --z-nav: 40;
+//   --z-modal: 50;
+
+//   --grid-line-dark: rgba(255, 255, 255, 0.125);
+//   --grid-line-light: rgba(0, 0, 0, 0.125);
+//   --text-dark: rgba(255, 255, 255, 0.5);
+//   --text-light: rgba(0, 0, 0, 0.5);
+
+//   --gutter-h: calc(50vw - 40rem);
+//   --block-spacing: 7rem;
+//   --new-block-spacing: 8rem;
+//   // --default-border-width: 2px;
+
+//   --trans-default: 150ms;
+
+//   @include extra-large-break {
+//     --font-inter-size: 16px;
+//     --gutter-h: 8rem;
+//   }
+
+//   @include large-break {
+//     font-size: 16px;
+//     --base: 16px;
+//     --gutter-h: 4rem;
+//     --block-spacing: 5rem;
+//     --new-block-spacing: 6rem;
+//     --header-height: 76px;
+//   }
+
+//   @include mobile-header-break {
+//     --header-height: 66px;
+//   }
+
+//   @include mid-break {
+//     --gutter-h: 2rem;
+//     --block-spacing: 3.5rem;
+//     --new-block-spacing: 4rem;
+//     --page-padding-top: var(--header-height);
+//   }
+
+//   @include small-break {
+//     --block-spacing: 2rem;
+//     --gutter-h: 1rem;
+//   }
+
+//   --column: calc((100vw - (var(--gutter-h) * 2)) / 16);
+//   @include mid-break {
+//     --column: calc((100vw - (var(--gutter-h) * 2)) / 8);
+//   }
+// }
+
+// /////////////////////////////
+// // GLOBAL STYLES
+// /////////////////////////////
+// @layer base {
+//   a,
+//   button {
+//     -webkit-tap-highlight-color: transparent;
+//   }
+
+//   @media (prefers-color-scheme: light) {
+//     a,
+//     button {
+//       color: theme('colors.dark-text');
+//     }
+//   }
+// }
+
+// * {
+//   box-sizing: border-box;
+// }
+
+// html {
+//   @include body;
+//   font-family: var(--font-inter);
+//   background: var(--theme-bg);
+//   -webkit-font-smoothing: antialiased;
+//   opacity: 0;
+//   scroll-behavior: smooth;
+
+//   &[data-theme='dark'],
+//   &[data-theme='light'] {
+//     opacity: initial;
+//   }
+
+//   &[data-theme='dark'] {
+//     background: var(--color-base-1000);
+//     color-scheme: dark;
+//   }
+// }
+
+// body {
+//   -webkit-text-size-adjust: 100%;
+//   text-size-adjust: 100%;
+//   font-family: var(--font-inter);
+//   font-size: var(--font-inter-size);
+//   color: var(--theme-text);
+//   margin: 0;
+// }
+
+// ::selection {
+//   background: var(--theme-success-500);
+//   color: var(--theme-base-800);
+// }
+
+// ::-moz-selection {
+//   background: var(--theme-success-500);
+//   color: var(--theme-base-800);
+// }
+
+// img {
+//   //max-width: 100%;
+//   height: auto;
+//   display: block;
+// }
+
+// h1 {
+//   @include h1;
+// }
+
+// h2 {
+//   @include h2;
+// }
+
+// h3 {
+//   @include h3;
+// }
+
+// h4 {
+//   @include h4;
+// }
+
+// h5 {
+//   @include h5;
+// }
+
+// h6 {
+//   @include h6;
+// }
+
+// // Removed from payload inherited style
+// // p {
+// //   margin: 1.8rem 0 1.8rem;
+
+// //   & + p {
+// //     // If a paragraph follows another paragraph, reduce the margin
+// //     margin: -0.6rem 0 1.8rem;
+// //   }
+// // }
+
+// small {
+//   @include small;
+// }
+
+// ul,
+// ol {
+//   padding-left: 2rem;
+//   margin: 0 0 1rem;
+// }
+
+// a {
+//   color: currentColor;
+//   text-decoration-thickness: 1px;
+//   text-underline-offset: 2px;
+
+//   &:focus {
+//     opacity: 0.8;
+//     outline: none;
+//     text-decoration: underline;
+//   }
+
+//   &:focus-visible {
+//     @include outline;
+//   }
+
+//   &:active {
+//     opacity: 0.7;
+//     outline: none;
+//   }
+
+//   @include mid-break {
+//     &:focus,
+//     &:active {
+//       opacity: 1;
+//     }
+//   }
+// }
+
+// time {
+//   @include label;
+//   margin: 0;
+// }
+
+// svg {
+//   vertical-align: middle;
+// }
+
+// strong {
+//   font-family: var(--font-inter);
+//   font-weight: 600;
+// }
+
+// b {
+//   font-family: var(--font-inter);
+//   font-weight: 600;
+// }
+
+// em {
+//   font-family: var(--font-inter);
+//   font-style: italic;
+// }
+
+// code {
+//   @include code;
+//   // border-radius: 3px;
+//   padding: 0 5px 2px;
+
+//   @include data-theme-selector('light') {
+//     background: var(--theme-elevation-100);
+//   }
+
+//   @include data-theme-selector('dark') {
+//     background: var(--theme-elevation-200);
+//   }
+// }
+
+// // hr {
+// //   // border: none;
+// //   border-top: 1px solid var(--theme-elevation-200);
+// //   margin: var(--block-spacing) 0;
+// // }
+
+// dialog {
+//   width: 100%;
+//   // border: 0;
+//   padding: 0;
+//   color: currentColor;
+// }
+
+// // discord emojis
+// .d-emoji {
+//   width: 20px;
+//   height: 20px;
+//   vertical-align: middle;
+//   margin: 0 !important;
+// }
+
+// .payload__modal-item {
+//   min-height: 100%;
+//   background: transparent;
+// }
+
+// .payload__modal-container--enterDone {
+//   overflow: auto;
+// }
+
+// .payload__modal-item--enter,
+// .payload__modal-item--enterDone {
+//   z-index: var(--z-modal);
+// }
+
+// ::selection {
+//   background: var(--color-warning-500);
+//   color: var(--color-base-1000);
+// }
+
+// ::-moz-selection {
+//   background: var(--color-warning-500);
+//   color: var(--color-base-1000);
+// }
+
+// .background-scanline {
+//   background-image: url('/images/scanline-dark.png');
+//   background-repeat: repeat;
+//   opacity: 0.08;
+//   transition:
+//     transform 0.3s ease-in-out,
+//     opacity 0.3s ease-in-out;
+
+//   [data-theme='dark'] & {
+//     background-image: url('/images/scanline-light.png');
+//   }
+// }
+
+// .visually-hidden {
+//   @include visually-hidden;
+// }
+
+// // force light mode for shitty ass apple devices
+// @supports (-webkit-touch-callout: none) {
+//   :root {
+//     color-scheme: light only !important;
+//   }
+
+//   html {
+//     background: var(--theme-bg) !important;
+//   }
+
+//   body {
+//     color: var(--theme-text) !important;
+//   }
+
+//   [data-theme='dark'] {
+//     --theme-bg: var(--color-base-0) !important;
+//     --theme-text: var(--color-base-1000) !important;
+//   }
+// }
