@@ -51,6 +51,7 @@ const ProductCard: React.FC<ProductBlockContentProps> = ({ cartItem, onQuantityC
             </div>
             <Button
               variant="outline"
+              type="button"
               className="rounded-full w-5 h-5 p-0 mt-1 ml-2"
               onClick={() => {
                 onQuantityChange(itemId, cartItem.quantity + 1)
@@ -61,6 +62,7 @@ const ProductCard: React.FC<ProductBlockContentProps> = ({ cartItem, onQuantityC
             {quantity > 1 && (
               <Button
                 variant="outline"
+                type="button"
                 className="rounded-full w-5 h-5 p-0 mt-1"
                 onClick={() => {
                   onQuantityChange(itemId, cartItem.quantity - 1)
