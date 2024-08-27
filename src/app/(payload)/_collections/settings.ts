@@ -65,7 +65,7 @@ export const Settings: GlobalConfig = {
                   type: 'array',
                   admin: {
                     components: {
-                      RowLabel: ({ data }) => {
+                      RowL  abel: ({ data }) => {
                         if (data?.style === 'default') {
                           return data.defaultLink?.link.label
                         }

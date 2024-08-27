@@ -15,6 +15,7 @@ export const cartPageText = {
   shippingMessage: `Allow VIC (5 business days), Interstate (6-8 business days) due to AusPost letter delivery changes. `,
   shippingFreeMessage: `Your order is over $150 so Shipping is on us!`,
   // sendTo: `Sending this thankly to:`,
+  cartIncomplete: 'Complete all receiver details before proceeding to checkout.',
 }
 
 export const shippingPrices = {

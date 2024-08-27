@@ -6,7 +6,6 @@
 
 // Import the 'Cart' type from a separate file
 import { Cart } from '@/payload-types'
-import { redirect } from 'next/navigation'
 // Import the Stripe library
 import Stripe from 'stripe'
 
@@ -135,7 +134,7 @@ async function isOrderNumberUnique(payload: any, orderNumber: string): Promise<b
   return existingOrder.totalDocs === 0
 }
 
-export async function createOrder(cart: Cart, stripeSessionId: string) {
+export async function createOrder(cart: Cart, stripeReferenceId: string) {
   const config = await configPromise
   let payload: any = await getPayloadHMR({ config })
   let order: Order | null = null
@@ -160,7 +159,7 @@ export async function createOrder(cart: Cart, stripeSessionId: string) {
   const orderData = {
     orderNumber,
     status: 'pending' as const,
-    stripeId: stripeSessionId,
+    stripeId: stripeReferenceId,
     totals: transformedCart.totals,
     billing: transformedCart.billing,
     items: transformedCart.items,

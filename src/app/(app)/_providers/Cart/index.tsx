@@ -29,7 +29,7 @@ export type CartContext = {
   hasInitializedCart: boolean
   cartIsEmpty: boolean
   isProductInCart: (productId: string | number) => boolean
-  validateCart: () => boolean
+  validCart: () => boolean
 
   // cart actions
   addProduct: (product: Product, price: number) => void
@@ -103,19 +103,41 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   )
 
   // Validates the cart by checking if all receivers have required fields
-  const validateCart = useCallback((): boolean => {
+  const validCart = useCallback((): boolean => {
     if (!cart.items || cart.items.length === 0) return false
 
     return cart.items.every(
       (item) =>
         item.receivers &&
-        item.receivers.every(
-          (receiver) =>
-            receiver.name &&
-            receiver.message &&
-            receiver.delivery?.address?.formattedAddress &&
-            receiver.delivery?.shippingMethod,
-        ),
+        item.receivers.every((receiver) => {
+          // Name validation
+          if (
+            !receiver.name ||
+            receiver.name.length < 2 ||
+            receiver.name.length > 100 ||
+            !/^[a-zA-Z\s'-]+$/.test(receiver.name)
+          ) {
+            return false
+          }
+
+          // Message validation
+          if (!receiver.message || !/^[a-zA-Z0-9\s.,!?'-]+$/.test(receiver.message)) {
+            return false
+          }
+
+          // Address validation
+          if (!receiver.delivery?.address?.formattedAddress || !receiver.delivery?.address?.json) {
+            return false
+          }
+
+          // Shipping method validation
+          if (!receiver.delivery?.shippingMethod) {
+            return false
+          }
+
+          // All checks passed
+          return true
+        }),
     )
   }, [cart])
 
@@ -182,7 +204,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       removeProduct,
       removeReceiver,
       updateReceiver,
-      validateCart,
+      validCart,
       setCart,
     }),
     [
@@ -197,7 +219,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       removeProduct,
       removeReceiver,
       updateReceiver,
-      validateCart,
+      validCart,
       setCart,
     ],
   )
