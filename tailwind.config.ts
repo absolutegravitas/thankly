@@ -57,7 +57,8 @@ const config = {
         'thankly-lightgreen': '#548c27',
       },
       borderRadius: {
-        lg: "var(--radius)",
+        // lg: "var(--radius)",
+        lg: '0.5rem',
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },

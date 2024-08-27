@@ -3,9 +3,8 @@ import CartItemDisplay from '@/app/(app)/_blocks/Cart/CartItemDisplay'
 import { Button } from '@/app/(app)/_components/ui/button'
 import { useCart } from '@/app/(app)/_providers/Cart'
 import { useRouter } from 'next/navigation'
-import React, { useState } from 'react'
+import React from 'react'
 import { z } from 'zod'
-import { AddressSchema } from '../../_providers/Cart/address'
 import { FormProvider, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 
@@ -23,7 +22,6 @@ export type CartPersonalisationForm = z.infer<typeof formSchema>
 const CartPersonalisePage = () => {
   const { cart } = useCart()
   const router = useRouter()
-  const [errors, setErrors] = useState({})
   const methods = useForm({
     resolver: zodResolver(formSchema),
   })

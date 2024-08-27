@@ -32,9 +32,9 @@ const ProductCard: React.FC<ProductBlockContentProps> = ({ cartItem, onQuantityC
       <div className="aspect-[4/4] relative overflow-hidden">
         {images && images.length > 0 && (
           <img
-            // src={(images[0].mediaItem! as Media).url as string}
-            src={getImageUrl(images[0]!.mediaItem)}
-            // alt="Product Image"
+            src={(images[0].mediaItem! as Media).url as string}
+            //src={getImageUrl(images[0]!.mediaItem)}
+            //alt="Product Image"
             alt={getImageAlt(images[0]!.mediaItem)}
             // className="object-cover w-full h-full"
             className="absolute inset-0 w-full h-full object-cover"
