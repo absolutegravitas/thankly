@@ -12,7 +12,11 @@ import { Button } from '@app/_components/ui/button'
 export const MainMenuHeader: React.FC<any> = ({ menu }: any) => {
   return (
     <header className="flex h-16 w-full items-center justify-between bg-background px-4 md:px-6">
-      <Link href="/" className="text-2xl font-bold font-['leaguespartan']" prefetch={false}>
+      <Link
+        href="/"
+        className="text-2xl font-bold font-['leaguespartan'] tracking-tighter"
+        prefetch={false}
+      >
         thankly
       </Link>
       <div className="flex items-center gap-6">
@@ -20,6 +24,7 @@ export const MainMenuHeader: React.FC<any> = ({ menu }: any) => {
           {(menu?.tabs || []).map((tab: any, tabIndex: any) => {
             return (
               <Link
+                key={tabIndex}
                 href={tab.link.url}
                 className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
                 prefetch={false}
@@ -65,6 +70,7 @@ export const MainMenuHeader: React.FC<any> = ({ menu }: any) => {
                 {(menu?.tabs || []).map((tab: any, tabIndex: any) => {
                   return (
                     <Link
+                      key={tabIndex}
                       href={tab.link.url}
                       className="flex w-full items-center py-2 text-lg font-semibold"
                       prefetch={false}

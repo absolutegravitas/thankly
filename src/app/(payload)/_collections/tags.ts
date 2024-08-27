@@ -8,7 +8,7 @@ export const Tags: CollectionConfig = {
 
   access: {
     create: adminsOnly,
-    read: adminsOnly,
+    read: () => true,
     update: adminsOnly,
     delete: adminsOnly,
   },

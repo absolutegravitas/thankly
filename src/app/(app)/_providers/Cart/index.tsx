@@ -8,18 +8,13 @@ import React, {
   useMemo,
   useCallback,
 } from 'react'
-import { Cart, Order, Product } from '@/payload-types'
-import { CartItem, cartReducer, CartAction } from './reducer'
+import { Cart, Product } from '@/payload-types'
+import { cartReducer, CartAction } from './reducer'
 import { debounce } from 'lodash'
 // import { auth } from '@/utilities/auth'
 import { v4 as uuidv4 } from 'uuid'
 import { Address, AddressAction, addressReducer } from './address'
-
-// Type aliases for common types used throughout the file
-type Receiver = NonNullable<CartItem['receivers']>[number]
-type UpdateReceiverFields = Partial<Omit<Receiver, 'id' | 'totals' | 'delivery'>> & {
-  delivery?: Partial<Receiver['delivery']>
-}
+import { Receiver, GiftCard } from '@app/_blocks/Cart/cart-types'
 
 // Interface defining the CartContext shape
 // exposes objects and methods for use on the client
@@ -27,34 +22,25 @@ export type CartContext = {
   //objects
   cart: Cart
   addresses: Address[]
-  multipleAddresses: boolean
 
   // checking methods
   hasInitializedCart: boolean
   cartIsEmpty: boolean
   isProductInCart: (productId: string | number) => boolean
-  validateCart: () => boolean
+  // validateCart: () => boolean
 
   // cart actions
-  addProduct: (product: Product, price: number) => void
-  removeProduct: (productId: number | string) => void
-  addReceiver: (
-    productId: number | string,
-    receiver: NonNullable<CartItem['receivers']>[number],
-  ) => void
-  updateReceiver: (
-    productId: number | string,
-    receiverId: string,
-    updatedFields: UpdateReceiverFields,
-  ) => void
-  removeReceiver: (productId: number | string, receiverId: string) => void
-  copyReceiver: (productId: number | string, receiverId: string) => void
+  addCartItem: (product: number | Product, price: number) => void
+  updateQuantity: (cartItemId: string, quantity: number) => void
+  updateMessage: (cartItemId: string, giftCard: GiftCard) => void
+  removeCartItem: (cartItemId: string) => void
+  addReceiver: (receiver: Receiver) => void
+  linkReceiver: (cartItemId: string, receiverId: string) => void
   setCart: (newCart: Cart) => void
   clearCart: () => void
 
   // address array actions
   addAddress: (newAddress: Address) => void
-  setMultipleAddresses: (multipleAddresses: boolean) => void
 }
 
 //initialising cart context locally (which starts off as undefined)
@@ -113,64 +99,53 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     [cart.items],
   )
 
-  // Validates the cart by checking if all receivers have required fields
-  const validateCart = useCallback((): boolean => {
-    if (!cart.items || cart.items.length === 0) return false
+  // // Validates the cart by checking if all receivers have required fields
+  // const validateCart = useCallback((): boolean => {
+  //   if (!cart.items || cart.items.length === 0) return false
 
-    return cart.items.every(
-      (item) =>
-        item.receivers &&
-        item.receivers.every(
-          (receiver) =>
-            receiver.name &&
-            receiver.message &&
-            receiver.delivery?.address?.formattedAddress &&
-            receiver.delivery?.shippingMethod,
-        ),
-    )
-  }, [cart])
+  //   return cart.items.every(
+  //     (item) =>
+  //       item.receivers &&
+  //       item.receivers.every(
+  //         (receiver) =>
+  //           receiver.name &&
+  //           receiver.message &&
+  //           receiver.delivery?.address?.formattedAddress &&
+  //           receiver.delivery?.shippingMethod,
+  //       ),
+  //   )
+  // }, [cart])
 
-  //
-  //
   //
   // cart actions
-  // Adds a product to the cart
-  const addProduct = useCallback((product: Product | number, price: number) => {
-    dispatchCart({ type: 'ADD_PRODUCT', payload: { product, price } })
+  // Adds a product (as a new cart item) to the cart
+  const addCartItem = useCallback((product: number | Product, price: number) => {
+    dispatchCart({ type: 'ADD_CART_ITEM', payload: { product, price } })
   }, [])
 
-  // Removes a product from the cart
-  const removeProduct = useCallback((productId: number | string) => {
-    dispatchCart({ type: 'REMOVE_PRODUCT', payload: { productId } })
+  // Removes a cart item from the cart
+  const removeCartItem = useCallback((cartItemId: string) => {
+    dispatchCart({ type: 'REMOVE_CART_ITEM', payload: { cartItemId } })
   }, [])
 
-  // Adds a receiver to a product in the cart
-  const addReceiver = useCallback(
-    (productId: number | string, receiver: NonNullable<CartItem['receivers']>[number]) => {
-      dispatchCart({ type: 'ADD_RECEIVER', payload: { productId, receiver } })
-    },
-    [],
-  )
-
-  // Updates a receiver for a product in the cart
-  const updateReceiver = useCallback(
-    (productId: number | string, receiverId: string, updatedFields: UpdateReceiverFields) => {
-      dispatchCart({ type: 'UPDATE_RECEIVER', payload: { productId, receiverId, updatedFields } })
-    },
-    [],
-  )
-
-  // Removes a receiver from a product in the cart
-  const removeReceiver = useCallback((productId: number | string, receiverId: string) => {
-    dispatchCart({
-      type: 'REMOVE_RECEIVER',
-      payload: { productId, receiverId },
-    })
+  // update quantity of a cart item
+  const updateQuantity = useCallback((cartItemId: string, quantity: number) => {
+    dispatchCart({ type: 'UPDATE_QUANTITY', payload: { cartItemId, quantity } })
   }, [])
 
-  // Copies a receiver for a product in the cart
-  const copyReceiver = useCallback((productId: number | string, receiverId: string) => {
-    dispatchCart({ type: 'COPY_RECEIVER', payload: { productId, receiverId } })
+  //update message of a cart item
+  const updateMessage = useCallback((cartItemId: string, giftCard: GiftCard) => {
+    dispatchCart({ type: 'UPDATE_MESSAGE', payload: { cartItemId, giftCard } })
+  }, [])
+
+  // Adds a receiver to the cart
+  const addReceiver = useCallback((receiver: Receiver) => {
+    dispatchCart({ type: 'ADD_RECEIVER', payload: { receiver } })
+  }, [])
+
+  // link a receiver to a cart item
+  const linkReceiver = useCallback((cartItemId: string, receiverId: string) => {
+    dispatchCart({ type: 'LINK_RECEIVER', payload: { cartItemId, receiverId } })
   }, [])
 
   // Clears the entire cart
@@ -191,47 +166,42 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const addAddress = useCallback((address: Address) => {
     dispatchAddresses({ type: 'ADD_ADDRESS', payload: { address } })
   }, [])
-  //multiple addresses state
-  const [multipleAddresses, setMultipleAddresses] = useState(false) //initial value is false
 
   // Memoized value for the CartContext
   const contextValue = useMemo(
     () => ({
-      addresses,
       addAddress,
-      addProduct,
+      addresses,
+      addCartItem,
       addReceiver,
       cart,
       cartIsEmpty,
       clearCart,
-      copyReceiver,
       hasInitializedCart,
       isProductInCart,
-      multipleAddresses,
-      removeProduct,
-      removeReceiver,
-      setMultipleAddresses,
-      updateReceiver,
-      validateCart,
+      linkReceiver,
+      removeCartItem,
       setCart,
+      updateMessage,
+      updateQuantity,
+      // validateCart,
     }),
     [
-      addresses,
       addAddress,
-      multipleAddresses,
-      addProduct,
+      addresses,
+      addCartItem,
       addReceiver,
       cart,
       cartIsEmpty,
       clearCart,
-      copyReceiver,
       hasInitializedCart,
       isProductInCart,
-      removeProduct,
-      removeReceiver,
-      updateReceiver,
-      validateCart,
+      linkReceiver,
+      removeCartItem,
       setCart,
+      updateMessage,
+      updateQuantity,
+      // validateCart,
     ],
   )
 

@@ -1,5 +1,5 @@
 {
-  "id": "dc620dc7-a796-4018-9147-3c499ff600a4",
+  "id": "24c6030c-4916-43f2-b0d1-ef48682d6753",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "5",
   "dialect": "pg",
@@ -2098,141 +2098,6 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "carts_items_receivers": {
-      "name": "carts_items_receivers",
-      "schema": "",
-      "columns": {
-        "_order": {
-          "name": "_order",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "_parent_id": {
-          "name": "_parent_id",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "id": {
-          "name": "id",
-          "type": "varchar",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "totals_cost": {
-          "name": "totals_cost",
-          "type": "numeric",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "totals_shipping": {
-          "name": "totals_shipping",
-          "type": "numeric",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "totals_sub_total": {
-          "name": "totals_sub_total",
-          "type": "numeric",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "totals_discount": {
-          "name": "totals_discount",
-          "type": "numeric",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "name": {
-          "name": "name",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "message": {
-          "name": "message",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "delivery_tracking_link": {
-          "name": "delivery_tracking_link",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "delivery_shippingMethod": {
-          "name": "delivery_shippingMethod",
-          "type": "enum_carts_items_receivers_delivery_shipping_method",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "delivery_address_formatted_address": {
-          "name": "delivery_address_formatted_address",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "delivery_address_address_line1": {
-          "name": "delivery_address_address_line1",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "delivery_address_address_line2": {
-          "name": "delivery_address_address_line2",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "delivery_address_json": {
-          "name": "delivery_address_json",
-          "type": "jsonb",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "errors": {
-          "name": "errors",
-          "type": "jsonb",
-          "primaryKey": false,
-          "notNull": false
-        }
-      },
-      "indexes": {
-        "carts_items_receivers_order_idx": {
-          "name": "carts_items_receivers_order_idx",
-          "columns": [
-            "_order"
-          ],
-          "isUnique": false
-        },
-        "carts_items_receivers_parent_id_idx": {
-          "name": "carts_items_receivers_parent_id_idx",
-          "columns": [
-            "_parent_id"
-          ],
-          "isUnique": false
-        }
-      },
-      "foreignKeys": {
-        "carts_items_receivers_parent_id_fk": {
-          "name": "carts_items_receivers_parent_id_fk",
-          "tableFrom": "carts_items_receivers",
-          "tableTo": "carts_items",
-          "columnsFrom": [
-            "_parent_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
-        }
-      },
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {}
-    },
     "carts_items": {
       "name": "carts_items",
       "schema": "",
@@ -2255,6 +2120,18 @@
           "primaryKey": true,
           "notNull": true
         },
+        "item_id": {
+          "name": "item_id",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "quantity": {
+          "name": "quantity",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": true
+        },
         "price": {
           "name": "price",
           "type": "numeric",
@@ -2267,29 +2144,23 @@
           "primaryKey": false,
           "notNull": true
         },
-        "totals_cost": {
-          "name": "totals_cost",
-          "type": "numeric",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "totals_shipping": {
-          "name": "totals_shipping",
-          "type": "numeric",
+        "receiver_id": {
+          "name": "receiver_id",
+          "type": "varchar",
           "primaryKey": false,
           "notNull": false
         },
-        "totals_sub_total": {
-          "name": "totals_sub_total",
-          "type": "numeric",
+        "gift_card_message": {
+          "name": "gift_card_message",
+          "type": "varchar",
           "primaryKey": false,
           "notNull": true
         },
-        "totals_discount": {
-          "name": "totals_discount",
-          "type": "numeric",
+        "gift_card_writing_style": {
+          "name": "gift_card_writing_style",
+          "type": "varchar",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         }
       },
       "indexes": {
@@ -2325,6 +2196,129 @@
         "carts_items_parent_id_fk": {
           "name": "carts_items_parent_id_fk",
           "tableFrom": "carts_items",
+          "tableTo": "carts",
+          "columnsFrom": [
+            "_parent_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "no action"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
+    "carts_receivers": {
+      "name": "carts_receivers",
+      "schema": "",
+      "columns": {
+        "_order": {
+          "name": "_order",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "_parent_id": {
+          "name": "_parent_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "id": {
+          "name": "id",
+          "type": "varchar",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "receiver_id": {
+          "name": "receiver_id",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "first_name": {
+          "name": "first_name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "last_name": {
+          "name": "last_name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "address_address_line1": {
+          "name": "address_address_line1",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "address_address_line2": {
+          "name": "address_address_line2",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "address_city": {
+          "name": "address_city",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "address_state": {
+          "name": "address_state",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "address_postcode": {
+          "name": "address_postcode",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "delivery_tracking_link": {
+          "name": "delivery_tracking_link",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "delivery_shippingMethod": {
+          "name": "delivery_shippingMethod",
+          "type": "enum_carts_receivers_delivery_shipping_method",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "delivery_shipping_price": {
+          "name": "delivery_shipping_price",
+          "type": "numeric",
+          "primaryKey": false,
+          "notNull": false
+        }
+      },
+      "indexes": {
+        "carts_receivers_order_idx": {
+          "name": "carts_receivers_order_idx",
+          "columns": [
+            "_order"
+          ],
+          "isUnique": false
+        },
+        "carts_receivers_parent_id_idx": {
+          "name": "carts_receivers_parent_id_idx",
+          "columns": [
+            "_parent_id"
+          ],
+          "isUnique": false
+        }
+      },
+      "foreignKeys": {
+        "carts_receivers_parent_id_fk": {
+          "name": "carts_receivers_parent_id_fk",
+          "tableFrom": "carts_receivers",
           "tableTo": "carts",
           "columnsFrom": [
             "_parent_id"
@@ -2391,8 +2385,14 @@
           "primaryKey": false,
           "notNull": false
         },
-        "billing_name": {
-          "name": "billing_name",
+        "billing_first_name": {
+          "name": "billing_first_name",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "billing_last_name": {
+          "name": "billing_last_name",
           "type": "varchar",
           "primaryKey": false,
           "notNull": false
@@ -2421,12 +2421,6 @@
           "primaryKey": false,
           "notNull": false
         },
-        "billing_address_formatted_address": {
-          "name": "billing_address_formatted_address",
-          "type": "varchar",
-          "primaryKey": false,
-          "notNull": false
-        },
         "billing_address_address_line1": {
           "name": "billing_address_address_line1",
           "type": "varchar",
@@ -2439,9 +2433,21 @@
           "primaryKey": false,
           "notNull": false
         },
-        "billing_address_json": {
-          "name": "billing_address_json",
-          "type": "jsonb",
+        "billing_address_city": {
+          "name": "billing_address_city",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "billing_address_state": {
+          "name": "billing_address_state",
+          "type": "varchar",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "billing_address_postcode": {
+          "name": "billing_address_postcode",
+          "type": "varchar",
           "primaryKey": false,
           "notNull": false
         },
@@ -4985,8 +4991,8 @@
         "cancelled": "cancelled"
       }
     },
-    "enum_carts_items_receivers_delivery_shipping_method": {
-      "name": "enum_carts_items_receivers_delivery_shipping_method",
+    "enum_carts_receivers_delivery_shipping_method": {
+      "name": "enum_carts_receivers_delivery_shipping_method",
       "values": {
         "standardMail": "standardMail",
         "expressMail": "expressMail",

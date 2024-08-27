@@ -28,7 +28,7 @@ import { messages } from '@/utilities/referenceText'
 import { CheckIcon, FrownIcon, MessageCircleWarningIcon } from 'lucide-react'
 import { AddToCartButton } from '../../_components/ProductActions/AddToCart'
 import { ViewInCartButton } from '../../_components/ProductActions/ViewInCart'
-import { RemoveFromCartButton } from '../../_components/ProductActions/RemoveFromCart'
+// import { RemoveFromCartButton } from '../../_components/ProductActions/RemoveFromCart'
 
 interface ProductBlockContentProps {
   product: Product // The product data to be displayed
@@ -199,7 +199,7 @@ const ProductBlockContent: React.FC<ProductBlockContentProps> = ({
                   <ViewInCartButton />
                 </div>
                 <div className="flex-initial w-1/4">
-                  <RemoveFromCartButton cartItemId={product.id} />
+                  {/* <RemoveFromCartButton cartItemId={product.id} /> */}
                   <div className="sm:flex pt-2 items-center justify-center space-x-2"></div>
                 </div>
               </div>

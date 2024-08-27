@@ -368,85 +368,60 @@ export interface Cart {
   status: 'pending' | 'completed' | 'cancelled';
   totals: {
     cost: number;
-    shipping?: number | null;
+    shipping: number;
     discount?: number | null;
     total: number;
   };
   billing?: {
     orderedBy?: (number | null) | User;
-    name?: string | null;
+    firstName?: string | null;
+    lastName?: string | null;
     email?: string | null;
     contactNumber?: number | null;
     orgName?: string | null;
     orgId?: string | null;
     address?: {
-      formattedAddress?: string | null;
       addressLine1?: string | null;
       addressLine2?: string | null;
-      json?:
-        | {
-            [k: string]: unknown;
-          }
-        | unknown[]
-        | string
-        | number
-        | boolean
-        | null;
+      city?: string | null;
+      state?: string | null;
+      postcode?: string | null;
     };
   };
   items?:
     | {
-        price?: number | null;
+        itemId: string;
+        quantity: number;
+        price: number;
         product: number | Product;
-        totals: {
-          cost: number;
-          shipping?: number | null;
-          subTotal: number;
-          discount?: number | null;
+        receiverId?: string | null;
+        giftCard: {
+          message: string;
+          writingStyle: string;
         };
-        receivers?:
-          | {
-              totals: {
-                cost: number;
-                shipping?: number | null;
-                subTotal: number;
-                discount?: number | null;
-              };
-              name?: string | null;
-              message?: string | null;
-              delivery?: {
-                tracking?: {
-                  id?: string | null;
-                  link?: string | null;
-                };
-                shippingMethod?: ('standardMail' | 'expressMail' | 'standardParcel' | 'expressParcel') | null;
-                address?: {
-                  formattedAddress?: string | null;
-                  addressLine1?: string | null;
-                  addressLine2?: string | null;
-                  json?:
-                    | {
-                        [k: string]: unknown;
-                      }
-                    | unknown[]
-                    | string
-                    | number
-                    | boolean
-                    | null;
-                };
-              };
-              errors?:
-                | {
-                    [k: string]: unknown;
-                  }
-                | unknown[]
-                | string
-                | number
-                | boolean
-                | null;
-              id?: string | null;
-            }[]
-          | null;
+        id?: string | null;
+      }[]
+    | null;
+  receivers?:
+    | {
+        receiverId: string;
+        firstName: string;
+        lastName: string;
+        address: {
+          addressLine1: string;
+          addressLine2?: string | null;
+          city: string;
+          state: string;
+          postcode: string;
+        };
+        delivery?: {
+          tracking?: {
+            id?: string | null;
+            link?: string | null;
+          };
+          shippingMethod?: ('standardMail' | 'expressMail' | 'standardParcel' | 'expressParcel') | null;
+          shippingPrice?: number | null;
+        };
         id?: string | null;
       }[]
     | null;

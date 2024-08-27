@@ -87,7 +87,7 @@ EXCEPTION
 END $$;
 
 DO $$ BEGIN
- CREATE TYPE "enum_users_roles" AS ENUM('admin', 'public');
+ CREATE TYPE "enum_users_roles" AS ENUM('admin', 'public', 'customer');
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -99,7 +99,7 @@ EXCEPTION
 END $$;
 
 DO $$ BEGIN
- CREATE TYPE "enum_carts_items_receivers_delivery_shipping_method" AS ENUM('standardMail', 'expressMail', 'standardParcel', 'expressParcel');
+ CREATE TYPE "enum_carts_receivers_delivery_shipping_method" AS ENUM('standardMail', 'expressMail', 'standardParcel', 'expressParcel');
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -223,7 +223,7 @@ CREATE TABLE IF NOT EXISTS "orders" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"order_number" varchar,
 	"status" "enum_orders_status" NOT NULL,
-	"stripe_payment_intent_i_d" varchar,
+	"stripe_id" varchar,
 	"totals_cost" numeric NOT NULL,
 	"totals_shipping" numeric,
 	"totals_discount" numeric,
@@ -364,6 +364,24 @@ CREATE TABLE IF NOT EXISTS "users_roles" (
 	"id" serial PRIMARY KEY NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS "users_accounts" (
+	"_order" integer NOT NULL,
+	"_parent_id" integer NOT NULL,
+	"id" varchar PRIMARY KEY NOT NULL,
+	"provider" varchar,
+	"provider_account_id" varchar,
+	"provider_search_string" varchar
+);
+
+CREATE TABLE IF NOT EXISTS "users_verification_tokens" (
+	"_order" integer NOT NULL,
+	"_parent_id" integer NOT NULL,
+	"id" varchar PRIMARY KEY NOT NULL,
+	"identifier" varchar,
+	"token" varchar,
+	"expires" timestamp(3) with time zone
+);
+
 CREATE TABLE IF NOT EXISTS "users_rels" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"order" integer,
@@ -372,35 +390,33 @@ CREATE TABLE IF NOT EXISTS "users_rels" (
 	"orders_id" integer
 );
 
-CREATE TABLE IF NOT EXISTS "carts_items_receivers" (
-	"_order" integer NOT NULL,
-	"_parent_id" varchar NOT NULL,
-	"id" varchar PRIMARY KEY NOT NULL,
-	"totals_cost" numeric NOT NULL,
-	"totals_shipping" numeric,
-	"totals_sub_total" numeric NOT NULL,
-	"totals_discount" numeric,
-	"name" varchar,
-	"message" varchar,
-	"delivery_tracking_link" varchar,
-	"delivery_shippingMethod" "enum_carts_items_receivers_delivery_shipping_method",
-	"delivery_address_formatted_address" varchar,
-	"delivery_address_address_line1" varchar,
-	"delivery_address_address_line2" varchar,
-	"delivery_address_json" jsonb,
-	"errors" jsonb
-);
-
 CREATE TABLE IF NOT EXISTS "carts_items" (
 	"_order" integer NOT NULL,
 	"_parent_id" integer NOT NULL,
 	"id" varchar PRIMARY KEY NOT NULL,
+	"item_id" varchar NOT NULL,
+	"quantity" numeric NOT NULL,
 	"price" numeric,
 	"product_id" integer NOT NULL,
-	"totals_cost" numeric NOT NULL,
-	"totals_shipping" numeric,
-	"totals_sub_total" numeric NOT NULL,
-	"totals_discount" numeric
+	"receiver_id" varchar,
+	"gift_card_message" varchar,
+	"gift_card_writing_style" varchar
+);
+
+CREATE TABLE IF NOT EXISTS "carts_receivers" (
+	"_order" integer NOT NULL,
+	"_parent_id" integer NOT NULL,
+	"id" varchar PRIMARY KEY NOT NULL,
+	"first_name" varchar NOT NULL,
+	"last_name" varchar NOT NULL,
+	"address_address_line1" varchar NOT NULL,
+	"address_address_line2" varchar,
+	"address_city" varchar NOT NULL,
+	"address_state" varchar NOT NULL,
+	"address_postcode" varchar NOT NULL,
+	"delivery_tracking_link" varchar,
+	"delivery_shippingMethod" "enum_carts_receivers_delivery_shipping_method",
+	"delivery_shipping_price" numeric
 );
 
 CREATE TABLE IF NOT EXISTS "carts" (
@@ -412,15 +428,17 @@ CREATE TABLE IF NOT EXISTS "carts" (
 	"totals_discount" numeric,
 	"totals_total" numeric NOT NULL,
 	"billing_ordered_by_id" integer,
-	"billing_name" varchar,
+	"billing_first_name" varchar,
+	"billing_last_name" varchar,
 	"billing_email" varchar,
 	"billing_contact_number" numeric,
 	"billing_org_name" varchar,
 	"billing_org_id" varchar,
-	"billing_address_formatted_address" varchar,
 	"billing_address_address_line1" varchar,
 	"billing_address_address_line2" varchar,
-	"billing_address_json" jsonb,
+	"billing_address_city" varchar,
+	"billing_address_state" varchar,
+	"billing_address_postcode" varchar,
 	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
 	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
 );
@@ -435,6 +453,15 @@ CREATE TABLE IF NOT EXISTS "tags" (
 CREATE TABLE IF NOT EXISTS "categories" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"title" varchar,
+	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
+	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS "sessions" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"user_id" integer NOT NULL,
+	"session_token" varchar NOT NULL,
+	"expires" timestamp(3) with time zone,
 	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
 	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
 );
@@ -693,8 +720,10 @@ ALTER TABLE "users" ADD COLUMN "last_name" varchar;
 ALTER TABLE "users" ADD COLUMN "org_name" varchar;
 ALTER TABLE "users" ADD COLUMN "org_id" varchar;
 ALTER TABLE "users" ADD COLUMN "website" varchar;
+ALTER TABLE "users" ADD COLUMN "image_url" varchar;
 ALTER TABLE "users" ADD COLUMN "status" "enum_users_status";
 ALTER TABLE "users" ADD COLUMN "stripe_id" varchar;
+ALTER TABLE "users" ADD COLUMN "email_verified" timestamp(3) with time zone;
 ALTER TABLE "users" ADD COLUMN "enable_a_p_i_key" boolean;
 ALTER TABLE "users" ADD COLUMN "api_key" varchar;
 ALTER TABLE "users" ADD COLUMN "api_key_index" varchar;
@@ -734,16 +763,22 @@ CREATE INDEX IF NOT EXISTS "users_type_order_idx" ON "users_type" ("order");
 CREATE INDEX IF NOT EXISTS "users_type_parent_idx" ON "users_type" ("parent_id");
 CREATE INDEX IF NOT EXISTS "users_roles_order_idx" ON "users_roles" ("order");
 CREATE INDEX IF NOT EXISTS "users_roles_parent_idx" ON "users_roles" ("parent_id");
+CREATE INDEX IF NOT EXISTS "users_accounts_order_idx" ON "users_accounts" ("_order");
+CREATE INDEX IF NOT EXISTS "users_accounts_parent_id_idx" ON "users_accounts" ("_parent_id");
+CREATE INDEX IF NOT EXISTS "users_verification_tokens_order_idx" ON "users_verification_tokens" ("_order");
+CREATE INDEX IF NOT EXISTS "users_verification_tokens_parent_id_idx" ON "users_verification_tokens" ("_parent_id");
 CREATE INDEX IF NOT EXISTS "users_rels_order_idx" ON "users_rels" ("order");
 CREATE INDEX IF NOT EXISTS "users_rels_parent_idx" ON "users_rels" ("parent_id");
 CREATE INDEX IF NOT EXISTS "users_rels_path_idx" ON "users_rels" ("path");
-CREATE INDEX IF NOT EXISTS "carts_items_receivers_order_idx" ON "carts_items_receivers" ("_order");
-CREATE INDEX IF NOT EXISTS "carts_items_receivers_parent_id_idx" ON "carts_items_receivers" ("_parent_id");
 CREATE INDEX IF NOT EXISTS "carts_items_order_idx" ON "carts_items" ("_order");
 CREATE INDEX IF NOT EXISTS "carts_items_parent_id_idx" ON "carts_items" ("_parent_id");
+CREATE INDEX IF NOT EXISTS "carts_receivers_order_idx" ON "carts_receivers" ("_order");
+CREATE INDEX IF NOT EXISTS "carts_receivers_parent_id_idx" ON "carts_receivers" ("_parent_id");
 CREATE INDEX IF NOT EXISTS "carts_created_at_idx" ON "carts" ("created_at");
 CREATE INDEX IF NOT EXISTS "tags_created_at_idx" ON "tags" ("created_at");
 CREATE INDEX IF NOT EXISTS "categories_created_at_idx" ON "categories" ("created_at");
+CREATE INDEX IF NOT EXISTS "sessions_session_token_idx" ON "sessions" ("session_token");
+CREATE INDEX IF NOT EXISTS "sessions_created_at_idx" ON "sessions" ("created_at");
 CREATE INDEX IF NOT EXISTS "forms_blocks_checkbox_order_idx" ON "forms_blocks_checkbox" ("_order");
 CREATE INDEX IF NOT EXISTS "forms_blocks_checkbox_parent_id_idx" ON "forms_blocks_checkbox" ("_parent_id");
 CREATE INDEX IF NOT EXISTS "forms_blocks_checkbox_path_idx" ON "forms_blocks_checkbox" ("_path");
@@ -941,6 +976,18 @@ EXCEPTION
 END $$;
 
 DO $$ BEGIN
+ ALTER TABLE "users_accounts" ADD CONSTRAINT "users_accounts_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "users"("id") ON DELETE cascade ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+
+DO $$ BEGIN
+ ALTER TABLE "users_verification_tokens" ADD CONSTRAINT "users_verification_tokens_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "users"("id") ON DELETE cascade ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+
+DO $$ BEGIN
  ALTER TABLE "users_rels" ADD CONSTRAINT "users_rels_parent_fk" FOREIGN KEY ("parent_id") REFERENCES "users"("id") ON DELETE cascade ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
@@ -948,12 +995,6 @@ END $$;
 
 DO $$ BEGIN
  ALTER TABLE "users_rels" ADD CONSTRAINT "users_rels_orders_fk" FOREIGN KEY ("orders_id") REFERENCES "orders"("id") ON DELETE cascade ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
-
-DO $$ BEGIN
- ALTER TABLE "carts_items_receivers" ADD CONSTRAINT "carts_items_receivers_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "carts_items"("id") ON DELETE cascade ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -971,7 +1012,19 @@ EXCEPTION
 END $$;
 
 DO $$ BEGIN
+ ALTER TABLE "carts_receivers" ADD CONSTRAINT "carts_receivers_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "carts"("id") ON DELETE cascade ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+
+DO $$ BEGIN
  ALTER TABLE "carts" ADD CONSTRAINT "carts_billing_ordered_by_id_users_id_fk" FOREIGN KEY ("billing_ordered_by_id") REFERENCES "users"("id") ON DELETE set null ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+
+DO $$ BEGIN
+ ALTER TABLE "sessions" ADD CONSTRAINT "sessions_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE set null ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -1139,12 +1192,15 @@ DROP TABLE "reusable";
 DROP TABLE "media";
 DROP TABLE "users_type";
 DROP TABLE "users_roles";
+DROP TABLE "users_accounts";
+DROP TABLE "users_verification_tokens";
 DROP TABLE "users_rels";
-DROP TABLE "carts_items_receivers";
 DROP TABLE "carts_items";
+DROP TABLE "carts_receivers";
 DROP TABLE "carts";
 DROP TABLE "tags";
 DROP TABLE "categories";
+DROP TABLE "sessions";
 DROP TABLE "forms_blocks_checkbox";
 DROP TABLE "forms_blocks_country";
 DROP TABLE "forms_blocks_email";
@@ -1189,8 +1245,10 @@ ALTER TABLE "users" DROP COLUMN IF EXISTS "last_name";
 ALTER TABLE "users" DROP COLUMN IF EXISTS "org_name";
 ALTER TABLE "users" DROP COLUMN IF EXISTS "org_id";
 ALTER TABLE "users" DROP COLUMN IF EXISTS "website";
+ALTER TABLE "users" DROP COLUMN IF EXISTS "image_url";
 ALTER TABLE "users" DROP COLUMN IF EXISTS "status";
 ALTER TABLE "users" DROP COLUMN IF EXISTS "stripe_id";
+ALTER TABLE "users" DROP COLUMN IF EXISTS "email_verified";
 ALTER TABLE "users" DROP COLUMN IF EXISTS "enable_a_p_i_key";
 ALTER TABLE "users" DROP COLUMN IF EXISTS "api_key";
 ALTER TABLE "users" DROP COLUMN IF EXISTS "api_key_index";`)
