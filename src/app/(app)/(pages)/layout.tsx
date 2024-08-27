@@ -37,6 +37,7 @@ import { Footer } from '@app/_components/Footer'
 import { Menu, Setting } from '@payload-types'
 
 import FetchGlobal from '@/utilities/PayloadQueries/fetchGlobal'
+import { MainMenuHeader } from '@app/_components/MainMenuHeader'
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const settings = await FetchGlobal({ slug: 'settings', depth: 1 })
@@ -67,7 +68,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           className={`${[leaguespartan.variable, inter.variable, raleway.variable].join(' ')} dark:bg-neutral-900 dark:text-dark-text`}
         >
           <Providers>
-            {settings && <Header {...settings} />}
+            {/* {settings && <Header {...settings} />} */}
+            {settings && <MainMenuHeader {...settings} />}
             {children}
             {settings?.footer && <Footer {...settings?.footer}></Footer>}
             <PrivacyBanner />

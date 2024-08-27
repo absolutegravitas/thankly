@@ -33,7 +33,7 @@ export function AddToCartButton({ product }: AddToCartButtonProps) {
 
   // Hooks for navigation and managing the cart state
   const router = useRouter()
-  const { addProduct } = useCart()
+  const { addCartItem } = useCart()
 
   // Function to handle adding the product to the cart
   const handleAddToCart = async () => {
@@ -47,7 +47,7 @@ export function AddToCartButton({ product }: AddToCartButtonProps) {
       )
 
       // Add the product to the cart
-      addProduct(product, priceToUse)
+      addCartItem(product, priceToUse)
 
       // Navigate to the cart page
       router.push('/shop/cart')

@@ -19,7 +19,7 @@ import { getImageUrl } from '@/utilities/getImageDetails'
 import { useCart } from '@/app/(app)/_providers/Cart'
 import { AddToCartButton } from '../ProductActions/AddToCart'
 import { ViewInCartButton } from '../ProductActions/ViewInCart'
-import { RemoveFromCartButton } from '../ProductActions/RemoveFromCart'
+// import { RemoveFromCartButton } from '../ProductActions/RemoveFromCart'
 
 // Type for ProductCard component props
 export interface ProductCardProps extends Product {}
@@ -159,7 +159,7 @@ export const ProductCard: React.FC<ProductCardProps> = (product: Product) => {
                 <ViewInCartButton />
               </div>
               <div className="flex-initial w-1/4">
-                <RemoveFromCartButton cartItemId={product.id} />
+                {/* <RemoveFromCartButton cartItemId={product.id} /> */}
               </div>
             </div>
           )}

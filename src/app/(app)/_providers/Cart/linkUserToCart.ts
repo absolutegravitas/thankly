@@ -14,7 +14,7 @@ export function LinkUserToCart() {
       //then fill in any missing user details in cart
       cart.billing = {
         orderedBy: parseInt(session.user.id),
-        name: cart.billing?.name ?? session.user.name,
+        // name: cart.billing?.name ?? session.user.name,
         email: cart.billing?.email ?? session.user.email,
         ...cart.billing
       } 
