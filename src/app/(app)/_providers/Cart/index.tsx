@@ -14,7 +14,7 @@ import { debounce } from 'lodash'
 // import { auth } from '@/utilities/auth'
 import { v4 as uuidv4 } from 'uuid'
 import { Address, AddressAction, addressReducer } from './address'
-import { Receiver, GiftCard } from '@app/_blocks/Cart/cart-types'
+import { Receiver, GiftCard, ShippingMethod } from '@app/_blocks/Cart/cart-types'
 
 // Interface defining the CartContext shape
 // exposes objects and methods for use on the client
@@ -36,6 +36,11 @@ export type CartContext = {
   removeCartItem: (cartItemId: string) => void
   addReceiver: (receiver: Receiver) => void
   linkReceiver: (cartItemId: string, receiverId: string) => void
+  updateShipping: (
+    receiverId: string,
+    shippingMethod: ShippingMethod,
+    shippingPrice: number,
+  ) => void
   setCart: (newCart: Cart) => void
   clearCart: () => void
 
@@ -148,6 +153,17 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     dispatchCart({ type: 'LINK_RECEIVER', payload: { cartItemId, receiverId } })
   }, [])
 
+  //updateShipping: (receiverId: string, shippingMethod: string, shippingPrice: number) => void
+  const updateShipping = useCallback(
+    (receiverId: string, shippingMethod: ShippingMethod, shippingPrice: number) => {
+      dispatchCart({
+        type: 'UPDATE_SHIPPING',
+        payload: { receiverId, shippingMethod, shippingPrice },
+      })
+    },
+    [],
+  )
+
   // Clears the entire cart
   const clearCart = useCallback(() => {
     dispatchCart({ type: 'CLEAR_CART' })
@@ -184,6 +200,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setCart,
       updateMessage,
       updateQuantity,
+      updateShipping,
       // validateCart,
     }),
     [
@@ -201,6 +218,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setCart,
       updateMessage,
       updateQuantity,
+      updateShipping,
       // validateCart,
     ],
   )

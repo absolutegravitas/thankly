@@ -29,7 +29,7 @@ const CartPersonalisePage = () => {
     resolver: zodResolver(formSchema),
   })
 
-  export const Divider = () => (
+  const Divider = () => (
     <div className="flex items-center gap-4 md:hidden">
       <div className="flex-1 h-px bg-slate-300" />
       <p className="text-muted-foreground text-sm text-slate-400">Next Item</p>

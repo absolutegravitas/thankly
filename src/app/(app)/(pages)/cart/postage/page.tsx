@@ -1,6 +1,6 @@
 'use client'
+import { CartItem } from '@/app/(app)/_blocks/Cart/cart-types'
 import CartItemsTable from '@/app/(app)/_blocks/Cart/CartItemsTable'
-import ProductThumbnail from '@/app/(app)/_blocks/Cart/ProductThumbnail'
 import PostagePicker from '@/app/(app)/_components/PostagePicker'
 import {
   Accordion,
@@ -9,8 +9,8 @@ import {
   AccordionTrigger,
 } from '@/app/(app)/_components/ui/accordion'
 import { IconProps } from '@/app/(app)/_icons/types'
+import { transformToReceiverCarts } from '@/utilities/receiverCarts'
 import { useCart } from '@app/_providers/Cart'
-import { ImageProps } from 'next/image'
 import { useRouter } from 'next/navigation'
 import React from 'react'
 import { useMediaQuery } from 'react-responsive'
@@ -20,41 +20,56 @@ const CartPostagePage = () => {
   const router = useRouter()
   const isMobile = useMediaQuery({ maxWidth: 639 })
 
-  const CartContent = () => (
-    <>{cart.items && <CartItemsTable cartItems={cart.items} shipping={15.5} />}</>
-  )
+  //get a transformed list of receiver with their own carts
+  const receiverCarts = transformToReceiverCarts(cart)
 
   return (
     <>
       <div className="flex flex-col">
-        <div className="flex flex-col-reverse sm:flex-row">
-          <div className="basis-1/2">
-            <PostagePicker />
-          </div>
-          <div className="basis-1/2 bg-stone-200">
-            {isMobile ? (
-              <Accordion type="single" collapsible className="w-full">
-                <AccordionItem value="cart">
-                  <AccordionTrigger className="flex items-center gap-2">
-                    <ShoppingCartIcon className="h-5 w-5" />
-                    Cart for John Doe
-                  </AccordionTrigger>
-                  <AccordionContent>
-                    <CartContent />
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
-            ) : (
-              <div className="p-4">
-                <div className="flex items-center gap-2 mb-4">
-                  <ShoppingCartIcon className="h-5 w-5" />
-                  <h2 className="text-lg font-semibold">Cart</h2>
+        {receiverCarts.receivers?.map((receiver, index) => (
+          <div key={index} className="flex flex-col-reverse sm:flex-row">
+            <div className="p-4 sm:p-8 basis-1/2">
+              <PostagePicker receiverId={receiver.receiverId} />
+            </div>
+            <div className="basis-1/2 bg-stone-200">
+              {isMobile ? (
+                <Accordion type="single" collapsible className="w-full">
+                  <AccordionItem value="cart">
+                    <AccordionTrigger className="w-full">
+                      <div className="flex items-center gap-2 flex-1">
+                        <span className="inline-block">
+                          <GiftIcon className="h-5 w-5" />
+                        </span>
+                        <span className="flex-grow text-left">
+                          Gifts for {receiver.firstName} {receiver.lastName}
+                        </span>
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent>
+                      <CartItemsTable
+                        cartItems={receiver.items}
+                        shipping={receiver.delivery?.shippingPrice ?? 0}
+                      />
+                    </AccordionContent>
+                  </AccordionItem>
+                </Accordion>
+              ) : (
+                <div className="p-4">
+                  <div className="flex items-center gap-2 mb-4">
+                    <GiftIcon className="h-5 w-5" />
+                    <h2 className="text-lg font-semibold">
+                      Gifts for {receiver.firstName} {receiver.lastName}
+                    </h2>
+                  </div>
+                  <CartItemsTable
+                    cartItems={receiver.items}
+                    shipping={receiver.delivery?.shippingPrice ?? 0}
+                  />
                 </div>
-                <CartContent />
-              </div>
-            )}
+              )}
+            </div>
           </div>
-        </div>
+        ))}
       </div>
     </>
   )
@@ -62,10 +77,9 @@ const CartPostagePage = () => {
 
 export default CartPostagePage
 
-function ShoppingCartIcon(props: IconProps) {
+function GiftIcon(props: IconProps) {
   return (
     <svg
-      {...props}
       xmlns="http://www.w3.org/2000/svg"
       width="24"
       height="24"
@@ -75,10 +89,11 @@ function ShoppingCartIcon(props: IconProps) {
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
+      className="text-muted-foreground"
     >
-      <circle cx="8" cy="21" r="1" />
-      <circle cx="19" cy="21" r="1" />
-      <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" />
+      <path d="M20 12v10H4V12M2 7h20v5H2z" />
+      <path d="M12 22V7M12 7H7.5a2.5 2.5 0 0 1 0-5C11 2 12 7 12 7z" />
+      <path d="M12 7h4.5a2.5 2.5 0 0 0 0-5C12 2 12 7 12 7z" />
     </svg>
   )
 }
