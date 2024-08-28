@@ -35,7 +35,7 @@ const CartItemsTable = ({ cartItems, shipping }: Props) => {
           </tr>
           {shipping && (
             <tr className="">
-              <td className="px-6 py-4 font-medium">Shipping</td>
+              <td className="px-6 py-4 font-medium">Postage</td>
               <td className="px-6 py-4" />
               <td className="px-6 py-4 text-right font-medium">${shipping.toFixed(2)}</td>
             </tr>

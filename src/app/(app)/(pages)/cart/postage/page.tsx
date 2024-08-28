@@ -8,6 +8,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/app/(app)/_components/ui/accordion'
+import { Button } from '@/app/(app)/_components/ui/button'
 import { IconProps } from '@/app/(app)/_icons/types'
 import { transformToReceiverCarts } from '@/utilities/receiverCarts'
 import { useCart } from '@app/_providers/Cart'
@@ -46,10 +47,7 @@ const CartPostagePage = () => {
                       </div>
                     </AccordionTrigger>
                     <AccordionContent>
-                      <CartItemsTable
-                        cartItems={receiver.items}
-                        shipping={receiver.delivery?.shippingPrice ?? 0}
-                      />
+                      <CartItemsTable cartItems={receiver.items} shipping={0} />
                     </AccordionContent>
                   </AccordionItem>
                 </Accordion>
@@ -70,6 +68,39 @@ const CartPostagePage = () => {
             </div>
           </div>
         ))}
+        <div className="flex flex-col-reverse sm:flex-row">
+          <div className="p-4 basis-1/2 items-end">
+            <div className="flex flex-col items-center">
+              <div className="mt-4 w-full sm:w-64">
+                <Button size="lg" className="rounded-full w-full" type="submit">
+                  Continue to Payment
+                </Button>
+              </div>
+            </div>
+          </div>
+          <div className="p-4 basis-1/2 bg-stone-200 text-stone-800">
+            <div className="border border-t-stone-400 border-b-stone-400 px-4 text-lg font-medium">
+              <div className="flex flex-row py-2">
+                <div className="flex flex-col basis-1/2">Subtotal:</div>
+                <div className="flex flex-col basis-1/2 items-end">
+                  ${cart.totals.cost.toFixed(2)}
+                </div>
+              </div>
+              <div className="flex flex-row pb-3">
+                <div className="flex flex-col basis-1/2">Postage:</div>
+                <div className="flex flex-col basis-1/2 items-end">
+                  ${cart.totals.shipping.toFixed(2)}
+                </div>
+              </div>
+            </div>
+            <div className="flex flex-row pb-3 p-4 text-3xl font-bold">
+              <div className="flex flex-col basis-1/2">Total:</div>
+              <div className="flex flex-col basis-1/2 items-end">
+                ${cart.totals.total.toFixed(2)}
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </>
   )
