@@ -28,7 +28,7 @@ import {
 } from '@/app/(app)/_components/ui/select'
 import Link from 'next/link'
 import { debounce, fromPairs } from 'lodash'
-import { addressAutocomplete } from '../Cart/Receivers/addressAutocomplete'
+import { addressAutocomplete } from '../../_blocks/Cart/Receivers/addressAutocomplete'
 import { useForm, Controller } from 'react-hook-form'
 import {
   Address,

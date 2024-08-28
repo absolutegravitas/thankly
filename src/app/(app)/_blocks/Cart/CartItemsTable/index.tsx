@@ -9,6 +9,8 @@ interface Props {
 }
 
 const CartItemsTable = ({ cartItems, shipping }: Props) => {
+  const totalAmount = cartItems.reduce((total, item) => total + item.price * item.quantity, 0)
+
   return (
     <div className="max-w-xl">
       <table className="w-full">
@@ -19,7 +21,9 @@ const CartItemsTable = ({ cartItems, shipping }: Props) => {
                 <ProductThumbnail cartItem={item} />
               </td>
               <td className="px-6 py-4 font-semibold">{(item.product as Product).title}</td>
-              <td className="px-6 py-4 text-right font-medium">{item.price}</td>
+              <td className="px-6 py-4 text-right font-medium">
+                ${(item.price * item.quantity).toFixed(2)}
+              </td>
             </tr>
           ))}
         </tbody>
@@ -27,7 +31,7 @@ const CartItemsTable = ({ cartItems, shipping }: Props) => {
           <tr className="">
             <td className="px-6 py-4 font-medium">Subtotal</td>
             <td className="px-6 py-4" />
-            <td className="px-6 py-4 text-right font-medium">$358.98</td>
+            <td className="px-6 py-4 text-right font-medium">${totalAmount.toFixed(2)}</td>
           </tr>
           {shipping && (
             <tr className="">

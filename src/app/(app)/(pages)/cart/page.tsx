@@ -10,7 +10,10 @@ import { zodResolver } from '@hookform/resolvers/zod'
 
 const cartItemSchema = z.object({
   receiverId: z.string().min(1, 'Delivery address is required'),
-  giftMessage: z.string().min(1, 'Gift Message is required'),
+  giftMessage: z
+    .string()
+    .min(1, 'Gift Message is required')
+    .max(400, 'Gift message cannot be longer than 400 characters'),
 })
 
 const formSchema = z.object({
@@ -26,7 +29,7 @@ const CartPersonalisePage = () => {
     resolver: zodResolver(formSchema),
   })
 
-  const Divider = () => (
+  export const Divider = () => (
     <div className="flex items-center gap-4 md:hidden">
       <div className="flex-1 h-px bg-slate-300" />
       <p className="text-muted-foreground text-sm text-slate-400">Next Item</p>
@@ -39,34 +42,36 @@ const CartPersonalisePage = () => {
   }
 
   return (
-    <FormProvider {...methods}>
-      <form onSubmit={methods.handleSubmit(onSubmit)}>
-        {cart.items?.map((item, index) => (
-          <React.Fragment key={item.itemId}>
-            <CartItemDisplay cartItem={item} index={index} />
-            {index < cart.items!.length - 1 && <Divider />}
-          </React.Fragment>
-        ))}
-        <div className="max-w-5xl mx-auto px-8">
-          <div className="flex flex-col items-end">
-            <div className="text-right">
-              <div className="text-base font-medium text-foreground">Total</div>
-              <div className="text-4xl font-bold text-foreground">
-                ${cart.totals.cost.toFixed(2)}
+    <div className="px-4 sm:px-6">
+      <FormProvider {...methods}>
+        <form onSubmit={methods.handleSubmit(onSubmit)}>
+          {cart.items?.map((item, index) => (
+            <React.Fragment key={item.itemId}>
+              <CartItemDisplay cartItem={item} index={index} />
+              {index < cart.items!.length - 1 && <Divider />}
+            </React.Fragment>
+          ))}
+          <div className="max-w-5xl mx-auto px-8">
+            <div className="flex flex-col items-end">
+              <div className="text-right">
+                <div className="text-base font-medium text-foreground">Total</div>
+                <div className="text-4xl font-bold text-foreground">
+                  ${cart.totals.cost.toFixed(2)}
+                </div>
+                <p className="mt-2 text-sm text-muted-foreground">
+                  Shipping and taxes calculated at checkout
+                </p>
               </div>
-              <p className="mt-2 text-sm text-muted-foreground">
-                Shipping and taxes calculated at checkout
-              </p>
-            </div>
-            <div className="mt-4 w-full sm:w-64">
-              <Button size="lg" className="rounded-full w-full" type="submit">
-                Checkout
-              </Button>
+              <div className="mt-4 w-full sm:w-64">
+                <Button size="lg" className="rounded-full w-full" type="submit">
+                  Checkout
+                </Button>
+              </div>
             </div>
           </div>
-        </div>
-      </form>
-    </FormProvider>
+        </form>
+      </FormProvider>
+    </div>
   )
 }
 
