@@ -28,7 +28,6 @@ const CartItemPersonaliser = ({ cartItem, index }: Props) => {
 
   const {
     setValue,
-    getValues,
     register,
     formState: { errors },
   } = useFormContext<CartPersonalisationForm>()

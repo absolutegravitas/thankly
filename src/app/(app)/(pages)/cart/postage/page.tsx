@@ -1,7 +1,7 @@
 'use client'
 import { CartItem } from '@/app/(app)/_blocks/Cart/cart-types'
-import CartItemsTable from '@/app/(app)/_blocks/Cart/CartItemsTable'
-import PostagePicker from '@/app/(app)/_components/PostagePicker'
+import CartItemsTable from '@app/_blocks/Cart/CartItemsTable'
+import PostagePicker from '@app/_components/PostagePicker'
 import {
   Accordion,
   AccordionContent,
@@ -15,94 +15,113 @@ import { useCart } from '@app/_providers/Cart'
 import { useRouter } from 'next/navigation'
 import React from 'react'
 import { useMediaQuery } from 'react-responsive'
+import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { FormProvider, useForm } from 'react-hook-form'
+
+const postagePickerSchema = z.object({
+  shippingMethod: z.string().min(1, 'Please select a postage method'),
+})
+
+const formSchema = z.object({
+  shippingMethods: z.array(postagePickerSchema),
+})
+
+export type CartPostageForm = z.infer<typeof formSchema>
 
 const CartPostagePage = () => {
   const { cart } = useCart()
   const router = useRouter()
   const isMobile = useMediaQuery({ maxWidth: 639 })
+  const methods = useForm({
+    resolver: zodResolver(formSchema),
+  })
 
   //get a transformed list of receiver with their own carts
   const receiverCarts = transformToReceiverCarts(cart)
 
+  const onSubmit = (data: any) => {
+    router.push('/cart/payment')
+  }
+
   return (
-    <>
-      <div className="flex flex-col">
-        {receiverCarts.receivers?.map((receiver, index) => (
-          <div key={index} className="flex flex-col-reverse sm:flex-row">
-            <div className="p-4 sm:p-8 basis-1/2">
-              <PostagePicker receiverId={receiver.receiverId} />
-            </div>
-            <div className="basis-1/2 bg-stone-200">
-              {isMobile ? (
-                <Accordion type="single" collapsible className="w-full">
-                  <AccordionItem value="cart">
-                    <AccordionTrigger className="w-full">
-                      <div className="flex items-center gap-2 flex-1">
-                        <span className="inline-block">
-                          <GiftIcon className="h-5 w-5" />
-                        </span>
-                        <span className="flex-grow text-left">
-                          Gifts for {receiver.firstName} {receiver.lastName}
-                        </span>
-                      </div>
-                    </AccordionTrigger>
-                    <AccordionContent>
-                      <CartItemsTable cartItems={receiver.items} shipping={0} />
-                    </AccordionContent>
-                  </AccordionItem>
-                </Accordion>
-              ) : (
-                <div className="p-4">
-                  <div className="flex items-center gap-2 mb-4">
-                    <GiftIcon className="h-5 w-5" />
-                    <h2 className="text-lg font-semibold">
-                      Gifts for {receiver.firstName} {receiver.lastName}
-                    </h2>
+    <FormProvider {...methods}>
+      <form onSubmit={methods.handleSubmit(onSubmit)}>
+        <div className="flex flex-col">
+          {receiverCarts.receivers?.map((receiver, index) => (
+            <div key={index} className="flex flex-col-reverse sm:flex-row">
+              <div className="px-4 py-2 sm:px-8 sm:py-0 sm:pb-4 basis-1/2">
+                <PostagePicker receiverId={receiver.receiverId} index={index} />
+              </div>
+              <div className="basis-1/2 bg-thankly-palegreen">
+                {isMobile ? (
+                  <Accordion type="single" collapsible className="w-full">
+                    <AccordionItem value="cart">
+                      <AccordionTrigger className="w-full">
+                        <div className="flex items-center gap-2 flex-1 px-2">
+                          <span className="inline-block">
+                            <GiftIcon className="h-5 w-5" />
+                          </span>
+                          <span className="flex-grow text-left">
+                            Delivery for {receiver.firstName} {receiver.lastName}
+                          </span>
+                        </div>
+                      </AccordionTrigger>
+                      <AccordionContent className="pb-0">
+                        <CartItemsTable receiverCart={receiver} />
+                      </AccordionContent>
+                    </AccordionItem>
+                  </Accordion>
+                ) : (
+                  <div className="p-4">
+                    <div className="flex items-center gap-2 mb-4 px-2">
+                      <GiftIcon className="h-5 w-5" />
+                      <span className="text-lg font-semibold">
+                        Delivery for {receiver.firstName} {receiver.lastName}
+                      </span>
+                    </div>
+                    <CartItemsTable receiverCart={receiver} />
                   </div>
-                  <CartItemsTable
-                    cartItems={receiver.items}
-                    shipping={receiver.delivery?.shippingPrice ?? 0}
-                  />
-                </div>
-              )}
-            </div>
-          </div>
-        ))}
-        <div className="flex flex-col-reverse sm:flex-row">
-          <div className="p-4 basis-1/2 items-end">
-            <div className="flex flex-col items-center">
-              <div className="mt-4 w-full sm:w-64">
-                <Button size="lg" className="rounded-full w-full" type="submit">
-                  Continue to Payment
-                </Button>
+                )}
               </div>
             </div>
-          </div>
-          <div className="p-4 basis-1/2 bg-stone-200 text-stone-800">
-            <div className="border border-t-stone-400 border-b-stone-400 px-4 text-lg font-medium">
-              <div className="flex flex-row py-2">
-                <div className="flex flex-col basis-1/2">Subtotal:</div>
+          ))}
+          <div className="flex flex-col-reverse sm:flex-row">
+            <div className="p-4 basis-1/2 items-end">
+              <div className="flex flex-col items-center">
+                <div className="mt-4 w-full sm:w-64">
+                  <Button size="lg" className="rounded-full w-full" type="submit">
+                    Continue to Payment
+                  </Button>
+                </div>
+              </div>
+            </div>
+            <div className="p-4 basis-1/2 bg-thankly-palegreen text-stone-800">
+              <div className="border border-x-0 border-t-stone-400 border-b-stone-400 px-4 text-lg font-medium">
+                <div className="flex flex-row py-2">
+                  <div className="flex flex-col basis-1/2">Subtotal:</div>
+                  <div className="flex flex-col basis-1/2 items-end">
+                    ${cart.totals.cost.toFixed(2)}
+                  </div>
+                </div>
+                <div className="flex flex-row pb-3">
+                  <div className="flex flex-col basis-1/2">Postage:</div>
+                  <div className="flex flex-col basis-1/2 items-end">
+                    ${cart.totals.shipping.toFixed(2)}
+                  </div>
+                </div>
+              </div>
+              <div className="flex flex-row pb-3 p-4 text-3xl font-bold">
+                <div className="flex flex-col basis-1/2">Total:</div>
                 <div className="flex flex-col basis-1/2 items-end">
-                  ${cart.totals.cost.toFixed(2)}
+                  ${cart.totals.total.toFixed(2)}
                 </div>
-              </div>
-              <div className="flex flex-row pb-3">
-                <div className="flex flex-col basis-1/2">Postage:</div>
-                <div className="flex flex-col basis-1/2 items-end">
-                  ${cart.totals.shipping.toFixed(2)}
-                </div>
-              </div>
-            </div>
-            <div className="flex flex-row pb-3 p-4 text-3xl font-bold">
-              <div className="flex flex-col basis-1/2">Total:</div>
-              <div className="flex flex-col basis-1/2 items-end">
-                ${cart.totals.total.toFixed(2)}
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </>
+      </form>
+    </FormProvider>
   )
 }
 
