@@ -9,7 +9,7 @@ import {
   SelectItem,
 } from '@app/_components/ui/select'
 import { Button } from '@app/_components/ui/button'
-import AddressPicker from '@app/_blocks/AddressPicker'
+import AddressPicker from '@/app/(app)/_components/AddressPicker'
 import { CartItem } from '@app/_blocks/Cart/cart-types'
 import { Address, getNewReceiver, getReceiverAddresses } from '@/app/(app)/_providers/Cart/address'
 import { useCart } from '@/app/(app)/_providers/Cart'
@@ -28,7 +28,6 @@ const CartItemPersonaliser = ({ cartItem, index }: Props) => {
 
   const {
     setValue,
-    getValues,
     register,
     formState: { errors },
   } = useFormContext<CartPersonalisationForm>()

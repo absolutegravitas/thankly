@@ -14,7 +14,7 @@ import { debounce } from 'lodash'
 // import { auth } from '@/utilities/auth'
 import { v4 as uuidv4 } from 'uuid'
 import { Address, AddressAction, addressReducer } from './address'
-import { Receiver, GiftCard } from '@app/_blocks/Cart/cart-types'
+import { Receiver, GiftCard, ShippingMethod } from '@app/_blocks/Cart/cart-types'
 
 // Interface defining the CartContext shape
 // exposes objects and methods for use on the client
@@ -26,6 +26,9 @@ export type CartContext = {
   // checking methods
   hasInitializedCart: boolean
   cartIsEmpty: boolean
+  cartPersonalisationMissing: boolean
+  cartPostageMissing: boolean
+
   isProductInCart: (productId: string | number) => boolean
   // validateCart: () => boolean
 
@@ -36,6 +39,11 @@ export type CartContext = {
   removeCartItem: (cartItemId: string) => void
   addReceiver: (receiver: Receiver) => void
   linkReceiver: (cartItemId: string, receiverId: string) => void
+  updateShipping: (
+    receiverId: string,
+    shippingMethod: ShippingMethod,
+    shippingPrice: number,
+  ) => void
   setCart: (newCart: Cart) => void
   clearCart: () => void
 
@@ -83,7 +91,23 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // Memoized value for checking if the cart is empty
   const cartIsEmpty = useMemo(() => cart.items?.length === 0, [cart.items])
 
-  // state for managing
+  //check that cart items exist, and all have a message and a receiver
+  const cartPersonalisationMissing = useMemo((): boolean => {
+    if (!cart.items || cart.items.length === 0) return false
+    return !cart.items.every((item) => item.receiverId && item.giftCard.message)
+  }, [cart.items])
+
+  //check that cart receivers exist, and those that are selected have a postage methods
+  const cartPostageMissing = useMemo((): boolean => {
+    if (!cart.items || cart.items.length === 0) return false
+    if (!cart.receivers || cart.receivers.length === 0) return false
+    // Get a set of all receiverIds used in cart items
+    const usedReceiverIds = new Set(cart.items.map((item) => item.receiverId))
+    return !cart.receivers.every((receiver) => {
+      if (!usedReceiverIds.has(receiver.receiverId)) return true
+      return receiver.delivery && receiver.delivery.shippingMethod
+    })
+  }, [cart])
 
   // Checks if a product is in the cart
   const isProductInCart = useCallback(
@@ -148,6 +172,17 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     dispatchCart({ type: 'LINK_RECEIVER', payload: { cartItemId, receiverId } })
   }, [])
 
+  //updateShipping: (receiverId: string, shippingMethod: string, shippingPrice: number) => void
+  const updateShipping = useCallback(
+    (receiverId: string, shippingMethod: ShippingMethod, shippingPrice: number) => {
+      dispatchCart({
+        type: 'UPDATE_SHIPPING',
+        payload: { receiverId, shippingMethod, shippingPrice },
+      })
+    },
+    [],
+  )
+
   // Clears the entire cart
   const clearCart = useCallback(() => {
     dispatchCart({ type: 'CLEAR_CART' })
@@ -176,6 +211,8 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       addReceiver,
       cart,
       cartIsEmpty,
+      cartPersonalisationMissing,
+      cartPostageMissing,
       clearCart,
       hasInitializedCart,
       isProductInCart,
@@ -184,6 +221,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setCart,
       updateMessage,
       updateQuantity,
+      updateShipping,
       // validateCart,
     }),
     [
@@ -193,6 +231,8 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       addReceiver,
       cart,
       cartIsEmpty,
+      cartPersonalisationMissing,
+      cartPostageMissing,
       clearCart,
       hasInitializedCart,
       isProductInCart,
@@ -201,6 +241,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setCart,
       updateMessage,
       updateQuantity,
+      updateShipping,
       // validateCart,
     ],
   )

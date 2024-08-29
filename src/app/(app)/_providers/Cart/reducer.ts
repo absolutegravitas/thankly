@@ -9,7 +9,7 @@ import { upsertPayloadCart } from './upsertPayloadCart'
 import { deletePayloadCart } from './deletePayloadCart'
 import { debounce } from 'lodash' // You'll need to install lodash if not already present
 import { uuid } from '@/utilities/uuid'
-import { CartItem, Receiver, GiftCard } from '@app/_blocks/Cart/cart-types'
+import { CartItem, Receiver, GiftCard, ShippingMethod } from '@app/_blocks/Cart/cart-types'
 
 // Create a debounced version of the upsertPayloadCart function
 const debouncedUpsertPayloadCart = debounce(upsertPayloadCart, 1000)
@@ -42,6 +42,10 @@ export type CartAction =
   | {
       type: 'LINK_RECEIVER'
       payload: { cartItemId: string, receiverId: string }
+    }
+  | {
+      type: 'UPDATE_SHIPPING'
+      payload: { receiverId: string, shippingMethod: ShippingMethod, shippingPrice: number }
     }
   | { type: 'SET_CART'; payload: Cart }
   | { type: 'CLEAR_CART' }
@@ -186,6 +190,38 @@ export const cartReducer = (cart: Cart, action: CartAction): Cart => {
 
       return cartToReturn;
     }
+
+    case 'UPDATE_SHIPPING': {
+      const { receiverId, shippingMethod, shippingPrice } = action.payload
+      
+      const updatedReceivers =
+      cart.receivers?.map((receiver) => {
+        if (receiver.receiverId === receiverId ) {
+          return {
+            ...receiver,
+            delivery: {
+              shippingMethod: shippingMethod,
+              shippingPrice: shippingPrice
+            }
+          };
+        }
+        return receiver;
+      });
+
+      let cartToReturn = {
+        ...cart,
+        receivers: updatedReceivers,
+      }
+
+      cartToReturn = {
+        ...cartToReturn,
+        totals: calculateCartTotals(cartToReturn)
+      }
+
+      return cartToReturn;
+    }
+
+    
 
     case 'CLEAR_CART': {
       // also clear / delete the cart on payloadCMS

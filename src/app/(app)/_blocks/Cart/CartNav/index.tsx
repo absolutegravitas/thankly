@@ -16,9 +16,9 @@ export default function CartNav() {
     <nav className="flex justify-center items-center gap-6 text-sm font-medium">
       {navItems.map((item, index) => (
         <React.Fragment key={item.href}>
-          <p
+          <Link
             key={item.href}
-            // href={item.href}
+            href={item.href}
             className={`border-b ${
               pathname === item.href
                 ? 'text-primary border-solid border-primary underline-offset-4'
@@ -26,7 +26,7 @@ export default function CartNav() {
             }`}
           >
             {item.label}
-          </p>
+          </Link>
           {index < navItems.length - 1 && (
             <span className="mx-2">{' > '}</span> // Add space around the separator for better visibility
           )}

@@ -15,9 +15,11 @@ const ProductThumbnail = ({ cartItem }: Props) => {
   const { media: images } = product as Product
 
   return (
-    <div className="relative w-full max-w-[90px] aspect-square group rounded-lg">
-      <div className="absolute -top-4 -right-4 bg-thankly-green rounded-full w-8 h-8 flex items-center justify-center text-white font-medium z-10">
-        <span>{quantity}</span>
+    <div className="relative w-full max-w-[70px] aspect-square group rounded-lg">
+      <div className="absolute -top-3 -right-3 bg-thankly-green rounded-full w-5 h-5 flex items-center justify-center text-white font-medium z-10">
+        <span>
+          <p className="text-xs">{quantity}</p>
+        </span>
       </div>
       <div className="w-full h-full bg-background border rounded-lg border-stone-400 overflow-hidden">
         {images && images.length > 0 && (

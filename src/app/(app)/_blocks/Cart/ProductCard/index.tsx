@@ -28,8 +28,8 @@ const ProductCard: React.FC<ProductBlockContentProps> = ({ cartItem, onQuantityC
   const unitPrice = onSale ? salePrice : basePrice
 
   return (
-    <div className="bg-background rounded-2xl shadow-lg overflow-hidden w-full max-w-[240px] aspect-[3/5]  bg-thankly-offwhite">
-      <div className="aspect-[4/4] relative overflow-hidden">
+    <div className="rounded-2xl shadow-lg overflow-hidden w-56 h-80 bg-thankly-offwhite">
+      <div className="w-full h-48 relative overflow-hidden ">
         {images && images.length > 0 && (
           <img
             src={(images[0].mediaItem! as Media).url as string}

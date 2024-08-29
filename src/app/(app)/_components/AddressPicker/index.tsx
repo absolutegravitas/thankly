@@ -28,7 +28,7 @@ import {
 } from '@/app/(app)/_components/ui/select'
 import Link from 'next/link'
 import { debounce, fromPairs } from 'lodash'
-import { addressAutocomplete } from '../Cart/Receivers/addressAutocomplete'
+import { addressAutocomplete } from '../../_blocks/Cart/Receivers/addressAutocomplete'
 import { useForm, Controller } from 'react-hook-form'
 import {
   Address,
@@ -159,10 +159,11 @@ export default function AddressPicker({
 
   const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    e.stopPropagation()
     const isValid = await validateMandatoryAddressFields()
-    //if (isValid) {
-    handleSubmit(onSubmit, onError)(e)
-    //}
+    if (isValid) {
+      handleSubmit(onSubmit, onError)(e)
+    }
   }
 
   const onSubmit = (address: NullableAddress) => {
@@ -394,10 +395,12 @@ export default function AddressPicker({
                 )}
               </div>
               <DialogFooter>
-                <Button variant="ghost" type="reset" onClick={handleCloseAddressModal}>
+                <Button variant="ghost" type="button" onClick={handleCloseAddressModal}>
                   Cancel
                 </Button>
-                <Button type="submit">Save Address</Button>
+                <Button type="submit" onClick={(e) => e.stopPropagation()}>
+                  Save Address
+                </Button>
               </DialogFooter>
             </form>
           </DialogContent>

@@ -99,6 +99,16 @@ export const AddressText = (address: AddressWithoutName | null): string | undefi
   return `${addresslines}, ${address.city} ${address.state} ${address.postcode}`
 }
 
+export const ReceiverAddressText = (receiver: Receiver | null): string | undefined => {
+  if (!receiver || !receiver.address) return undefined
+  //else
+  const address = receiver.address
+  const addresslines = address.addressLine2 ? `${address.addressLine1} ${address.addressLine2}` : address.addressLine1
+  return `${addresslines}, ${address.city} ${address.state} ${address.postcode}`
+}
+
+
+
 export const FullName = (address: Address): string => { 
   return `${address.firstName} ${address.lastName}`
 }
