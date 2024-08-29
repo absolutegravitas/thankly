@@ -26,6 +26,9 @@ export type CartContext = {
   // checking methods
   hasInitializedCart: boolean
   cartIsEmpty: boolean
+  cartPersonalisationMissing: boolean
+  cartPostageMissing: boolean
+
   isProductInCart: (productId: string | number) => boolean
   // validateCart: () => boolean
 
@@ -88,7 +91,23 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // Memoized value for checking if the cart is empty
   const cartIsEmpty = useMemo(() => cart.items?.length === 0, [cart.items])
 
-  // state for managing
+  //check that cart items exist, and all have a message and a receiver
+  const cartPersonalisationMissing = useMemo((): boolean => {
+    if (!cart.items || cart.items.length === 0) return false
+    return !cart.items.every((item) => item.receiverId && item.giftCard.message)
+  }, [cart.items])
+
+  //check that cart receivers exist, and those that are selected have a postage methods
+  const cartPostageMissing = useMemo((): boolean => {
+    if (!cart.items || cart.items.length === 0) return false
+    if (!cart.receivers || cart.receivers.length === 0) return false
+    // Get a set of all receiverIds used in cart items
+    const usedReceiverIds = new Set(cart.items.map((item) => item.receiverId))
+    return !cart.receivers.every((receiver) => {
+      if (!usedReceiverIds.has(receiver.receiverId)) return true
+      return receiver.delivery && receiver.delivery.shippingMethod
+    })
+  }, [cart])
 
   // Checks if a product is in the cart
   const isProductInCart = useCallback(
@@ -192,6 +211,8 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       addReceiver,
       cart,
       cartIsEmpty,
+      cartPersonalisationMissing,
+      cartPostageMissing,
       clearCart,
       hasInitializedCart,
       isProductInCart,
@@ -210,6 +231,8 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       addReceiver,
       cart,
       cartIsEmpty,
+      cartPersonalisationMissing,
+      cartPostageMissing,
       clearCart,
       hasInitializedCart,
       isProductInCart,

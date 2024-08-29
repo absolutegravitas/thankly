@@ -7,6 +7,7 @@ import React from 'react'
 import { z } from 'zod'
 import { FormProvider, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
+import CartRedirect from '../../_blocks/Cart/CartRedirect'
 
 const cartItemSchema = z.object({
   receiverId: z.string().min(1, 'Delivery address is required'),
@@ -23,11 +24,15 @@ const formSchema = z.object({
 export type CartPersonalisationForm = z.infer<typeof formSchema>
 
 const CartPersonalisePage = () => {
-  const { cart } = useCart()
+  const { cart, cartIsEmpty } = useCart()
   const router = useRouter()
   const methods = useForm({
     resolver: zodResolver(formSchema),
   })
+
+  if (cartIsEmpty) {
+    return <CartRedirect />
+  }
 
   const Divider = () => (
     <div className="flex items-center gap-4 md:hidden">

@@ -13,11 +13,12 @@ import { IconProps } from '@/app/(app)/_icons/types'
 import { transformToReceiverCarts } from '@/utilities/receiverCarts'
 import { useCart } from '@app/_providers/Cart'
 import { useRouter } from 'next/navigation'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useMediaQuery } from 'react-responsive'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { FormProvider, useForm } from 'react-hook-form'
+import CartRedirect from '@/app/(app)/_blocks/Cart/CartRedirect'
 
 const postagePickerSchema = z.object({
   shippingMethod: z.string().min(1, 'Please select a postage method'),
@@ -30,12 +31,39 @@ const formSchema = z.object({
 export type CartPostageForm = z.infer<typeof formSchema>
 
 const CartPostagePage = () => {
-  const { cart } = useCart()
+  const { cart, cartIsEmpty, cartPersonalisationMissing } = useCart()
   const router = useRouter()
   const isMobile = useMediaQuery({ maxWidth: 639 })
   const methods = useForm({
     resolver: zodResolver(formSchema),
   })
+
+  if (cartIsEmpty || cartPersonalisationMissing) {
+    return <CartRedirect />
+  }
+
+  // const [showCartEmptyMessage, setShowCartEmptyMessage] = useState(false)
+  // const [showPersonaliseMessage, setShowPersonaliseMessage] = useState(false)
+
+  // //handle potential redirect if there are missing personalistion details.
+  // const cartPersonalisationMissing = !validateCartPersonalisation()
+  // useEffect(() => {
+  //   if (cartPersonalisationMissing) {
+  //     // setShowPersonaliseMessage(true)
+  //     const timer = setTimeout(() => {
+  //       router.push('/cart')
+  //     }, 3000) // 3 seconds delay
+
+  //     return () => clearTimeout(timer)
+  //   }
+  // }, [validateCartPersonalisation, router])
+  // if (cartPersonalisationMissing) {
+  //   return (
+  //     <p className="p-4 jusify-items-center text-center">
+  //       Opps! Looks like we need some additional details to personalise your gifts. Hold tight...
+  //     </p>
+  //   )
+  // }
 
   //get a transformed list of receiver with their own carts
   const receiverCarts = transformToReceiverCarts(cart)
