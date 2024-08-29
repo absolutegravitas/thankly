@@ -93,10 +93,12 @@ export default function CartNav() {
         ))}
       </ol>
       {showAlert && (
-        <Alert variant="destructive" className="mt-4">
-          <AlertCircle className="h-4 w-4" />
-          <AlertDescription>Please complete the current step before proceeding.</AlertDescription>
-        </Alert>
+        <div className="flex justify-center items-center">
+          <Alert variant="destructive" className="mt-4 sm:w-2/3 flex items-center">
+            <AlertCircle className="h-4 w-4" />
+            <AlertDescription>Please complete the current step before proceeding.</AlertDescription>
+          </Alert>
+        </div>
       )}
     </nav>
   )
