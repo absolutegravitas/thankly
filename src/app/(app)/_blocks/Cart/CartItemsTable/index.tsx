@@ -47,7 +47,7 @@ const CartItemsTable = ({ receiverCart }: Props) => {
             </div>
           </div>
         )}
-        <p className="text-right font-light">Tax calculated at checkout</p>
+        {/* <p className="text-right font-light">Tax calculated at checkout</p> */}
       </div>
     </div>
   )

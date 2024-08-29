@@ -117,6 +117,7 @@ const CartPostagePage = () => {
                   ${cart.totals.total.toFixed(2)}
                 </div>
               </div>
+              <p className="text-right font-light px-4">Tax calculated at checkout</p>
             </div>
           </div>
         </div>
