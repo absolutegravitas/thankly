@@ -94,7 +94,9 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   //check that cart items exist, and all have a message and a receiver
   const cartPersonalisationMissing = useMemo((): boolean => {
     if (!cart.items || cart.items.length === 0) return false
-    return !cart.items.every((item) => item.receiverId && item.giftCard.message)
+    return !cart.items.every(
+      (item) => item.receiverId && item.giftCard.message && item.giftCard.message.length <= 400,
+    )
   }, [cart.items])
 
   //check that cart receivers exist, and those that are selected have a postage methods

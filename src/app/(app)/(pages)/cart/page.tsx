@@ -8,12 +8,13 @@ import { z } from 'zod'
 import { FormProvider, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import CartRedirect from '../../_blocks/Cart/CartRedirect'
+import SkeletonLoader from './skeleton'
 
 const cartItemSchema = z.object({
   receiverId: z.string().min(1, 'Delivery address is required'),
   giftMessage: z
     .string()
-    .min(1, 'Gift Message is required')
+    .min(1, 'Please enter a message for the hand written gift card')
     .max(400, 'Gift message cannot be longer than 400 characters'),
 })
 
@@ -24,14 +25,18 @@ const formSchema = z.object({
 export type CartPersonalisationForm = z.infer<typeof formSchema>
 
 const CartPersonalisePage = () => {
-  const { cart, cartIsEmpty } = useCart()
+  const { cart, cartIsEmpty, hasInitializedCart } = useCart()
   const router = useRouter()
   const methods = useForm({
     resolver: zodResolver(formSchema),
   })
 
-  if (cartIsEmpty) {
-    return <CartRedirect />
+  //loading and form prereq checks
+  if (!hasInitializedCart) return <SkeletonLoader />
+  if (cartIsEmpty) return <CartRedirect />
+
+  const onSubmit = (data: any) => {
+    router.push('/cart/postage')
   }
 
   const Divider = () => (
@@ -41,10 +46,6 @@ const CartPersonalisePage = () => {
       <div className="flex-1 h-px bg-slate-300" />
     </div>
   )
-
-  const onSubmit = (data: any) => {
-    router.push('/cart/postage')
-  }
 
   return (
     <div className="px-4 sm:px-6">

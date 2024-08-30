@@ -19,6 +19,8 @@ import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { FormProvider, useForm } from 'react-hook-form'
 import CartRedirect from '@/app/(app)/_blocks/Cart/CartRedirect'
+import SkeletonLoader from '../skeleton'
+import CartTotals from '@/app/(app)/_blocks/Cart/CartTotals'
 
 const postagePickerSchema = z.object({
   shippingMethod: z.string().min(1, 'Please select a postage method'),
@@ -31,39 +33,16 @@ const formSchema = z.object({
 export type CartPostageForm = z.infer<typeof formSchema>
 
 const CartPostagePage = () => {
-  const { cart, cartIsEmpty, cartPersonalisationMissing } = useCart()
+  const { cart, hasInitializedCart, cartIsEmpty, cartPersonalisationMissing } = useCart()
   const router = useRouter()
   const isMobile = useMediaQuery({ maxWidth: 639 })
   const methods = useForm({
     resolver: zodResolver(formSchema),
   })
 
-  if (cartIsEmpty || cartPersonalisationMissing) {
-    return <CartRedirect />
-  }
-
-  // const [showCartEmptyMessage, setShowCartEmptyMessage] = useState(false)
-  // const [showPersonaliseMessage, setShowPersonaliseMessage] = useState(false)
-
-  // //handle potential redirect if there are missing personalistion details.
-  // const cartPersonalisationMissing = !validateCartPersonalisation()
-  // useEffect(() => {
-  //   if (cartPersonalisationMissing) {
-  //     // setShowPersonaliseMessage(true)
-  //     const timer = setTimeout(() => {
-  //       router.push('/cart')
-  //     }, 3000) // 3 seconds delay
-
-  //     return () => clearTimeout(timer)
-  //   }
-  // }, [validateCartPersonalisation, router])
-  // if (cartPersonalisationMissing) {
-  //   return (
-  //     <p className="p-4 jusify-items-center text-center">
-  //       Opps! Looks like we need some additional details to personalise your gifts. Hold tight...
-  //     </p>
-  //   )
-  // }
+  //loading and form prereq checks
+  if (!hasInitializedCart) return <SkeletonLoader />
+  if (cartIsEmpty || cartPersonalisationMissing) return <CartRedirect />
 
   //get a transformed list of receiver with their own carts
   const receiverCarts = transformToReceiverCarts(cart)
@@ -76,10 +55,10 @@ const CartPostagePage = () => {
     <FormProvider {...methods}>
       <form onSubmit={methods.handleSubmit(onSubmit)}>
         <div className="flex flex-col">
-          {receiverCarts.receivers?.map((receiver, index) => (
+          {receiverCarts.receivers?.map((receiverCart, index) => (
             <div key={index} className="flex flex-col-reverse sm:flex-row">
               <div className="px-4 py-2 sm:px-8 sm:py-0 sm:pb-4 basis-1/2">
-                <PostagePicker receiverId={receiver.receiverId} index={index} />
+                <PostagePicker receiverCart={receiverCart} index={index} />
               </div>
               <div className="basis-1/2 bg-thankly-palegreen">
                 {isMobile ? (
@@ -91,12 +70,12 @@ const CartPostagePage = () => {
                             <GiftIcon className="h-5 w-5" />
                           </span>
                           <span className="flex-grow text-left">
-                            Delivery for {receiver.firstName} {receiver.lastName}
+                            Delivery for {receiverCart.firstName} {receiverCart.lastName}
                           </span>
                         </div>
                       </AccordionTrigger>
                       <AccordionContent className="pb-0">
-                        <CartItemsTable receiverCart={receiver} />
+                        <CartItemsTable receiverCart={receiverCart} />
                       </AccordionContent>
                     </AccordionItem>
                   </Accordion>
@@ -105,10 +84,10 @@ const CartPostagePage = () => {
                     <div className="flex items-center gap-2 mb-4 px-2">
                       <GiftIcon className="h-5 w-5" />
                       <span className="text-lg font-semibold">
-                        Delivery for {receiver.firstName} {receiver.lastName}
+                        Delivery for {receiverCart.firstName} {receiverCart.lastName}
                       </span>
                     </div>
-                    <CartItemsTable receiverCart={receiver} />
+                    <CartItemsTable receiverCart={receiverCart} />
                   </div>
                 )}
               </div>
@@ -125,27 +104,7 @@ const CartPostagePage = () => {
               </div>
             </div>
             <div className="p-4 basis-1/2 bg-thankly-palegreen text-stone-800">
-              <div className="border border-x-0 border-t-stone-400 border-b-stone-400 px-4 text-lg font-medium">
-                <div className="flex flex-row py-2">
-                  <div className="flex flex-col basis-1/2">Subtotal:</div>
-                  <div className="flex flex-col basis-1/2 items-end">
-                    ${cart.totals.cost.toFixed(2)}
-                  </div>
-                </div>
-                <div className="flex flex-row pb-3">
-                  <div className="flex flex-col basis-1/2">Postage:</div>
-                  <div className="flex flex-col basis-1/2 items-end">
-                    ${cart.totals.shipping.toFixed(2)}
-                  </div>
-                </div>
-              </div>
-              <div className="flex flex-row pb-3 p-4 text-3xl font-bold">
-                <div className="flex flex-col basis-1/2">Total:</div>
-                <div className="flex flex-col basis-1/2 items-end">
-                  ${cart.totals.total.toFixed(2)}
-                </div>
-              </div>
-              <p className="text-right font-light px-4">Tax calculated at checkout</p>
+              <CartTotals cart={cart} />
             </div>
           </div>
         </div>

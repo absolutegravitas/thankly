@@ -4,17 +4,18 @@ import { RadioGroup, RadioGroupItem } from '@app/_components/ui/radio-group'
 import { Label } from '@app/_components/ui/label'
 import { useCart } from '../../_providers/Cart'
 import { ReceiverAddressText } from '../../_providers/Cart/address'
-import { postageOptions } from '../../_providers/Cart/postageOptions'
+import { getPostageOptions } from '../../_providers/Cart/postageOptions'
 import { IconProps } from '../../_icons/types'
 import { useFormContext } from 'react-hook-form'
 import { CartPostageForm } from '../../(pages)/cart/postage/page'
+import { ReceiverCart } from '@/utilities/receiverCarts'
 
 interface Props {
-  receiverId: string
+  receiverCart: ReceiverCart
   index: number
 }
 
-const PostagePicker = ({ receiverId, index }: Props) => {
+const PostagePicker = ({ receiverCart, index }: Props) => {
   const { cart, updateShipping } = useCart()
 
   const {
@@ -23,14 +24,14 @@ const PostagePicker = ({ receiverId, index }: Props) => {
     formState: { errors },
   } = useFormContext<CartPostageForm>()
 
-  const receiver = cart.receivers?.find((receiver) => receiver.receiverId === receiverId)
-  if (!receiver) return <></>
+  //get postage options based on the receiver and cart items
+  const postageOptions = getPostageOptions(receiverCart)
 
   const handlePostageChange = (optionId: string) => {
     const selectedOption = postageOptions.find((option) => option.id === optionId)
     if (selectedOption) {
       //update cart
-      updateShipping(receiverId, selectedOption.id, selectedOption.price)
+      updateShipping(receiverCart.receiverId, selectedOption.id, selectedOption.price)
       //update form data (for validation logic)
       setValue(`shippingMethods.${index}.shippingMethod`, selectedOption.id, {
         shouldValidate: true,
@@ -39,7 +40,7 @@ const PostagePicker = ({ receiverId, index }: Props) => {
   }
 
   //handle setvalues for form validation at load
-  setValue(`shippingMethods.${index}.shippingMethod`, receiver.delivery?.shippingMethod ?? '')
+  setValue(`shippingMethods.${index}.shippingMethod`, receiverCart.delivery?.shippingMethod ?? '')
 
   return (
     <Card>
@@ -47,20 +48,20 @@ const PostagePicker = ({ receiverId, index }: Props) => {
         <div className="flex items-center gap-2 mb-4 pt-4">
           <TruckIcon className="h-6 w-6" />
           <span className="text-lg font-semibold">
-            Postage for {receiver.firstName} {receiver.lastName}
+            Postage for {receiverCart.firstName} {receiverCart.lastName}
           </span>
         </div>
         <div className="grid gap-4">
           <div className="flex items-center justify-between">
             <div>
               <h3 className="font-semibold">
-                {receiver.firstName} {receiver.lastName}
+                {receiverCart.firstName} {receiverCart.lastName}
               </h3>
-              <p className="text-muted-foreground">{ReceiverAddressText(receiver)}</p>
+              <p className="text-muted-foreground">{ReceiverAddressText(receiverCart)}</p>
             </div>
           </div>
           <RadioGroup
-            defaultValue={receiver.delivery?.shippingMethod as string}
+            defaultValue={receiverCart.delivery?.shippingMethod as string}
             onValueChange={handlePostageChange}
             {...register(`shippingMethods.${index}.shippingMethod`)}
           >
@@ -68,12 +69,15 @@ const PostagePicker = ({ receiverId, index }: Props) => {
               {postageOptions.map((option, index) => (
                 <Label
                   key={index}
-                  htmlFor={`${receiverId}-${option.id}`}
+                  htmlFor={`${receiverCart.receiverId}-${option.id}`}
                   className="flex items-center justify-between border rounded-md p-4 cursor-pointer [&:has(:checked)]:border-primary [&:has(:checked)]:bg-muted"
                 >
                   <div className="grid gap-1">
                     <div className="flex items-center gap-2">
-                      <RadioGroupItem id={`${receiverId}-${option.id}`} value={option.id} />
+                      <RadioGroupItem
+                        id={`${receiverCart.receiverId}-${option.id}`}
+                        value={option.id}
+                      />
                       <span className="font-medium">{option.name}</span>
                     </div>
                     <p className="text-sm text-muted-foreground">{option.description}</p>

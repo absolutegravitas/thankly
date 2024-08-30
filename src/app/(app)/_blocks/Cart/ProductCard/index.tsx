@@ -72,7 +72,7 @@ const ProductCard: React.FC<ProductBlockContentProps> = ({ cartItem, onQuantityC
               </Button>
             )}
           </div>
-          <div className="text-muted-foreground">Price: ${unitPrice}</div>
+          <div className="text-muted-foreground">Price: ${unitPrice.toFixed(2)}</div>
           <div className="text-muted-foreground">Total: ${(quantity * unitPrice).toFixed(2)}</div>
         </div>
       </div>
