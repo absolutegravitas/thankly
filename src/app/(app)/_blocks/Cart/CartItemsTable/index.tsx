@@ -41,7 +41,7 @@ const CartItemsTable: React.FC<Props> = ({
             <div>
               {receiverCart.firstName} {receiverCart.lastName}
             </div>
-            <div>{ReceiverAddressText(receiverCart)}</div>
+            <div className="text-slate-600">{ReceiverAddressText(receiverCart)}</div>
           </div>
         </div>
       )}
