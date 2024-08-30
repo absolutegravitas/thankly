@@ -3,19 +3,22 @@ import ProductThumbnail from '../ProductThumbnail'
 import { CartItem } from '../cart-types'
 import { Product } from '@/payload-types'
 import { ReceiverCart } from '@/utilities/receiverCarts'
-import { getPostageName } from '@/app/(app)/_providers/Cart/postageOptions'
+import { getPostageName, getPostageOptions } from '@/app/(app)/_providers/Cart/postageOptions'
+import { capitalize } from 'lodash'
 
 interface Props {
   receiverCart: ReceiverCart
+  showDetails?: boolean
 }
 
-const CartItemsTable = ({ receiverCart }: Props) => {
+const CartItemsTable = ({ receiverCart, showDetails = false }: Props) => {
   const totalAmount = receiverCart.items.reduce(
     (total, item) => total + item.price * item.quantity,
     0,
   )
 
-  const postageName = getPostageName(receiverCart.delivery?.shippingMethod)
+  const postageOptions = getPostageOptions(receiverCart)
+  const postageName = getPostageName(receiverCart.delivery?.shippingMethod, postageOptions)
 
   const hasPostage =
     receiverCart.delivery &&
@@ -26,11 +29,22 @@ const CartItemsTable = ({ receiverCart }: Props) => {
   return (
     <div className="max-w-xl font-medium px-4 pb-0 pt-4 sm:p-4">
       {receiverCart.items?.map((item, index) => (
-        <div key={index} className="flex items-center">
+        <div key={index} className="flex items-center pb-4">
           <div className="flex-none w-16 h-16">
             <ProductThumbnail cartItem={item} />
           </div>
-          <div className="flex-auto pl-4 sm:pl-6">{(item.product as Product).title}</div>
+          <div className="flex-auto pl-4 sm:pl-6 max-w-64">
+            <p>{(item.product as Product).title}</p>
+            {showDetails && (
+              <>
+                <p className="text-slate-800 font-light">Message:</p>
+                <p className="text-slate-800 font-light">{item.giftCard.message}</p>
+                <p className="text-slate-800 font-light">
+                  Writing style: {capitalize(item.giftCard.writingStyle)}
+                </p>
+              </>
+            )}
+          </div>
           <div className="flex-initial text-right">${(item.price * item.quantity).toFixed(2)}</div>
         </div>
       ))}

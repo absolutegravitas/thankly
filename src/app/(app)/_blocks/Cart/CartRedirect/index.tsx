@@ -11,6 +11,10 @@ const CartRedirect = ({ delayTime = 3000 }: Props) => {
   const router = useRouter()
   const { cartIsEmpty, cartPersonalisationMissing, cartPostageMissing } = useCart()
 
+  if (isLoading) {
+    return <div>Loading...</div> // Or a more sophisticated loading component
+  }
+
   React.useEffect(() => {
     const timer = setTimeout(() => {
       if (cartIsEmpty) {

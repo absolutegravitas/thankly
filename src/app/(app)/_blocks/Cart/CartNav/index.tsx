@@ -9,9 +9,9 @@ import { useCart } from '@/app/(app)/_providers/Cart'
 import { cn } from '@/utilities/utils'
 
 const initialSteps = [
-  { name: 'Personalise', href: '/cart', status: 'upcoming' },
-  { name: 'Postage', href: '/cart/postage', status: 'upcoming' },
-  { name: 'Payment', href: '/cart/payment', status: 'upcoming' },
+  { name: 'Personalise', href: '/cart', status: 'inactive' },
+  { name: 'Postage', href: '/cart/postage', status: 'inactive' },
+  { name: 'Payment', href: '/cart/payment', status: 'inactive' },
 ]
 
 export default function CartNav() {
@@ -26,20 +26,20 @@ export default function CartNav() {
       const currentStepIndex = initialSteps.findIndex((s) => s.href === pathname)
 
       if (index < currentStepIndex) {
-        return { ...step, status: 'complete' }
+        return { ...step, status: 'active' }
       } else if (index === currentStepIndex) {
         return { ...step, status: 'current' }
       } else {
         switch (steps[index].name) {
           case 'Postage':
-            return { ...step, status: cartPersonalisationMissing ? 'upcoming' : 'complete' }
+            return { ...step, status: cartPersonalisationMissing ? 'inactive' : 'active' }
           case 'Payment':
             return {
               ...step,
-              status: cartPersonalisationMissing || cartPostageMissing ? 'upcoming' : 'complete',
+              status: cartPersonalisationMissing || cartPostageMissing ? 'inactive' : 'active',
             }
           default:
-            return { ...step, status: 'upcoming' }
+            return { ...step, status: 'inactive' }
         }
       }
     })
@@ -48,9 +48,8 @@ export default function CartNav() {
   }, [pathname, cartPersonalisationMissing, cartPostageMissing])
 
   const handleNavigation = (targetIndex: number) => {
-    console.log('handleNavigation targetIndex:', targetIndex)
     const targetStep = steps[targetIndex]
-    if (targetStep.status === 'upcoming') {
+    if (targetStep.status === 'inactive') {
       setShowAlert(true)
       setTimeout(() => setShowAlert(false), 5000) // Hide alert after 5 seconds
     } else {
@@ -69,19 +68,19 @@ export default function CartNav() {
               <button
                 className={cn(
                   'flex flex-col items-center w-full',
-                  step.status === 'complete' && 'text-primary',
+                  step.status === 'active' && 'text-primary',
                   step.status === 'current' && 'text-primary font-semibold',
-                  step.status === 'upcoming' && 'text-gray-400',
+                  step.status === 'inactive' && 'text-gray-400',
                 )}
                 onClick={() => handleNavigation(index)}
-                // disabled={step.status === 'upcoming'}
+                // disabled={step.status === 'inactive'}
               >
                 <span
                   className={cn(
                     'w-7 h-7 flex items-center justify-center rounded-full mb-2 border-2 text-center',
-                    step.status === 'complete' && 'border-gray-800 font-semibold',
+                    step.status === 'active' && 'border-gray-800 font-semibold',
                     step.status === 'current' && 'border-gray-800 bg-gray-800 text-white font-bold',
-                    step.status === 'upcoming' && 'border-gray-200 font-semibold',
+                    step.status === 'inactive' && 'border-gray-200 font-semibold',
                   )}
                 >
                   {index + 1}
