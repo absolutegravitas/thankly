@@ -20,6 +20,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { FormProvider, useForm } from 'react-hook-form'
 import CartRedirect from '@/app/(app)/_blocks/Cart/CartRedirect'
 import SkeletonLoader from '../skeleton'
+import CartTotals from '@/app/(app)/_blocks/Cart/CartTotals'
 
 const postagePickerSchema = z.object({
   shippingMethod: z.string().min(1, 'Please select a postage method'),
@@ -103,27 +104,7 @@ const CartPostagePage = () => {
               </div>
             </div>
             <div className="p-4 basis-1/2 bg-thankly-palegreen text-stone-800">
-              <div className="border border-x-0 border-t-stone-400 border-b-stone-400 px-4 text-lg font-medium">
-                <div className="flex flex-row py-2">
-                  <div className="flex flex-col basis-1/2">Subtotal:</div>
-                  <div className="flex flex-col basis-1/2 items-end">
-                    ${cart.totals.cost.toFixed(2)}
-                  </div>
-                </div>
-                <div className="flex flex-row pb-3">
-                  <div className="flex flex-col basis-1/2">Postage:</div>
-                  <div className="flex flex-col basis-1/2 items-end">
-                    ${cart.totals.shipping.toFixed(2)}
-                  </div>
-                </div>
-              </div>
-              <div className="flex flex-row pb-3 p-4 text-3xl font-bold">
-                <div className="flex flex-col basis-1/2">Total:</div>
-                <div className="flex flex-col basis-1/2 items-end">
-                  ${cart.totals.total.toFixed(2)}
-                </div>
-              </div>
-              <p className="text-right font-light px-4">Tax calculated at checkout</p>
+              <CartTotals cart={cart} />
             </div>
           </div>
         </div>

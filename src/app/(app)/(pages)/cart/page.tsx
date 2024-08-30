@@ -14,7 +14,7 @@ const cartItemSchema = z.object({
   receiverId: z.string().min(1, 'Delivery address is required'),
   giftMessage: z
     .string()
-    .min(1, 'Gift Message is required')
+    .min(1, 'Please enter a message for the hand written gift card')
     .max(400, 'Gift message cannot be longer than 400 characters'),
 })
 
@@ -35,6 +35,10 @@ const CartPersonalisePage = () => {
   if (!hasInitializedCart) return <SkeletonLoader />
   if (cartIsEmpty) return <CartRedirect />
 
+  const onSubmit = (data: any) => {
+    router.push('/cart/postage')
+  }
+
   const Divider = () => (
     <div className="flex items-center gap-4 md:hidden">
       <div className="flex-1 h-px bg-slate-300" />
@@ -42,10 +46,6 @@ const CartPersonalisePage = () => {
       <div className="flex-1 h-px bg-slate-300" />
     </div>
   )
-
-  const onSubmit = (data: any) => {
-    router.push('/cart/postage')
-  }
 
   return (
     <div className="px-4 sm:px-6">

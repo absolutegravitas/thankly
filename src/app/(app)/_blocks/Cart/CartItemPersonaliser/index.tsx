@@ -56,7 +56,6 @@ const CartItemPersonaliser = ({ cartItem, index }: Props) => {
   }
 
   const handleReceiverChange = (addressId: string) => {
-    console.log('handleReceiverChange', addressId, 'index', index)
     //update cart
     linkReceiver(cartItem.itemId, addressId)
     //update form data (for validation logic)
