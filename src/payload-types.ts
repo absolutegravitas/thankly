@@ -21,6 +21,7 @@ export interface Config {
     tags: Tag;
     categories: Category;
     sessions: Session;
+    discountcodes: Discountcode;
     forms: Form;
     'form-submissions': FormSubmission;
     'payload-preferences': PayloadPreference;
@@ -437,6 +438,27 @@ export interface Session {
   user: number | User;
   sessionToken: string;
   expires?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "discountcodes".
+ */
+export interface Discountcode {
+  id: number;
+  slug: string;
+  cartDescription: string;
+  discountAmount: number;
+  discountType: 'percentOff' | 'dollarsOff';
+  starts: string;
+  expires: string;
+  homePageDetails: {
+    onHomePage: boolean;
+    AdvertisedDescription?: string | null;
+    starts?: string | null;
+    expires?: string | null;
+  };
   updatedAt: string;
   createdAt: string;
 }
