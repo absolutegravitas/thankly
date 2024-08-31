@@ -1,11 +1,23 @@
-import { Cart } from '@/payload-types'
-import React from 'react'
+'use client'
+import { Cart, Discountcode } from '@/payload-types'
+import { fetchDiscountCode } from '@/utilities/PayloadQueries/discountCodes'
+import React, { useEffect, useState } from 'react'
 
 interface Props {
   cart: Cart
 }
 const CartTotals = ({ cart }: Props) => {
-  console.log('CART --', cart)
+  //look up discountcode descirption
+  const [discountCodeDetails, setDiscountCodeDetails] = useState<Discountcode | null>(null)
+
+  useEffect(() => {
+    if (cart.discountCodeApplied) {
+      fetchDiscountCode(cart.discountCodeApplied)
+        .then((details) => setDiscountCodeDetails(details))
+        .catch((error) => console.error('Error fetching discount code:', error))
+    }
+  }, [cart.discountCodeApplied])
+
   return (
     <>
       <div className="border border-x-0 border-t-stone-400 border-b-stone-400 px-4 text-lg font-medium">
@@ -15,7 +27,9 @@ const CartTotals = ({ cart }: Props) => {
         </div>
         {cart.totals.discount && cart.totals.discount !== 0 && (
           <div className="flex flex-row pb-2">
-            <div className="flex flex-col basis-1/2">Discount: {cart.discountCodeApplied}</div>
+            <div className="flex flex-col basis-1/2">
+              Discount: {discountCodeDetails?.cartDescription ?? ''}
+            </div>
             <div className="flex flex-col basis-1/2 items-end">
               -${(cart.totals.discount * -1).toFixed(2)}
             </div>

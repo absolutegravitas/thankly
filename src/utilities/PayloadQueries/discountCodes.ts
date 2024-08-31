@@ -7,11 +7,11 @@ import { defaultCacheRevalidate } from "./defaultCacheRevalidate";
 
 export async function validateDiscountCode( discountCode: string) : Promise<boolean> {
   //attempt to fetch discount code
-  const discount = await FetchDiscountCode(discountCode);
+  const discount = await fetchDiscountCode(discountCode);
   return (!!discount && discount.slug === discountCode)
 }
 
-const FetchDiscountCode = async ( discountCode: string ) : Promise<Discountcode | null> => { 
+export const fetchDiscountCode = async ( discountCode: string ) : Promise<Discountcode | null> => { 
   const config = await configPromise
   const cachedFetchItems = unstable_cache(
      async (): Promise<any | null> => {
@@ -30,8 +30,8 @@ const FetchDiscountCode = async ( discountCode: string ) : Promise<Discountcode 
             { 
               slug: { equals: discountCode }
             },
-            { starts: { less_than_or_equal: now }},
-            { end: { greater_than_or_equal: now }}
+            { starts: { less_than_equal: now }},
+            { expires: { greater_than_equal: now }}
           ]
         }
       };
@@ -57,7 +57,7 @@ const FetchDiscountCode = async ( discountCode: string ) : Promise<Discountcode 
 
 export async function calculateCartDiscount(discountCode: string, cartTotalCost: number) : Promise<number> {
   //attempt to fetch discount code
-  const discount = await FetchDiscountCode(discountCode)
+  const discount = await fetchDiscountCode(discountCode)
   if (!discount || discount.slug !== discountCode) return 0
 
   const { discountAmount, discountType } = discount
