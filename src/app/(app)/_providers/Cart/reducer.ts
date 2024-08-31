@@ -9,7 +9,7 @@ import { upsertPayloadCart } from './upsertPayloadCart'
 import { deletePayloadCart } from './deletePayloadCart'
 import { debounce } from 'lodash' // You'll need to install lodash if not already present
 import { uuid } from '@/utilities/uuid'
-import { CartItem, Receiver, GiftCard, ShippingMethod } from '@app/_blocks/Cart/cart-types'
+import { CartItem, Receiver, GiftCard, ShippingMethod, CartTotals } from '@app/_blocks/Cart/cart-types'
 
 // Create a debounced version of the upsertPayloadCart function
 const debouncedUpsertPayloadCart = debounce(upsertPayloadCart, 1000)
@@ -46,6 +46,10 @@ export type CartAction =
   | {
       type: 'UPDATE_SHIPPING'
       payload: { receiverId: string, shippingMethod: ShippingMethod, shippingPrice: number }
+    }
+  | {
+      type: 'APPLY_DISCOUNT'
+      payload: { discountCode: string, discountAmount: number }
     }
   | { type: 'SET_CART'; payload: Cart }
   | { type: 'CLEAR_CART' }
@@ -221,8 +225,31 @@ export const cartReducer = (cart: Cart, action: CartAction): Cart => {
       return cartToReturn;
     }
 
-    
+    case 'APPLY_DISCOUNT': {
+      const { discountCode, discountAmount } = action.payload
+      //validate discount
+      // const isValid = validateDiscountCode(discountCode)
+      // if (!isValid) return cart
 
+      //update cart with discount code
+      let cartToReturn = {
+        ...cart,
+        totals: {
+          ...cart.totals,
+          discount: discountAmount
+        } as CartTotals,
+        discountCodeApplied: discountCode
+      }
+
+      // recalculate totals
+      cartToReturn = {
+        ...cartToReturn,
+        totals: calculateCartTotals(cartToReturn)
+      }
+
+      return cartToReturn
+    }
+    
     case 'CLEAR_CART': {
       // also clear / delete the cart on payloadCMS
       deletePayloadCart(cart)
@@ -240,9 +267,9 @@ export const cartReducer = (cart: Cart, action: CartAction): Cart => {
 }
 
 // Function to calculate the totals for the entire cart
-const calculateCartTotals = (cart: Cart): Cart['totals'] => {
+const calculateCartTotals = (cart: Cart): CartTotals => {
   const { items, receivers } = cart
-  let totals = {total: 0, cost: 0, shipping: 0}
+  let totals = { ...cart.totals, total: 0, cost: 0, shipping: 0 }
   
   //add up prices across cart items
   if (items) {
@@ -262,8 +289,8 @@ const calculateCartTotals = (cart: Cart): Cart['totals'] => {
     })
   }
 
-  //calculatte grand total
-  totals.total = totals.cost + totals.shipping;
+  //calculate grand total  
+  totals.total = totals.cost + (totals.discount ?? 0) + totals.shipping;
 
   return totals;
 }
