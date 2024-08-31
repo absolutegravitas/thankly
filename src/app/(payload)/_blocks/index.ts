@@ -6,6 +6,7 @@ import { Content } from './Content'
 import { ContentGrid } from './ContentGrid'
 // import { Form } from './Form'
 import { Hero } from './Hero'
+import { HeroSlider } from './HeroSlider'
 import { HoverCards } from './HoverCards'
 import { HoverHighlights } from './HoverHighlights'
 import { LinkGrid } from './LinkGrid'
@@ -31,6 +32,7 @@ export default [
   ContentGrid,
   // Form,
   Hero,
+  HeroSlider,
   HoverCards,
   HoverHighlights,
   LinkGrid,
