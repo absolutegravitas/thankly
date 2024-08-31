@@ -44,6 +44,7 @@ export type CartContext = {
     shippingMethod: ShippingMethod,
     shippingPrice: number,
   ) => void
+  applyDiscount: (discountCode: string, discountAmount: number) => void
   setCart: (newCart: Cart) => void
   clearCart: () => void
 
@@ -185,6 +186,13 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     [],
   )
 
+  const applyDiscount = useCallback((discountCode: string, discountAmount: number) => {
+    dispatchCart({
+      type: 'APPLY_DISCOUNT',
+      payload: { discountCode, discountAmount },
+    })
+  }, [])
+
   // Clears the entire cart
   const clearCart = useCallback(() => {
     dispatchCart({ type: 'CLEAR_CART' })
@@ -211,6 +219,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       addresses,
       addCartItem,
       addReceiver,
+      applyDiscount,
       cart,
       cartIsEmpty,
       cartPersonalisationMissing,
@@ -231,6 +240,7 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       addresses,
       addCartItem,
       addReceiver,
+      applyDiscount,
       cart,
       cartIsEmpty,
       cartPersonalisationMissing,

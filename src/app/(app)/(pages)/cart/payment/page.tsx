@@ -14,6 +14,7 @@ import { useMediaQuery } from 'react-responsive'
 import CartItemsTable from '@/app/(app)/_blocks/Cart/CartItemsTable'
 import { ReceiverCarts, transformToReceiverCarts } from '@/utilities/receiverCarts'
 import CartTotals from '@/app/(app)/_blocks/Cart/CartTotals'
+import DiscountCode from '@/app/(app)/_components/DiscountCode'
 
 const CartPaymentPage = () => {
   const { cart, hasInitializedCart, cartIsEmpty, cartPersonalisationMissing, cartPostageMissing } =
@@ -71,6 +72,9 @@ const CartPaymentPage = () => {
               <OrderSummary receiverCarts={receiverCarts} />
             </div>
           )}
+          <div className="pb-4 px-4">
+            <DiscountCode />
+          </div>
           <div className="pb-4 px-4">
             <CartTotals cart={cart} />
           </div>

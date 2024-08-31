@@ -21,6 +21,7 @@ import { FormProvider, useForm } from 'react-hook-form'
 import CartRedirect from '@/app/(app)/_blocks/Cart/CartRedirect'
 import SkeletonLoader from '../skeleton'
 import CartTotals from '@/app/(app)/_blocks/Cart/CartTotals'
+import DiscountCode from '@/app/(app)/_components/DiscountCode'
 
 const postagePickerSchema = z.object({
   shippingMethod: z.string().min(1, 'Please select a postage method'),
@@ -104,6 +105,9 @@ const CartPostagePage = () => {
               </div>
             </div>
             <div className="p-4 basis-1/2 bg-thankly-palegreen text-stone-800">
+              <div className="pb-4">
+                <DiscountCode />
+              </div>
               <CartTotals cart={cart} />
             </div>
           </div>

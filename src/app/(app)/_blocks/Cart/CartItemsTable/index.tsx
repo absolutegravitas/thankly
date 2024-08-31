@@ -11,12 +11,14 @@ interface Props extends React.ComponentPropsWithoutRef<'div'> {
   receiverCart: ReceiverCart
   showDetails?: boolean
   showDeliveryAddress?: boolean
+  showSubtotal?: boolean
 }
 
 const CartItemsTable: React.FC<Props> = ({
   receiverCart,
   showDetails = false,
   showDeliveryAddress = false,
+  showSubtotal = false,
   ...props
 }: Props) => {
   const totalAmount = receiverCart.items.reduce(
@@ -39,7 +41,7 @@ const CartItemsTable: React.FC<Props> = ({
             <div>
               {receiverCart.firstName} {receiverCart.lastName}
             </div>
-            <div>{ReceiverAddressText(receiverCart)}</div>
+            <div className="text-slate-600">{ReceiverAddressText(receiverCart)}</div>
           </div>
         </div>
       )}
@@ -67,10 +69,12 @@ const CartItemsTable: React.FC<Props> = ({
         </div>
       ))}
       <div className="">
-        <div className="flex items-center">
-          <div className="flex-auto"> Subtotal</div>
-          <div className="flex-auto text-right">${totalAmount.toFixed(2)}</div>
-        </div>
+        {showSubtotal && (
+          <div className="flex items-center">
+            <div className="flex-auto"> Subtotal</div>
+            <div className="flex-auto text-right">${totalAmount.toFixed(2)}</div>
+          </div>
+        )}
         {hasPostage && (
           <div className="flex items-center">
             <div className="flex-auto"> {postageName}</div>

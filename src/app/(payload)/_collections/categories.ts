@@ -4,6 +4,10 @@ import { adminsOnly } from '../../../utilities/access'
 
 export const Categories: CollectionConfig = {
   slug: 'categories',
+  labels: {
+    plural: 'Categories',
+    singular: 'Category'
+  },
   admin: { group: '9. Common', useAsTitle: 'title' },
 
   access: {

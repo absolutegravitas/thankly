@@ -27,7 +27,7 @@ export const Carts: CollectionConfig = {
           name: 'cartNumber',
           type: 'text',
           required: false,
-          admin: { width: '25%', readOnly: true },
+          admin: { width: '50%', readOnly: true },
         },
         {
           name: 'status',
@@ -35,11 +35,18 @@ export const Carts: CollectionConfig = {
           defaultValue: 'pending',
           hasMany: false,
           required: true,
+          admin: { width:'25%' },
           options: [
             { label: 'Pending', value: 'pending' }, // draft, created upon checkout
             { label: 'Completed', value: 'completed' }, // converted to order
             { label: 'Cancelled', value: 'cancelled' }, // not ordered, deleted by user, expired
           ],
+        },
+        {
+          name: 'discountCodeApplied',
+          type: 'text',
+          required: false,
+          admin: { width: '25%', readOnly: true },
         },
       ],
     },
