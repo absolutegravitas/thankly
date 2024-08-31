@@ -53,7 +53,7 @@ const config = {
           foreground: "hsl(var(--card-foreground))",
         },
         'thankly-offwhite': '#FAFAF5',
-        'thankly-green': '#426b1f',
+        'thankly-green': '#557755',
         'thankly-lightgreen': '#548c27',
         'thankly-palegreen': '#ecf2ec',
       },

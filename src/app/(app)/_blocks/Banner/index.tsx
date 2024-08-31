@@ -1,43 +1,64 @@
-import React from 'react'
-
-import { Banner, Props as BannerProps } from '@app/_components/Banner'
-import { Gutter } from '@app/_components/Gutter'
-import { Reusable } from '@payload-types'
-import { BlockWrapper, PaddingProps } from '@app/_components/BlockWrapper'
-
-// export type BannerBlockProps = Extract<Reusable['layout'][0], { blockType: 'banner' }>
-
+import React, { useState } from 'react'
 import { ExtractBlockProps } from '@/utilities/extractBlockProps'
+import { Button } from '../../_components/ui/button'
+import { IconProps } from '../../_icons/types'
+import RichText from '../RichText'
+
 export type BannerBlockProps = ExtractBlockProps<'banner'>
 
 export const BannerBlock: React.FC<{
   bannerFields: BannerBlockProps['bannerFields']
-  marginAdjustment?: boolean
-  disableGutter?: boolean
-}> = ({ bannerFields, disableGutter, marginAdjustment }) => {
-  // console.log('banner block', bannerFields)
-  const bannerProps: BannerProps = {
-    type: bannerFields.type,
-    content: bannerFields.content,
-    icon: bannerFields.addCheckmark ? 'checkmark' : undefined,
-    marginAdjustment: marginAdjustment,
+}> = ({ bannerFields }) => {
+  // console.log('bannerFields:', bannerFields)
+  const { content, type, addCheckmark } = bannerFields
+
+  const [isVisible, setIsVisible] = useState(true)
+
+  const handleClose = () => {
+    setIsVisible(false)
+  }
+
+  if (!isVisible) {
+    return null
   }
 
   return (
-    <React.Fragment>
-      {disableGutter ? (
-        <Banner {...bannerProps} />
-      ) : (
-        <Gutter>
-          <div className={'grid'}>
-            <div className={'cols-8 start-5 cols-m-6 start-m-2 cols-s-8 start-s-1'}>
-              <Banner {...bannerProps} />
-            </div>
-          </div>
-        </Gutter>
+    <div className="w-full bg-thankly-green text-white py-4 px-6 flex items-center justify-center">
+      <div className="text-center">{content && <RichText content={content} />}</div>
+      {addCheckmark && (
+        <div className="absolute right-6">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="text-white hover:bg-thankly-lightgreen focus:bg-thankly-lightgreen"
+            onClick={handleClose}
+          >
+            <XIcon className="h-5 w-5" />
+          </Button>
+        </div>
       )}
-    </React.Fragment>
+    </div>
   )
 }
 
 export default BannerBlock
+
+function XIcon(props: IconProps) {
+  return (
+    <svg
+      {...props}
+      xmlns="http://www.w3.org/2000/svg"
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    >
+      <path d="M18 6 6 18" />
+      <path d="m6 6 12 12" />
+    </svg>
+  )
+}
