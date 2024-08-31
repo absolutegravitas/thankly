@@ -1,6 +1,12 @@
 import { adminsOnly } from "@/utilities/access";
-import { CollectionConfig } from "payload";
+import { CollectionConfig, FieldHook } from "payload";
 
+const uppercaseHook: FieldHook = ({ value }): string | any => {
+  if (typeof value === 'string') {
+    return value.toUpperCase();
+  }
+  return value;
+};
 
 export const DiscountCodes: CollectionConfig = {
   slug: 'discountcodes',
@@ -21,7 +27,11 @@ export const DiscountCodes: CollectionConfig = {
     {
       type: 'row',
       fields: [
-        { name: 'slug', label:'Discount Code', type: 'text', required: true, index: true, admin: { width: '25%', readOnly: false } },
+        { name: 'slug', label:'Discount Code', type: 'text', required: true, index: true, admin: { width: '25%', readOnly: false },
+          hooks: {
+            beforeValidate: [uppercaseHook],
+          }, 
+        },
         { name: 'cartDescription', type: 'text', required: true, admin: { width: '75%', readOnly: false } },
       ]
     },
