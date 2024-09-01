@@ -47,10 +47,7 @@ export const MainMenuHeader: React.FC<any> = ({ menu }: any) => {
     >
       <Link
         href="/"
-        className={`
-          ${isHomePage ? 'transition-all duration-300 ease-in-out' : ''}
-          ${!isHomePage || isScrolled ? 'text-2xl' : 'text-5xl'}
-          font-bold font-['leaguespartan'] tracking-tighter`}
+        className="text-3xl font-bold font-['leaguespartan'] tracking-tighter"
         prefetch={false}
       >
         thankly
@@ -62,7 +59,7 @@ export const MainMenuHeader: React.FC<any> = ({ menu }: any) => {
               <Link
                 key={tabIndex}
                 href={tab.link.url}
-                className="text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+                className="text-lg font-medium text-muted-foreground transition-colors hover:text-foreground"
                 prefetch={false}
               >
                 {tab.label}
@@ -76,7 +73,7 @@ export const MainMenuHeader: React.FC<any> = ({ menu }: any) => {
             className="text-muted-foreground transition-colors hover:text-foreground"
             prefetch={false}
           >
-            <UserIcon className="h-5 w-5" />
+            <UserIcon className="h-6 w-6" />
             <span className="sr-only">Login</span>
           </Link>
           <Link
@@ -84,7 +81,7 @@ export const MainMenuHeader: React.FC<any> = ({ menu }: any) => {
             className="relative text-muted-foreground transition-colors hover:text-foreground"
             prefetch={false}
           >
-            <ShoppingCartIcon className="h-5 w-5 sm:mr-4" />
+            <ShoppingCartIcon className="h-6 w-6 sm:mr-4" />
             <span className="sr-only">Cart</span>
             <div
               className={`absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-xs text-primary-foreground ${
@@ -96,8 +93,19 @@ export const MainMenuHeader: React.FC<any> = ({ menu }: any) => {
           </Link>
           <Sheet>
             <SheetTrigger asChild>
-              <Button variant="outline" size="icon" className="md:hidden">
-                <MenuIcon className="h-6 w-6" />
+              <Button
+                variant="outline"
+                size="icon"
+                className={`md:hidden
+                    ${isHomePage ? 'transition-all duration-300 ease-in-out' : ''}
+                    ${!isHomePage || isScrolled ? 'bg-white text-black' : 'bg-transparent text-white'}
+                  `}
+              >
+                <MenuIcon
+                  className={`h-6 w-6
+     
+                  `}
+                />
                 <span className="sr-only">Toggle navigation menu</span>
               </Button>
             </SheetTrigger>
