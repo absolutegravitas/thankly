@@ -64,7 +64,7 @@ export default function HeroSlider({ slider }: HeroSliderProps) {
   const updateHeight = useCallback(() => {
     if (isMobile) {
       // Set height to approximate height of a cell phone (e.g., 100vh)
-      setHeight('100vh')
+      setHeight('90vh')
     } else {
       const vh = window.innerHeight * 0.01 * 0.9
       document.documentElement.style.setProperty('--vh', `${vh}px`)
@@ -94,7 +94,10 @@ export default function HeroSlider({ slider }: HeroSliderProps) {
         >
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent">
             <div className="absolute bottom-16 left-16 max-w-6xl text-white">
-              <div className="text-5xl font-bold mb-6 leading-tight">
+              <div
+                className={`${isMobile ? 'text-3xl' : 'text-5xl'}
+                 font-bold mb-6 leading-tight`}
+              >
                 <DynamicHtml htmlContent={item.content} />
               </div>
               <Button asChild size="lg" className="mt-4">

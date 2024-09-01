@@ -43,7 +43,7 @@ export const MainMenuHeader: React.FC<any> = ({ menu }: any) => {
     <header
       className={`flex h-16 w-full items-center justify-between px-4 md:px-6
         ${isHomePage ? 'absolute w-screen transition-all duration-300 ease-in-out' : ''}
-        ${!isHomePage || isScrolled ? 'bg-white text-black drop-shadow-lg' : 'bg-background text-white'}`}
+        ${!isHomePage || isScrolled ? 'bg-white text-black border-b-grey-500 border-b border-solid' : 'bg-background text-white'}`}
     >
       <Link
         href="/"
@@ -96,10 +96,7 @@ export const MainMenuHeader: React.FC<any> = ({ menu }: any) => {
               <Button
                 variant="outline"
                 size="icon"
-                className={`md:hidden
-                    ${isHomePage ? 'transition-all duration-300 ease-in-out' : ''}
-                    ${!isHomePage || isScrolled ? 'bg-white text-black' : 'bg-transparent text-white'}
-                  `}
+                className={`md:hidden border-none bg-transparent`}
               >
                 <MenuIcon
                   className={`h-6 w-6
