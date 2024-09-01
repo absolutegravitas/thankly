@@ -14,7 +14,7 @@ import { CartItem } from '@app/_blocks/Cart/cart-types'
 import { Address, getNewReceiver, getReceiverAddresses } from '@/app/(app)/_providers/Cart/address'
 import { useCart } from '@/app/(app)/_providers/Cart'
 import DebouncedTextarea from '@app/_components/ui/debounced-textarea'
-import { useFormContext } from 'react-hook-form'
+import { useFieldArray, useFormContext } from 'react-hook-form'
 import { CartPersonalisationForm } from '@/app/(app)/(pages)/cart/page'
 import { isEntityHidden } from 'payload'
 
@@ -28,9 +28,15 @@ const CartItemPersonaliser = ({ cartItem, index }: Props) => {
 
   const {
     setValue,
+    control,
     register,
     formState: { errors },
   } = useFormContext<CartPersonalisationForm>()
+
+  const { remove } = useFieldArray({
+    control,
+    name: 'cartItems',
+  })
 
   const handleAddAddress = (address: Address) => {
     //add a new receiver based on address to cart
@@ -63,7 +69,10 @@ const CartItemPersonaliser = ({ cartItem, index }: Props) => {
   }
 
   const handleRemove = () => {
+    //remove from cart
     removeCartItem(cartItem.itemId)
+    //need to remove from validation logic
+    remove(index)
   }
 
   const handleShipAnother = () => {
