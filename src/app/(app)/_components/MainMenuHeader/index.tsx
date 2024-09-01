@@ -7,14 +7,50 @@
 import Link from 'next/link'
 import { Sheet, SheetTrigger, SheetContent } from '@app/_components/ui/sheet'
 import { Button } from '@app/_components/ui/button'
+import { useEffect, useState } from 'react'
+import { usePathname, useRouter } from 'next/navigation'
 
 // export default function MainMenuHeader() {
 export const MainMenuHeader: React.FC<any> = ({ menu }: any) => {
+  const [isScrolled, setIsScrolled] = useState(false)
+  const [scrollY, setScrollY] = useState(0)
+  const pathname = usePathname()
+  const isHomePage = pathname === '/'
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const currentScrollY = window.scrollY
+      setIsScrolled(currentScrollY > 100)
+      setScrollY(currentScrollY)
+    }
+
+    // Set initial scroll position
+    handleScroll()
+
+    window.addEventListener('scroll', handleScroll)
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+    }
+  }, [])
+
+  // <header
+  //   className={`flex h-16 w-full items-center justify-between  px-4 md:px-6 transition-all duration-300 ease-in-out'
+  //     // ${!isScrolled ? 'bg-background' : 'bg-transparent'}`}
+  // >
+
   return (
-    <header className="flex h-16 w-full items-center justify-between bg-background px-4 md:px-6">
+    <header
+      className={`flex h-16 w-full items-center justify-between px-4 md:px-6
+        ${isHomePage ? 'absolute w-screen transition-all duration-300 ease-in-out' : ''}
+        ${!isHomePage || isScrolled ? 'bg-white text-black' : 'bg-background text-white'}`}
+    >
       <Link
         href="/"
-        className="text-2xl font-bold font-['leaguespartan'] tracking-tighter"
+        className={`
+          ${isHomePage ? 'transition-all duration-300 ease-in-out' : ''}
+          ${!isHomePage || isScrolled ? 'text-2xl' : 'text-5xl'}
+          font-bold font-['leaguespartan'] tracking-tighter`}
         prefetch={false}
       >
         thankly
@@ -48,7 +84,7 @@ export const MainMenuHeader: React.FC<any> = ({ menu }: any) => {
             className="relative text-muted-foreground transition-colors hover:text-foreground"
             prefetch={false}
           >
-            <ShoppingCartIcon className="h-5 w-5" />
+            <ShoppingCartIcon className="h-5 w-5 sm:mr-4" />
             <span className="sr-only">Cart</span>
             <div
               className={`absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-xs text-primary-foreground ${

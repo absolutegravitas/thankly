@@ -1,3 +1,4 @@
+'use client'
 import React, { useState } from 'react'
 import { ExtractBlockProps } from '@/utilities/extractBlockProps'
 import { Button } from '../../_components/ui/button'
@@ -10,7 +11,7 @@ export const BannerBlock: React.FC<{
   bannerFields: BannerBlockProps['bannerFields']
 }> = ({ bannerFields }) => {
   // console.log('bannerFields:', bannerFields)
-  const { content, type, addCheckmark } = bannerFields
+  const { content, addCheckmark } = bannerFields
 
   const [isVisible, setIsVisible] = useState(true)
 
