@@ -3,18 +3,24 @@ import { useState, useEffect, useCallback } from 'react'
 import { Button } from '@app/_components/ui/button'
 import { ExtractBlockProps } from '@/utilities/extractBlockProps'
 import DynamicHtml from '@app/_components/DynamicHtml'
+import { useMediaQuery } from 'react-responsive'
 
 export type HeroSliderProps = ExtractBlockProps<'heroSlider'>
 
 interface HeroItem {
-  imageUrl: string
+  desktopImageUrl: string
+  mobileImageUrl: string
   content: string
   buttonText: string
   buttonLink: string
 }
 
 interface SliderItem {
-  image: {
+  desktopImage: {
+    url: string
+    alt: string
+  }
+  mobileImage: {
     url: string
     alt: string
   }
@@ -43,20 +49,28 @@ function useImageCycle(images: HeroItem[], interval: number) {
 }
 
 export default function HeroSlider({ slider }: HeroSliderProps) {
+  console.log('slider', slider)
   const heroItems = slider.map((item: SliderItem) => ({
-    imageUrl: item.image.url,
+    desktopImageUrl: item.desktopImage.url,
+    mobileImageUrl: item.mobileImage.url,
     content: item.htmlContent,
     buttonText: item.buttonLink.label,
     buttonLink: item.buttonLink.url,
   }))
   const [height, setHeight] = useState('90vh')
-  const [currentIndex, setCurrentIndex] = useImageCycle(heroItems, 7000)
+  const [currentIndex, setCurrentIndex] = useImageCycle(heroItems, 8000)
+  const isMobile = useMediaQuery({ maxWidth: 639 })
 
   const updateHeight = useCallback(() => {
-    const vh = window.innerHeight * 0.01 * 0.9
-    document.documentElement.style.setProperty('--vh', `${vh}px`)
-    setHeight(`${window.innerHeight * 0.9}px`)
-  }, [])
+    if (isMobile) {
+      // Set height to approximate height of a cell phone (e.g., 100vh)
+      setHeight('100vh')
+    } else {
+      const vh = window.innerHeight * 0.01 * 0.9
+      document.documentElement.style.setProperty('--vh', `${vh}px`)
+      setHeight(`${window.innerHeight * 0.9}px`)
+    }
+  }, [isMobile])
 
   useEffect(() => {
     updateHeight()
@@ -73,13 +87,13 @@ export default function HeroSlider({ slider }: HeroSliderProps) {
             index === currentIndex ? 'opacity-100' : 'opacity-0'
           }`}
           style={{
-            backgroundImage: `url(${item.imageUrl})`,
+            backgroundImage: `url(${isMobile ? item.mobileImageUrl : item.desktopImageUrl})`,
             backgroundSize: 'cover',
             backgroundPosition: 'center',
           }}
         >
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent">
-            <div className="absolute bottom-16 left-16 max-w-2xl text-white">
+            <div className="absolute bottom-16 left-16 max-w-6xl text-white">
               <div className="text-5xl font-bold mb-6 leading-tight">
                 <DynamicHtml htmlContent={item.content} />
               </div>

@@ -20,7 +20,13 @@ export const HeroSlider: Block = {
       fields: [
         //image
         {
-          name: 'image',
+          name: 'desktopImage',
+          type: 'upload',
+          relationTo: 'media',
+          required: true,
+        },
+        {
+          name: 'mobileImage',
           type: 'upload',
           relationTo: 'media',
           required: true,
