@@ -54,6 +54,7 @@ export const Products: CollectionConfig = {
           options: [
             { label: 'Card', value: 'card' },
             { label: 'Gift', value: 'gift' },
+            { label: 'Add On', value: 'addOn' },
           ],
         },
         {
@@ -147,7 +148,8 @@ export const Products: CollectionConfig = {
                   type: 'relationship',
                   relationTo: 'products',
                   hasMany: true,
-                  filterOptions: ({}) => {return {'categories.title': { equals: "Add On"}}}, //only "Add On" category products
+                  //filterOptions: ({}) => {return {'categories.title': { equals: "Add On"}}}, //only "Add On" category products
+                  filterOptions: ({}) => {return {'productType': { equals: "addOn"}}}, //only "Add On" product type
                 }
               ]
             }
