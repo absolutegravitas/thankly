@@ -49,7 +49,6 @@ function useImageCycle(images: HeroItem[], interval: number) {
 }
 
 export default function HeroSlider({ slider }: HeroSliderProps) {
-  console.log('slider', slider)
   const heroItems = slider.map((item: SliderItem) => ({
     desktopImageUrl: item.desktopImage.url,
     mobileImageUrl: item.mobileImage.url,
