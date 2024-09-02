@@ -38,9 +38,15 @@ import { Menu, Setting } from '@payload-types'
 
 import FetchGlobal from '@/utilities/PayloadQueries/fetchGlobal'
 import { MainMenuHeader } from '@app/_components/MainMenuHeader'
+import BannerBlock, { BannerBlockProps } from '../_blocks/Banner'
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const settings = await FetchGlobal({ slug: 'settings', depth: 1 })
+  const settings: Setting = await FetchGlobal({ slug: 'settings', depth: 1 })
+
+  const bannerFields: BannerBlockProps = {
+    addCheckmark: true,
+    content: settings.topBar?.content,
+  }
 
   return (
     <html lang="en" suppressHydrationWarning>
@@ -68,10 +74,16 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           className={`${[leaguespartan.variable, inter.variable, raleway.variable].join(' ')} dark:bg-neutral-900 dark:text-dark-text`}
         >
           <Providers>
-            {/* {settings && <Header {...settings} />} */}
-            {settings && <MainMenuHeader {...settings} />}
-            {children}
-            {settings?.footer && <Footer {...settings?.footer}></Footer>}
+            <div className="flex flex-col min-h-screen relative">
+              <div className="sticky top-0 left-0 right-0 z-50">
+                {settings && <BannerBlock bannerFields={bannerFields} />}
+                {settings && <MainMenuHeader {...settings} />}
+              </div>
+
+              <main className="flex-grow mt-[var(--header-height,0px)] z-0">{children}</main>
+
+              {settings?.footer && <Footer {...settings?.footer} />}
+            </div>
             <PrivacyBanner />
             <Analytics />
             <SpeedInsights />

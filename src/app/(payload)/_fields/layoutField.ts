@@ -22,6 +22,7 @@ import { Content } from '@cms/_blocks/Content'
 import { ContentGrid } from '@cms/_blocks/ContentGrid'
 import { Form } from '@cms/_blocks/Form'
 import { Hero } from '@cms/_blocks/Hero'
+import { HeroSlider } from '@cms/_blocks/HeroSlider'
 import { HoverCards } from '@cms/_blocks/HoverCards'
 import { HoverHighlights } from '@cms/_blocks/HoverHighlights'
 import { LinkGrid } from '@cms/_blocks/LinkGrid'
@@ -56,6 +57,7 @@ export const layoutField: LayoutField = (
     'ContentGrid',
     'Form',
     'Hero',
+    'HeroSlider',
     'HoverCards',
     'HoverHighlights',
     'LinkGrid',
@@ -95,6 +97,8 @@ export const layoutField: LayoutField = (
           return Form
         case 'Hero':
           return Hero
+        case 'HeroSlider':
+          return HeroSlider
         case 'HoverCards':
           return HoverCards
         case 'HoverHighlights':

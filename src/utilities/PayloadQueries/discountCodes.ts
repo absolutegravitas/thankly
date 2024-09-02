@@ -8,7 +8,7 @@ import { defaultCacheRevalidate } from "./defaultCacheRevalidate";
 export async function validateDiscountCode( discountCode: string) : Promise<boolean> {
   //attempt to fetch discount code
   const discount = await fetchDiscountCode(discountCode);
-  return (!!discount && discount.slug === discountCode)
+  return (!!discount && discount.slug === discountCode.toUpperCase())
 }
 
 export const fetchDiscountCode = async ( discountCode: string ) : Promise<Discountcode | null> => { 
@@ -28,7 +28,7 @@ export const fetchDiscountCode = async ( discountCode: string ) : Promise<Discou
         where: { 
           and: [
             { 
-              slug: { equals: discountCode }
+              slug: { equals: discountCode.toUpperCase() }
             },
             { starts: { less_than_equal: now }},
             { expires: { greater_than_equal: now }}

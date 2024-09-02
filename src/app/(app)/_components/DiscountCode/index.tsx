@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Button } from '@app/_components/ui/button'
 import { Input } from '@app/_components/ui/input'
 import { CheckCircle2, XCircle } from 'lucide-react'
@@ -15,6 +15,7 @@ export default function DiscountCode() {
     type: null,
     text: '',
   })
+  const buttonRef = useRef<HTMLButtonElement>(null)
 
   const handleApply = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -46,6 +47,13 @@ export default function DiscountCode() {
     }
   }, [message])
 
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
+    if (event.key === 'Enter') {
+      event.preventDefault() // Prevent form submission
+      buttonRef.current?.click() // Trigger button click
+    }
+  }
+
   return (
     <div className="w-full max-w-sm mx-auto">
       <div className="flex space-x-2">
@@ -53,6 +61,7 @@ export default function DiscountCode() {
           id="discountCode"
           type="text"
           value={discountCode}
+          onKeyDown={handleKeyDown}
           onChange={(e) => setDiscountCode(e.target.value)}
           placeholder="Enter discount code"
           disabled={isLoading}
@@ -62,6 +71,7 @@ export default function DiscountCode() {
         <Button
           type="button"
           onClick={handleApply}
+          ref={buttonRef}
           disabled={isLoading || !discountCode}
           className="h-10 px-4 py-2 rounded-full"
         >
