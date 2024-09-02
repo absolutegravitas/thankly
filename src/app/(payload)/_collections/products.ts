@@ -2,11 +2,11 @@ import type { CollectionConfig } from 'payload'
 
 import { slugField } from '@cms/_fields/slug'
 // import { populateArchiveBlock } from '@/blocks/ArchiveBlock/populateArchiveBlock'
-import { revalidateProduct } from '@cms/_hooks/revalidateProduct'
 import { layoutField } from '@cms/_fields/layoutField'
 import { upsertStripeProduct } from '@cms/_hooks/upsertStripeProduct'
 import { deleteStripeProduct } from '@cms/_hooks/deleteStripeProduct'
 import { adminsOnly, publishedOnly } from '@/utilities/access'
+import { lexicalEditor } from '@payloadcms/richtext-lexical'
 // import { themeField } from '../_fields/blockFields'
 
 export const Products: CollectionConfig = {
@@ -60,7 +60,7 @@ export const Products: CollectionConfig = {
           name: 'categories',
           type: 'relationship',
           relationTo: 'categories',
-          // hasMany: true,
+          hasMany: true,
         },
         {
           name: 'tags',
@@ -112,13 +112,61 @@ export const Products: CollectionConfig = {
     {
       type: 'tabs',
       tabs: [
-        {
-          label: 'Page Layout',
-          description: 'Product Page Layout',
-          fields: [layoutField()],
+        { //Details & Add ons
+          label: 'Details',
+          description: 'Text descriptions of the product',
+          fields: [
+            {
+              name: 'description',
+              label: 'Product Description',
+              type: 'richText',
+              editor: lexicalEditor()
+            },
+            {
+              name: 'extraDetails',
+              label: 'Extra Details',
+              type: 'array',
+              fields: [
+                { name: 'title', type:'text', required:true },
+                { name: 'details', type:'richText', editor: lexicalEditor(), required:true },
+              ]
+            },
+            {
+              type: 'row',
+              fields: [
+                {
+                  name: 'displayTags',
+                  label: 'Display Tags',
+                  type: 'relationship',
+                  relationTo: 'tags',
+                  hasMany: true,
+                },
+                { 
+                  name: 'addOns',
+                  label: 'Add Ons',
+                  type: 'relationship',
+                  relationTo: 'products',
+                  hasMany: true,
+                  filterOptions: ({}) => {return {'categories.title': { equals: "Add On"}}}, //only "Add On" category products
+                }
+              ]
+            }
+          ]
         },
-        {
-          label: 'Basics',
+        { // Images
+          label: 'Images',
+          description: 'Product Images',
+          fields: [
+            {
+              name: 'media',
+              label: 'Images',
+              type: 'array',
+              fields: [{ name: 'mediaItem', type: 'upload', relationTo: 'media' }],
+            },
+          ],
+        },
+        { //Stock
+          label: 'Stock',
           description: 'Basic Product Info',
           fields: [
             {
@@ -152,17 +200,14 @@ export const Products: CollectionConfig = {
                 },
               ],
             },
-
-            {
-              name: 'media',
-              label: 'Images',
-              type: 'array',
-              fields: [{ name: 'mediaItem', type: 'upload', relationTo: 'media' }],
-            },
-          ],
+          ]
         },
-
-        {
+        { //Page Layout
+          label: 'Page Layout',
+          description: 'Product Page Layout',
+          fields: [layoutField()],
+        },
+        { //Tech Info
           label: 'Tech Info',
           fields: [
             slugField(),
