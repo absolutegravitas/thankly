@@ -9,11 +9,11 @@ import OrderDetails from '@app/_blocks/OrderDetails'
 export default async function OrderConfirmationPage({
   searchParams,
 }: {
-  searchParams: { session_id: string }
+  searchParams: { orderNumber: string }
 }) {
-  const { session_id } = searchParams
+  const { orderNumber } = searchParams
 
-  if (!session_id) {
+  if (!orderNumber) {
     notFound()
   }
 
@@ -23,11 +23,8 @@ export default async function OrderConfirmationPage({
   try {
     const { docs } = await payload.find({
       collection: 'orders',
-      where: {
-        stripeId: {
-          equals: session_id,
-        },
-      },
+      // probably shoudl also check if the customer is logged in and if the order number matches their email or name or something otherwise this is just open to anyone who knows the order number
+      where: { orderNumber: { equals: orderNumber } },
       depth: 2,
       limit: 1,
     })

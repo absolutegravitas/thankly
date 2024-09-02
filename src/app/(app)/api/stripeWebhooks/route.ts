@@ -10,10 +10,11 @@ import Stripe from 'stripe'
 import { headers } from 'next/headers'
 import { getPayloadHMR } from '@payloadcms/next/utilities'
 import configPromise from '@payload-config'
-import { Order } from '@/payload-types'
+import { Cart, Order } from '@/payload-types'
 import { sendConfirmationEmail } from './sendConfirmationEmail'
 import { genSendleLabel } from './genSendleLabel'
 import { updateOrderTracking } from './updateOrderTracking'
+import { createOrder } from './createOrder'
 
 // Initialize Stripe with the secret key and API version
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
@@ -53,10 +54,10 @@ export async function POST(req: NextRequest) {
   try {
     // Handle different event types
     switch (event.type) {
-      case 'checkout.session.completed':
-        const session = event.data.object as Stripe.Checkout.Session
-        await handleCheckoutSessionCompleted(session)
-        break
+      // case 'checkout.session.completed':
+      //   const session = event.data.object as Stripe.Checkout.Session
+      //   await handleCheckoutSessionCompleted(session)
+      //   break
       case 'payment_intent.succeeded':
         const paymentIntent = event.data.object as Stripe.PaymentIntent
         await handlePaymentIntentSucceeded(paymentIntent)
@@ -79,67 +80,63 @@ async function handlePaymentIntentSucceeded(paymentIntent: Stripe.PaymentIntent)
   let payload: any = await getPayloadHMR({ config })
 
   try {
-    // find the cart associated with the stripe payment intent from the metadata
+    // find the cartNumber associated with the stripe payment intent from the metadata
+    // this should be the same as the orderNumber
+    const cartNumber = paymentIntent.metadata.cartNumber
+    if (!cartNumber) {
+      throw new Error('No cart number found in payment intent metadata')
+    }
 
-    // Find the order associated with the Stripe payment intent
-    const { docs: orders } = await payload.find({
-      collection: 'orders',
-      where: { stripeId: { equals: paymentIntent.id } },
+    // create the order on the payload server by finding the cartNumber in the payload carts collection
+    const { docs: carts } = await payload.find({
+      collection: 'carts',
+      where: { cartNumber: { equals: cartNumber } },
       depth: 2,
       limit: 1,
     })
 
-    if (orders.length === 0) {
-      // If no order exists, create a new one
-      const newOrder = await payload.create({
-        collection: 'orders',
-        data: {
-          stripeId: paymentIntent.id,
-          status: 'processing' as const,
-          totals: {
-            total: paymentIntent.amount / 100, // Convert from cents to dollars
-          },
-          // Add other relevant order details from the payment intent
-        },
+    if (carts.length === 0) {
+      throw new Error(`No cart found with cart number ${cartNumber}`)
+    }
+
+    const cart = carts[0] as Cart
+
+    const newOrder = await createOrder(cart)
+
+    // do stuff if order was successfully created
+    if (newOrder) {
+      console.log(`New order ${newOrder?.id} created from payment intent ${paymentIntent.id}`)
+
+      // delete cart on payloadCMS as it's no longer valid
+      await payload.delete({
+        collection: 'carts',
+        id: cart.id,
       })
 
-      console.log(`New order ${newOrder.id} created from payment intent ${paymentIntent.id}`)
-
-      // Send confirmation email for the new order
+      // send confirmation email to customer
       await sendConfirmationEmail(newOrder)
 
-      // Process shipping for the new order (if applicable)
-      // Note: You may need to adjust this part based on how shipping information is stored in the payment intent
-    } else {
-      const order = orders[0] as Order
-
-      // Update the existing order status to "processing"
-      await payload.update({
-        collection: 'orders',
-        id: order.id,
-        data: {
-          status: 'processing' as const,
-        },
-      })
-
-      console.log(`Existing order ${order.id} updated for payment intent ${paymentIntent.id}`)
-
-      // Send confirmation email for the updated order
-      await sendConfirmationEmail(order)
-
-      // Process shipping for each item and receiver in the order
-      for (const item of order.items || []) {
+      // generate sendle labels for each receiver in the order
+      // only if the receiver is getting a gift product type AND the address is not a PO BOX, Parcel Collect, or Parcel Locker - these have to be prepped manually in AusPost / with postage stamps
+      for (const item of newOrder.items || []) {
         for (const receiver of item.receivers || []) {
-          try {
-            const trackingInfo = await genSendleLabel(order, item, receiver)
-            if (trackingInfo) {
-              await updateOrderTracking(order.id, item.id!, receiver.id!, trackingInfo)
-            }
-          } catch (error) {
-            console.error(
-              `Error processing shipping for order ${order.id}, item ${item.id}, receiver ${receiver.id}:`,
-              error,
+          if (
+            item.product.productType === 'gift' &&
+            !/PO BOX|Parcel Collect|Parcel Locker/i.test(
+              receiver.delivery?.address?.formattedAddress,
             )
+          ) {
+            try {
+              const trackingInfo = await genSendleLabel(newOrder, item, receiver)
+              if (trackingInfo) {
+                await updateOrderTracking(newOrder.id, item.id!, receiver.id!, trackingInfo)
+              }
+            } catch (error) {
+              console.error(
+                `Error processing shipping for order ${newOrder.id}, item ${item.id}, receiver ${receiver.id}:`,
+                error,
+              )
+            }
           }
         }
       }
@@ -149,77 +146,58 @@ async function handlePaymentIntentSucceeded(paymentIntent: Stripe.PaymentIntent)
   }
 }
 
-// Handle a completed Stripe checkout session
-async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) {
-  console.log('Checkout session was completed!')
-  const config = await configPromise
-  let payload: any = await getPayloadHMR({ config })
+// // Handle a completed Stripe checkout session for Stripe Checkout
+// async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) {
+//   console.log('Checkout session was completed!')
+//   const config = await configPromise
+//   let payload: any = await getPayloadHMR({ config })
 
-  try {
-    // Find the order associated with the Stripe checkout session
-    const { docs: orders } = await payload.find({
-      collection: 'orders',
-      where: { stripeId: { equals: session.id } },
-      depth: 2,
-      limit: 1,
-    })
+//   try {
+//     // Find the order associated with the Stripe checkout session
+//     const { docs: orders } = await payload.find({
+//       collection: 'orders',
+//       where: { stripeId: { equals: session.id } },
+//       depth: 2,
+//       limit: 1,
+//     })
 
-    if (orders.length === 0) {
-      throw new Error(`No order found with Stripe Checkout Session ID ${session.id}`)
-    }
+//     if (orders.length === 0) {
+//       throw new Error(`No order found with Stripe Checkout Session ID ${session.id}`)
+//     }
 
-    const order = orders[0] as Order
+//     const order = orders[0] as Order
 
-    // Update the order status to "processing"
-    await payload.update({
-      collection: 'orders',
-      id: order.id,
-      data: {
-        status: 'processing' as const,
-      },
-    })
+//     // Update the order status to "processing"
+//     await payload.update({
+//       collection: 'orders',
+//       id: order.id,
+//       data: {
+//         status: 'processing' as const,
+//       },
+//     })
 
-    // Send confirmation email for the order
-    await sendConfirmationEmail(order)
+//     // Send confirmation email for the order
+//     await sendConfirmationEmail(order)
 
-    // Process shipping for each item and receiver in the order
-    for (const item of order.items || []) {
-      for (const receiver of item.receivers || []) {
-        try {
-          const trackingInfo = await genSendleLabel(order, item, receiver)
-          if (trackingInfo) {
-            await updateOrderTracking(order.id, item.id!, receiver.id!, trackingInfo)
-          }
-        } catch (error) {
-          console.error(
-            `Error processing shipping for order ${order.id}, item ${item.id}, receiver ${receiver.id}:`,
-            error,
-          )
-        }
-      }
-    }
+//     // Process shipping for each item and receiver in the order
+//     for (const item of order.items || []) {
+//       for (const receiver of item.receivers || []) {
+//         try {
+//           const trackingInfo = await genSendleLabel(order, item, receiver)
+//           if (trackingInfo) {
+//             await updateOrderTracking(order.id, item.id!, receiver.id!, trackingInfo)
+//           }
+//         } catch (error) {
+//           console.error(
+//             `Error processing shipping for order ${order.id}, item ${item.id}, receiver ${receiver.id}:`,
+//             error,
+//           )
+//         }
+//       }
+//     }
 
-    console.log(`Order ${order.id} processed successfully`)
-  } catch (error) {
-    console.error('Error handling completed checkout session:', error)
-  }
-}
-
-// Performance considerations:
-// - This file handles webhook events from Stripe, so performance is critical for timely processing of orders.
-// - The `handleCheckoutSessionCompleted` and `handlePaymentIntentSucceeded` functions may be resource-intensive, especially for large orders with many items and receivers.
-// - Potential bottlenecks include database operations, generating shipping labels, and sending confirmation emails.
-// - Horizontal scaling or background task processing (e.g., queues) may be necessary for high load scenarios.
-
-// Accessibility (a11y) considerations:
-// - No specific accessibility features are implemented in this file, as it focuses on server-side order processing.
-
-// State management:
-// - No explicit state management is required in this file, as it handles individual requests.
-
-// Side effects:
-// - Both `handleCheckoutSessionCompleted` and `handlePaymentIntentSucceeded` functions have side effects, including creating or updating orders, sending emails, and generating shipping labels.
-
-// Future compatibility:
-// - The Stripe API version is hardcoded, but it should be updated when new versions are released.
-// - The code may need to be adapted if the Stripe webhook event structure or payload changes in the future.
+//     console.log(`Order ${order.id} processed successfully`)
+//   } catch (error) {
+//     console.error('Error handling completed checkout session:', error)
+//   }
+// }

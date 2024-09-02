@@ -8,9 +8,7 @@ import configPromise from '@payload-config'
 
 // Create a Stripe instance using the secret key from the environment variables
 // This instance will be used to interact with the Stripe API
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2024-06-20',
-})
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
 
 // create a paymentIntent and pass the secret back to the client so that stripe can confirm the payment
 export async function createPaymentIntent(cart: Cart): Promise<any> {
@@ -33,8 +31,8 @@ export async function createPaymentIntent(cart: Cart): Promise<any> {
     const paymentIntent = await stripe.paymentIntents.create({
       amount: Math.round(cart.totals.total * 100),
       currency: 'aud',
-      confirm: true, // create and confirm the payment intent at the same time so we dont have to screw around with back and forth.
-      return_url: `${process.env.NEXT_PUBLIC_SERVER_URL}/shop/order?id={1234}`,
+      // confirm: true, // create and confirm the payment intent at the same time so we dont have to screw around with back and forth.
+      // return_url: `${process.env.NEXT_PUBLIC_SERVER_URL}/shop/order?id={1234}`,
 
       metadata: {
         cartId: cart.id,
@@ -46,7 +44,7 @@ export async function createPaymentIntent(cart: Cart): Promise<any> {
     })
 
     // create an order here?
-    // no do it on confirmPayment so that we can follow up later for unpaid payments and/or show the webhook handler update when payment is successfully completed
+    // no do it on confirmPayment webhook so that we can follow up later for unpaid payments and/or show the webhook handler update when payment is successfully completed
 
     // Return the client secret for use on the client side
     return { client_secret: paymentIntent.client_secret }
