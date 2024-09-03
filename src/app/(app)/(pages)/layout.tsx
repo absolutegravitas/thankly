@@ -71,7 +71,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           />
         </head>
         <body
-          className={`${[leaguespartan.variable, inter.variable, raleway.variable].join(' ')} dark:bg-neutral-900 dark:text-dark-text`}
+          className={`${[leaguespartan.variable, inter.variable, raleway.variable].join(' ')} dark:bg-neutral-900 dark:text-dark-text font-sans`}
         >
           <Providers>
             <div className="flex flex-col min-h-screen relative">

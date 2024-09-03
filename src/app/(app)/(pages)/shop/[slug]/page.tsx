@@ -13,6 +13,9 @@ import Blocks from '@app/_blocks'
 import { Metadata } from 'next'
 import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
 import FetchItem from '@/utilities/PayloadQueries/fetchItem'
+import FetchItems from '@/utilities/PayloadQueries/fetchItems'
+import { fetchProduct } from '@/utilities/PayloadQueries/fetchProduct'
+import { ProductPlus } from '@/app/(app)/_blocks/Cart/cart-types'
 
 // Component that renders the product details page
 export default async function ProductPage({
@@ -26,9 +29,10 @@ export default async function ProductPage({
   const selectedImageIndex =
     typeof searchParams.image === 'string' ? parseInt(searchParams.image, 10) : 0
 
-  let product: Product | null = null
+  let product: ProductPlus | null = null
   try {
-    product = await fetchProduct(slug)
+    const productID = Number(slug)
+    product = await fetchProduct(productID)
   } catch (error) {
     console.error('Failed to fetch product:', error)
     return notFound()
@@ -63,59 +67,36 @@ export async function generateMetadata({
   const defaultDescription = 'Our full range of currently available Thankly Gifts and Cards.'
   const defaultImageURL = `${process.env.NEXT_PUBLIC_SERVER_URL}/images/og-image.png`
 
-  if (!slugString) {
+  try {
+    const productId = Number(slugString)
+    const product = await fetchProduct(productId)
+
+    const ogImage =
+      typeof product.meta.image === 'object' &&
+      product.meta.image !== null &&
+      'url' in product.meta.image &&
+      `${process.env.NEXT_PUBLIC_SERVER_URL}${product.meta.image.url}`
+
     return {
-      title: defaultTitle,
-      description: defaultDescription,
-      openGraph: mergeOpenGraph({
-        title: defaultTitle,
-        description: defaultDescription,
-        url: '/',
-        images: [{ url: defaultImageURL }],
-      }),
-    }
-  }
-
-  const product = await fetchProduct(slugString)
-
-  if (!product || !product.meta) {
-    return {
-      title: defaultTitle,
-      description: defaultDescription,
-      openGraph: mergeOpenGraph({
-        title: defaultTitle,
-        description: defaultDescription,
-        url: '/',
-        images: [{ url: defaultImageURL }],
-      }),
-    }
-  }
-
-  const ogImage =
-    typeof product.meta.image === 'object' &&
-    product.meta.image !== null &&
-    'url' in product.meta.image &&
-    `${process.env.NEXT_PUBLIC_SERVER_URL}${product.meta.image.url}`
-
-  return {
-    title: product.meta.title || defaultTitle,
-    description: product.meta.description || defaultDescription,
-    openGraph: mergeOpenGraph({
       title: product.meta.title || defaultTitle,
       description: product.meta.description || defaultDescription,
-      url: Array.isArray(slug) ? slug.join('/') : '/',
-      images: ogImage ? [{ url: ogImage }] : [{ url: defaultImageURL }],
-    }),
+      openGraph: mergeOpenGraph({
+        title: product.meta.title || defaultTitle,
+        description: product.meta.description || defaultDescription,
+        url: Array.isArray(slug) ? slug.join('/') : '/',
+        images: ogImage ? [{ url: ogImage }] : [{ url: defaultImageURL }],
+      }),
+    }
+  } catch {
+    return {
+      title: defaultTitle,
+      description: defaultDescription,
+      openGraph: mergeOpenGraph({
+        title: defaultTitle,
+        description: defaultDescription,
+        url: '/',
+        images: [{ url: defaultImageURL }],
+      }),
+    }
   }
-}
-
-// Utility function to fetch product data from the Payload CMS
-const fetchProduct = async (slug: string): Promise<any | null> => {
-  let product = await FetchItem({ collection: 'products', slug: slug })
-
-  // set the inCart key so that browser cart can update
-  const inCart: boolean = false
-  product = { ...product, inCart }
-
-  return product
 }
