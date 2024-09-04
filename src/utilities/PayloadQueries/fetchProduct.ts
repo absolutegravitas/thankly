@@ -7,8 +7,8 @@ import FetchItems from "./fetchItems"
 
 // Utility function to fetch product data from the Payload CMS
 export 
-const fetchProduct = async (id: number): Promise<any | null> => {
-  const productData = await FetchItem({ collection: 'products', id: id, depth: 4 })
+const fetchProduct = async (slug: string): Promise<any | null> => {
+  const productData = await FetchItem({ collection: 'products', slug: slug, depth: 4 })
 
   if (!productData) {
     return null
@@ -17,7 +17,7 @@ const fetchProduct = async (id: number): Promise<any | null> => {
   //fetch any related reviews
   const reviews = await FetchItems({
     collection: 'reviews',
-    where: `{products: {contains: {id: "${id}"}}}`,
+    where: `{products: {contains: {slug: "${slug}}"}}}`,
   })
 
   const averageStarRating = calculateAverageRating(reviews)

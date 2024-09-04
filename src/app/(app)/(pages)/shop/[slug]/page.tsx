@@ -31,8 +31,7 @@ export default async function ProductPage({
 
   let product: ProductPlus | null = null
   try {
-    const productID = Number(slug)
-    product = await fetchProduct(productID)
+    product = await fetchProduct(slug)
   } catch (error) {
     console.error('Failed to fetch product:', error)
     return notFound()
@@ -67,9 +66,21 @@ export async function generateMetadata({
   const defaultDescription = 'Our full range of currently available Thankly Gifts and Cards.'
   const defaultImageURL = `${process.env.NEXT_PUBLIC_SERVER_URL}/images/og-image.png`
 
+  if (!slugString) {
+    return {
+      title: defaultTitle,
+      description: defaultDescription,
+      openGraph: mergeOpenGraph({
+        title: defaultTitle,
+        description: defaultDescription,
+        url: '/',
+        images: [{ url: defaultImageURL }],
+      }),
+    }
+  }
+
   try {
-    const productId = Number(slugString)
-    const product = await fetchProduct(productId)
+    const product = await fetchProduct(slugString)
 
     const ogImage =
       typeof product.meta.image === 'object' &&
