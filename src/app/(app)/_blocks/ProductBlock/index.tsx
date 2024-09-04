@@ -55,7 +55,7 @@ const ProductBlockContent: React.FC<ProductBlockContentProps> = ({
 }) => {
   const isMobile = useMediaQuery({ maxWidth: 639 })
   // Hook to access cart-related state and functions
-  const { isProductInCart, cart } = useCart()
+  const { isProductInCart, cart, addCartItem } = useCart()
 
   // State to track if the product is in the cart
   const [inCart, setInCart] = useState<boolean>(isProductInCart(product.id))
@@ -128,6 +128,19 @@ const ProductBlockContent: React.FC<ProductBlockContentProps> = ({
 
   const isProduct = (item: unknown): item is Product => {
     return (item as Product).id !== undefined
+  }
+
+  const addToCart = () => {
+    const selectedAddOnProducts =
+      product.addOns?.filter(
+        (addOn): addOn is Product =>
+          typeof addOn === 'object' && 'id' in addOn && selectedAddOns.includes(addOn.id),
+      ) ?? []
+    addCartItem(
+      product,
+      quantity,
+      selectedAddOnProducts.length > 0 ? selectedAddOnProducts : undefined,
+    )
   }
 
   return (
@@ -358,7 +371,9 @@ const ProductBlockContent: React.FC<ProductBlockContentProps> = ({
                 </div>
               </div>
             )}
-            <Button className="w-full rounded-2xl">Personalise and send</Button>
+            <Button className="w-full max-w-2xl rounded-2xl" onClick={addToCart}>
+              Personalise and send
+            </Button>
           </div>
         </div>
       </CardContent>

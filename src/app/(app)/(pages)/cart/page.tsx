@@ -3,12 +3,13 @@ import CartItemDisplay from '@/app/(app)/_blocks/Cart/CartItemDisplay'
 import { Button } from '@/app/(app)/_components/ui/button'
 import { useCart } from '@/app/(app)/_providers/Cart'
 import { useRouter } from 'next/navigation'
-import React from 'react'
+import React, { useState } from 'react'
 import { z } from 'zod'
-import { FormProvider, useForm, useFormContext } from 'react-hook-form'
+import { FormProvider, SubmitHandler, useForm, useFormContext } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import CartRedirect from '../../_blocks/Cart/CartRedirect'
 import SkeletonLoader from './skeleton'
+import { Loader2 } from 'lucide-react'
 
 const cartItemSchema = z.object({
   receiverId: z.string().min(1, 'Delivery address is required'),
@@ -30,14 +31,18 @@ const CartPersonalisePage = () => {
   const methods = useForm({
     resolver: zodResolver(formSchema),
   })
-
-  //loading and form prereq checks
-  if (!hasInitializedCart) return <SkeletonLoader />
-  if (cartIsEmpty) return <CartRedirect />
+  const {
+    handleSubmit,
+    formState: { isValidating, isSubmitting },
+  } = methods
 
   const onSubmit = (data: any) => {
     router.push('/cart/postage')
   }
+
+  //loading and form prereq checks
+  if (!hasInitializedCart) return <SkeletonLoader />
+  if (cartIsEmpty) return <CartRedirect />
 
   const Divider = () => (
     <div className="flex items-center gap-4 md:hidden">
@@ -50,7 +55,7 @@ const CartPersonalisePage = () => {
   return (
     <div className="px-4 sm:px-6">
       <FormProvider {...methods}>
-        <form onSubmit={methods.handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           {cart.items?.map((item, index) => (
             <React.Fragment key={item.itemId}>
               <CartItemDisplay cartItem={item} index={index} />
@@ -69,8 +74,20 @@ const CartPersonalisePage = () => {
                 </p>
               </div>
               <div className="mt-4 w-full sm:w-64">
-                <Button size="lg" className="rounded-full w-full" type="submit">
-                  Checkout
+                <Button
+                  size="lg"
+                  className="rounded-full w-full"
+                  type="submit"
+                  disabled={isSubmitting || isValidating}
+                >
+                  {isSubmitting || isValidating ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      Processing...
+                    </>
+                  ) : (
+                    'Checkout'
+                  )}
                 </Button>
               </div>
             </div>

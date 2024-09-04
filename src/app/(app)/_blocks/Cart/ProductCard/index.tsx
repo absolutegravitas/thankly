@@ -5,6 +5,7 @@ import { log } from 'console'
 import { Button } from '@app/_components/ui/button'
 import { IconProps } from '@app/_icons/types'
 import { CartItem } from '@app/_blocks/Cart/cart-types'
+import ProductAddOns from '@/app/(app)/_components/ProductAddOns'
 
 interface ProductBlockContentProps {
   cartItem: CartItem
@@ -15,20 +16,14 @@ interface ProductBlockContentProps {
 
 const ProductCard: React.FC<ProductBlockContentProps> = ({ cartItem, onQuantityChange }) => {
   // Destructure product and product prices
-  const { itemId, product, quantity } = cartItem
+  const { itemId, product, quantity, price, addOns } = cartItem
   const {
     media: images,
     prices: { salePrice, basePrice },
   } = product as Product
 
-  // Calculate if the product is on sale
-  const onSale =
-    salePrice !== null && salePrice !== undefined && salePrice !== 0 && salePrice < basePrice
-
-  const unitPrice = onSale ? salePrice : basePrice
-
   return (
-    <div className="rounded-2xl shadow-lg overflow-hidden w-56 h-80 bg-thankly-offwhite">
+    <div className="rounded-2xl shadow-lg overflow-hidden w-56 min-h-80 bg-thankly-offwhite">
       <div className="w-full h-48 relative overflow-hidden ">
         {images && images.length > 0 && (
           <img
@@ -72,8 +67,9 @@ const ProductCard: React.FC<ProductBlockContentProps> = ({ cartItem, onQuantityC
               </Button>
             )}
           </div>
-          <div className="text-muted-foreground">Price: ${unitPrice.toFixed(2)}</div>
-          <div className="text-muted-foreground">Total: ${(quantity * unitPrice).toFixed(2)}</div>
+          <ProductAddOns addOns={addOns} />
+          <div className="text-muted-foreground">Price: ${price.toFixed(2)}</div>
+          <div className="text-muted-foreground">Total: ${(quantity * price).toFixed(2)}</div>
         </div>
       </div>
     </div>

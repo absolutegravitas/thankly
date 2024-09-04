@@ -435,6 +435,7 @@ export interface Cart {
         quantity: number;
         price: number;
         product: number | Product;
+        addOns?: (number | Product)[] | null;
         receiverId?: string | null;
         giftCard: {
           message: string;
