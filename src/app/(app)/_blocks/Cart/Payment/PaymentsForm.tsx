@@ -19,7 +19,7 @@ export const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHAB
 export const PaymentForm = () => {
   const stripe = useStripe()
   const elements = useElements()
-  const { cart, validCart } = useCart()
+  const { cart } = useCart()
 
   const [validationMessage, setValidationMessage] = useState<string>('')
   const [errorMessage, setErrorMessage] = useState()
@@ -113,72 +113,74 @@ export const PaymentForm = () => {
     setErrorMessage(error.message)
   }
 
-  // This effect runs whenever the cart or validateCart function changes
-  // cart should be invalidated when customer is modding cart OR supplying discount code etc so that the stripe form can be disabled and re-rendered with correct amount
-  useEffect(() => {
-    setValidationMessage(validCart() ? '' : 'Cart is invalid or incomplete.')
-  }, [cart, validCart])
-
   return (
     <>
-      {validCart() ? ( // only show Stripe if cart is valid
-        <Elements
-          // wrapper Elements component for apple pay / google pay buttons AND old school payment form
-          stripe={stripePromise}
-          options={{
-            amount: cart.totals.total, // this should work if discount is applied or amounts change without using another useEffect since useCart is a provider and should update
-            mode: 'payment',
-            currency: 'aud',
-            appearance: { ...stripeElementsAppearance },
-          }}
-        >
-          <h2 className={'mb-6'}>Payment</h2>
-          <form className="flex flex-col" onSubmit={handleSubmit}>
-            <ExpressCheckoutElement
-              options={expressCheckoutOptions}
-              onConfirm={handleSubmit}
-              onClick={onClick}
-              onCancel={onCancel}
-              onReady={onReady}
-            />
+      {/* {validCart() ? ( // only show Stripe if cart is valid */}
+      <Elements
+        // wrapper Elements component for apple pay / google pay buttons AND old school payment form
+        stripe={stripePromise}
+        options={{
+          amount: cart.totals.total, // this should work if discount is applied or amounts change without using another useEffect since useCart is a provider and should update
+          mode: 'payment',
+          currency: 'aud',
+          appearance: { ...stripeElementsAppearance },
+        }}
+      >
+        <h2 className={'mb-6'}>Payment</h2>
+        <form className="flex flex-col" onSubmit={handleSubmit}>
+          <ExpressCheckoutElement
+            options={expressCheckoutOptions}
+            onConfirm={handleSubmit}
+            onClick={onClick}
+            onCancel={onCancel}
+            onReady={onReady}
+          />
+          {/* https://docs.stripe.com/elements/address-element/collect-addresses?platform=web#customize-appearance */}
+          <AddressElement
+            options={{
+              mode: 'billing',
+              fields: { phone: 'always' },
+            }}
+          />
+          <PaymentElement
+            // old school payment form, adjust methods on stripe dashboard
+            id="payment-element"
+            options={{
+              layout: {
+                type: 'accordion',
+                defaultCollapsed: false,
+                radios: true,
+                spacedAccordionItems: true,
+              },
+            }}
+          />
 
-            <PaymentElement
-              // old school payment form, adjust methods on stripe dashboard
-              id="payment-element"
-              options={{
-                layout: {
-                  type: 'accordion',
-                  defaultCollapsed: false,
-                  radios: true,
-                  spacedAccordionItems: true,
-                },
-              }}
-            />
+          <button
+            id="submit"
+            disabled={!stripe || loading}
+            className={
+              'w-full mt-6 py-3 cursor-pointer border border-transparent bg-green px-4 text-sm flex justify-between !font-semibold text-white shadow-sm hover:bg-black hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50'
+            }
+          >
+            <DollarSign /> {'Pay Now'}
+          </button>
 
-            <button
-              id="submit"
-              disabled={!stripe || loading}
-              className={
-                'w-full mt-6 py-3 cursor-pointer border border-transparent bg-green px-4 text-sm flex justify-between !font-semibold text-white shadow-sm hover:bg-black hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50'
-              }
-            >
-              <DollarSign /> {'Pay Now'}
-            </button>
-
-            <div className={`text-center`}>
-              <div className={'flex items-center justify-center space-x-2'}>
-                <LockIcon className="h-4 w-4 text-gray-400" aria-hidden="true" />
-                <span className="text-sm text-gray-600">Secure payment powered by stripe.com</span>
-              </div>
+          <div className={`text-center`}>
+            <div className={'flex items-center justify-center space-x-2'}>
+              <LockIcon className="h-4 w-4 text-gray-400" aria-hidden="true" />
+              <span className="text-sm text-gray-600">Secure payment powered by stripe.com</span>
             </div>
-          </form>
-        </Elements>
-      ) : (
+          </div>
+        </form>
+      </Elements>
+      {/* ) : (
         <div className="text-red-500 text-sm">{validationMessage}</div>
-      )}
+      )} */}
     </>
   )
 }
+
+// styling for stripe iframe
 const expressCheckoutOptions = {
   // Specify a type per payment method
   // Defaults to 'buy' for Google and 'plain' for Apple

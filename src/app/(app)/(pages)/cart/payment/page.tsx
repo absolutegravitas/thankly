@@ -15,6 +15,7 @@ import CartItemsTable from '@/app/(app)/_blocks/Cart/CartItemsTable'
 import { ReceiverCarts, transformToReceiverCarts } from '@/utilities/receiverCarts'
 import CartTotals from '@/app/(app)/_blocks/Cart/CartTotals'
 import DiscountCode from '@/app/(app)/_components/DiscountCode'
+import { PaymentForm } from '@/app/(app)/_blocks/Cart/Payment/PaymentsForm'
 
 const CartPaymentPage = () => {
   const { cart, hasInitializedCart, cartIsEmpty, cartPersonalisationMissing, cartPostageMissing } =
@@ -49,7 +50,9 @@ const CartPaymentPage = () => {
   return (
     <form>
       <div className="flex flex-col sm:flex-row">
-        <div className="basis-1/2">left</div>
+        <div className="basis-1/2">
+          <PaymentForm />
+        </div>
         <div className="basis-1/2 bg-thankly-palegreen">
           {isMobile ? (
             <Accordion type="single" collapsible className="w-full">

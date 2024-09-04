@@ -121,9 +121,8 @@ async function handlePaymentIntentSucceeded(paymentIntent: Stripe.PaymentIntent)
       for (const item of newOrder.items || []) {
         for (const receiver of item.receivers || []) {
           if (
-            item.product.productType === 'gift' &&
             !/PO BOX|Parcel Collect|Parcel Locker/i.test(
-              receiver.delivery?.address?.formattedAddress,
+              receiver.delivery?.address?.addressLine1 || '',
             )
           ) {
             try {

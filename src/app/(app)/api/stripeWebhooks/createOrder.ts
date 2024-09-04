@@ -25,30 +25,32 @@ export async function createOrder(cart: Cart) {
   let payload: any = await getPayloadHMR({ config })
   let order: Order | null = null
 
-  const transformedCart = {
-    ...cart,
-    items: cart.items?.map((item) => ({
-      ...item,
-      product: typeof item.product === 'object' ? item.product.id : item.product,
-      receivers: item.receivers?.map((receiver) => ({
-        ...receiver,
-        errors: undefined,
-      })),
-    })),
-  }
-
   let orderNumber: string
-  do {
-    orderNumber = generateOrderNumber()
-  } while (!(await isOrderNumberUnique(payload, orderNumber)))
+  //  disable as this will get slower over time with more and more orders
+  // do {
+  orderNumber = generateOrderNumber()
+  // } while (!(await isOrderNumberUnique(payload, orderNumber)))
 
   const orderData = {
     orderNumber,
     status: 'pending' as const,
-    //stripeId: stripeSessionId,
-    totals: transformedCart.totals,
-    billing: transformedCart.billing,
-    items: transformedCart.items,
+    totals: cart.totals,
+    billing: cart.billing,
+    items: cart.items?.map((item) => ({
+      price: item.price,
+      product: typeof item.product === 'object' ? item.product.id : item.product,
+      totals: {
+        cost: item.price * item.quantity,
+        shipping: 0, // You may need to calculate this
+        subTotal: item.price * item.quantity,
+        discount: 0, // You may need to calculate this
+      },
+      giftCard: item.giftCard,
+    })),
+    receivers: cart.receivers?.map((receiver) => ({
+      ...receiver,
+      errors: undefined,
+    })),
   }
 
   try {
