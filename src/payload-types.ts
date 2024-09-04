@@ -747,6 +747,7 @@ export interface Setting {
  * via the `definition` "topBar".
  */
 export interface TopBar {
+  visible?: boolean | null;
   content?: {
     root: {
       type: string;

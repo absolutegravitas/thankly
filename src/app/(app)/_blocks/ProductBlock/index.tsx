@@ -131,7 +131,7 @@ const ProductBlockContent: React.FC<ProductBlockContentProps> = ({
   }
 
   return (
-    <Card className="max-w-6xl mx-auto">
+    <Card className="max-w-[80vw] mx-auto">
       <CardContent className="p-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {isMobile ? (

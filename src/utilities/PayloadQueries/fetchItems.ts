@@ -36,8 +36,6 @@ const FetchItems = async ( {collection, id, slug, where, depth = 3, pagination =
         query.where = where
       }
 
-      console.log("query", query)
-
       try {
         const { docs } = await payload.find(query)
         return docs
