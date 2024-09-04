@@ -13,7 +13,7 @@ export const BannerBlock: React.FC<{
   // console.log('bannerFields:', bannerFields)
   const { content, addCheckmark } = bannerFields
 
-  const [isVisible, setIsVisible] = useState(true)
+  const [isVisible, setIsVisible] = useState(bannerFields.visible)
 
   const handleClose = () => {
     setIsVisible(false)

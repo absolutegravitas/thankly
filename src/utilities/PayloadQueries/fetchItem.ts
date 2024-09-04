@@ -2,17 +2,23 @@ import FetchItems from './fetchItems'
 
 interface Props {
   collection: string,
-  slug: string,
+  id?: number,
+  slug?: string,
   depth?: number,
-  revalidate?: number
+  context?: any,
+  pagination?: boolean,
+  revalidate?: number,
 }
 
 const FetchItem = async ( props : Props ) : Promise<any | null> => {
-  
   const items = await FetchItems(props);
-  const item = items[0];
-  
-  return item;
+
+  if (items && items.length > 0) {
+    return items[0];
+  }
+
+  return null;
 }
 
 export default FetchItem;
+

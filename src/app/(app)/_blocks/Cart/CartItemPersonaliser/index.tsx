@@ -17,6 +17,7 @@ import DebouncedTextarea from '@app/_components/ui/debounced-textarea'
 import { useFieldArray, useFormContext } from 'react-hook-form'
 import { CartPersonalisationForm } from '@/app/(app)/(pages)/cart/page'
 import { isEntityHidden } from 'payload'
+import { Product } from '@/payload-types'
 
 interface Props {
   cartItem: CartItem
@@ -76,7 +77,9 @@ const CartItemPersonaliser = ({ cartItem, index }: Props) => {
   }
 
   const handleShipAnother = () => {
-    addCartItem(cartItem.product, cartItem.price)
+    const product = cartItem.product as Product
+    const quantity = 1 //default to quantity of 1
+    addCartItem(product, quantity, product.addOns as Product[])
   }
 
   //handle setvalues for form validation at load

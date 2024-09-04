@@ -17,11 +17,12 @@ import React, { useEffect, useState } from 'react'
 import { useMediaQuery } from 'react-responsive'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { FormProvider, useForm } from 'react-hook-form'
+import { FormProvider, SubmitHandler, useForm } from 'react-hook-form'
 import CartRedirect from '@/app/(app)/_blocks/Cart/CartRedirect'
 import SkeletonLoader from '../skeleton'
 import CartTotals from '@/app/(app)/_blocks/Cart/CartTotals'
 import DiscountCode from '@/app/(app)/_components/DiscountCode'
+import { Loader2 } from 'lucide-react'
 
 const postagePickerSchema = z.object({
   shippingMethod: z.string().min(1, 'Please select a postage method'),
@@ -40,6 +41,10 @@ const CartPostagePage = () => {
   const methods = useForm({
     resolver: zodResolver(formSchema),
   })
+  const {
+    handleSubmit,
+    formState: { isValidating, isSubmitting },
+  } = methods
 
   //loading and form prereq checks
   if (!hasInitializedCart) return <SkeletonLoader />
@@ -54,7 +59,7 @@ const CartPostagePage = () => {
 
   return (
     <FormProvider {...methods}>
-      <form onSubmit={methods.handleSubmit(onSubmit)}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <div className="flex flex-col">
           {receiverCarts.receivers?.map((receiverCart, index) => (
             <div key={index} className="flex flex-col-reverse sm:flex-row">
@@ -98,8 +103,20 @@ const CartPostagePage = () => {
             <div className="p-4 basis-1/2 items-end">
               <div className="flex flex-col items-center">
                 <div className="mt-4 w-full sm:w-64">
-                  <Button size="lg" className="rounded-full w-full" type="submit">
-                    Continue to Payment
+                  <Button
+                    size="lg"
+                    className="rounded-full w-full"
+                    type="submit"
+                    disabled={isSubmitting || isValidating}
+                  >
+                    {isSubmitting || isValidating ? (
+                      <>
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        Processing...
+                      </>
+                    ) : (
+                      'Continue to Payment'
+                    )}
                   </Button>
                 </div>
               </div>

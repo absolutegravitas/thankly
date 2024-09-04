@@ -12,12 +12,13 @@ export interface Config {
   };
   collections: {
     pages: Page;
+    reusable: Reusable;
     orders: Order;
     products: Product;
-    reusable: Reusable;
+    carts: Cart;
+    reviews: Review;
     media: Media;
     users: User;
-    carts: Cart;
     tags: Tag;
     categories: Category;
     sessions: Session;
@@ -113,6 +114,31 @@ export interface Media {
   height?: number | null;
   focalX?: number | null;
   focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "reusable".
+ */
+export interface Reusable {
+  id: number;
+  title: string;
+  layout?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -265,13 +291,62 @@ export interface User {
 export interface Product {
   id: number;
   title: string;
-  productType?: ('card' | 'gift') | null;
-  categories?: (number | null) | Category;
+  productType?: ('card' | 'gift' | 'addOn') | null;
+  categories?: (number | Category)[] | null;
   tags?: (number | Tag)[] | null;
   shippingSize?: ('mini' | 'small' | 'medium' | 'large') | null;
   prices: {
     basePrice: number;
     salePrice?: number | null;
+  };
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  extraDetails?:
+    | {
+        title: string;
+        details: {
+          root: {
+            type: string;
+            children: {
+              type: string;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        };
+        id?: string | null;
+      }[]
+    | null;
+  displayTags?: (number | Tag)[] | null;
+  addOns?: (number | Product)[] | null;
+  media?:
+    | {
+        mediaItem?: number | Media | null;
+        id?: string | null;
+      }[]
+    | null;
+  stock?: {
+    availability?: ('available' | 'unavailable') | null;
+    stockOnHand?: number | null;
+    lowStockThreshold?: number | null;
   };
   layout?: {
     root: {
@@ -288,17 +363,6 @@ export interface Product {
     };
     [k: string]: unknown;
   } | null;
-  stock?: {
-    availability?: ('available' | 'unavailable') | null;
-    stockOnHand?: number | null;
-    lowStockThreshold?: number | null;
-  };
-  media?:
-    | {
-        mediaItem?: number | Media | null;
-        id?: string | null;
-      }[]
-    | null;
   slug?: string | null;
   stripe?: {
     productId?: string | null;
@@ -331,31 +395,6 @@ export interface Category {
 export interface Tag {
   id: number;
   title?: string | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "reusable".
- */
-export interface Reusable {
-  id: number;
-  title: string;
-  layout?: {
-    root: {
-      type: string;
-      children: {
-        type: string;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -396,6 +435,7 @@ export interface Cart {
         quantity: number;
         price: number;
         product: number | Product;
+        addOns?: (number | Product)[] | null;
         receiverId?: string | null;
         giftCard: {
           message: string;
@@ -427,6 +467,23 @@ export interface Cart {
         id?: string | null;
       }[]
     | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "reviews".
+ */
+export interface Review {
+  id: number;
+  title?: string | null;
+  starRating?: ('1' | '2' | '3' | '4' | '5') | null;
+  reviewDate?: string | null;
+  body?: string | null;
+  products?: (number | Product)[] | null;
+  reviewer?: {
+    name?: string | null;
+  };
   updatedAt: string;
   createdAt: string;
 }
@@ -691,6 +748,7 @@ export interface Setting {
  * via the `definition` "topBar".
  */
 export interface TopBar {
+  visible?: boolean | null;
   content?: {
     root: {
       type: string;

@@ -138,6 +138,7 @@ export const Carts: CollectionConfig = {
                 { name: 'quantity', type: 'number', defaultValue: 1, min: 1, required: true },
                 { name: 'price', type: 'number', defaultValue: 0, min: 0, required: true },
                 { name: 'product', type: 'relationship', relationTo: 'products', required: true },
+                { name: 'addOns', type: 'relationship', relationTo: 'products', hasMany: true },
                 { name: 'receiverId', type: 'text' },
                 {
                   name: 'giftCard',

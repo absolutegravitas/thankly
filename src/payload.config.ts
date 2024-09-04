@@ -22,6 +22,7 @@ import { Sessions } from '@cms/_collections/sessions'
 import { Tags } from '@cms/_collections/tags'
 import { DiscountCodes } from '@cms/_collections/discountCodes'
 import { Categories } from '@cms/_collections/categories'
+import { Reviews } from '@cms/_collections/reviews'
 
 // import { buildConfig } from 'payload/config' // deprecated
 import { buildConfig } from 'payload'
@@ -32,19 +33,10 @@ const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
 export default buildConfig({
-  collections: [
-    Pages,
-    Orders,
-    Products,
-    Reusable,
-    Media,
-    Users,
-    Carts,
-    Tags,
-    Categories,
-    Sessions,
-    DiscountCodes,
-  ],
+
+  // needs to be ordered in a specific way otherwise the admin grouping fucks up
+  collections: [Pages, Reusable, Orders, Products, Carts, Reviews, Media, Users,  Tags, Categories, Sessions, DiscountCodes],
+
   globals: [Settings],
   editor: lexicalEditor({}),
   db: postgresAdapter({ pool: { connectionString: process.env.POSTGRES_URL } }),

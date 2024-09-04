@@ -6,6 +6,7 @@ import { ReceiverCart } from '@/utilities/receiverCarts'
 import { getPostageName, getPostageOptions } from '@/app/(app)/_providers/Cart/postageOptions'
 import { capitalize } from 'lodash'
 import { ReceiverAddressText } from '@/app/(app)/_providers/Cart/address'
+import ProductAddOns from '@/app/(app)/_components/ProductAddOns'
 
 interface Props extends React.ComponentPropsWithoutRef<'div'> {
   receiverCart: ReceiverCart
@@ -52,7 +53,7 @@ const CartItemsTable: React.FC<Props> = ({
           </div>
           <div className="flex-auto pl-4 sm:pl-6">
             <p>{(item.product as Product).title}</p>
-
+            <ProductAddOns addOns={item.addOns} />
             {showDetails && (
               <>
                 <p className="text-slate-800 font-light">Message:</p>

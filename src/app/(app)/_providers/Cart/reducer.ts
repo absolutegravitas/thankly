@@ -18,7 +18,7 @@ const debouncedUpsertPayloadCart = debounce(upsertPayloadCart, 1000)
 export type CartAction =
   | {
       type: 'ADD_CART_ITEM'
-      payload: { product: number | Product; price: number }
+      payload: { product: Product; quantity: number, addOns?: Product[] }
     }
   | {
       type: 'REMOVE_CART_ITEM'
@@ -65,14 +65,29 @@ export const cartReducer = (cart: Cart, action: CartAction): Cart => {
 
   switch (action.type) {
     case 'ADD_CART_ITEM': {
-      const { product, price } = action.payload
+      const { product, quantity, addOns } = action.payload
+
+      //Check price
+      const {
+        //media: images,
+        prices: { salePrice, basePrice },
+      } = product
+      // Calculate if the product is on sale
+      const onSale =
+        salePrice !== null && salePrice !== undefined && salePrice !== 0 && salePrice < basePrice
+      const price = 
+          (onSale ? salePrice : basePrice)
+        + (addOns ? calculateTotalAddonCost(addOns) : 0)
+
+      console.log("PRICE added to cart:",price)
 
       // add a new product to existing cart
       const newItem: CartItem = {
         itemId: uuid(),
-        quantity: 1,
+        quantity: quantity,
         product: product,
         price: price,
+        addOns: addOns,
         giftCard: {
           message: '',
           writingStyle: 'regular'
@@ -265,6 +280,16 @@ export const cartReducer = (cart: Cart, action: CartAction): Cart => {
     }
   }
 }
+
+// Function to calculate the totals for array of addons provided
+const calculateTotalAddonCost = (addons: Product[]): number => {
+  return addons.reduce((total, addon) => {
+    if (addon.prices && typeof addon.prices.basePrice === 'number') {
+      return total + addon.prices.basePrice;
+    }
+    return total;
+  }, 0);
+};
 
 // Function to calculate the totals for the entire cart
 const calculateCartTotals = (cart: Cart): CartTotals => {

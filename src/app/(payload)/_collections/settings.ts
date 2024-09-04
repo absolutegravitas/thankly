@@ -20,7 +20,14 @@ export const Settings: GlobalConfig = {
       name: 'topBar',
       interfaceName: 'topBar',
       type: 'group',
-      fields: [contentField()],
+      fields: [
+        {
+          name: 'visible',
+          type: 'checkbox',
+          defaultValue: false
+        },
+        contentField(),
+      ],
     },
     {
       name: 'menu',
