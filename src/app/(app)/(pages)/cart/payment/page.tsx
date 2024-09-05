@@ -20,10 +20,8 @@ import {
   stripeElementsAppearance,
 } from '@/app/(app)/_blocks/Cart/Payment/PaymentsForm'
 
-import { loadStripe } from '@stripe/stripe-js'
 import { Elements } from '@stripe/react-stripe-js'
-
-export const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
+import { stripePromise } from '@/utilities/stripe' // Updated import
 
 const CartPaymentPage = () => {
   const { cart, hasInitializedCart, cartIsEmpty, cartPersonalisationMissing, cartPostageMissing } =
