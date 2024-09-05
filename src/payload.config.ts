@@ -33,9 +33,21 @@ const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
 export default buildConfig({
-
   // needs to be ordered in a specific way otherwise the admin grouping fucks up
-  collections: [Pages, Reusable, Orders, Products, Carts, Reviews, Media, Users,  Tags, Categories, Sessions, DiscountCodes],
+  collections: [
+    Pages,
+    Reusable,
+    Orders,
+    Products,
+    Carts,
+    Reviews,
+    Media,
+    Users,
+    Tags,
+    Categories,
+    Sessions,
+    DiscountCodes,
+  ],
 
   globals: [Settings],
   editor: lexicalEditor({}),
@@ -53,6 +65,7 @@ export default buildConfig({
     'https://www.thankly.com.au',
     'https://thankly.vercel.app',
     'http://localhost:3000',
+    'https://api.hcaptcha.com',
   ].filter(Boolean),
   csrf: [
     'https://checkout.stripe.com',
@@ -61,6 +74,7 @@ export default buildConfig({
     'https://thankly.com.au',
     'https://www.thankly.com.au',
     'https://thankly.vercel.app',
+    'https://api.hcaptcha.com',
     'http://localhost:3000',
   ].filter(Boolean),
 

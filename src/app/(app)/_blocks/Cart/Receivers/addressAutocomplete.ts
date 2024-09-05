@@ -21,7 +21,7 @@ export async function addressAutocomplete(query: string, countryCode: string = '
     }
 
     const data = await response.json()
-    revalidatePath('/shop/cart') // Adjust this path as needed
+    revalidatePath('/cart') // Adjust this path as needed
     return data.addresses || []
   } catch (error) {
     console.error('Error fetching address suggestions:', error)

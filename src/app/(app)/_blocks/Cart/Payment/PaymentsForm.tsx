@@ -10,11 +10,9 @@ import {
   useStripe,
   ExpressCheckoutElement,
 } from '@stripe/react-stripe-js'
-import { loadStripe } from '@stripe/stripe-js'
 import { DollarSign, LockIcon } from 'lucide-react'
 import { createPaymentIntent } from './createPaymentIntent'
-
-export const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
+import { Button } from '@/app/(app)/_components/ui/button'
 
 export const PaymentForm = () => {
   const stripe = useStripe()
@@ -45,9 +43,7 @@ export const PaymentForm = () => {
     const options = {
       emailRequired: true,
       phoneNumberRequired: true,
-      shippingAddressRequired: false,
-      allowedShippingCountries: ['AU'],
-      lineItems: [{ name: 'Thankly Order', amount: cart.totals.total }],
+      lineItems: [{ name: 'Thankly Order', amount: cart.totals.total * 100 }],
     }
     resolve(options)
   }
@@ -57,7 +53,7 @@ export const PaymentForm = () => {
   // dont think this will work as example code is in a different framework
   const onCancel = () => {
     if (elements) {
-      elements?.update({ amount: 1099 })
+      elements?.update({ amount: cart.totals.total * 100 })
     }
   }
 
@@ -85,7 +81,9 @@ export const PaymentForm = () => {
     }
 
     // Create the PaymentIntent and obtain clientSecret
-    const { client_secret: clientSecret } = await createPaymentIntent(cart)
+    const orderNumber =
+      `${Math.floor(1000 + Math.random() * 9000)}-${Math.floor(1000 + Math.random() * 9000)}` as string
+    const { client_secret: clientSecret } = await createPaymentIntent(cart, orderNumber)
 
     // Confirm the PaymentIntent using the details collected by the Payment Element
     const { error } = await stripe.confirmPayment({
@@ -93,7 +91,7 @@ export const PaymentForm = () => {
       clientSecret,
       confirmParams: {
         // assumes cartNumber is transposed to orderNumber when the order is created
-        return_url: `${process.env.NEXT_PUBLIC_SERVER_URL}/shop/order?orderNumber={${cart.cartNumber}}`,
+        return_url: `${process.env.NEXT_PUBLIC_SERVER_URL}/shop/order?orderNumber=${orderNumber}`,
       },
     })
 
@@ -115,67 +113,51 @@ export const PaymentForm = () => {
 
   return (
     <>
-      {/* {validCart() ? ( // only show Stripe if cart is valid */}
-      <Elements
-        // wrapper Elements component for apple pay / google pay buttons AND old school payment form
-        stripe={stripePromise}
-        options={{
-          amount: cart.totals.total, // this should work if discount is applied or amounts change without using another useEffect since useCart is a provider and should update
-          mode: 'payment',
-          currency: 'aud',
-          appearance: { ...stripeElementsAppearance },
-        }}
-      >
-        <h2 className={'mb-6'}>Payment</h2>
-        <form className="flex flex-col" onSubmit={handleSubmit}>
-          <ExpressCheckoutElement
-            options={expressCheckoutOptions}
-            onConfirm={handleSubmit}
-            onClick={onClick}
-            onCancel={onCancel}
-            onReady={onReady}
-          />
-          {/* https://docs.stripe.com/elements/address-element/collect-addresses?platform=web#customize-appearance */}
-          <AddressElement
-            options={{
-              mode: 'billing',
-              fields: { phone: 'always' },
-            }}
-          />
-          <PaymentElement
-            // old school payment form, adjust methods on stripe dashboard
-            id="payment-element"
-            options={{
-              layout: {
-                type: 'accordion',
-                defaultCollapsed: false,
-                radios: true,
-                spacedAccordionItems: true,
-              },
-            }}
-          />
+      <ExpressCheckoutElement
+        className={`py-5`}
+        options={expressCheckoutOptions}
+        onConfirm={handleSubmit}
+        onClick={onClick}
+        onCancel={onCancel}
+        onReady={onReady}
+      />
 
-          <button
-            id="submit"
-            disabled={!stripe || loading}
-            className={
-              'w-full mt-6 py-3 cursor-pointer border border-transparent bg-green px-4 text-sm flex justify-between !font-semibold text-white shadow-sm hover:bg-black hover:text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:opacity-50'
-            }
-          >
-            <DollarSign /> {'Pay Now'}
-          </button>
+      <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
+        {/* https://docs.stripe.com/elements/address-element/collect-addresses?platform=web#customize-appearance */}
+        <AddressElement
+          className={`py-5`}
+          options={{ mode: 'billing', fields: { phone: 'always' } }}
+        />
+        <PaymentElement
+          // old school payment form, adjust methods on stripe dashboard
+          id="payment-element"
+          options={{
+            layout: {
+              type: 'accordion',
+              defaultCollapsed: false,
+              radios: true,
+              spacedAccordionItems: true,
+            },
+          }}
+        />
 
-          <div className={`text-center`}>
-            <div className={'flex items-center justify-center space-x-2'}>
-              <LockIcon className="h-4 w-4 text-gray-400" aria-hidden="true" />
-              <span className="text-sm text-gray-600">Secure payment powered by stripe.com</span>
-            </div>
+        <Button
+          id="submit"
+          size="lg"
+          className="py-6 rounded-full w-full"
+          type="submit"
+          disabled={!stripe || loading}
+        >
+          <DollarSign /> {'Pay Now'}
+        </Button>
+
+        <div className={`text-center`}>
+          <div className={'flex items-center justify-center space-x-2 space-y-4'}>
+            <LockIcon className="h-4 w-4 text-gray-400" aria-hidden="true" />
+            <span className="text-sm text-gray-600">Secure payment powered by stripe.com</span>
           </div>
-        </form>
-      </Elements>
-      {/* ) : (
-        <div className="text-red-500 text-sm">{validationMessage}</div>
-      )} */}
+        </div>
+      </form>
     </>
   )
 }
@@ -197,42 +179,42 @@ const expressCheckoutOptions = {
   buttonHeight: 55,
 }
 
-const stripeElementsAppearance = {
+export const stripeElementsAppearance = {
   theme: 'flat' as const,
   variables: {
-    colorPrimary: '#557755',
-    colorBackground: '#f9fafb',
-    colorText: '#111827',
-    colorDanger: '#dc2626',
+    // colorPrimary: '#557755',
+    // colorBackground: '#f9fafb',
+    // colorText: '#111827',
+    // colorDanger: '#dc2626',
     fontFamily:
       'ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
     spacingUnit: '4px',
     borderRadius: '0px',
   },
-  rules: {
-    '.Input': {
-      border: 'none',
-      borderBottom: '1px solid #d1d5db',
-      boxShadow: 'none',
-      fontSize: '14px',
-      padding: '8px 4px',
-    },
-    '.Input:focus': {
-      border: 'none',
-      borderBottom: '2px solid #557755',
-      boxShadow: 'none',
-    },
-    '.Input::placeholder': {
-      color: '#9ca3af',
-    },
-    '.Label': {
-      fontSize: '14px',
-      fontWeight: '500',
-      color: '#111827',
-    },
-    '.Error': {
-      color: '#dc2626',
-      fontSize: '14px',
-    },
-  },
+  // rules: {
+  //   '.Input': {
+  //     border: 'none',
+  //     borderBottom: '1px solid #d1d5db',
+  //     boxShadow: 'none',
+  //     fontSize: '14px',
+  //     padding: '8px 4px',
+  //   },
+  //   '.Input:focus': {
+  //     border: 'none',
+  //     borderBottom: '2px solid #557755',
+  //     boxShadow: 'none',
+  //   },
+  //   '.Input::placeholder': {
+  //     color: '#9ca3af',
+  //   },
+  //   '.Label': {
+  //     fontSize: '14px',
+  //     fontWeight: '500',
+  //     color: '#111827',
+  //   },
+  //   '.Error': {
+  //     color: '#dc2626',
+  //     fontSize: '14px',
+  //   },
+  // },
 }

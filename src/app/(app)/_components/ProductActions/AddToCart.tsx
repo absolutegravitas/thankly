@@ -50,7 +50,7 @@ export function AddToCartButton({ product }: AddToCartButtonProps) {
       addCartItem(product, priceToUse)
 
       // Navigate to the cart page
-      router.push('/shop/cart')
+      router.push('/cart')
     } catch (e: any) {
       // Handle errors
       setError(e.message || 'Failed to add product to cart. Please try again.')
@@ -69,7 +69,7 @@ export function AddToCartButton({ product }: AddToCartButtonProps) {
       data={{
         label: isLoading ? 'Adding...' : 'Add to Cart',
         type: 'custom',
-        url: '/shop/cart',
+        url: '/cart',
       }}
       look={{
         theme: 'light',

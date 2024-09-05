@@ -15,13 +15,20 @@ import CartItemsTable from '@/app/(app)/_blocks/Cart/CartItemsTable'
 import { ReceiverCarts, transformToReceiverCarts } from '@/utilities/receiverCarts'
 import CartTotals from '@/app/(app)/_blocks/Cart/CartTotals'
 import DiscountCode from '@/app/(app)/_components/DiscountCode'
-import { PaymentForm } from '@/app/(app)/_blocks/Cart/Payment/PaymentsForm'
+import {
+  PaymentForm,
+  stripeElementsAppearance,
+} from '@/app/(app)/_blocks/Cart/Payment/PaymentsForm'
+
+import { loadStripe } from '@stripe/stripe-js'
+import { Elements } from '@stripe/react-stripe-js'
+
+export const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
 
 const CartPaymentPage = () => {
   const { cart, hasInitializedCart, cartIsEmpty, cartPersonalisationMissing, cartPostageMissing } =
     useCart()
   const isMobile = useMediaQuery({ maxWidth: 639 })
-
   //loading and form prereq checks
   if (!hasInitializedCart) return <SkeletonLoader />
   if (cartIsEmpty || cartPersonalisationMissing || cartPostageMissing) return <CartRedirect />
@@ -48,12 +55,23 @@ const CartPaymentPage = () => {
   }
 
   return (
-    <form>
-      <div className="flex flex-col sm:flex-row">
-        <div className="basis-1/2">
+    <div className="flex flex-col sm:flex-row">
+      <div className="basis-1/2 px-6">
+        <Elements
+          // wrapper Elements component for apple pay / google pay buttons AND old school payment form
+          stripe={stripePromise}
+          options={{
+            amount: cart.totals.total * 100, // this should work if discount is applied or amounts change without using another useEffect since useCart is a provider and should update
+            mode: 'payment',
+            currency: 'aud',
+            // appearance: { ...stripeElementsAppearance },
+          }}
+        >
           <PaymentForm />
-        </div>
-        <div className="basis-1/2 bg-thankly-palegreen">
+        </Elements>
+      </div>
+      <div className="basis-1/2 bg-thankly-palegreen">
+        <form>
           {isMobile ? (
             <Accordion type="single" collapsible className="w-full">
               <AccordionItem value="cart">
@@ -81,9 +99,9 @@ const CartPaymentPage = () => {
           <div className="pb-4 px-4">
             <CartTotals cart={cart} />
           </div>
-        </div>
+        </form>
       </div>
-    </form>
+    </div>
   )
 }
 
