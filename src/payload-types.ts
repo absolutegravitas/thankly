@@ -384,7 +384,12 @@ export interface Product {
  */
 export interface Category {
   id: number;
-  title?: string | null;
+  title: string;
+  'Shop Configuration'?: {
+    visible?: boolean | null;
+    shopFilterTitle?: string | null;
+    sortOrder?: number | null;
+  };
   updatedAt: string;
   createdAt: string;
 }

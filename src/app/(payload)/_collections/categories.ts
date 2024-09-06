@@ -17,5 +17,26 @@ export const Categories: CollectionConfig = {
     delete: adminsOnly,
   },
 
-  fields: [{ name: 'title', type: 'text' }],
+  fields: [
+    {
+      type:'row',
+      fields: [
+        { name: 'title', type: 'text', required:true},
+      ]
+    },
+    {
+      name: 'Shop Configuration',
+      type: 'group',
+      fields: [
+        { name: 'visible', type: 'checkbox', label:'Visible in Shop filter', defaultValue:true},
+        {
+          type:'row',
+          fields: [
+            { name: 'shopFilterTitle', type: 'text' },
+            { name: 'sortOrder', type: 'number'},
+          ]
+        }
+      ]
+    }
+  ]
 }
