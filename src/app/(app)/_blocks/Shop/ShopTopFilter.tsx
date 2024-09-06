@@ -15,21 +15,18 @@ const ShopTopFilter = () => {
   const [activeSortOption, setActiveSortOption] = useState('Gift bundles only')
 
   return (
-    <div>
-      {/* Sort options */}
-      <div className="flex flex-wrap gap-2 mb-6">
-        {sortOptions.map((option) => (
-          <Button
-            key={option.label}
-            variant={option.label === activeSortOption ? 'default' : 'outline'}
-            className="flex items-center space-x-2"
-            onClick={() => setActiveSortOption(option.label)}
-          >
-            {option.label === activeSortOption && <Check className="w-4 h-4 text-white" />}
-            <span>{option.label}</span>
-          </Button>
-        ))}
-      </div>
+    <div className="flex flex-wrap gap-2 mb-6">
+      {sortOptions.map((option) => (
+        <Button
+          key={option.label}
+          variant={option.label === activeSortOption ? 'default' : 'outline'}
+          className="flex items-center space-x-2"
+          onClick={() => setActiveSortOption(option.label)}
+        >
+          {option.label === activeSortOption && <Check className="w-4 h-4 text-white" />}
+          <span>{option.label}</span>
+        </Button>
+      ))}
     </div>
   )
 }
