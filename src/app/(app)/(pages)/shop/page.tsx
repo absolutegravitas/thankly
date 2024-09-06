@@ -1,7 +1,7 @@
 // This file is a server component in Next.js 14 that renders the Shop page of a web application.
 // It displays a grid of available products fetched from a content management system (CMS) called Payload.
 // If no products are available, it shows a message indicating an empty shop.
-import React from 'react'
+import React, { useState } from 'react'
 import { Metadata } from 'next'
 import { BlockWrapper } from '@app/_components/BlockWrapper'
 import { Gutter } from '@app/_components/Gutter'
@@ -12,8 +12,15 @@ import LoadingShop from './loading'
 import ProductGrid from '../../_blocks/ProductGrid'
 import Filters from '../../_blocks/Shop/Filters'
 
+import * as Slider from '@radix-ui/react-slider'
+import { Button } from '@app/_components/ui/button'
+import { Star, ShoppingCart, Check } from 'lucide-react'
+import ShopSideFilter from '../../_blocks/Shop/ShopSideFilter'
+import ShopTopFilter from '../../_blocks/Shop/ShopTopFilter'
+import ShopProductGrid from '../../_blocks/Shop/ShopProductGrid'
+
 // Define a type alias for the sort options
-export type SortOption = 'name_asc' | 'name_desc' | 'price_asc' | 'price_desc'
+export type SortOption = 'name_asc' | 'name_desc' | 'price_asc' | 'price_desc' | 'star_rating'
 
 // Define a type alias for the filter options
 export type FilterOptions = {
@@ -46,22 +53,26 @@ export default async function ShopPage({
   }
 
   return (
-    <BlockWrapper className={getPaddingClasses('hero')}>
-      <Gutter>
-        <h1 className="text-3xl font-bold tracking-tight text-gray-900">{`Thankly Shop`}</h1>
-        <p className="mt-4 max-w-xl text-sm text-gray-700">
-          {`Our thoughtfully curated thankly gifts and cards.`}
-        </p>
+    <div className="container mx-auto p-4">
+      {/* <Filters />
+      <Suspense fallback={<LoadingShop />}>
+        <ProductGrid page={page} sort={sort} filters={filters} />
+      </Suspense> */}
 
-        <main>
-          <Filters />
+      <div className="flex flex-col md:flex-row gap-8">
+        {/* Sidebar */}
+        <ShopSideFilter />
 
-          <Suspense fallback={<LoadingShop />}>
-            <ProductGrid page={page} sort={sort} filters={filters} />
-          </Suspense>
-        </main>
-      </Gutter>
-    </BlockWrapper>
+        {/* Main content */}
+        <div className="w-full md:w-3/4">
+          {/* Sort options */}
+          <ShopTopFilter />
+
+          {/* Product grid */}
+          <ShopProductGrid />
+        </div>
+      </div>
+    </div>
   )
 }
 
