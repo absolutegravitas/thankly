@@ -1,122 +1,58 @@
-import * as React from 'react'
+'use client'
+import Link from 'next/link'
+import { useSearchParams } from 'next/navigation'
+import { Button } from '../ui/button'
 
-import { ChevronIcon } from '@app/_icons/ChevronIcon'
+const Pagination = ({ currentPage, totalPages }: { currentPage: number; totalPages: number }) => {
+  if (totalPages <= 1) return null //don't display UI at all if there is only one page
 
-import classes from './index.module.scss'
+  const searchParams = useSearchParams()
 
-export const Pagination: React.FC<{
-  page: number
-  setPage: (page: number) => void
-  totalPages: number
-  className?: string
-}> = ({ page, setPage, totalPages, className }) => {
-  const [indexToShow, setIndexToShow] = React.useState([0, 1, 2, 3, 4])
-  const showFirstPage = totalPages > 5 && page >= 2
-  const showLastPage = totalPages > 5 && page <= totalPages - 3
+  const createPageUrl = (pageNumber: number) => {
+    const params = new URLSearchParams(searchParams)
+    params.set('page', pageNumber.toString())
+    return `/shop?${params.toString()}`
+  }
 
-  React.useEffect(() => {
-    if (showFirstPage && showLastPage) {
-      setIndexToShow([1, 2, 3])
-    }
-
-    if (showFirstPage && !showLastPage) {
-      setIndexToShow([2, 3, 4])
-    }
-
-    if (!showFirstPage && showLastPage) {
-      setIndexToShow([0, 1, 2])
-    }
-
-    if (!showFirstPage && !showLastPage) {
-      setIndexToShow([0, 1, 2, 3, 4])
-    }
-  }, [showFirstPage, showLastPage])
+  const pageNumbers = []
+  for (let i = 1; i <= totalPages; i++) {
+    pageNumbers.push(i)
+  }
 
   return (
-    <div className={[classes.pagination, className].filter(Boolean).join(' ')}>
-      {showFirstPage && (
-        <React.Fragment>
-          <button
-            type="button"
-            className={classes.paginationButton}
-            onClick={() => {
-              window.scrollTo(0, 0)
-              setPage(1)
-            }}
-          >
-            1
-          </button>
-          <div className={classes.dash}>&mdash;</div>
-        </React.Fragment>
+    <nav className="flex justify-center items-center space-x-4">
+      {currentPage > 1 && (
+        <Link href={createPageUrl(currentPage - 1)} passHref>
+          <Button variant="outline" className="text-thankly-green">
+            &lt; Previous Page
+          </Button>
+        </Link>
       )}
-      {[...Array(totalPages)].map((_, index) => {
-        const currentPage = index + 1
-        const isCurrent = page === currentPage
-
-        if (indexToShow.includes(index))
-          return (
-            <div key={index}>
-              <button
-                type="button"
-                className={[
-                  classes.paginationButton,
-                  isCurrent && classes.paginationButtonActive,
-                  isCurrent && classes.disabled,
-                ]
-                  .filter(Boolean)
-                  .join(' ')}
-                onClick={() => {
-                  window.scrollTo(0, 0)
-                  setPage(currentPage)
-                }}
+      <ul className="inline-flex space-x-2">
+        {pageNumbers.map((number) => (
+          <li key={number}>
+            <Link href={createPageUrl(number)} passHref>
+              <Button
+                variant={number === currentPage ? 'default' : 'outline'}
+                className={`px-4 py-2 ${
+                  number === currentPage ? 'bg-thankly-green text-white' : 'text-thankly-green'
+                }`}
               >
-                {currentPage}
-              </button>
-            </div>
-          )
-      })}
-      {showLastPage && (
-        <React.Fragment>
-          <div className={classes.dash}>&mdash;</div>
-          <button
-            type="button"
-            className={classes.paginationButton}
-            onClick={() => {
-              setTimeout(() => {
-                window.scrollTo(0, 0)
-              }, 0)
-              setPage(totalPages)
-            }}
-          >
-            {totalPages}
-          </button>
-        </React.Fragment>
+                {number}
+              </Button>
+            </Link>
+          </li>
+        ))}
+      </ul>
+      {currentPage < totalPages && (
+        <Link href={createPageUrl(currentPage + 1)} passHref>
+          <Button variant="outline" className="text-thankly-green">
+            Next Page &gt;
+          </Button>
+        </Link>
       )}
-      <button
-        disabled={page - 1 < 1}
-        onClick={() => {
-          if (page - 1 < 1) return
-          window.scrollTo(0, 0)
-          setPage(page > 1 ? page - 1 : 1)
-        }}
-        className={[classes.button, page - 1 < 1 && classes.disabled].filter(Boolean).join(' ')}
-      >
-        <ChevronIcon rotation={180} />
-      </button>
-      <button
-        disabled={page + 1 > totalPages}
-        onClick={() => {
-          if (page + 1 > totalPages) return
-
-          window.scrollTo(0, 0)
-          setPage(page + 1)
-        }}
-        className={[classes.button, page + 1 > totalPages && classes.disabled]
-          .filter(Boolean)
-          .join(' ')}
-      >
-        <ChevronIcon />
-      </button>
-    </div>
+    </nav>
   )
 }
+
+export default Pagination

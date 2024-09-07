@@ -1,13 +1,13 @@
-import { ShoppingCart, Star } from 'lucide-react'
 import React from 'react'
 import { Button } from '../../_components/ui/button'
 import { FilterOptions, SortOption } from '../../(pages)/shop/page'
-import { Media, Product, Tag } from '@/payload-types'
+import { Product } from '@/payload-types'
 import { getPayloadHMR } from '@payloadcms/next/utilities'
 import configPromise from '@payload-config'
-import StarRating from '../../_components/StarRating'
-import { shippingPrices } from '@/utilities/referenceText'
 import ShopProductCard from '../../_components/Shop/ShopProductCard.tsx'
+import Link from 'next/link'
+import { useSearchParams } from 'next/navigation'
+import Pagination from '../../_components/Pagination'
 
 const ITEMS_PER_PAGE = parseInt(process.env.NEXT_PUBLIC_SHOP_ITEMS_PER_PAGE || '12', 10)
 
@@ -18,6 +18,7 @@ interface Props {
 }
 
 const ShopProductGrid = async ({ page, sort, filters }: Props) => {
+  const currentPage = page ?? 1 // Provide a default value of 1 if page is undefined
   try {
     const { products, totalPages, totalDocs } = await fetchProductsList({ page, sort, filters })
     return (
@@ -32,6 +33,10 @@ const ShopProductGrid = async ({ page, sort, filters }: Props) => {
           {products.map((product) => (
             <ShopProductCard key={product.id} product={product} />
           ))}
+        </div>
+        {/* Pagination */}
+        <div className="mt-8 flex justify-center">
+          <Pagination currentPage={currentPage} totalPages={totalPages} />
         </div>
       </div>
     )
