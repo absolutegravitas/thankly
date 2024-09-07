@@ -13,6 +13,7 @@ import Blocks from '@app/_blocks'
 import { Metadata } from 'next'
 import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
 import { fetchProduct } from '@/utilities/PayloadQueries/fetchProduct'
+import { ProductPlus } from '@/app/(app)/_blocks/Cart/cart-types'
 
 // Component that renders the product details page
 export default async function ProductPage({
@@ -26,7 +27,7 @@ export default async function ProductPage({
   const selectedImageIndex =
     typeof searchParams.image === 'string' ? parseInt(searchParams.image, 10) : 0
 
-  let product: Product | null = null
+  let product: ProductPlus | null = null
   try {
     product = await fetchProduct(slug)
   } catch (error) {
