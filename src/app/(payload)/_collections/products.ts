@@ -85,6 +85,13 @@ export const Products: CollectionConfig = {
       ],
     },
     {
+      name: 'visibleInShop',
+      type: 'checkbox',
+      defaultValue: true,
+      required: true,
+      admin: { condition: (_, siblingData) => siblingData.productType !== 'addOn' },
+    },
+    {
       name: 'prices',
       type: 'group',
       fields: [

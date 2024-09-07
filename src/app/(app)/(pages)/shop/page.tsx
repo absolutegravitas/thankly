@@ -25,7 +25,7 @@ export type SortOption = 'name_asc' | 'name_desc' | 'price_asc' | 'price_desc' |
 
 // Define a type alias for the filter options
 export type FilterOptions = {
-  category?: string
+  categories?: string[]
   tags?: string[]
   productType?: string[]
   minPrice?: number
@@ -39,18 +39,18 @@ export default async function ShopPage({
     query?: string
     page?: string
     sort?: SortOption
-    category?: string
+    categories?: string[]
     tags?: string[]
     productType?: string[]
   }
 }) {
   // console.log('Updated searchParams in page.tsx:', searchParams)
-  console.log('ShopPage rendered with searchParams:', searchParams)
+  // console.log('ShopPage rendered with searchParams:', searchParams)
 
   const page = searchParams?.page ? parseInt(searchParams.page, 10) : 1
   const sort = searchParams?.sort as SortOption | undefined
   const filters: FilterOptions = {
-    category: searchParams?.category,
+    categories: searchParams?.categories,
     tags: searchParams?.tags,
     productType: searchParams?.productType,
   }
@@ -77,7 +77,7 @@ export default async function ShopPage({
 
           {/* Product grid */}
           <Suspense fallback={<LoadingShop />}>
-            <ShopProductGrid />
+            <ShopProductGrid page={page} sort={sort} filters={filters} />
           </Suspense>
         </div>
       </div>
