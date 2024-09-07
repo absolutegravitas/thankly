@@ -13,15 +13,17 @@ const ShopProductCard = ({ product }: Props) => {
   return (
     <Link href={`/shop/${product.slug}`} className="block">
       <div className="border rounded-lg p-4 flex flex-col">
-        <div className="relative w-full h-48 mb-2">
+        <div className="relative w-full pb-[100%] mb-2">
           {product.media && product.media.length > 0 ? (
-            <img
-              src={(product.media?.[0].mediaItem as Media).url ?? undefined}
-              alt={(product.media?.[0].mediaItem as Media).alt ?? undefined}
-              className="w-full h-full object-cover rounded-md"
-            />
+            <div className="absolute inset-0 overflow-hidden rounded-md">
+              <img
+                src={(product.media?.[0].mediaItem as Media).url ?? undefined}
+                alt={(product.media?.[0].mediaItem as Media).alt ?? undefined}
+                className="w-full h-full object-cover absolute inset-0"
+              />
+            </div>
           ) : (
-            <div className="w-full h-full bg-gray-200 rounded-md flex items-center justify-center">
+            <div className="absolute inset-0 bg-gray-200 rounded-md flex items-center justify-center">
               <span className="text-gray-400">Image not found</span>
             </div>
           )}
