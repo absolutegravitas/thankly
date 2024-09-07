@@ -6,6 +6,7 @@ import { Media, Product, Tag } from '@/payload-types'
 import { getPayloadHMR } from '@payloadcms/next/utilities'
 import configPromise from '@payload-config'
 import StarRating from '../../_components/StarRating'
+import { shippingPrices } from '@/utilities/referenceText'
 
 const ITEMS_PER_PAGE = parseInt(process.env.NEXT_PUBLIC_SHOP_ITEMS_PER_PAGE || '12', 10)
 
@@ -119,6 +120,47 @@ const fetchProductsList = async ({
   if (filters.tags && filters.tags.length > 0) {
     query.where.and.push({ tags: { in: filters.tags } })
   }
+
+  if (filters.minPrice) {
+    query.where.and.push({
+      or: [
+        {
+          and: [
+            { 'prices.salePrice': { exists: true } },
+            { 'prices.salePrice': { greater_than_equal: filters.minPrice } },
+          ],
+        },
+        {
+          and: [
+            { 'prices.salePrice': { exists: false } },
+            { 'prices.basePrice': { greater_than_equal: filters.minPrice } },
+          ],
+        },
+      ],
+    })
+  }
+
+  if (filters.maxPrice) {
+    query.where.and.push({
+      or: [
+        {
+          and: [
+            { 'prices.salePrice': { exists: true } },
+            { 'prices.salePrice': { less_than_equal: filters.maxPrice } },
+          ],
+        },
+        {
+          and: [
+            { 'prices.salePrice': { exists: false } },
+            { 'prices.basePrice': { less_than_equal: filters.maxPrice } },
+          ],
+        },
+      ],
+    })
+  }
+
+  console.log('FILTERS =====', JSON.stringify(filters, null, 2))
+  console.log('QUERY =====', JSON.stringify(query, null, 2))
 
   // Set sorting option
   switch (sort) {

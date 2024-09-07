@@ -42,6 +42,8 @@ export default async function ShopPage({
     categories?: string[]
     tags?: string[]
     productType?: string[]
+    minPrice?: string
+    maxPrice?: string
   }
 }) {
   // console.log('Updated searchParams in page.tsx:', searchParams)
@@ -49,10 +51,16 @@ export default async function ShopPage({
 
   const page = searchParams?.page ? parseInt(searchParams.page, 10) : 1
   const sort = searchParams?.sort as SortOption | undefined
-  const filters: FilterOptions = {
+  let filters: FilterOptions = {
     categories: searchParams?.categories,
     tags: searchParams?.tags,
     productType: searchParams?.productType,
+  }
+  if (searchParams?.minPrice) {
+    filters = { ...filters, minPrice: parseInt(searchParams.minPrice) }
+  }
+  if (searchParams?.maxPrice) {
+    filters = { ...filters, maxPrice: parseInt(searchParams.maxPrice) }
   }
 
   const categories = await FetchItems({
