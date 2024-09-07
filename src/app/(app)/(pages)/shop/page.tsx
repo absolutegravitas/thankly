@@ -25,7 +25,7 @@ export type SortOption = 'name_asc' | 'name_desc' | 'price_asc' | 'price_desc' |
 
 // Define a type alias for the filter options
 export type FilterOptions = {
-  categories?: string[]
+  category?: string
   tags?: string[]
   productType?: string[]
   minPrice?: number
@@ -39,7 +39,7 @@ export default async function ShopPage({
     query?: string
     page?: string
     sort?: SortOption
-    category?: string[]
+    category?: string
     tags?: string[]
     productType?: string[]
   }
@@ -50,7 +50,7 @@ export default async function ShopPage({
   const page = searchParams?.page ? parseInt(searchParams.page, 10) : 1
   const sort = searchParams?.sort as SortOption | undefined
   const filters: FilterOptions = {
-    categories: searchParams?.category,
+    category: searchParams?.category,
     tags: searchParams?.tags,
     productType: searchParams?.productType,
   }
