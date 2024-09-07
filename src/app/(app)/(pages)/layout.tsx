@@ -46,6 +46,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const bannerFields: BannerBlockProps = {
     addCheckmark: true,
     content: settings.topBar?.content,
+    visible: settings.topBar?.visible,
   }
 
   return (
