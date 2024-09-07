@@ -25,7 +25,8 @@ export const Categories: CollectionConfig = {
       ]
     },
     {
-      name: 'Shop Configuration',
+      name: 'shopConfig',
+      label: 'Shop Configuration',
       type: 'group',
       fields: [
         { name: 'visible', type: 'checkbox', label:'Visible in Shop filter', defaultValue:true},

@@ -7,14 +7,16 @@ interface Props {
   collection: string,
   id?: number,
   slug?: string,
-  where?: string,
+  where?: object,
   depth?: number,
   context?: any,
   pagination?: boolean,
   revalidate?: number,
+  sort?: string
+  limit?: number
 }
 
-const FetchItems = async ( {collection, id, slug, where, depth = 3, pagination = false, context, revalidate = defaultCacheRevalidate } : Props ) : Promise<any | null> => {
+const FetchItems = async ( {collection, id, slug, where, depth = 3, limit, pagination = false, context, revalidate = defaultCacheRevalidate, sort } : Props ) : Promise<any | null> => {
   const cachedFetchItems = unstable_cache(
     async (): Promise<any | null> => {
       const config = await configPromise
@@ -23,7 +25,6 @@ const FetchItems = async ( {collection, id, slug, where, depth = 3, pagination =
       const query: any = {
         collection: collection,
         depth: depth,
-        limit: 1,
         pagination: pagination,
         context: context
       };
@@ -34,6 +35,14 @@ const FetchItems = async ( {collection, id, slug, where, depth = 3, pagination =
         query.where = { id: { equals: id } };
       } else if (where !== undefined) {
         query.where = where
+      }
+
+      if (sort !== undefined) {
+        query.sort = sort
+      }
+
+      if (limit !== undefined) {
+        query.limit = limit
       }
 
       try {

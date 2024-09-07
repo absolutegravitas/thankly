@@ -385,7 +385,7 @@ export interface Product {
 export interface Category {
   id: number;
   title: string;
-  'Shop Configuration'?: {
+  shopConfig?: {
     visible?: boolean | null;
     shopFilterTitle?: string | null;
     sortOrder?: number | null;

@@ -18,6 +18,7 @@ import { Star, ShoppingCart, Check } from 'lucide-react'
 import ShopSideFilter from '../../_blocks/Shop/ShopSideFilter'
 import ShopTopFilter from '../../_blocks/Shop/ShopTopFilter'
 import ShopProductGrid from '../../_blocks/Shop/ShopProductGrid'
+import FetchItems from '@/utilities/PayloadQueries/fetchItems'
 
 // Define a type alias for the sort options
 export type SortOption = 'name_asc' | 'name_desc' | 'price_asc' | 'price_desc' | 'star_rating'
@@ -27,6 +28,8 @@ export type FilterOptions = {
   categories?: string[]
   tags?: string[]
   productType?: string[]
+  minPrice?: number
+  maxPrice?: number
 }
 
 export default async function ShopPage({
@@ -42,7 +45,7 @@ export default async function ShopPage({
   }
 }) {
   // console.log('Updated searchParams in page.tsx:', searchParams)
-  // console.log('ShopPage rendered with searchParams:', searchParams)
+  console.log('ShopPage rendered with searchParams:', searchParams)
 
   const page = searchParams?.page ? parseInt(searchParams.page, 10) : 1
   const sort = searchParams?.sort as SortOption | undefined
@@ -52,16 +55,20 @@ export default async function ShopPage({
     productType: searchParams?.productType,
   }
 
+  const categories = await FetchItems({
+    collection: 'categories',
+    where: { shopConfig: { visible: { equals: true } } },
+    sort: 'shopConfig.sortOrder',
+  })
+
   return (
     <div className="container mx-auto p-4">
       {/* <Filters />
-      <Suspense fallback={<LoadingShop />}>
-        <ProductGrid page={page} sort={sort} filters={filters} />
-      </Suspense> */}
+      <ProductGrid page={page} sort={sort} filters={filters} /> */}
 
       <div className="flex flex-col md:flex-row gap-8">
         {/* Sidebar */}
-        <ShopSideFilter />
+        <ShopSideFilter categories={categories} />
 
         {/* Main content */}
         <div className="w-full md:w-3/4">
@@ -69,7 +76,9 @@ export default async function ShopPage({
           <ShopTopFilter />
 
           {/* Product grid */}
-          <ShopProductGrid />
+          <Suspense fallback={<LoadingShop />}>
+            <ShopProductGrid />
+          </Suspense>
         </div>
       </div>
     </div>

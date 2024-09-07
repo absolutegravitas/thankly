@@ -17,7 +17,7 @@ const fetchProduct = async (slug: string): Promise<any | null> => {
   //fetch any related reviews
   const reviews = await FetchItems({
     collection: 'reviews',
-    where: `{products: {contains: {slug: "${slug}}"}}}`,
+    where: {products: {contains: slug}},
   })
 
   const averageStarRating = calculateAverageRating(reviews)
