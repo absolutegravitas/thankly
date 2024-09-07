@@ -167,6 +167,19 @@ export const Products: CollectionConfig = {
             },
           ],
         },
+        {
+          label: 'Reviews',
+          description: 'Linked Product Reviews',
+          fields: [
+            {
+              name: 'reviews',
+              label: 'Linked Reviews',
+              type: 'relationship',
+              relationTo: 'reviews',
+              hasMany: true
+            },
+          ]
+        },
         { //Stock
           label: 'Stock',
           description: 'Basic Product Info',

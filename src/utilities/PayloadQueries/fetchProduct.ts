@@ -14,13 +14,7 @@ const fetchProduct = async (slug: string): Promise<any | null> => {
     return null
   }
 
-  //fetch any related reviews
-  const reviews = await FetchItems({
-    collection: 'reviews',
-    where: {products: {contains: slug}},
-  })
-
-  const averageStarRating = calculateAverageRating(reviews)
+  const averageStarRating = calculateAverageRating(productData.reviews)
 
   // set the inCart key so that browser cart can update
   const product = { ...productData, inCart: false, starRating: averageStarRating}

@@ -66,13 +66,6 @@ export const Reviews: CollectionConfig = {
       type: 'textarea'
     },
     {
-      name: 'products',
-      label: 'Linked Products',
-      type: 'relationship',
-      relationTo: 'products',
-      hasMany: true
-    },
-    {
       name: 'reviewer',
       type: 'group',
       fields: [
