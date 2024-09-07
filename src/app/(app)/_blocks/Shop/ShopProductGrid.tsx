@@ -7,6 +7,7 @@ import { getPayloadHMR } from '@payloadcms/next/utilities'
 import configPromise from '@payload-config'
 import StarRating from '../../_components/StarRating'
 import { shippingPrices } from '@/utilities/referenceText'
+import ShopProductCard from '../../_components/Shop/ShopProductCard.tsx'
 
 const ITEMS_PER_PAGE = parseInt(process.env.NEXT_PUBLIC_SHOP_ITEMS_PER_PAGE || '12', 10)
 
@@ -29,47 +30,7 @@ const ShopProductGrid = async ({ page, sort, filters }: Props) => {
             </div>
           )}
           {products.map((product) => (
-            <div key={product.id} className="border rounded-lg p-4 flex flex-col">
-              <div className="relative">
-                {product.media && product.media.length > 0 ? (
-                  <img
-                    src={(product.media?.[0].mediaItem as Media).url ?? undefined}
-                    alt={(product.media?.[0].mediaItem as Media).alt ?? undefined}
-                    className="w-full h-48 object-cover rounded-md"
-                  />
-                ) : (
-                  <img
-                    src={'/placeholder.svg?height=200&width=200'}
-                    alt={'Product image not found'}
-                    className="w-full h-48 object-cover rounded-md"
-                  />
-                )}
-                {/* {product.tag && (
-                  <span className="absolute top-2 right-2 bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">
-                    {product.tag}
-                  </span>
-                )} */}
-                {product.displayTags?.map((item, index) => (
-                  <span
-                    key={index}
-                    className="bg-green-100 text-green-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded"
-                  >
-                    {(item as Tag).title}
-                  </span>
-                ))}
-              </div>
-              <h3 className="font-semibold mt-2">{product.title}</h3>
-              <div className="flex items-center mt-1">
-                <StarRating rating={4} />
-              </div>
-              <div className="flex justify-between items-center mt-4">
-                <span className="font-bold">${product.prices.basePrice}</span>
-                <Button size="icon">
-                  <ShoppingCart className="h-4 w-4" />
-                  <span className="sr-only">Add to cart</span>
-                </Button>
-              </div>
-            </div>
+            <ShopProductCard key={product.id} product={product} />
           ))}
         </div>
       </div>
@@ -82,27 +43,26 @@ const ShopProductGrid = async ({ page, sort, filters }: Props) => {
 
 export default ShopProductGrid
 
-// Fetches product data from Payload CMS based on provided parameters
 const fetchProductsList = async ({
-  page = 1, // Default to page 1 if not provided
-  sort = 'name_asc', // Default to sorting by name in ascending order if not provided
-  filters = {}, // Default to no filters if not provided
+  page = 1,
+  sort = 'name_asc',
+  filters = {},
 }: Props): Promise<{
-  products: Product[] // Array of fetched products
-  totalPages: number // Total number of pages
-  totalDocs: number // Total number of documents
+  products: Product[]
+  totalPages: number
+  totalDocs: number
 }> => {
-  'use server' // Ensure this function runs on the server
-  const config = await configPromise // Load Payload CMS configuration
-  const payload: any = await getPayloadHMR({ config }) // Initialize Payload CMS instance
+  'use server'
+  const config = await configPromise
+  const payload: any = await getPayloadHMR({ config })
 
   const query: any = {
-    collection: 'products', // Fetch data from the 'products' collection
-    depth: 1, // Include related data up to depth 1
+    collection: 'products',
+    depth: 1,
     limit: ITEMS_PER_PAGE,
-    page, // Page number
+    page,
     where: {
-      and: [{ _status: { equals: 'published' } }, { productType: { not_equals: 'addOn' } }], // Filter for published products
+      and: [{ _status: { equals: 'published' } }, { productType: { not_equals: 'addOn' } }],
     },
   }
 
@@ -111,9 +71,9 @@ const fetchProductsList = async ({
     query.where.and.push({ productType: { in: filters.productType } })
   }
 
-  // Add category filters if provided
-  if (filters.categories) {
-    query.where.and.push({ categories: { in: filters.categories } })
+  // Add category filter if provided
+  if (filters.category) {
+    query.where.and.push({ 'categories.title': { equals: filters.category } })
   }
 
   // Add tag filters if provided
@@ -165,31 +125,31 @@ const fetchProductsList = async ({
   // Set sorting option
   switch (sort) {
     case 'name_asc':
-      query.sort = 'title' // Sort by product title in ascending order
+      query.sort = 'title'
       break
     case 'name_desc':
-      query.sort = '-title' // Sort by product title in descending order
+      query.sort = '-title'
       break
     case 'price_asc':
-      query.sort = 'prices.basePrice' // Sort by product base price in ascending order
+      query.sort = 'prices.basePrice'
       break
     case 'price_desc':
-      query.sort = '-prices.basePrice' // Sort by product base price in descending order
+      query.sort = '-prices.basePrice'
       break
     case 'star_rating':
       query.sort = '-starRating'
   }
 
   try {
-    const productsResult = await payload.find(query) // Execute the query to fetch products
+    const productsResult = await payload.find(query)
 
     return {
-      products: productsResult.docs, // Array of fetched products
-      totalPages: productsResult.totalPages, // Total number of pages
-      totalDocs: productsResult.totalDocs, // Total number of documents
+      products: productsResult.docs,
+      totalPages: productsResult.totalPages,
+      totalDocs: productsResult.totalDocs,
     }
   } catch (error) {
     console.error('Error fetching products:', error)
-    throw error // Re-throw the error for further handling
+    throw error
   }
 }

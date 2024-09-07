@@ -1,4 +1,4 @@
-import type { CollectionConfig } from 'payload'
+import type { CollectionBeforeChangeHook, CollectionConfig } from 'payload'
 
 import { slugField } from '@cms/_fields/slug'
 // import { populateArchiveBlock } from '@/blocks/ArchiveBlock/populateArchiveBlock'
@@ -7,7 +7,38 @@ import { upsertStripeProduct } from '@cms/_hooks/upsertStripeProduct'
 import { deleteStripeProduct } from '@cms/_hooks/deleteStripeProduct'
 import { adminsOnly, publishedOnly } from '@/utilities/access'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
+import { Product, Review } from '@/payload-types'
 // import { themeField } from '../_fields/blockFields'
+
+const calculateStarRating: CollectionBeforeChangeHook<Product> = async ({ data, req }) => {
+  const updatedData = { ...data };
+
+  if (updatedData.reviews && updatedData.reviews.length > 0) {
+    // Fetch all reviews
+    const fetchedReviews = await req.payload.find({
+      collection: 'reviews',
+      where: {
+        id: {
+          in: updatedData.reviews.map(String), // Convert numbers to strings for the query
+        },
+      },
+    });
+
+    const validReviews = fetchedReviews.docs.filter(review => review.starRating !== null);
+
+    if (validReviews.length > 0) {
+      const totalStars = validReviews.reduce((sum, review) => sum + parseInt(review.starRating as string), 0);
+      const averageRating = totalStars / validReviews.length;
+      updatedData.starRating = Math.ceil(averageRating);
+    } else {
+      updatedData.starRating = 0;
+    }
+  } else {
+    updatedData.starRating = 0;
+  }
+
+  return updatedData;
+};
 
 export const Products: CollectionConfig = {
   slug: 'products',
@@ -31,7 +62,7 @@ export const Products: CollectionConfig = {
     // },
   },
   hooks: {
-    beforeChange: [upsertStripeProduct],
+    beforeChange: [calculateStarRating, upsertStripeProduct],
     // afterChange: [revalidateProduct],
     afterDelete: [deleteStripeProduct],
   },
@@ -85,13 +116,6 @@ export const Products: CollectionConfig = {
       ],
     },
     {
-      name: 'visibleInShop',
-      type: 'checkbox',
-      defaultValue: true,
-      required: true,
-      admin: { condition: (_, siblingData) => siblingData.productType !== 'addOn' },
-    },
-    {
       name: 'prices',
       type: 'group',
       fields: [
@@ -123,6 +147,7 @@ export const Products: CollectionConfig = {
         { //Details & Add ons
           label: 'Details',
           description: 'Text descriptions of the product',
+          admin: { condition: (_, siblingData) => siblingData.productType !== 'addOn' },
           fields: [
             {
               name: 'description',
@@ -155,6 +180,7 @@ export const Products: CollectionConfig = {
                   type: 'relationship',
                   relationTo: 'products',
                   hasMany: true,
+                  admin: { condition: (_, siblingData) => siblingData.productType !== 'addOn' }, // don't allow addOns to be linked to more addOns
                   //filterOptions: ({}) => {return {'categories.title': { equals: "Add On"}}}, //only "Add On" category products
                   filterOptions: ({}) => {return {'productType': { equals: "addOn"}}}, //only "Add On" product type
                 }
@@ -184,6 +210,15 @@ export const Products: CollectionConfig = {
               type: 'relationship',
               relationTo: 'reviews',
               hasMany: true
+            },
+            {
+              name: 'starRating',
+              label: 'Average Star Rating',
+              type: 'number',
+              admin: {
+                readOnly: true,
+                description: 'Average star rating calculated from linked reviews',
+              },
             },
           ]
         },
@@ -255,3 +290,5 @@ export const Products: CollectionConfig = {
     },
   ],
 }
+
+

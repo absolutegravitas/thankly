@@ -295,7 +295,6 @@ export interface Product {
   categories?: (number | Category)[] | null;
   tags?: (number | Tag)[] | null;
   shippingSize?: ('mini' | 'small' | 'medium' | 'large') | null;
-  visibleInShop?: boolean | null;
   prices: {
     basePrice: number;
     salePrice?: number | null;
@@ -345,6 +344,7 @@ export interface Product {
       }[]
     | null;
   reviews?: (number | Review)[] | null;
+  starRating?: number | null;
   stock?: {
     availability?: ('available' | 'unavailable') | null;
     stockOnHand?: number | null;

@@ -1,6 +1,6 @@
+import { Review } from "@/payload-types";
 import { adminsOnly, publishedOnly } from "@/utilities/access";
-import { CollectionConfig } from "payload";
-
+import { CollectionAfterChangeHook, CollectionConfig } from "payload";
 
 export const Reviews: CollectionConfig = {
   slug: 'reviews',
