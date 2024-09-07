@@ -10,10 +10,11 @@ interface Props {
   categories: Category[]
 }
 
+const MIN_PRICE = parseInt(process.env.NEXT_PUBLIC_SHOP_MIN_PRICE || '0', 10)
+const MAX_PRICE = parseInt(process.env.NEXT_PUBLIC_SHOP_MAX_PRICE || '500', 10)
+
 const ShopSideFilter = ({ categories }: Props) => {
-  const min = 0
-  const max = 500
-  const [priceRange, setPriceRange] = useState([min, max])
+  const [priceRange, setPriceRange] = useState([MIN_PRICE, MAX_PRICE])
   const [selectedCategory, setSelectedCategory] = useState('All')
   // const [categories, setCategories] = useState<Category[]>([])
 
@@ -38,7 +39,10 @@ const ShopSideFilter = ({ categories }: Props) => {
     const maxPrice = searchParams.get('maxPrice')
     const category = searchParams.get('category')
 
-    setPriceRange([minPrice ? parseInt(minPrice) : min, maxPrice ? parseInt(maxPrice) : max])
+    setPriceRange([
+      minPrice ? parseInt(minPrice) : MIN_PRICE,
+      maxPrice ? parseInt(maxPrice) : MAX_PRICE,
+    ])
     setSelectedCategory(category || 'All')
   }, [searchParams])
 
@@ -46,13 +50,13 @@ const ShopSideFilter = ({ categories }: Props) => {
     (newValues: number[], category: string) => {
       const params = new URLSearchParams(searchParams)
 
-      if (newValues[0] > min) {
+      if (newValues[0] > MIN_PRICE) {
         params.set('minPrice', newValues[0].toString())
       } else {
         params.delete('minPrice')
       }
 
-      if (newValues[1] < max) {
+      if (newValues[1] < MAX_PRICE) {
         params.set('maxPrice', newValues[1].toString())
       } else {
         params.delete('maxPrice')
@@ -66,7 +70,7 @@ const ShopSideFilter = ({ categories }: Props) => {
 
       router.push(`${pathname}?${params.toString()}`)
     },
-    [searchParams, pathname, router, min, max],
+    [searchParams, pathname, router, MIN_PRICE, MAX_PRICE],
   )
 
   const debouncedUpdateURL = useMemo(() => debounce(updateURL, 300), [updateURL])
@@ -122,8 +126,8 @@ const ShopSideFilter = ({ categories }: Props) => {
             className="relative flex items-center select-none touch-none w-full h-5"
             value={priceRange}
             onValueChange={handlePriceRangeChange}
-            min={min}
-            max={max}
+            min={MIN_PRICE}
+            max={MAX_PRICE}
             step={1}
           >
             <Slider.Track className="bg-gray-300 relative grow rounded-full h-1.5">
