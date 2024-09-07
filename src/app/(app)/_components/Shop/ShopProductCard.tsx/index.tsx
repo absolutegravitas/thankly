@@ -13,36 +13,31 @@ const ShopProductCard = ({ product }: Props) => {
   return (
     <Link href={`/shop/${product.slug}`} className="block">
       <div className="border rounded-lg p-4 flex flex-col">
-        <div className="relative">
+        <div className="relative w-full h-48 mb-2">
           {product.media && product.media.length > 0 ? (
             <img
               src={(product.media?.[0].mediaItem as Media).url ?? undefined}
               alt={(product.media?.[0].mediaItem as Media).alt ?? undefined}
-              className="w-full h-48 object-cover rounded-md"
+              className="w-full h-full object-cover rounded-md"
             />
           ) : (
-            <img
-              src={'/placeholder.svg?height=200&width=200'}
-              alt={'Product image not found'}
-              className="w-full h-48 object-cover rounded-md"
-            />
+            <div className="w-full h-full bg-gray-200 rounded-md flex items-center justify-center">
+              <span className="text-gray-400">Image not found</span>
+            </div>
           )}
-          {/* {product.tag && (
-      <span className="absolute top-2 right-2 bg-green-100 text-green-800 text-xs font-medium px-2.5 py-0.5 rounded">
-        {product.tag}
-      </span>
-    )} */}
-          {product.displayTags?.map((item, index) => (
-            <span
-              key={index}
-              className="bg-green-100 text-green-800 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded"
-            >
-              {(item as Tag).title}
-            </span>
-          ))}
+          <div className="absolute top-2 left-2 flex flex-wrap">
+            {product.displayTags?.map((item, index) => (
+              <span
+                key={index}
+                className="bg-green-100 text-green-800 text-xs font-semibold mr-2 mb-2 px-2.5 py-0.5 rounded"
+              >
+                {(item as Tag).title}
+              </span>
+            ))}
+          </div>
         </div>
         <h3 className="font-semibold mt-2">{product.title}</h3>
-        <div className="flex items-center mt-1">
+        <div className="flex items-center mt-1 min-h-5">
           <StarRating rating={product.starRating} />
         </div>
         <div className="flex justify-between items-center mt-4">

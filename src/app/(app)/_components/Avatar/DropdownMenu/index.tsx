@@ -1,6 +1,6 @@
+'use client'
 import * as React from 'react'
 // import { cloudSlug } from '@cloud/slug'
-import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
 // import { useAuth } from '@app/_providers/Auth'
