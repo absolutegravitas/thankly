@@ -1,46 +1,52 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
-# ai
-/src/app/.aidigestignore
-/src/app/codebase.md
+# Logs
 *.log
 
-# dependencies
-/node_modules
-/.pnp
+# React Email
+.react-email/
+
+# Dependencies
+node_modules/
+.pnp/
 .pnp.js
 .yarn/install-state.gz
 
-# testing
-/coverage
+# Testing
+coverage/
 
-# next.js
-/.next/
-/out/
+# Next.js
+.next/
+out/
 
-# production
-/build
+# Production
+build/
+dist/
+media/
 
-# misc
+# Miscellaneous
 .DS_Store
 *.pem
 
-# debug
+# Debug
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
-# local env files
-.env*.local
+# Local environment files
 .env
+.env*.local
 
-# vercel
-.vercel
+# Vercel
+.vercel/
 
-# typescript
+# TypeScript
 *.tsbuildinfo
 next-env.d.ts
 
-#ignore dev dummy page
-/src/app/(app)/(pages)/localtest
-/src/app/(app)/(pages)/localtest/*.*
+# Ignore dev dummy page
+src/app/(app)/(pages)/localtest/
+src/app/(app)/(pages)/localtest/*.*
+
+# Payload CMS media uploads
+public/media/

@@ -50,12 +50,6 @@ importers:
       '@payloadcms/email-nodemailer':
         specifier: beta
         version: 3.0.0-beta.59(payload@3.0.0-beta.59(@swc/core@1.3.101(@swc/helpers@0.5.11))(@swc/types@0.1.9)(graphql@16.9.0)(typescript@5.5.4))
-      '@payloadcms/live-preview':
-        specifier: beta
-        version: 3.0.0-beta.59
-      '@payloadcms/live-preview-react':
-        specifier: beta
-        version: 3.0.0-beta.59(react-dom@19.0.0-beta-26f2496093-20240514(react@19.0.0-beta-26f2496093-20240514))(react@19.0.0-beta-26f2496093-20240514)
       '@payloadcms/next':
         specifier: beta
         version: 3.0.0-beta.59(@types/react@18.3.3)(graphql@16.9.0)(monaco-editor@0.38.0)(next@15.0.0-rc.0(@babel/core@7.24.5)(react-dom@19.0.0-beta-26f2496093-20240514(react@19.0.0-beta-26f2496093-20240514))(react@19.0.0-beta-26f2496093-20240514)(sass@1.77.8))(payload@3.0.0-beta.59(@swc/core@1.3.101(@swc/helpers@0.5.11))(@swc/types@0.1.9)(graphql@16.9.0)(typescript@5.5.4))(react-dom@19.0.0-beta-26f2496093-20240514(react@19.0.0-beta-26f2496093-20240514))(react@19.0.0-beta-26f2496093-20240514)(typescript@5.5.4)
@@ -179,9 +173,6 @@ importers:
       next-sitemap:
         specifier: ^4.2.3
         version: 4.2.3(next@15.0.0-rc.0(@babel/core@7.24.5)(react-dom@19.0.0-beta-26f2496093-20240514(react@19.0.0-beta-26f2496093-20240514))(react@19.0.0-beta-26f2496093-20240514)(sass@1.77.8))
-      nodemailer:
-        specifier: ^6.9.14
-        version: 6.9.14
       oslo:
         specifier: ^1.2.1
         version: 1.2.1
@@ -273,9 +264,6 @@ importers:
       '@types/uuid':
         specifier: ^10.0.0
         version: 10.0.0
-      ai-digest:
-        specifier: ^1.0.4
-        version: 1.0.4
       autoprefixer:
         specifier: ^10.4.20
         version: 10.4.20(postcss@8.4.40)
@@ -1931,15 +1919,6 @@ packages:
       graphql: ^16.8.1
       payload: 3.0.0-beta.59
 
-  '@payloadcms/live-preview-react@3.0.0-beta.59':
-    resolution: {integrity: sha512-OthvjRpAIbVCbRdAcyDRprvzYtNouyz/Xoxb+fbN0CTXRmOSCEv+t0hlGP1U77UpzkoIZzO0aE1a3EsQLTdwiQ==}
-    peerDependencies:
-      react: ^19.0.0 || ^19.0.0-rc-f994737d14-20240522
-      react-dom: ^19.0.0 || ^19.0.0-rc-f994737d14-20240522
-
-  '@payloadcms/live-preview@3.0.0-beta.59':
-    resolution: {integrity: sha512-LiURnlEkwTTc67UvIniScrT8iDL2s1WOnaHR/pzOe4DS8N7qxkpA7ViQKgVI6AmHR7f1JA4h59ztUSF13wxEGg==}
-
   '@payloadcms/next@3.0.0-beta.59':
     resolution: {integrity: sha512-wkvbkZRM5maE2KVsSv7qlAs4+fBwCVMMHyJsHY/jtGlymWdgHwR1GK3P085MA1N9ZsiGCvtvL347bkUhSpNN/A==}
     engines: {node: ^18.20.2 || >=20.9.0}
@@ -3084,11 +3063,6 @@ packages:
     engines: {node: '>=0.4.0'}
     hasBin: true
 
-  ai-digest@1.0.4:
-    resolution: {integrity: sha512-eeXyGRtYm4SylgDNNnFRalL2fbWYGefYlm1c0hLtTe668gywA1j1e1w9TV7SGD/HOAZViVwC1Bz/nTsLIOQsDQ==}
-    engines: {node: '>=20.0.0'}
-    hasBin: true
-
   ajv-formats@2.1.1:
     resolution: {integrity: sha512-Wx0Kx52hxE7C18hkMEggYlEifqWZtYaRgouJor+WMdPnQyEK13vgEWyVNup7SoeeoLMsr4kf5h6dOW11I15MUA==}
     peerDependencies:
@@ -3464,10 +3438,6 @@ packages:
   commander@11.1.0:
     resolution: {integrity: sha512-yPVavfyCcRhmorC7rWlkHn15b4wDVgVmBA7kV4QVBsF7kv/9TKJAbAXVTxvTnwP8HHKjRCJDClKbciiYS7p0DQ==}
     engines: {node: '>=16'}
-
-  commander@12.1.0:
-    resolution: {integrity: sha512-Vw8qHK3bZM9y/P10u3Vib8o/DdkvA2OtPtZvD871QKjy74Wj1WSKFILMPRPSdUSx5RFK1arlJzEtA4PkFgnbuA==}
-    engines: {node: '>=18'}
 
   commander@2.20.3:
     resolution: {integrity: sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ==}
@@ -4342,11 +4312,6 @@ packages:
     engines: {node: 14 >=14.21 || 16 >=16.20 || 18 || 20 || >=22}
     hasBin: true
 
-  glob@11.0.0:
-    resolution: {integrity: sha512-9UiX/Bl6J2yaBbxKoEBRm4Cipxgok8kQYcOPEhScPwebu2I0HoQOuYdIO6S3hLuWoZgpDpwQZMzTFxgpkyT76g==}
-    engines: {node: 20 || >=22}
-    hasBin: true
-
   glob@7.2.3:
     resolution: {integrity: sha512-nFR0zLpU2YCaRxwoCJvL6UvCH2JFyFVIvwTLsIf21AuHlMskA1hhTdk+LlYJtOlYt9v6dvszD2BGRqBL+iQK9Q==}
     deprecated: Glob versions prior to v9 are no longer supported
@@ -4713,10 +4678,6 @@ packages:
   isarray@2.0.5:
     resolution: {integrity: sha512-xHjhDr3cNBK0BzdUJSPXZntQUx/mwMS5Rw4A7lPJ90XGAO6ISP/ePDNuo0vhqOZU+UD5JoodwCAAoZQd3FeAKw==}
 
-  isbinaryfile@5.0.2:
-    resolution: {integrity: sha512-GvcjojwonMjWbTkfMpnVHVqXW/wKMYDfEpY94/8zy8HFMOqb/VL6oeONq9v87q4ttVlaTLnGXnJD4B5B1OTGIg==}
-    engines: {node: '>= 18.0.0'}
-
   isexe@2.0.0:
     resolution: {integrity: sha512-RHxMLp9lnKHGHRng9QFhRCMbYAcVpn69smSGcq3f36xjgVVWThj4qqLbTLlq7Ssj8B+fIQ1EuCEGI2lKsyQeIw==}
 
@@ -4733,10 +4694,6 @@ packages:
   jackspeak@3.4.2:
     resolution: {integrity: sha512-qH3nOSj8q/8+Eg8LUPOq3C+6HWkpUioIjDsq1+D4zY91oZvpPttw8GwtF1nReRYKXl+1AORyFqtm2f5Q1SB6/Q==}
     engines: {node: 14 >=14.21 || 16 >=16.20 || >=18}
-
-  jackspeak@4.0.1:
-    resolution: {integrity: sha512-cub8rahkh0Q/bw1+GxP7aeSe29hHHn2V4m29nnDlvCdlgU+3UGxkZp7Z53jLUdpX3jdTO0nJZUDl3xvbWc2Xog==}
-    engines: {node: 20 || >=22}
 
   jest-worker@27.5.1:
     resolution: {integrity: sha512-7vuh85V5cdDofPyxn58nrPjBktZo0u9x1g8WtjQol+jZDaE+fhN+cIvTj11GndBnMnyfrUOG1sZQxCdjKh+DKg==}
@@ -4770,9 +4727,6 @@ packages:
   js-cookie@3.0.5:
     resolution: {integrity: sha512-cEiJEAEoIbWfCZYKWhVwFuvPX1gETRYPw6LlaTKoxD3s2AkXzkCjnp6h0V77ozyqj0jakteJ4YqDJT830+lVGw==}
     engines: {node: '>=14'}
-
-  js-tiktoken@1.0.12:
-    resolution: {integrity: sha512-L7wURW1fH9Qaext0VzaUDpFGVQgjkdE3Dgsy9/+yXyGEpBKnylTd0mU0bfbNkKDlXRb6TEsZkwuflu1B8uQbJQ==}
 
   js-tokens@4.0.0:
     resolution: {integrity: sha512-RdJUflcE3cUzKiMqQgsCu06FPu9UdIJO0beYbPhHN4k6apgJtifcoCtT9bcxOpYBtpD2kCM6Sbzg4CausW/PKQ==}
@@ -4937,10 +4891,6 @@ packages:
     resolution: {integrity: sha512-8h/JsUc/2+Dm9RPJnBAmObGnUqTMmsIKThxixMLOkrebSihRhTV0wLD/8BSk6OU6Pbj8hiDTbsI3fLjBJSlhDg==}
     engines: {node: 14 >= 14.21 || 16 >= 16.20 || 18 >=18.20 || 20 || >=22}
 
-  lru-cache@11.0.0:
-    resolution: {integrity: sha512-Qv32eSV1RSCfhY3fpPE2GNZ8jgM9X7rdAfemLWqTUxwiyIC4jJ6Sy0fZ8H+oLWevO6i4/bizg7c8d8i6bxrzbA==}
-    engines: {node: 20 || >=22}
-
   lru-cache@5.1.1:
     resolution: {integrity: sha512-KpNARQA3Iwv+jTA0utUVVbrh+Jlrr1Fv0e56GGzAFOXN7dk/FviaDW8LHmK52DlcH4WP2n6gI8vN1aesBFgo9w==}
 
@@ -5020,10 +4970,6 @@ packages:
   mimic-fn@4.0.0:
     resolution: {integrity: sha512-vqiC06CuhBTUdZH+RYl8sFrL096vA45Ok5ISO6sE/Mr1jRbGH4Csnhi8f3wKVl7x8mO4Au7Ir9D3Oyv1VYMFJw==}
     engines: {node: '>=12'}
-
-  minimatch@10.0.1:
-    resolution: {integrity: sha512-ethXTt3SGGR+95gudmqJ1eNhRO7eGEGIgYA9vnPatK4/etz2MEVDno5GMCibdMTuBMyElzIlgxMna3K94XDIDQ==}
-    engines: {node: 20 || >=22}
 
   minimatch@3.1.2:
     resolution: {integrity: sha512-J7p63hRiAjw1NDEww1W7i37+ByIrOWO5XQQAzZ3VOcL0PNybwpfmV/N05zFAzwQ9USyEcX6t3UO+K5aqBQOIHw==}
@@ -5375,10 +5321,6 @@ packages:
   path-scurry@1.11.1:
     resolution: {integrity: sha512-Xa4Nw17FS9ApQFJ9umLiJS4orGjm7ZzwUrwamcGQuHSzDyth9boKDaycYdDcZDuqYATXw4HFXgaqWTctW/v1HA==}
     engines: {node: '>=16 || 14 >=14.18'}
-
-  path-scurry@2.0.0:
-    resolution: {integrity: sha512-ypGJsmGtdXUOeM5u93TyeIEfEhM6s+ljAhrk5vAvSx8uyY/02OvrZnA0YNGUrPXfpJMgI1ODd3nwz8Npx4O4cg==}
-    engines: {node: 20 || >=22}
 
   path-to-regexp@6.2.2:
     resolution: {integrity: sha512-GQX3SSMokngb36+whdpRXE+3f9V8UzyAorlYvOGx87ufGHehNTn5lCxrKtLyZ4Yl/wEKnNnr98ZzOwwDZV5ogw==}
@@ -8114,14 +8056,6 @@ snapshots:
     transitivePeerDependencies:
       - typescript
 
-  '@payloadcms/live-preview-react@3.0.0-beta.59(react-dom@19.0.0-beta-26f2496093-20240514(react@19.0.0-beta-26f2496093-20240514))(react@19.0.0-beta-26f2496093-20240514)':
-    dependencies:
-      '@payloadcms/live-preview': 3.0.0-beta.59
-      react: 19.0.0-beta-26f2496093-20240514
-      react-dom: 19.0.0-beta-26f2496093-20240514(react@19.0.0-beta-26f2496093-20240514)
-
-  '@payloadcms/live-preview@3.0.0-beta.59': {}
-
   '@payloadcms/next@3.0.0-beta.59(@types/react@18.3.3)(graphql@16.9.0)(monaco-editor@0.38.0)(next@15.0.0-rc.0(@babel/core@7.24.5)(react-dom@19.0.0-beta-26f2496093-20240514(react@19.0.0-beta-26f2496093-20240514))(react@19.0.0-beta-26f2496093-20240514)(sass@1.77.8))(payload@3.0.0-beta.59(@swc/core@1.3.101(@swc/helpers@0.5.11))(@swc/types@0.1.9)(graphql@16.9.0)(typescript@5.5.4))(react-dom@19.0.0-beta-26f2496093-20240514(react@19.0.0-beta-26f2496093-20240514))(react@19.0.0-beta-26f2496093-20240514)(typescript@5.5.4)':
     dependencies:
       '@dnd-kit/core': 6.0.8(react-dom@19.0.0-beta-26f2496093-20240514(react@19.0.0-beta-26f2496093-20240514))(react@19.0.0-beta-26f2496093-20240514)
@@ -9590,14 +9524,6 @@ snapshots:
 
   acorn@8.12.1: {}
 
-  ai-digest@1.0.4:
-    dependencies:
-      commander: 12.1.0
-      glob: 11.0.0
-      ignore: 5.3.1
-      isbinaryfile: 5.0.2
-      js-tiktoken: 1.0.12
-
   ajv-formats@2.1.1(ajv@8.14.0):
     optionalDependencies:
       ajv: 8.14.0
@@ -10011,8 +9937,6 @@ snapshots:
   commander@10.0.1: {}
 
   commander@11.1.0: {}
-
-  commander@12.1.0: {}
 
   commander@2.20.3: {}
 
@@ -11084,15 +11008,6 @@ snapshots:
       package-json-from-dist: 1.0.0
       path-scurry: 1.11.1
 
-  glob@11.0.0:
-    dependencies:
-      foreground-child: 3.2.1
-      jackspeak: 4.0.1
-      minimatch: 10.0.1
-      minipass: 7.1.2
-      package-json-from-dist: 1.0.0
-      path-scurry: 2.0.0
-
   glob@7.2.3:
     dependencies:
       fs.realpath: 1.0.0
@@ -11432,8 +11347,6 @@ snapshots:
 
   isarray@2.0.5: {}
 
-  isbinaryfile@5.0.2: {}
-
   isexe@2.0.0: {}
 
   isomorphic.js@0.2.5: {}
@@ -11453,12 +11366,6 @@ snapshots:
       '@pkgjs/parseargs': 0.11.0
 
   jackspeak@3.4.2:
-    dependencies:
-      '@isaacs/cliui': 8.0.2
-    optionalDependencies:
-      '@pkgjs/parseargs': 0.11.0
-
-  jackspeak@4.0.1:
     dependencies:
       '@isaacs/cliui': 8.0.2
     optionalDependencies:
@@ -11497,10 +11404,6 @@ snapshots:
       nopt: 7.2.1
 
   js-cookie@3.0.5: {}
-
-  js-tiktoken@1.0.12:
-    dependencies:
-      base64-js: 1.5.1
 
   js-tokens@4.0.0: {}
 
@@ -11692,8 +11595,6 @@ snapshots:
 
   lru-cache@10.4.1: {}
 
-  lru-cache@11.0.0: {}
-
   lru-cache@5.1.1:
     dependencies:
       yallist: 3.1.1
@@ -11772,10 +11673,6 @@ snapshots:
   mimic-fn@2.1.0: {}
 
   mimic-fn@4.0.0: {}
-
-  minimatch@10.0.1:
-    dependencies:
-      brace-expansion: 2.0.1
 
   minimatch@3.1.2:
     dependencies:
@@ -11940,7 +11837,8 @@ snapshots:
 
   nodemailer@6.9.10: {}
 
-  nodemailer@6.9.14: {}
+  nodemailer@6.9.14:
+    optional: true
 
   nopt@7.2.1:
     dependencies:
@@ -12139,11 +12037,6 @@ snapshots:
   path-scurry@1.11.1:
     dependencies:
       lru-cache: 10.4.1
-      minipass: 7.1.2
-
-  path-scurry@2.0.0:
-    dependencies:
-      lru-cache: 11.0.0
       minipass: 7.1.2
 
   path-to-regexp@6.2.2: {}
