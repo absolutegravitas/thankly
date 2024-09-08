@@ -11,7 +11,9 @@ import configPromise from '@payload-config'
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
 
 // create a paymentIntent and pass the secret back to the client so that stripe can confirm the payment
-export async function createPaymentIntent(cart: Cart): Promise<any> {
+export async function createPaymentIntent(cart: Cart, orderNumber: string): Promise<any> {
+  console.log('cart received --', cart)
+
   try {
     // TODO:
     // find the cart on the server to prevent modification of prices on frontend
@@ -31,13 +33,10 @@ export async function createPaymentIntent(cart: Cart): Promise<any> {
     const paymentIntent = await stripe.paymentIntents.create({
       amount: Math.round(cart.totals.total * 100),
       currency: 'aud',
-      // confirm: true, // create and confirm the payment intent at the same time so we dont have to screw around with back and forth.
+      // confirm: true, // create and confirm the payment intent at the same time so we dont have to screw around with back and forth?
       // return_url: `${process.env.NEXT_PUBLIC_SERVER_URL}/shop/order?id={1234}`,
 
-      metadata: {
-        cartId: cart.id,
-        cartNumber: cart.cartNumber || null,
-      }, // Include cart object in metadata, so we can use it to create an order and reference it later
+      metadata: { cartNumber: cart.cartNumber || null, orderNumber: orderNumber }, // Include cart object in metadata, so we can use it to create an order and reference it later
 
       ...(stripeCustomerId != null && { customer: stripeCustomerId }), // associate with stripeCustomer if one is found
       ...(cart.billing?.email && { receipt_email: cart.billing.email }), // Include the email for receipt if provided

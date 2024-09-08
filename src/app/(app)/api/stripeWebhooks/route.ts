@@ -81,7 +81,6 @@ async function handlePaymentIntentSucceeded(paymentIntent: Stripe.PaymentIntent)
 
   try {
     // find the cartNumber associated with the stripe payment intent from the metadata
-    // this should be the same as the orderNumber
     const cartNumber = paymentIntent.metadata.cartNumber
     if (!cartNumber) {
       throw new Error('No cart number found in payment intent metadata')
@@ -101,17 +100,17 @@ async function handlePaymentIntentSucceeded(paymentIntent: Stripe.PaymentIntent)
 
     const cart = carts[0] as Cart
 
-    const newOrder = await createOrder(cart)
+    const newOrder = await createOrder(cart, paymentIntent.metadata.orderNumber)
 
     // do stuff if order was successfully created
     if (newOrder) {
       console.log(`New order ${newOrder?.id} created from payment intent ${paymentIntent.id}`)
 
-      // delete cart on payloadCMS as it's no longer valid
-      await payload.delete({
-        collection: 'carts',
-        id: cart.id,
-      })
+      // // TODO: delete cart on payloadCMS as it's no longer valid
+      // await payload.delete({
+      //   collection: 'carts',
+      //   id: cart.id,
+      // })
 
       // send confirmation email to customer
       await sendConfirmationEmail(newOrder)
@@ -121,9 +120,8 @@ async function handlePaymentIntentSucceeded(paymentIntent: Stripe.PaymentIntent)
       for (const item of newOrder.items || []) {
         for (const receiver of item.receivers || []) {
           if (
-            item.product.productType === 'gift' &&
             !/PO BOX|Parcel Collect|Parcel Locker/i.test(
-              receiver.delivery?.address?.formattedAddress,
+              receiver.delivery?.address?.addressLine1 || '',
             )
           ) {
             try {
