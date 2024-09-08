@@ -12,8 +12,6 @@ import type { Product } from '@payload-types'
 import Blocks from '@app/_blocks'
 import { Metadata } from 'next'
 import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
-import FetchItem from '@/utilities/PayloadQueries/fetchItem'
-import FetchItems from '@/utilities/PayloadQueries/fetchItems'
 import { fetchProduct } from '@/utilities/PayloadQueries/fetchProduct'
 import { ProductPlus } from '@/app/(app)/_blocks/Cart/cart-types'
 

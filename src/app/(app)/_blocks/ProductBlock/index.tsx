@@ -44,7 +44,7 @@ import { useMediaQuery } from 'react-responsive'
 // import { RemoveFromCartButton } from '../../_components/ProductActions/RemoveFromCart'
 
 interface ProductBlockContentProps {
-  product: ProductPlus // The product data to be displayed
+  product: Product // The product data to be displayed
   selectedImageIndex?: number // Index of the currently selected image (default: 0)
 }
 

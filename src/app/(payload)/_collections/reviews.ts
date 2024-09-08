@@ -1,6 +1,6 @@
+import { Review } from "@/payload-types";
 import { adminsOnly, publishedOnly } from "@/utilities/access";
-import { CollectionConfig } from "payload";
-
+import { CollectionAfterChangeHook, CollectionConfig } from "payload";
 
 export const Reviews: CollectionConfig = {
   slug: 'reviews',
@@ -64,13 +64,6 @@ export const Reviews: CollectionConfig = {
     {
       name: 'body',
       type: 'textarea'
-    },
-    {
-      name: 'products',
-      label: 'Linked Products',
-      type: 'relationship',
-      relationTo: 'products',
-      hasMany: true
     },
     {
       name: 'reviewer',

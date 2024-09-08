@@ -2,7 +2,7 @@ import React from 'react'
 import { Star } from 'lucide-react'
 
 interface StarRatingProps {
-  rating: number
+  rating?: number | null
   maxRating?: number
   size?: number
   activeColor?: string
@@ -16,8 +16,8 @@ const StarRating: React.FC<StarRatingProps> = ({
   activeColor = 'text-thankly-green',
   inactiveColor = 'text-gray-300',
 }) => {
-  if (rating === 0) {
-    return <></>
+  if (!rating || rating === 0) {
+    return null
   }
 
   return (

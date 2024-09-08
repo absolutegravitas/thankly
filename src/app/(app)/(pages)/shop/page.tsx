@@ -1,7 +1,7 @@
 // This file is a server component in Next.js 14 that renders the Shop page of a web application.
 // It displays a grid of available products fetched from a content management system (CMS) called Payload.
 // If no products are available, it shows a message indicating an empty shop.
-import React from 'react'
+import React, { useState } from 'react'
 import { Metadata } from 'next'
 import { BlockWrapper } from '@app/_components/BlockWrapper'
 import { Gutter } from '@app/_components/Gutter'
@@ -12,14 +12,24 @@ import LoadingShop from './loading'
 import ProductGrid from '../../_blocks/ProductGrid'
 import Filters from '../../_blocks/Shop/Filters'
 
+import * as Slider from '@radix-ui/react-slider'
+import { Button } from '@app/_components/ui/button'
+import { Star, ShoppingCart, Check } from 'lucide-react'
+import ShopSideFilter from '../../_blocks/Shop/ShopSideFilter'
+import ShopTopFilter from '../../_blocks/Shop/ShopTopFilter'
+import ShopProductGrid from '../../_blocks/Shop/ShopProductGrid'
+import FetchItems from '@/utilities/PayloadQueries/fetchItems'
+
 // Define a type alias for the sort options
-export type SortOption = 'name_asc' | 'name_desc' | 'price_asc' | 'price_desc'
+export type SortOption = 'name_asc' | 'name_desc' | 'price_asc' | 'price_desc' | 'star_rating'
 
 // Define a type alias for the filter options
 export type FilterOptions = {
-  categories?: string[]
+  category?: string[]
   tags?: string[]
   productType?: string[]
+  minPrice?: number
+  maxPrice?: number
 }
 
 export default async function ShopPage({
@@ -32,36 +42,54 @@ export default async function ShopPage({
     category?: string[]
     tags?: string[]
     productType?: string[]
+    minPrice?: string
+    maxPrice?: string
   }
 }) {
   // console.log('Updated searchParams in page.tsx:', searchParams)
-  // console.log('ShopPage rendered with searchParams:', searchParams)
+  console.log('ShopPage rendered with searchParams:', searchParams)
 
   const page = searchParams?.page ? parseInt(searchParams.page, 10) : 1
   const sort = searchParams?.sort as SortOption | undefined
-  const filters: FilterOptions = {
-    categories: searchParams?.category,
+  let filters: FilterOptions = {
+    category: searchParams?.category,
     tags: searchParams?.tags,
     productType: searchParams?.productType,
   }
+  if (searchParams?.minPrice) {
+    filters = { ...filters, minPrice: parseInt(searchParams.minPrice) }
+  }
+  if (searchParams?.maxPrice) {
+    filters = { ...filters, maxPrice: parseInt(searchParams.maxPrice) }
+  }
+
+  const categories = await FetchItems({
+    collection: 'categories',
+    where: { shopConfig: { visible: { equals: true } } },
+    sort: 'shopConfig.sortOrder',
+  })
 
   return (
-    <BlockWrapper className={getPaddingClasses('hero')}>
-      <Gutter>
-        <h1 className="text-3xl font-bold tracking-tight text-gray-900">{`Thankly Shop`}</h1>
-        <p className="mt-4 max-w-xl text-sm text-gray-700">
-          {`Our thoughtfully curated thankly gifts and cards.`}
-        </p>
+    <div className="container mx-auto p-4">
+      {/* <Filters />
+      <ProductGrid page={page} sort={sort} filters={filters} /> */}
 
-        <main>
-          <Filters />
+      <div className="flex flex-col md:flex-row gap-8">
+        {/* Sidebar */}
+        <ShopSideFilter categories={categories} />
 
+        {/* Main content */}
+        <div className="w-full md:w-3/4">
+          {/* Sort options */}
+          <ShopTopFilter />
+
+          {/* Product grid */}
           <Suspense fallback={<LoadingShop />}>
-            <ProductGrid page={page} sort={sort} filters={filters} />
+            <ShopProductGrid page={page} sort={sort} filters={filters} />
           </Suspense>
-        </main>
-      </Gutter>
-    </BlockWrapper>
+        </div>
+      </div>
+    </div>
   )
 }
 

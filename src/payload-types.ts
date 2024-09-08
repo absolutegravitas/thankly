@@ -343,6 +343,8 @@ export interface Product {
         id?: string | null;
       }[]
     | null;
+  reviews?: (number | Review)[] | null;
+  starRating?: number | null;
   stock?: {
     availability?: ('available' | 'unavailable') | null;
     stockOnHand?: number | null;
@@ -384,7 +386,12 @@ export interface Product {
  */
 export interface Category {
   id: number;
-  title?: string | null;
+  title: string;
+  shopConfig?: {
+    visible?: boolean | null;
+    shopFilterTitle?: string | null;
+    sortOrder?: number | null;
+  };
   updatedAt: string;
   createdAt: string;
 }
@@ -395,6 +402,22 @@ export interface Category {
 export interface Tag {
   id: number;
   title?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "reviews".
+ */
+export interface Review {
+  id: number;
+  title?: string | null;
+  starRating?: ('1' | '2' | '3' | '4' | '5') | null;
+  reviewDate?: string | null;
+  body?: string | null;
+  reviewer?: {
+    name?: string | null;
+  };
   updatedAt: string;
   createdAt: string;
 }
@@ -467,23 +490,6 @@ export interface Cart {
         id?: string | null;
       }[]
     | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "reviews".
- */
-export interface Review {
-  id: number;
-  title?: string | null;
-  starRating?: ('1' | '2' | '3' | '4' | '5') | null;
-  reviewDate?: string | null;
-  body?: string | null;
-  products?: (number | Product)[] | null;
-  reviewer?: {
-    name?: string | null;
-  };
   updatedAt: string;
   createdAt: string;
 }
