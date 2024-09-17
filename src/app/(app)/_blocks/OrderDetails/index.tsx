@@ -1,67 +1,143 @@
-// app/shop/order/OrderDetails.tsx
 'use client'
 
-import { Order } from '@/payload-types'
+import React from 'react'
+import { Order, Product } from '@/payload-types'
+import { format } from 'date-fns'
+import { Card, CardContent, CardHeader, CardTitle } from '@app/_components/ui/card'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@app/_components/ui/table'
 
 export default function OrderDetails({ order }: { order: Order }) {
   if (!order) {
-    return <div>Error: Order details not available.</div>
+    return (
+      <Card>
+        <CardContent>Error: Order details not available.</CardContent>
+      </Card>
+    )
   }
 
+  const formatCurrency = (amount: number | undefined) =>
+    amount !== undefined
+      ? new Intl.NumberFormat('en-AU', { style: 'currency', currency: 'AUD' }).format(amount)
+      : 'N/A'
+
   return (
-    <div className="bg-white shadow-md rounded-lg p-6">
-      <h2 className="text-2xl font-semibold mb-4">Order #{order.orderNumber || 'N/A'}</h2>
-      <div className="mb-4">
-        <p className="font-semibold">
-          Status: <span className="capitalize">{order.status || 'N/A'}</span>
-        </p>
-        <p className="font-semibold">Total: ${order.totals?.total.toFixed(2) || 'N/A'}</p>
-      </div>
-      <div className="mb-6">
-        <h3 className="text-xl font-semibold mb-2">Billing Information</h3>
-        <p>{order.billing?.name || 'N/A'}</p>
-        <p>{order.billing?.email || 'N/A'}</p>
-        <p>{order.billing?.address?.formattedAddress || 'N/A'}</p>
-      </div>
-      <div>
-        <h3 className="text-xl font-semibold mb-2">Order Items</h3>
-        {order.items && order.items.length > 0 ? (
-          order.items.map((item, index) => (
-            <div key={index} className="mb-4 border-b pb-4 last:border-b-0">
+    <Card className="w-full max-w-4xl mx-auto">
+      <CardHeader>
+        <CardTitle className="text-3xl font-bold text-center">Tax Invoice</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <div className="flex justify-between mb-6">
+          <div>
+            <h2 className="text-2xl font-semibold">Order #{order.orderNumber || 'N/A'}</h2>
+            <p>Date: {format(new Date(order.createdAt), 'dd/MM/yyyy')}</p>
+            <p>ABN: 12 345 678 901</p>
+          </div>
+          <div className="text-right">
+            <p className="font-semibold">Your Company Name</p>
+            <p>123 Business St</p>
+            <p>Sydney, NSW 2000</p>
+          </div>
+        </div>
+
+        <div className="mb-6">
+          <h3 className="text-xl font-semibold mb-2">Bill To</h3>
+          <p>
+            {order.billing?.firstName} {order.billing?.lastName}
+          </p>
+          <p>{order.billing?.email}</p>
+          <p>{order.billing?.address?.addressLine1}</p>
+          {order.billing?.address?.addressLine2 && <p>{order.billing.address.addressLine2}</p>}
+          <p>
+            {order.billing?.address?.city}, {order.billing?.address?.state}{' '}
+            {order.billing?.address?.postcode}
+          </p>
+        </div>
+
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead>Description</TableHead>
+              <TableHead className="text-right">Quantity</TableHead>
+              <TableHead className="text-right">Unit Price</TableHead>
+              <TableHead className="text-right">Amount</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {order.items?.map((item, index) => (
+              <TableRow key={index}>
+                <TableCell>
+                  {(item.product as Product)?.title || 'Unknown Product'}
+                  {item.giftCard && (
+                    <span className="block text-sm text-muted-foreground">
+                      Gift Card: {item.giftCard.message}
+                    </span>
+                  )}
+                </TableCell>
+                <TableCell className="text-right">{item.quantity}</TableCell>
+                <TableCell className="text-right">{formatCurrency(item.price)}</TableCell>
+                <TableCell className="text-right">
+                  {formatCurrency(item.price ? item.price * item.quantity : undefined)}
+                </TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+
+        <div className="flex justify-end mt-6">
+          <div className="text-right">
+            <p>Subtotal: {formatCurrency(order.totals.cost)}</p>
+            <p>Shipping: {formatCurrency(order.totals.shipping || 0)}</p>
+            {order.totals.discount !== undefined && order.totals.discount !== null && (
+              <p>Discount: {formatCurrency(order.totals.discount)}</p>
+            )}
+            <p className="font-semibold">Total: {formatCurrency(order.totals.total)}</p>
+            <p className="text-sm text-muted-foreground">
+              GST Included: {formatCurrency(order.totals.total / 11)}
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-6">
+          <h3 className="text-xl font-semibold mb-2">Shipping Details</h3>
+          {order.receivers?.map((receiver, index) => (
+            <div key={index} className="mb-4 last:mb-0">
               <p className="font-semibold">
-                {(typeof item.product != 'number' && item.product?.title) || 'Unknown Product'}
+                Receiver: {receiver.firstName} {receiver.lastName}
               </p>
-              <p>Price: ${item.price?.toFixed(2) || 'N/A'}</p>
-              <p>Quantity: {item.receivers?.length || 0}</p>
-              {item.receivers && item.receivers.length > 0 ? (
-                item.receivers.map((receiver, rIndex) => (
-                  <div key={rIndex} className="ml-4 mt-2">
-                    <p className="font-semibold">Receiver: {receiver.name || 'N/A'}</p>
-                    <p>Message: {receiver.message || 'N/A'}</p>
-                    {receiver.delivery?.tracking && (
-                      <p>
-                        Tracking:{' '}
-                        <a
-                          href={receiver.delivery.tracking.link || ''}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-blue-600 hover:underline"
-                        >
-                          {receiver.delivery.tracking.id}
-                        </a>
-                      </p>
-                    )}
-                  </div>
-                ))
-              ) : (
-                <p className="ml-4 mt-2">No receiver information available</p>
+              <p>{receiver.address.addressLine1}</p>
+              {receiver.address.addressLine2 && <p>{receiver.address.addressLine2}</p>}
+              <p>
+                {receiver.address.city}, {receiver.address.state} {receiver.address.postcode}
+              </p>
+              {receiver.delivery?.tracking && (
+                <p>
+                  Tracking:{' '}
+                  <a
+                    href={receiver.delivery.tracking.link || '#'}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:underline"
+                  >
+                    {receiver.delivery.tracking.id}
+                  </a>
+                </p>
               )}
             </div>
-          ))
-        ) : (
-          <p>No items in this order</p>
-        )}
-      </div>
-    </div>
+          ))}
+        </div>
+
+        <div className="mt-6 text-sm text-muted-foreground">
+          <p>Thank you for your business!</p>
+          <p>This invoice was issued by Your Company Name, ABN: 12 345 678 901</p>
+        </div>
+      </CardContent>
+    </Card>
   )
 }

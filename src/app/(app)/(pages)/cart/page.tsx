@@ -27,6 +27,7 @@ export type CartPersonalisationForm = z.infer<typeof formSchema>
 
 const CartPersonalisePage = () => {
   const { cart, cartIsEmpty, hasInitializedCart } = useCart()
+  console.log('cart --', cart)
   const router = useRouter()
   const methods = useForm({
     resolver: zodResolver(formSchema),

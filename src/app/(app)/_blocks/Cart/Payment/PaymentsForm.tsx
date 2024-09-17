@@ -13,6 +13,7 @@ import {
 import { DollarSign, LockIcon } from 'lucide-react'
 import { createPaymentIntent } from './createPaymentIntent'
 import { Button } from '@/app/(app)/_components/ui/button'
+import { upsertPayloadCart } from '@/app/(app)/_providers/Cart/upsertPayloadCart'
 
 export const PaymentForm = () => {
   const stripe = useStripe()
@@ -80,7 +81,11 @@ export const PaymentForm = () => {
       return
     }
 
-    // Create the PaymentIntent and obtain clientSecret
+    // save the server cart here and use it to generate the order later off the webhook
+    // TODO: there's probably a better way to do it instead of here but Alex refactored all my code and I dont know where everything is
+    await upsertPayloadCart(cart)
+
+    // generate the order number
     const orderNumber =
       `${Math.floor(1000 + Math.random() * 9000)}-${Math.floor(1000 + Math.random() * 9000)}` as string
     const { client_secret: clientSecret } = await createPaymentIntent(cart, orderNumber)

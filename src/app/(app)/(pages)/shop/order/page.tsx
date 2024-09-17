@@ -29,6 +29,7 @@ export default async function OrderConfirmationPage({
       limit: 1,
     })
 
+    console.log('orders --', docs)
     if (docs.length === 0) {
       notFound()
     }

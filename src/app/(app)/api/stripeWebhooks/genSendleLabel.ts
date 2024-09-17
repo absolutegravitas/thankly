@@ -52,7 +52,7 @@ export async function genSendleLabel(order: Order, item: any, receiver: any) {
       instructions: receiver.delivery?.instructions || 'ATL',
     },
     description: `Order #${order.orderNumber} - Item #${item.id}`, // doesnt appear on label
-    customer_reference: `Your Thankly from ${order.billing?.name} ${order.billing?.orgName || ''} (#${order.orderNumber})`, // appears on label
+    customer_reference: `Your Thankly from ${order.billing?.firstName} ${order.billing?.lastName} ${order.billing?.orgName || ''} (#${order.orderNumber})`, // appears on label
     product_code: 'STANDARD-DROPOFF',
 
     weight: {
