@@ -2,13 +2,16 @@ import { useState, useRef, useEffect } from 'react'
 import { Button } from '@app/_components/ui/button'
 import { ChevronLeft, ChevronRight, Star } from 'lucide-react'
 import { ExtractBlockProps } from '@/utilities/extractBlockProps'
-import { convertSlateToLexical } from '@payloadcms/richtext-lexical'
-import { Collection } from 'payload'
+import { Product } from '@/payload-types'
+import { getPayloadHMR } from '@payloadcms/next/utilities'
+import configPromise from '@payload-config'
+import ShopProductCard from '../../_components/Shop/ShopProductCard.tsx'
 
 export type ProductShowcaseProps = ExtractBlockProps<'productShowcase'>
 
 //interface for clean storage of required payload information
 interface ProductCollection {
+  id: number
   name: string
   categoryId: number
 }
@@ -21,28 +24,44 @@ interface CollectionItem {
   }
 }
 
-const products = [
-  { name: 'The Celebration', rating: 4 },
-  { name: 'The Congratulations', rating: 4 },
-  { name: 'The Sip & Savour', rating: 4 },
-  { name: 'The Sweet Recovery', rating: 4 },
-  { name: 'The Gourmet Delight', rating: 5 },
-  { name: 'The Comfort Package', rating: 4 },
-]
+// const products = [
+//   { name: 'The Celebration', rating: 4 },
+//   { name: 'The Congratulations', rating: 4 },
+//   { name: 'The Sip & Savour', rating: 4 },
+//   { name: 'The Sweet Recovery', rating: 4 },
+//   { name: 'The Gourmet Delight', rating: 5 },
+//   { name: 'The Comfort Package', rating: 4 },
+// ]
 
 const CARD_WIDTH = 256 // Fixed width for each product card in pixels
 
 export default function ProductShowcase({ collections }: ProductShowcaseProps) {
-  const productCollections: ProductCollection[] = collections.map((item: CollectionItem) => ({
-    name: item.collectionName,
-    categoryId: item.category.id,
-  }))
-  const [activeTab, setActiveTab] = useState(productCollections[0].name)
+  const productCollections: ProductCollection[] = collections.map(
+    (item: CollectionItem, index: number) => ({
+      id: index,
+      name: item.collectionName,
+      categoryId: item.category.id,
+    }),
+  )
+  const [activeTab, setActiveTab] = useState<ProductCollection>(productCollections[0])
   const [visibleProducts, setVisibleProducts] = useState(4)
   const [currentIndex, setCurrentIndex] = useState(0)
   const containerRef = useRef<HTMLDivElement>(null)
   const toggleRef = useRef<HTMLDivElement>(null)
-  // const products = await fetchProductsList(productCollection)
+  const [products, setProducts] = useState<Product[]>([])
+
+  //useEffect for fetching products from payload based on activeTab
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const fetchedProducts = await fetchProductsList(activeTab.categoryId)
+        setProducts(fetchedProducts)
+      } catch (error) {
+        console.error('Error fetching products:', error)
+      }
+    }
+    fetchProducts()
+  }, [activeTab])
 
   useEffect(() => {
     const updateVisibleProducts = () => {
@@ -63,7 +82,7 @@ export default function ProductShowcase({ collections }: ProductShowcaseProps) {
 
   useEffect(() => {
     if (toggleRef.current) {
-      const activeElement = toggleRef.current.querySelector(`[data-state="${activeTab}"]`)
+      const activeElement = toggleRef.current.querySelector(`[data-state="${activeTab.name}"]`)
       if (activeElement) {
         const { offsetLeft, offsetWidth } = activeElement as HTMLElement
         toggleRef.current.style.setProperty('--highlight-left', `${offsetLeft}px`)
@@ -91,14 +110,14 @@ export default function ProductShowcase({ collections }: ProductShowcaseProps) {
               width: 'var(--highlight-width, 0)',
             }}
           />
-          {productCollections.map((item: ProductCollection, index: number) => (
+          {productCollections.map((item: ProductCollection) => (
             <button
-              key={index}
+              key={item.id}
               className={`px-4 py-2 rounded-full relative z-10 transition-colors duration-300 ${
-                activeTab === `${item.name}` ? 'text-gray-800' : 'text-gray-600'
+                activeTab.id === item.id ? 'text-gray-800' : 'text-gray-600'
               }`}
-              onClick={() => setActiveTab(`${item.name}`)}
-              data-state={activeTab === `${item.name}` ? `${item.name}` : ''}
+              onClick={() => setActiveTab(item)}
+              data-state={activeTab.id === item.id ? item.name : ''}
             >
               {item.name}
             </button>
@@ -123,24 +142,9 @@ export default function ProductShowcase({ collections }: ProductShowcaseProps) {
             width: `${products.length * CARD_WIDTH}px`,
           }}
         >
-          {products.map((product, index) => (
-            <div key={index} className="flex-shrink-0" style={{ width: `${CARD_WIDTH}px` }}>
-              <div className="p-4">
-                <div className="border rounded-lg p-4">
-                  <div className="bg-gray-200 w-full h-56 mb-4 rounded-md"></div>
-                  <h3 className="font-semibold mb-2">{product.name}</h3>
-                  <div className="flex">
-                    {[...Array(5)].map((_, i) => (
-                      <Star
-                        key={i}
-                        className={`h-5 w-5 ${
-                          i < product.rating ? 'text-green-600 fill-current' : 'text-gray-300'
-                        }`}
-                      />
-                    ))}
-                  </div>
-                </div>
-              </div>
+          {products.map((product) => (
+            <div key={product.id} className="flex-shrink-0" style={{ width: `${CARD_WIDTH}px` }}>
+              <ShopProductCard product={product} />
             </div>
           ))}
         </div>
@@ -162,4 +166,30 @@ export default function ProductShowcase({ collections }: ProductShowcaseProps) {
       </div>
     </div>
   )
+}
+
+const fetchProductsList = async (categoryId: number): Promise<Product[]> => {
+  const config = await configPromise
+  const payload: any = await getPayloadHMR({ config })
+
+  const query: any = {
+    collection: 'products',
+    depth: 1,
+    limit: 100, // Adjust this limit as needed
+    where: {
+      and: [
+        { _status: { equals: 'published' } },
+        { productType: { not_equals: 'addOn' } },
+        { 'categories.id': { equals: categoryId } },
+      ],
+    },
+  }
+
+  try {
+    const productsResult = await payload.find(query)
+    return productsResult.docs
+  } catch (error) {
+    console.error('Error fetching products:', error)
+    throw error
+  }
 }
