@@ -17,7 +17,6 @@ import UserButton from '../../Auth/user-button'
 type DesktopNavType = Pick<Menu, 'tabs'> & { hideBackground?: boolean }
 
 export const DesktopNav: React.FC<DesktopNavType> = ({ tabs, hideBackground }) => {
-  console.log('tabs --', tabs)
   const [activeTab, setActiveTab] = React.useState<number | undefined>()
   const [activeDropdown, setActiveDropdown] = React.useState<boolean | undefined>(false)
   const [backgroundStyles, setBackgroundStyles] = React.useState<any>({
@@ -104,7 +103,6 @@ export const DesktopNav: React.FC<DesktopNavType> = ({ tabs, hideBackground }) =
             <div className={classes.tabs} onMouseLeave={resetHoverStyles}>
               {(tabs || []).map((tab: any, tabIndex: any) => {
                 const { enableDirectLink = false, enableDropdown = false } = tab
-                console.log(tab.label, tab.enableDirectLink, tab.enableDropdown)
                 return (
                   <div key={tabIndex} onMouseEnter={() => handleHoverEnter(tabIndex)}>
                     <button

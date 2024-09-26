@@ -12,7 +12,6 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!)
 
 // create a paymentIntent and pass the secret back to the client so that stripe can confirm the payment
 export async function createPaymentIntent(cart: Cart, orderNumber: string): Promise<any> {
-  console.log('cart received --', cart)
 
   try {
     // TODO:

@@ -64,14 +64,13 @@ export const PaymentForm = () => {
     // We don't want to let default form submission happen here,
     // which would refresh the page.
     event.preventDefault()
-    console.log('pre check')
 
     if (!stripe || !elements) {
       // Stripe.js hasn't yet loaded.
       // Make sure to disable form submission until Stripe.js has loaded.
       return
     }
-    console.log('see if this worked')
+
     setLoading(true)
 
     // Trigger form validation and wallet collection
