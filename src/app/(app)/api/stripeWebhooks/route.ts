@@ -60,6 +60,7 @@ export async function POST(req: NextRequest) {
       //   break
       case 'payment_intent.succeeded':
         const paymentIntent = event.data.object as Stripe.PaymentIntent
+        console.log('paymentIntent --', paymentIntent)
         await handlePaymentIntentSucceeded(paymentIntent)
         break
       default:
@@ -100,7 +101,7 @@ async function handlePaymentIntentSucceeded(paymentIntent: Stripe.PaymentIntent)
 
     const cart = carts[0] as Cart
 
-    const newOrder = await createOrder(cart, paymentIntent.metadata.orderNumber)
+    const newOrder = await createOrder(cart, paymentIntent.metadata.orderNumber, paymentIntent.id)
 
     // do stuff if order was successfully created
     if (newOrder) {
@@ -117,27 +118,27 @@ async function handlePaymentIntentSucceeded(paymentIntent: Stripe.PaymentIntent)
 
       // generate sendle labels for each receiver in the order
       // only if the receiver is getting a gift product type AND the address is not a PO BOX, Parcel Collect, or Parcel Locker - these have to be prepped manually in AusPost / with postage stamps
-      for (const item of newOrder.items || []) {
-        for (const receiver of item.receivers || []) {
-          if (
-            !/PO BOX|Parcel Collect|Parcel Locker/i.test(
-              receiver.delivery?.address?.addressLine1 || '',
-            )
-          ) {
-            try {
-              const trackingInfo = await genSendleLabel(newOrder, item, receiver)
-              if (trackingInfo) {
-                await updateOrderTracking(newOrder.id, item.id!, receiver.id!, trackingInfo)
-              }
-            } catch (error) {
-              console.error(
-                `Error processing shipping for order ${newOrder.id}, item ${item.id}, receiver ${receiver.id}:`,
-                error,
-              )
-            }
-          }
-        }
-      }
+      // for (const item of newOrder.items || []) {
+      //   for (const receiver of item.receivers || []) {
+      //     if (
+      //       !/PO BOX|Parcel Collect|Parcel Locker/i.test(
+      //         receiver.delivery?.address?.addressLine1 || '',
+      //       )
+      //     ) {
+      //       try {
+      //         const trackingInfo = await genSendleLabel(newOrder, item, receiver)
+      //         if (trackingInfo) {
+      //           await updateOrderTracking(newOrder.id, item.id!, receiver.id!, trackingInfo)
+      //         }
+      //       } catch (error) {
+      //         console.error(
+      //           `Error processing shipping for order ${newOrder.id}, item ${item.id}, receiver ${receiver.id}:`,
+      //           error,
+      //         )
+      //       }
+      //     }
+      //   }
+      // }
     }
   } catch (error) {
     console.error('Error handling succeeded payment intent:', error)

@@ -21,7 +21,7 @@ EXCEPTION
 END $$;
 
 DO $$ BEGIN
- CREATE TYPE "enum_orders_items_receivers_delivery_shipping_method" AS ENUM('standardMail', 'expressMail', 'standardParcel', 'expressParcel');
+ CREATE TYPE "enum_orders_receivers_delivery_shipping_method" AS ENUM('standardMail', 'expressMail', 'standardParcel', 'expressParcel');
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -208,58 +208,68 @@ CREATE TABLE IF NOT EXISTS "reusable" (
 	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS "orders_items_receivers" (
-	"_order" integer NOT NULL,
-	"_parent_id" varchar NOT NULL,
-	"id" varchar PRIMARY KEY NOT NULL,
-	"totals_cost" numeric NOT NULL,
-	"totals_shipping" numeric,
-	"totals_sub_total" numeric NOT NULL,
-	"totals_discount" numeric,
-	"name" varchar,
-	"message" varchar,
-	"delivery_tracking_link" varchar,
-	"delivery_shippingMethod" "enum_orders_items_receivers_delivery_shipping_method",
-	"delivery_address_formatted_address" varchar,
-	"delivery_address_address_line1" varchar,
-	"delivery_address_address_line2" varchar,
-	"delivery_address_json" jsonb,
-	"errors" jsonb
-);
-
 CREATE TABLE IF NOT EXISTS "orders_items" (
 	"_order" integer NOT NULL,
 	"_parent_id" integer NOT NULL,
 	"id" varchar PRIMARY KEY NOT NULL,
-	"price" numeric,
+	"item_id" varchar NOT NULL,
+	"quantity" numeric NOT NULL,
+	"price" numeric NOT NULL,
 	"product_id" integer NOT NULL,
-	"totals_cost" numeric NOT NULL,
-	"totals_shipping" numeric,
-	"totals_sub_total" numeric NOT NULL,
-	"totals_discount" numeric
+	"receiver_id" varchar,
+	"gift_card_message" varchar NOT NULL,
+	"gift_card_writing_style" varchar NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS "orders_receivers" (
+	"_order" integer NOT NULL,
+	"_parent_id" integer NOT NULL,
+	"id" varchar PRIMARY KEY NOT NULL,
+	"receiver_id" varchar NOT NULL,
+	"first_name" varchar NOT NULL,
+	"last_name" varchar NOT NULL,
+	"address_address_line1" varchar NOT NULL,
+	"address_address_line2" varchar,
+	"address_city" varchar NOT NULL,
+	"address_state" varchar NOT NULL,
+	"address_postcode" varchar NOT NULL,
+	"delivery_tracking_link" varchar,
+	"delivery_shippingMethod" "enum_orders_receivers_delivery_shipping_method",
+	"delivery_shipping_price" numeric
 );
 
 CREATE TABLE IF NOT EXISTS "orders" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"order_number" varchar,
 	"status" "enum_orders_status" NOT NULL,
+	"discount_code_applied" varchar,
 	"stripe_id" varchar,
 	"totals_cost" numeric NOT NULL,
 	"totals_shipping" numeric,
 	"totals_discount" numeric,
 	"totals_total" numeric NOT NULL,
 	"billing_ordered_by_id" integer,
-	"billing_name" varchar,
+	"billing_first_name" varchar,
+	"billing_last_name" varchar,
 	"billing_email" varchar,
 	"billing_contact_number" numeric,
 	"billing_org_name" varchar,
 	"billing_org_id" varchar,
-	"billing_address_formatted_address" varchar,
 	"billing_address_address_line1" varchar,
 	"billing_address_address_line2" varchar,
-	"billing_address_json" jsonb,
+	"billing_address_city" varchar,
+	"billing_address_state" varchar,
+	"billing_address_postcode" varchar,
 	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
 	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS "orders_rels" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"order" integer,
+	"parent_id" integer NOT NULL,
+	"path" varchar NOT NULL,
+	"products_id" integer
 );
 
 CREATE TABLE IF NOT EXISTS "products_extra_details" (
@@ -285,6 +295,7 @@ CREATE TABLE IF NOT EXISTS "products" (
 	"prices_base_price" numeric,
 	"prices_sale_price" numeric,
 	"description" jsonb,
+	"star_rating" numeric,
 	"stock_availability" "enum_products_stock_availability",
 	"stock_stock_on_hand" numeric,
 	"stock_low_stock_threshold" numeric,
@@ -308,7 +319,8 @@ CREATE TABLE IF NOT EXISTS "products_rels" (
 	"path" varchar NOT NULL,
 	"categories_id" integer,
 	"tags_id" integer,
-	"products_id" integer
+	"products_id" integer,
+	"reviews_id" integer
 );
 
 CREATE TABLE IF NOT EXISTS "_products_v_version_extra_details" (
@@ -337,6 +349,7 @@ CREATE TABLE IF NOT EXISTS "_products_v" (
 	"version_prices_base_price" numeric,
 	"version_prices_sale_price" numeric,
 	"version_description" jsonb,
+	"version_star_rating" numeric,
 	"version_stock_availability" "enum__products_v_version_stock_availability",
 	"version_stock_stock_on_hand" numeric,
 	"version_stock_low_stock_threshold" numeric,
@@ -363,7 +376,8 @@ CREATE TABLE IF NOT EXISTS "_products_v_rels" (
 	"path" varchar NOT NULL,
 	"categories_id" integer,
 	"tags_id" integer,
-	"products_id" integer
+	"products_id" integer,
+	"reviews_id" integer
 );
 
 CREATE TABLE IF NOT EXISTS "carts_items" (
@@ -438,14 +452,6 @@ CREATE TABLE IF NOT EXISTS "reviews" (
 	"reviewer_name" varchar,
 	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
 	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
-);
-
-CREATE TABLE IF NOT EXISTS "reviews_rels" (
-	"id" serial PRIMARY KEY NOT NULL,
-	"order" integer,
-	"parent_id" integer NOT NULL,
-	"path" varchar NOT NULL,
-	"products_id" integer
 );
 
 CREATE TABLE IF NOT EXISTS "media" (
@@ -817,11 +823,14 @@ CREATE INDEX IF NOT EXISTS "_pages_v_created_at_idx" ON "_pages_v" ("created_at"
 CREATE INDEX IF NOT EXISTS "_pages_v_updated_at_idx" ON "_pages_v" ("updated_at");
 CREATE INDEX IF NOT EXISTS "_pages_v_latest_idx" ON "_pages_v" ("latest");
 CREATE INDEX IF NOT EXISTS "reusable_created_at_idx" ON "reusable" ("created_at");
-CREATE INDEX IF NOT EXISTS "orders_items_receivers_order_idx" ON "orders_items_receivers" ("_order");
-CREATE INDEX IF NOT EXISTS "orders_items_receivers_parent_id_idx" ON "orders_items_receivers" ("_parent_id");
 CREATE INDEX IF NOT EXISTS "orders_items_order_idx" ON "orders_items" ("_order");
 CREATE INDEX IF NOT EXISTS "orders_items_parent_id_idx" ON "orders_items" ("_parent_id");
+CREATE INDEX IF NOT EXISTS "orders_receivers_order_idx" ON "orders_receivers" ("_order");
+CREATE INDEX IF NOT EXISTS "orders_receivers_parent_id_idx" ON "orders_receivers" ("_parent_id");
 CREATE INDEX IF NOT EXISTS "orders_created_at_idx" ON "orders" ("created_at");
+CREATE INDEX IF NOT EXISTS "orders_rels_order_idx" ON "orders_rels" ("order");
+CREATE INDEX IF NOT EXISTS "orders_rels_parent_idx" ON "orders_rels" ("parent_id");
+CREATE INDEX IF NOT EXISTS "orders_rels_path_idx" ON "orders_rels" ("path");
 CREATE INDEX IF NOT EXISTS "products_extra_details_order_idx" ON "products_extra_details" ("_order");
 CREATE INDEX IF NOT EXISTS "products_extra_details_parent_id_idx" ON "products_extra_details" ("_parent_id");
 CREATE INDEX IF NOT EXISTS "products_media_order_idx" ON "products_media" ("_order");
@@ -852,9 +861,6 @@ CREATE INDEX IF NOT EXISTS "carts_rels_order_idx" ON "carts_rels" ("order");
 CREATE INDEX IF NOT EXISTS "carts_rels_parent_idx" ON "carts_rels" ("parent_id");
 CREATE INDEX IF NOT EXISTS "carts_rels_path_idx" ON "carts_rels" ("path");
 CREATE INDEX IF NOT EXISTS "reviews_created_at_idx" ON "reviews" ("created_at");
-CREATE INDEX IF NOT EXISTS "reviews_rels_order_idx" ON "reviews_rels" ("order");
-CREATE INDEX IF NOT EXISTS "reviews_rels_parent_idx" ON "reviews_rels" ("parent_id");
-CREATE INDEX IF NOT EXISTS "reviews_rels_path_idx" ON "reviews_rels" ("path");
 CREATE INDEX IF NOT EXISTS "media_created_at_idx" ON "media" ("created_at");
 CREATE UNIQUE INDEX IF NOT EXISTS "media_filename_idx" ON "media" ("filename");
 CREATE INDEX IF NOT EXISTS "users_type_order_idx" ON "users_type" ("order");
@@ -957,12 +963,6 @@ EXCEPTION
 END $$;
 
 DO $$ BEGIN
- ALTER TABLE "orders_items_receivers" ADD CONSTRAINT "orders_items_receivers_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "orders_items"("id") ON DELETE cascade ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
-
-DO $$ BEGIN
  ALTER TABLE "orders_items" ADD CONSTRAINT "orders_items_product_id_products_id_fk" FOREIGN KEY ("product_id") REFERENCES "products"("id") ON DELETE set null ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
@@ -975,7 +975,25 @@ EXCEPTION
 END $$;
 
 DO $$ BEGIN
+ ALTER TABLE "orders_receivers" ADD CONSTRAINT "orders_receivers_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "orders"("id") ON DELETE cascade ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+
+DO $$ BEGIN
  ALTER TABLE "orders" ADD CONSTRAINT "orders_billing_ordered_by_id_users_id_fk" FOREIGN KEY ("billing_ordered_by_id") REFERENCES "users"("id") ON DELETE set null ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+
+DO $$ BEGIN
+ ALTER TABLE "orders_rels" ADD CONSTRAINT "orders_rels_parent_fk" FOREIGN KEY ("parent_id") REFERENCES "orders"("id") ON DELETE cascade ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+
+DO $$ BEGIN
+ ALTER TABLE "orders_rels" ADD CONSTRAINT "orders_rels_products_fk" FOREIGN KEY ("products_id") REFERENCES "products"("id") ON DELETE cascade ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -1024,6 +1042,12 @@ END $$;
 
 DO $$ BEGIN
  ALTER TABLE "products_rels" ADD CONSTRAINT "products_rels_products_fk" FOREIGN KEY ("products_id") REFERENCES "products"("id") ON DELETE cascade ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+
+DO $$ BEGIN
+ ALTER TABLE "products_rels" ADD CONSTRAINT "products_rels_reviews_fk" FOREIGN KEY ("reviews_id") REFERENCES "reviews"("id") ON DELETE cascade ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -1083,6 +1107,12 @@ EXCEPTION
 END $$;
 
 DO $$ BEGIN
+ ALTER TABLE "_products_v_rels" ADD CONSTRAINT "_products_v_rels_reviews_fk" FOREIGN KEY ("reviews_id") REFERENCES "reviews"("id") ON DELETE cascade ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+
+DO $$ BEGIN
  ALTER TABLE "carts_items" ADD CONSTRAINT "carts_items_product_id_products_id_fk" FOREIGN KEY ("product_id") REFERENCES "products"("id") ON DELETE set null ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
@@ -1114,18 +1144,6 @@ END $$;
 
 DO $$ BEGIN
  ALTER TABLE "carts_rels" ADD CONSTRAINT "carts_rels_products_fk" FOREIGN KEY ("products_id") REFERENCES "products"("id") ON DELETE cascade ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
-
-DO $$ BEGIN
- ALTER TABLE "reviews_rels" ADD CONSTRAINT "reviews_rels_parent_fk" FOREIGN KEY ("parent_id") REFERENCES "reviews"("id") ON DELETE cascade ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
-
-DO $$ BEGIN
- ALTER TABLE "reviews_rels" ADD CONSTRAINT "reviews_rels_products_fk" FOREIGN KEY ("products_id") REFERENCES "products"("id") ON DELETE cascade ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -1323,9 +1341,10 @@ await payload.db.drizzle.execute(sql`
  DROP TABLE "pages";
 DROP TABLE "_pages_v";
 DROP TABLE "reusable";
-DROP TABLE "orders_items_receivers";
 DROP TABLE "orders_items";
+DROP TABLE "orders_receivers";
 DROP TABLE "orders";
+DROP TABLE "orders_rels";
 DROP TABLE "products_extra_details";
 DROP TABLE "products_media";
 DROP TABLE "products";
@@ -1339,7 +1358,6 @@ DROP TABLE "carts_receivers";
 DROP TABLE "carts";
 DROP TABLE "carts_rels";
 DROP TABLE "reviews";
-DROP TABLE "reviews_rels";
 DROP TABLE "media";
 DROP TABLE "users_type";
 DROP TABLE "users_roles";

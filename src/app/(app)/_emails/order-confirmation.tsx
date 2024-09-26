@@ -59,7 +59,9 @@ export default function OrderConfirmationEmail(order: Order) {
               <Heading className="text-2xl font-bold text-green-700 mb-4">
                 Your order is confirmed!
               </Heading>
-              <Text className="text-gray-700 mb-4">Hi {order.billing?.name || 'there'},</Text>
+              <Text className="text-gray-700 mb-4">
+                Hi {(order.billing?.firstName && ' ' && order.billing?.lastName) || 'there'},
+              </Text>
               <Text className="text-gray-700 mb-4">
                 Thank you for your order. We're getting your thoughtful gift ready to impress!
               </Text>

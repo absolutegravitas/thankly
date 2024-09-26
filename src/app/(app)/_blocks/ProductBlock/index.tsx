@@ -42,6 +42,7 @@ import StarRating from '../../_components/StarRating'
 import { ProductPlus } from '../Cart/cart-types'
 import { useMediaQuery } from 'react-responsive'
 // import { RemoveFromCartButton } from '../../_components/ProductActions/RemoveFromCart'
+import { useRouter } from 'next/navigation'
 
 interface ProductBlockContentProps {
   product: Product // The product data to be displayed
@@ -53,6 +54,8 @@ const ProductBlockContent: React.FC<ProductBlockContentProps> = ({
   product,
   selectedImageIndex = 0,
 }) => {
+  const router = useRouter()
+
   const isMobile = useMediaQuery({ maxWidth: 639 })
   // Hook to access cart-related state and functions
   const { isProductInCart, cart, addCartItem } = useCart()
@@ -141,6 +144,7 @@ const ProductBlockContent: React.FC<ProductBlockContentProps> = ({
       quantity,
       selectedAddOnProducts.length > 0 ? selectedAddOnProducts : undefined,
     )
+    router.push('/cart')
   }
 
   return (

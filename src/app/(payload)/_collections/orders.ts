@@ -35,7 +35,6 @@ export const Orders: CollectionConfig = {
           required: false,
           admin: { width: '25%', readOnly: true },
         },
-
         {
           name: 'status',
           type: 'select',
@@ -51,7 +50,13 @@ export const Orders: CollectionConfig = {
           ],
         },
         {
-          name: 'stripeId', // this will be the session id
+          name: 'discountCodeApplied',
+          type: 'text',
+          required: false,
+          admin: { width: '25%', readOnly: true },
+        },
+        {
+          name: 'stripeId', // payment intent id?
           label: 'Stripe ID',
           type: 'text',
         },
@@ -92,7 +97,8 @@ export const Orders: CollectionConfig = {
                   required: false,
                   admin: { width: '50%' },
                 },
-                { name: 'name', label: 'Name', type: 'text', admin: { width: '50%' } },
+                { name: 'firstName', label: 'First Name', type: 'text', admin: { width: '50%' } },
+                { name: 'lastName', label: 'Last Name', type: 'text', admin: { width: '50%' } },
                 { name: 'email', label: 'Email', type: 'email', admin: { width: '50%' } },
                 {
                   name: 'contactNumber',
@@ -112,15 +118,17 @@ export const Orders: CollectionConfig = {
             },
             {
               name: 'address',
+              label: 'Billing Address',
               type: 'group',
               fields: [
-                { name: 'formattedAddress', type: 'text', admin: { width: '100%' } },
                 {
                   type: 'row',
                   fields: [
                     { name: 'addressLine1', type: 'text', admin: { width: '50%' } },
                     { name: 'addressLine2', type: 'text', admin: { width: '50%' } },
-                    { name: 'json', type: 'json', admin: { width: '100%' } }, // whole address object for debug
+                    { name: 'city', type: 'text', admin: { width: '50%' } },
+                    { name: 'state', type: 'text', admin: { width: '50%' } },
+                    { name: 'postcode', type: 'text', admin: { width: '50%' } },
                   ],
                 },
               ],
@@ -138,103 +146,106 @@ export const Orders: CollectionConfig = {
               // required: true, // doesn't export types as a proper array unless this is specified, but also fucks up order creation in frontend
               // minRows: 1,
               fields: [
-                { name: 'price', type: 'number', defaultValue: 0, min: 0 },
+                { name: 'itemId', type: 'text', required: true },
+                { name: 'quantity', type: 'number', defaultValue: 1, min: 1, required: true },
+                { name: 'price', type: 'number', defaultValue: 0, min: 0, required: true },
                 { name: 'product', type: 'relationship', relationTo: 'products', required: true },
+                { name: 'addOns', type: 'relationship', relationTo: 'products', hasMany: true },
+                { name: 'receiverId', type: 'text' },
                 {
-                  name: 'totals',
+                  name: 'giftCard',
+                  type: 'group',
+                  fields: [
+                    { name: 'message', type: 'textarea', required: true, defaultValue: '' },
+                    { name: 'writingStyle', type: 'text', required: true, defaultValue: 'regular' },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+        {
+          label: 'Receivers',
+          fields: [
+            {
+              name: 'receivers',
+              label: 'Receivers',
+              type: 'array',
+              fields: [
+                { name: 'receiverId', type: 'text', required: true },
+                { name: 'firstName', type: 'text', required: true },
+                { name: 'lastName', type: 'text', required: true },
+                {
+                  name: 'address',
+                  label: 'Address',
                   type: 'group',
                   fields: [
                     {
                       type: 'row',
                       fields: [
-                        { name: 'cost', type: 'number', required: true, defaultValue: 0 },
-                        { name: 'shipping', type: 'number', required: false },
-                        { name: 'subTotal', type: 'number', required: true, defaultValue: 0 },
-                        { name: 'discount', type: 'number', required: false },
+                        {
+                          type: 'row',
+                          fields: [
+                            {
+                              name: 'addressLine1',
+                              type: 'text',
+                              admin: { width: '50%' },
+                              required: true,
+                            },
+                            { name: 'addressLine2', type: 'text', admin: { width: '50%' } },
+                            { name: 'city', type: 'text', admin: { width: '50%' }, required: true },
+                            {
+                              name: 'state',
+                              type: 'text',
+                              admin: { width: '50%' },
+                              required: true,
+                            },
+                            {
+                              name: 'postcode',
+                              type: 'text',
+                              admin: { width: '50%' },
+                              required: true,
+                            },
+                          ],
+                        },
                       ],
                     },
                   ],
                 },
                 {
-                  name: 'receivers',
-                  label: { singular: 'Receiver', plural: 'Receivers' },
-                  type: 'array',
+                  name: 'delivery',
+                  label: 'Delivery',
+                  type: 'group',
                   fields: [
                     {
-                      name: 'totals',
+                      name: 'tracking',
+                      label: 'Tracking',
                       type: 'group',
                       fields: [
                         {
                           type: 'row',
                           fields: [
-                            { name: 'cost', type: 'number', required: true, defaultValue: 0 },
-                            { name: 'shipping', type: 'number', required: false },
-                            { name: 'subTotal', type: 'number', required: true, defaultValue: 0 },
-                            { name: 'discount', type: 'number', required: false },
+                            { name: 'id', type: 'text', admin: { width: '20%' } },
+                            { name: 'link', type: 'text', admin: { width: '50%' } },
                           ],
                         },
                       ],
                     },
-                    { name: 'name', type: 'text' },
-                    { name: 'message', type: 'textarea' },
-
                     {
-                      name: 'delivery',
-                      label: 'Delivery',
-                      type: 'group',
-                      fields: [
-                        {
-                          name: 'tracking',
-                          label: 'Tracking',
-                          type: 'group',
-                          fields: [
-                            {
-                              type: 'row',
-                              fields: [
-                                { name: 'id', type: 'text', admin: { width: '20%' } },
-                                { name: 'link', type: 'text', admin: { width: '50%' } },
-                              ],
-                            },
-                          ],
-                        },
-                        {
-                          name: 'shippingMethod',
-                          type: 'select',
-                          hasMany: false,
-                          required: false,
-                          admin: { width: '30%' },
-                          options: [
-                            { label: 'Standard Mail', value: 'standardMail' },
-                            { label: 'Express Post', value: 'expressMail' },
-                            { label: 'Standard Parcel', value: 'standardParcel' },
-                            { label: 'Express Parcel', value: 'expressParcel' },
-                          ],
-                        },
-                        {
-                          name: 'address',
-                          label: 'Address',
-                          type: 'group',
-                          fields: [
-                            {
-                              type: 'row',
-                              fields: [
-                                { name: 'formattedAddress', type: 'text', admin: { width: '50%' } },
-                                {
-                                  type: 'row',
-                                  fields: [
-                                    { name: 'addressLine1', type: 'text', admin: { width: '50%' } },
-                                    { name: 'addressLine2', type: 'text', admin: { width: '50%' } },
-                                    { name: 'json', type: 'json', admin: { width: '100%' } }, // whole address object
-                                  ],
-                                },
-                              ],
-                            },
-                          ],
-                        },
+                      name: 'shippingMethod',
+                      type: 'select',
+                      hasMany: false,
+                      required: false,
+                      admin: { width: '30%' },
+                      options: [
+                        { label: 'Standard Mail', value: 'standardMail' },
+                        { label: 'Express Post', value: 'expressMail' },
+                        { label: 'Standard Parcel', value: 'standardParcel' },
+                        { label: 'Express Parcel', value: 'expressParcel' },
                       ],
                     },
-
-                    { name: 'errors', type: 'json', admin: { width: '100%' } },
+                    { name: 'shippingPrice', type: 'number', defaultValue: 0, min: 0 },
+                    // { name: 'errors', type: 'json', admin: { width: '100%' } }, //what dis for?
                   ],
                 },
               ],

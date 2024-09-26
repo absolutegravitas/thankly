@@ -18,7 +18,7 @@ export async function createPaymentIntent(cart: Cart, orderNumber: string): Prom
     // TODO:
     // find the cart on the server to prevent modification of prices on frontend
     // and use that to create paymentintent
-    console.log('see if this worked')
+    // console.log('see if this worked')
 
     // attempt to find the customer from the cart so we can assocate this payment intent to the customer on stripe side
     const stripeCustomerId = await getStripeCustomerFromPayload(
