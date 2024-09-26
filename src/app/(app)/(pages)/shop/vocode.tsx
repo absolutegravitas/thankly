@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import * as Slider from '@radix-ui/react-slider'
-import { Button } from '@/components/ui/button'
+import { Button } from '@app/_components/ui/button'
 import { Star, ShoppingCart, Check } from 'lucide-react'
 
 const categories = [

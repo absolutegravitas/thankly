@@ -26,7 +26,7 @@ export function ViewInCartButton() {
    */
   const handleViewInCart = async () => {
     setIsLoading(true)
-    router.push('/shop/cart')
+    router.push('/cart')
   }
 
   return (

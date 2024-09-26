@@ -4,51 +4,39 @@ import { getPayloadHMR } from '@payloadcms/next/utilities'
 import configPromise from '@payload-config'
 import { Cart, User } from '@/payload-types'
 
-function generateOrderNumber(): string {
-  return `${Math.floor(1000 + Math.random() * 9000)}-${Math.floor(1000 + Math.random() * 9000)}`
-}
-
-async function isOrderNumberUnique(payload: any, orderNumber: string): Promise<boolean> {
-  const existingOrder = await payload.find({
-    collection: 'orders',
-    where: {
-      orderNumber: {
-        equals: orderNumber,
-      },
-    },
-  })
-  return existingOrder.totalDocs === 0
-}
-
-export async function createOrder(cart: Cart) {
+export async function createOrder(cart: Cart, orderNumber: string, paymentIntentId: string) {
   const config = await configPromise
   let payload: any = await getPayloadHMR({ config })
   let order: Order | null = null
 
-  const transformedCart = {
-    ...cart,
-    items: cart.items?.map((item) => ({
-      ...item,
-      product: typeof item.product === 'object' ? item.product.id : item.product,
-      receivers: item.receivers?.map((receiver) => ({
-        ...receiver,
-        errors: undefined,
-      })),
-    })),
-  }
-
-  let orderNumber: string
-  do {
-    orderNumber = generateOrderNumber()
-  } while (!(await isOrderNumberUnique(payload, orderNumber)))
-
   const orderData = {
     orderNumber,
     status: 'pending' as const,
-    //stripeId: stripeSessionId,
-    totals: transformedCart.totals,
-    billing: transformedCart.billing,
-    items: transformedCart.items,
+    discountCodeApplied: cart.discountCodeApplied,
+    stripeId: null, // You might want to generate this if needed
+    totals: {
+      cost: cart.totals.cost,
+      shipping: cart.totals.shipping || null,
+      discount: cart.totals.discount || null,
+      total: cart.totals.total,
+    },
+    billing: cart.billing,
+    items: cart.items?.map((item) => ({
+      itemId: item.itemId,
+      quantity: item.quantity,
+      price: item.price,
+      product: typeof item.product === 'object' ? item.product.id : item.product,
+      addOns: item.addOns?.map((addOn) => (typeof addOn === 'object' ? addOn.id : addOn)),
+      receiverId: item.receiverId,
+      giftCard: item.giftCard,
+    })),
+    receivers: cart.receivers?.map((receiver) => ({
+      receiverId: receiver.receiverId,
+      firstName: receiver.firstName,
+      lastName: receiver.lastName,
+      address: receiver.address,
+      delivery: receiver.delivery,
+    })),
   }
 
   try {

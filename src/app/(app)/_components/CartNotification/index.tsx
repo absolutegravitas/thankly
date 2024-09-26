@@ -13,7 +13,7 @@ export const CartNotification: React.FC = () => {
 
   return (
     <div className="relative group">
-      <Link href="/shop/cart" className="flex items-center">
+      <Link href="/cart" className="flex items-center">
         <span className="mr-2">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -63,7 +63,7 @@ export const CartNotification: React.FC = () => {
             data={{
               label: 'View Cart',
               type: 'custom',
-              url: '/shop/cart',
+              url: '/cart',
             }}
             className="!bg-green !text-white"
             look={{

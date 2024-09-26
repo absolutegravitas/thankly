@@ -33,11 +33,12 @@ export async function upsertPayloadCart(cart: Cart) {
   // console.log('cart provided -- ', JSON.stringify(cart))
 
   // Transform the cart object to ensure product IDs are strings because the cart object we get back has the full product object and we dont need that for the upsert
-  const transformedCart = {
+  const transformedCart: Cart = {
     ...cart,
     items: cart.items?.map((item) => ({
       ...item,
       product: typeof item.product === 'object' ? item.product.id : item.product,
+      addOns: item.addOns?.map((addOn) => (typeof addOn === 'object' ? addOn.id : addOn)),
     })),
   }
 
