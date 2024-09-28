@@ -4,7 +4,7 @@ import { adminsOnly } from '../../../utilities/access'
 
 export const Tags: CollectionConfig = {
   slug: 'tags',
-  admin: { group: '9. Common', useAsTitle: 'title' },
+  admin: { group: 'Global', useAsTitle: 'title' },
 
   access: {
     create: adminsOnly,

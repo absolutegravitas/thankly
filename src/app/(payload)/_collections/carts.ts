@@ -6,7 +6,7 @@ export const Carts: CollectionConfig = {
   slug: 'carts',
 
   admin: {
-    group: '2. Shop',
+    group: 'Commerce',
     useAsTitle: `orderNumber`,
     defaultColumns: ['cartNumber', 'createdAt'],
   },
@@ -35,7 +35,7 @@ export const Carts: CollectionConfig = {
           defaultValue: 'pending',
           hasMany: false,
           required: true,
-          admin: { width:'25%' },
+          admin: { width: '25%' },
           options: [
             { label: 'Pending', value: 'pending' }, // draft, created upon checkout
             { label: 'Completed', value: 'completed' }, // converted to order
@@ -59,10 +59,28 @@ export const Carts: CollectionConfig = {
         {
           type: 'row',
           fields: [
-            { name: 'cost', type: 'number', defaultValue: 0, required: true, admin: { width: '25%' } },
-            { name: 'shipping', type: 'number', defaultValue: 0, required: true, admin: { width: '25%' } },
+            {
+              name: 'cost',
+              type: 'number',
+              defaultValue: 0,
+              required: true,
+              admin: { width: '25%' },
+            },
+            {
+              name: 'shipping',
+              type: 'number',
+              defaultValue: 0,
+              required: true,
+              admin: { width: '25%' },
+            },
             { name: 'discount', type: 'number', required: false, admin: { width: '25%' } },
-            { name: 'total', type: 'number', defaultValue: 0, required: true, admin: { width: '25%' } },
+            {
+              name: 'total',
+              type: 'number',
+              defaultValue: 0,
+              required: true,
+              admin: { width: '25%' },
+            },
           ],
         },
       ],
@@ -175,11 +193,26 @@ export const Carts: CollectionConfig = {
                         {
                           type: 'row',
                           fields: [
-                            { name: 'addressLine1', type: 'text', admin: { width: '50%' }, required: true },
-                            { name: 'addressLine2', type: 'text', admin: { width: '50%' }},
+                            {
+                              name: 'addressLine1',
+                              type: 'text',
+                              admin: { width: '50%' },
+                              required: true,
+                            },
+                            { name: 'addressLine2', type: 'text', admin: { width: '50%' } },
                             { name: 'city', type: 'text', admin: { width: '50%' }, required: true },
-                            { name: 'state', type: 'text', admin: { width: '50%' }, required: true },
-                            { name: 'postcode', type: 'text', admin: { width: '50%' }, required: true },
+                            {
+                              name: 'state',
+                              type: 'text',
+                              admin: { width: '50%' },
+                              required: true,
+                            },
+                            {
+                              name: 'postcode',
+                              type: 'text',
+                              admin: { width: '50%' },
+                              required: true,
+                            },
                           ],
                         },
                       ],
@@ -222,10 +255,10 @@ export const Carts: CollectionConfig = {
                     // { name: 'errors', type: 'json', admin: { width: '100%' } }, //what dis for?
                   ],
                 },
-              ]
-            }
-          ]
-        }
+              ],
+            },
+          ],
+        },
       ],
     },
   ],

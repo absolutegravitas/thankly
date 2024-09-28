@@ -9,7 +9,7 @@ export const Orders: CollectionConfig = {
   admin: {
     useAsTitle: `orderNumber`,
     defaultColumns: ['orderNumber', 'createdAt', 'orderedBy'],
-    group: '2. Shop',
+    group: 'Commerce',
   },
   hooks: {
     beforeChange: [],

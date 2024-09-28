@@ -6,9 +6,9 @@ export const Categories: CollectionConfig = {
   slug: 'categories',
   labels: {
     plural: 'Categories',
-    singular: 'Category'
+    singular: 'Category',
   },
-  admin: { group: '9. Common', useAsTitle: 'title' },
+  admin: { group: 'Global', useAsTitle: 'title' },
 
   access: {
     create: adminsOnly,
@@ -19,25 +19,23 @@ export const Categories: CollectionConfig = {
 
   fields: [
     {
-      type:'row',
-      fields: [
-        { name: 'title', type: 'text', required:true},
-      ]
+      type: 'row',
+      fields: [{ name: 'title', type: 'text', required: true }],
     },
     {
       name: 'shopConfig',
       label: 'Shop Configuration',
       type: 'group',
       fields: [
-        { name: 'visible', type: 'checkbox', label:'Visible in Shop filter', defaultValue:true},
+        { name: 'visible', type: 'checkbox', label: 'Visible in Shop filter', defaultValue: true },
         {
-          type:'row',
+          type: 'row',
           fields: [
             { name: 'shopFilterTitle', type: 'text' },
-            { name: 'sortOrder', type: 'number'},
-          ]
-        }
-      ]
-    }
-  ]
+            { name: 'sortOrder', type: 'number' },
+          ],
+        },
+      ],
+    },
+  ],
 }

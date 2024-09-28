@@ -11,7 +11,7 @@ import { Product, Review } from '@/payload-types'
 // import { themeField } from '../_fields/blockFields'
 
 const calculateStarRating: CollectionBeforeChangeHook<Product> = async ({ data, req }) => {
-  const updatedData = { ...data };
+  const updatedData = { ...data }
 
   if (updatedData.reviews && updatedData.reviews.length > 0) {
     // Fetch all reviews
@@ -22,29 +22,32 @@ const calculateStarRating: CollectionBeforeChangeHook<Product> = async ({ data, 
           in: updatedData.reviews.map(String), // Convert numbers to strings for the query
         },
       },
-    });
+    })
 
-    const validReviews = fetchedReviews.docs.filter(review => review.starRating !== null);
+    const validReviews = fetchedReviews.docs.filter((review) => review.starRating !== null)
 
     if (validReviews.length > 0) {
-      const totalStars = validReviews.reduce((sum, review) => sum + parseInt(review.starRating as string), 0);
-      const averageRating = totalStars / validReviews.length;
-      updatedData.starRating = Math.ceil(averageRating);
+      const totalStars = validReviews.reduce(
+        (sum, review) => sum + parseInt(review.starRating as string),
+        0,
+      )
+      const averageRating = totalStars / validReviews.length
+      updatedData.starRating = Math.ceil(averageRating)
     } else {
-      updatedData.starRating = 0;
+      updatedData.starRating = 0
     }
   } else {
-    updatedData.starRating = 0;
+    updatedData.starRating = 0
   }
 
-  return updatedData;
-};
+  return updatedData
+}
 
 export const Products: CollectionConfig = {
   slug: 'products',
   admin: {
     useAsTitle: 'title',
-    group: '2. Shop',
+    group: 'Commerce',
     defaultColumns: ['title', 'productType', 'stripeId', 'availability'],
     // livePreview: {
     //   url: ({ data }) =>
@@ -144,7 +147,8 @@ export const Products: CollectionConfig = {
     {
       type: 'tabs',
       tabs: [
-        { //Details & Add ons
+        {
+          //Details & Add ons
           label: 'Details',
           description: 'Text descriptions of the product',
           admin: { condition: (_, siblingData) => siblingData.productType !== 'addOn' },
@@ -153,16 +157,16 @@ export const Products: CollectionConfig = {
               name: 'description',
               label: 'Product Description',
               type: 'richText',
-              editor: lexicalEditor()
+              editor: lexicalEditor(),
             },
             {
               name: 'extraDetails',
               label: 'Extra Details',
               type: 'array',
               fields: [
-                { name: 'title', type:'text', required:true },
-                { name: 'details', type:'richText', editor: lexicalEditor(), required:true },
-              ]
+                { name: 'title', type: 'text', required: true },
+                { name: 'details', type: 'richText', editor: lexicalEditor(), required: true },
+              ],
             },
             {
               type: 'row',
@@ -174,7 +178,7 @@ export const Products: CollectionConfig = {
                   relationTo: 'tags',
                   hasMany: true,
                 },
-                { 
+                {
                   name: 'addOns',
                   label: 'Add Ons',
                   type: 'relationship',
@@ -182,13 +186,16 @@ export const Products: CollectionConfig = {
                   hasMany: true,
                   admin: { condition: (_, siblingData) => siblingData.productType !== 'addOn' }, // don't allow addOns to be linked to more addOns
                   //filterOptions: ({}) => {return {'categories.title': { equals: "Add On"}}}, //only "Add On" category products
-                  filterOptions: ({}) => {return {'productType': { equals: "addOn"}}}, //only "Add On" product type
-                }
-              ]
-            }
-          ]
+                  filterOptions: ({}) => {
+                    return { productType: { equals: 'addOn' } }
+                  }, //only "Add On" product type
+                },
+              ],
+            },
+          ],
         },
-        { // Images
+        {
+          // Images
           label: 'Images',
           description: 'Product Images',
           fields: [
@@ -209,7 +216,7 @@ export const Products: CollectionConfig = {
               label: 'Linked Reviews',
               type: 'relationship',
               relationTo: 'reviews',
-              hasMany: true
+              hasMany: true,
             },
             {
               name: 'starRating',
@@ -220,9 +227,10 @@ export const Products: CollectionConfig = {
                 description: 'Average star rating calculated from linked reviews',
               },
             },
-          ]
+          ],
         },
-        { //Stock
+        {
+          //Stock
           label: 'Stock',
           description: 'Basic Product Info',
           fields: [
@@ -257,14 +265,16 @@ export const Products: CollectionConfig = {
                 },
               ],
             },
-          ]
+          ],
         },
-        { //Page Layout
+        {
+          //Page Layout
           label: 'Page Layout',
           description: 'Product Page Layout',
           fields: [layoutField()],
         },
-        { //Tech Info
+        {
+          //Tech Info
           label: 'Tech Info',
           fields: [
             slugField(),
@@ -290,5 +300,3 @@ export const Products: CollectionConfig = {
     },
   ],
 }
-
-

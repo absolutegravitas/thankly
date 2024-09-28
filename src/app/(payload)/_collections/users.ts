@@ -14,7 +14,7 @@ export const Users: CollectionConfig = {
   admin: {
     useAsTitle: 'email',
     defaultColumns: ['email', 'firstName', 'lastName'],
-    group: '9. Common',
+    group: 'Global',
   },
   // auth: true,
   // https://payloadcms.com/docs/authentication/config
@@ -103,9 +103,9 @@ export const Users: CollectionConfig = {
                   },
                 },
                 {
-                  name: 'imageUrl', 
+                  name: 'imageUrl',
                   label: 'Profile Image URL',
-                  type: 'text', 
+                  type: 'text',
                   admin: {
                     width: '50%',
                   },
@@ -193,16 +193,16 @@ export const Users: CollectionConfig = {
               name: 'accounts',
               type: 'array',
               saveToJWT: false,
-              fields: [ 
+              fields: [
                 {
                   type: 'row',
                   fields: [
-                    { name: 'provider', type: 'text', admin: { readOnly: true }},
+                    { name: 'provider', type: 'text', admin: { readOnly: true } },
                     { name: 'providerAccountId', type: 'text', admin: { readOnly: true } },
                     { name: 'providerSearchString', type: 'text', admin: { readOnly: true } },
-                  ]
-                }
-              ]
+                  ],
+                },
+              ],
             },
             {
               name: 'verificationTokens',
@@ -214,10 +214,14 @@ export const Users: CollectionConfig = {
                   fields: [
                     { name: 'identifier', type: 'text', admin: { readOnly: true } },
                     { name: 'token', type: 'text', admin: { readOnly: true } },
-                    { name: 'expires', type: 'date', admin: { readOnly: true, date: { pickerAppearance: 'dayAndTime' } } }
-                  ]
-                }
-              ]
+                    {
+                      name: 'expires',
+                      type: 'date',
+                      admin: { readOnly: true, date: { pickerAppearance: 'dayAndTime' } },
+                    },
+                  ],
+                },
+              ],
             },
             {
               name: 'emailVerified',
@@ -226,10 +230,9 @@ export const Users: CollectionConfig = {
                 width: '30%',
               },
             },
-          ]
-        }
+          ],
+        },
       ],
     },
   ],
 }
-

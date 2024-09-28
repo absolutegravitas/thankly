@@ -35,18 +35,25 @@ const dirname = path.dirname(filename)
 export default buildConfig({
   // needs to be ordered in a specific way otherwise the admin grouping fucks up
   collections: [
+    // commerce
+    Products,
+    Reviews,
+    Carts,
+    Orders,
+    DiscountCodes,
+
+    // site
     Pages,
     Reusable,
-    Orders,
-    Products,
-    Carts,
-    Reviews,
-    Media,
+
+    // users
     Users,
-    Tags,
-    Categories,
     Sessions,
-    DiscountCodes,
+
+    // global
+    Media,
+    Categories,
+    Tags,
   ],
 
   globals: [Settings],
