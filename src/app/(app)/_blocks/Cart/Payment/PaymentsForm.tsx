@@ -14,11 +14,12 @@ import { DollarSign, LockIcon } from 'lucide-react'
 import { createPaymentIntent } from './createPaymentIntent'
 import { Button } from '@/app/(app)/_components/ui/button'
 import { upsertPayloadCart } from '@/app/(app)/_providers/Cart/upsertPayloadCart'
+import { createOrder } from '@/app/(app)/api/stripeWebhooks/createOrder'
 
 export const PaymentForm = () => {
   const stripe = useStripe()
   const elements = useElements()
-  const { cart } = useCart()
+  const { cart, clearCart } = useCart()
 
   const [validationMessage, setValidationMessage] = useState<string>('')
   const [errorMessage, setErrorMessage] = useState()
@@ -71,7 +72,6 @@ export const PaymentForm = () => {
       // Make sure to disable form submission until Stripe.js has loaded.
       return
     }
-    console.log('see if this worked')
     setLoading(true)
 
     // Trigger form validation and wallet collection
@@ -83,19 +83,23 @@ export const PaymentForm = () => {
 
     // save the server cart here and use it to generate the order later off the webhook
     // TODO: there's probably a better way to do it instead of here but Alex refactored all my code and I dont know where everything is
+    console.log('cart to save -- ', cart)
     await upsertPayloadCart(cart)
 
-    // generate the order number
+    // generate an order number
     const orderNumber =
       `${Math.floor(1000 + Math.random() * 9000)}-${Math.floor(1000 + Math.random() * 9000)}` as string
     const { client_secret: clientSecret } = await createPaymentIntent(cart, orderNumber)
 
-    // Confirm the PaymentIntent using the details collected by the Payment Element
+    // create a draft order by copying the cart
+    const draftOrder = await createOrder(cart, orderNumber)
+    console.log('draft order -- ', draftOrder)
+
+    // Confirm the PaymentIntent to actually take a payment using the details collected by the Payment Element
     const { error } = await stripe.confirmPayment({
       elements,
       clientSecret,
       confirmParams: {
-        // assumes cartNumber is transposed to orderNumber when the order is created
         return_url: `${process.env.NEXT_PUBLIC_SERVER_URL}/shop/order?orderNumber=${orderNumber}`,
       },
     })

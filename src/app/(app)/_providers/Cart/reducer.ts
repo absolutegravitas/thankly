@@ -9,7 +9,13 @@ import { upsertPayloadCart } from './upsertPayloadCart'
 import { deletePayloadCart } from './deletePayloadCart'
 import { debounce } from 'lodash' // You'll need to install lodash if not already present
 import { uuid } from '@/utilities/uuid'
-import { CartItem, Receiver, GiftCard, ShippingMethod, CartTotals } from '@app/_blocks/Cart/cart-types'
+import {
+  CartItem,
+  Receiver,
+  GiftCard,
+  ShippingMethod,
+  CartTotals,
+} from '@app/_blocks/Cart/cart-types'
 
 // Create a debounced version of the upsertPayloadCart function
 const debouncedUpsertPayloadCart = debounce(upsertPayloadCart, 1000)
@@ -18,38 +24,38 @@ const debouncedUpsertPayloadCart = debounce(upsertPayloadCart, 1000)
 export type CartAction =
   | {
       type: 'ADD_CART_ITEM'
-      payload: { product: Product; quantity: number, addOns?: Product[] }
+      payload: { product: Product; quantity: number; addOns?: Product[] }
     }
   | {
       type: 'REMOVE_CART_ITEM'
       // payload: { productId: number | string }
       payload: { cartItemId: string }
     }
-    | {
-      type: "UPDATE_QUANTITY"
+  | {
+      type: 'UPDATE_QUANTITY'
       payload: { cartItemId: string; quantity: number }
     }
   | {
-      type: "UPDATE_MESSAGE"
+      type: 'UPDATE_MESSAGE'
       payload: { cartItemId: string; giftCard: GiftCard }
     }
   | {
       type: 'ADD_RECEIVER'
       payload: {
-        receiver: Receiver;
+        receiver: Receiver
       }
     }
   | {
       type: 'LINK_RECEIVER'
-      payload: { cartItemId: string, receiverId: string }
+      payload: { cartItemId: string; receiverId: string }
     }
   | {
       type: 'UPDATE_SHIPPING'
-      payload: { receiverId: string, shippingMethod: ShippingMethod, shippingPrice: number }
+      payload: { receiverId: string; shippingMethod: ShippingMethod; shippingPrice: number }
     }
   | {
       type: 'APPLY_DISCOUNT'
-      payload: { discountCode: string, discountAmount: number }
+      payload: { discountCode: string; discountAmount: number }
     }
   | { type: 'SET_CART'; payload: Cart }
   | { type: 'CLEAR_CART' }
@@ -75,11 +81,10 @@ export const cartReducer = (cart: Cart, action: CartAction): Cart => {
       // Calculate if the product is on sale
       const onSale =
         salePrice !== null && salePrice !== undefined && salePrice !== 0 && salePrice < basePrice
-      const price = 
-          (onSale ? salePrice : basePrice)
-        + (addOns ? calculateTotalAddonCost(addOns) : 0)
+      const price =
+        (onSale ? salePrice : basePrice) + (addOns ? calculateTotalAddonCost(addOns) : 0)
 
-      console.log("PRICE added to cart:",price)
+      console.log('PRICE added to cart:', price)
 
       // add a new product to existing cart
       const newItem: CartItem = {
@@ -90,8 +95,8 @@ export const cartReducer = (cart: Cart, action: CartAction): Cart => {
         addOns: addOns,
         giftCard: {
           message: '',
-          writingStyle: 'regular'
-        }
+          writingStyle: 'regular',
+        },
       }
       const updatedItems = [...(cart.items || []), newItem]
 
@@ -102,7 +107,7 @@ export const cartReducer = (cart: Cart, action: CartAction): Cart => {
 
       cartToReturn = {
         ...cartToReturn,
-        totals: calculateCartTotals(cartToReturn)
+        totals: calculateCartTotals(cartToReturn),
       }
 
       // // upsert the server cart
@@ -113,13 +118,12 @@ export const cartReducer = (cart: Cart, action: CartAction): Cart => {
 
     case 'UPDATE_QUANTITY': {
       const { cartItemId, quantity } = action.payload
-      const updatedItems =
-        cart.items?.map((item) => {
-          if (item.itemId === cartItemId ) {
-            return {...item, quantity: quantity};
-          }
-          return item;
-        });
+      const updatedItems = cart.items?.map((item) => {
+        if (item.itemId === cartItemId) {
+          return { ...item, quantity: quantity }
+        }
+        return item
+      })
 
       let cartToReturn = {
         ...cart,
@@ -128,36 +132,32 @@ export const cartReducer = (cart: Cart, action: CartAction): Cart => {
 
       cartToReturn = {
         ...cartToReturn,
-        totals: calculateCartTotals(cartToReturn)
+        totals: calculateCartTotals(cartToReturn),
       }
 
-      return cartToReturn;
+      return cartToReturn
     }
 
     case 'UPDATE_MESSAGE': {
       const { cartItemId, giftCard } = action.payload
-      const updatedItems =
-        cart.items?.map((item) => {
-          if (item.itemId === cartItemId ) {
-            
-            return {...item, giftCard: giftCard };
-          }
-          return item;
-        });
+      const updatedItems = cart.items?.map((item) => {
+        if (item.itemId === cartItemId) {
+          return { ...item, giftCard: giftCard }
+        }
+        return item
+      })
 
       const cartToReturn = {
         ...cart,
         items: updatedItems,
       }
 
-      return cartToReturn;
+      return cartToReturn
     }
 
     case 'REMOVE_CART_ITEM': {
       const { cartItemId } = action.payload
-      const updatedItems = cart.items?.filter(
-        (item) => item.itemId !== cartItemId
-      ) as CartItem[]
+      const updatedItems = cart.items?.filter((item) => item.itemId !== cartItemId) as CartItem[]
 
       let cartToReturn = {
         ...cart,
@@ -166,9 +166,9 @@ export const cartReducer = (cart: Cart, action: CartAction): Cart => {
 
       cartToReturn = {
         ...cartToReturn,
-        totals: calculateCartTotals(cartToReturn)
+        totals: calculateCartTotals(cartToReturn),
       }
-    
+
       // // upsert the server cart
       // console.log('product added, upsert cart -- ')
       // debouncedUpsertPayloadCart(cartToReturn)
@@ -178,10 +178,10 @@ export const cartReducer = (cart: Cart, action: CartAction): Cart => {
 
     case 'ADD_RECEIVER': {
       const { receiver } = action.payload
-        
+
       const cartToReturn = {
         ...cart,
-        receivers: [...(cart.receivers || []), receiver]
+        receivers: [...(cart.receivers || []), receiver],
       }
 
       // // upsert the server cart
@@ -193,39 +193,37 @@ export const cartReducer = (cart: Cart, action: CartAction): Cart => {
 
     case 'LINK_RECEIVER': {
       const { cartItemId, receiverId } = action.payload
-      
-      const updatedItems =
-      cart.items?.map((item) => {
-        if (item.itemId === cartItemId ) {
-          return {...item, receiverId: receiverId};
+
+      const updatedItems = cart.items?.map((item) => {
+        if (item.itemId === cartItemId) {
+          return { ...item, receiverId: receiverId }
         }
-        return item;
-      });
+        return item
+      })
 
       const cartToReturn = {
         ...cart,
         items: updatedItems,
       }
 
-      return cartToReturn;
+      return cartToReturn
     }
 
     case 'UPDATE_SHIPPING': {
       const { receiverId, shippingMethod, shippingPrice } = action.payload
-      
-      const updatedReceivers =
-      cart.receivers?.map((receiver) => {
-        if (receiver.receiverId === receiverId ) {
+
+      const updatedReceivers = cart.receivers?.map((receiver) => {
+        if (receiver.receiverId === receiverId) {
           return {
             ...receiver,
             delivery: {
               shippingMethod: shippingMethod,
-              shippingPrice: shippingPrice
-            }
-          };
+              shippingPrice: shippingPrice,
+            },
+          }
         }
-        return receiver;
-      });
+        return receiver
+      })
 
       let cartToReturn = {
         ...cart,
@@ -234,10 +232,10 @@ export const cartReducer = (cart: Cart, action: CartAction): Cart => {
 
       cartToReturn = {
         ...cartToReturn,
-        totals: calculateCartTotals(cartToReturn)
+        totals: calculateCartTotals(cartToReturn),
       }
 
-      return cartToReturn;
+      return cartToReturn
     }
 
     case 'APPLY_DISCOUNT': {
@@ -251,23 +249,24 @@ export const cartReducer = (cart: Cart, action: CartAction): Cart => {
         ...cart,
         totals: {
           ...cart.totals,
-          discount: discountAmount
+          discount: discountAmount,
         } as CartTotals,
-        discountCodeApplied: discountCode
+        discountCodeApplied: discountCode,
       }
 
       // recalculate totals
       cartToReturn = {
         ...cartToReturn,
-        totals: calculateCartTotals(cartToReturn)
+        totals: calculateCartTotals(cartToReturn),
       }
 
       return cartToReturn
     }
-    
+
     case 'CLEAR_CART': {
       // also clear / delete the cart on payloadCMS
-      deletePayloadCart(cart)
+      // Prasit: no don't do this, we create order off the cart and we need the cart on the server to create the order
+      // deletePayloadCart(cart)
       return { ...cart, items: [], totals: { total: 0, cost: 0, shipping: 0 } }
     }
 
@@ -285,22 +284,22 @@ export const cartReducer = (cart: Cart, action: CartAction): Cart => {
 const calculateTotalAddonCost = (addons: Product[]): number => {
   return addons.reduce((total, addon) => {
     if (addon.prices && typeof addon.prices.basePrice === 'number') {
-      return total + addon.prices.basePrice;
+      return total + addon.prices.basePrice
     }
-    return total;
-  }, 0);
-};
+    return total
+  }, 0)
+}
 
 // Function to calculate the totals for the entire cart
 const calculateCartTotals = (cart: Cart): CartTotals => {
   const { items, receivers } = cart
   let totals = { ...cart.totals, total: 0, cost: 0, shipping: 0 }
-  
+
   //add up prices across cart items
   if (items) {
     items.forEach((item) => {
       if (item.price) {
-        totals.cost = totals.cost + (item.price * item.quantity)
+        totals.cost = totals.cost + item.price * item.quantity
       }
     })
   }
@@ -314,8 +313,8 @@ const calculateCartTotals = (cart: Cart): CartTotals => {
     })
   }
 
-  //calculate grand total  
-  totals.total = totals.cost + (totals.discount ?? 0) + totals.shipping;
+  //calculate grand total
+  totals.total = totals.cost + (totals.discount ?? 0) + totals.shipping
 
-  return totals;
+  return totals
 }

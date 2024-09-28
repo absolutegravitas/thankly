@@ -81,31 +81,29 @@ async function handlePaymentIntentSucceeded(paymentIntent: Stripe.PaymentIntent)
   let payload: any = await getPayloadHMR({ config })
 
   try {
-    // find the cartNumber associated with the stripe payment intent from the metadata
-    const cartNumber = paymentIntent.metadata.cartNumber
-    if (!cartNumber) {
-      throw new Error('No cart number found in payment intent metadata')
+    // find the orderNumber associated with the stripe payment intent from the metadata
+    const orderNumber = paymentIntent.metadata.orderNumber
+    if (!orderNumber) {
+      throw new Error('No order number found in payment intent metadata')
     }
-
-    // create the order on the payload server by finding the cartNumber in the payload carts collection
-    const { docs: carts } = await payload.find({
-      collection: 'carts',
-      where: { cartNumber: { equals: cartNumber } },
+    // find the order on the payload server by orderNumber
+    const { docs: orders } = await payload.find({
+      collection: 'orders',
+      where: { orderNumber: { equals: orderNumber } },
       depth: 2,
       limit: 1,
     })
 
-    if (carts.length === 0) {
-      throw new Error(`No cart found with cart number ${cartNumber}`)
+    if (orders.length === 0) {
+      throw new Error(`No order found with order number ${orderNumber}`)
     }
 
-    const cart = carts[0] as Cart
-
-    const newOrder = await createOrder(cart, paymentIntent.metadata.orderNumber, paymentIntent.id)
+    const order = orders[0] as Order
+    console.log('order found -- ', order)
 
     // do stuff if order was successfully created
-    if (newOrder) {
-      console.log(`New order ${newOrder?.id} created from payment intent ${paymentIntent.id}`)
+    if (order) {
+      console.log(`New order ${order?.id} created from payment intent ${paymentIntent.id}`)
 
       // // TODO: delete cart on payloadCMS as it's no longer valid
       // await payload.delete({
@@ -114,7 +112,7 @@ async function handlePaymentIntentSucceeded(paymentIntent: Stripe.PaymentIntent)
       // })
 
       // send confirmation email to customer
-      await sendConfirmationEmail(newOrder)
+      await sendConfirmationEmail(order)
 
       // generate sendle labels for each receiver in the order
       // only if the receiver is getting a gift product type AND the address is not a PO BOX, Parcel Collect, or Parcel Locker - these have to be prepped manually in AusPost / with postage stamps
@@ -145,7 +143,7 @@ async function handlePaymentIntentSucceeded(paymentIntent: Stripe.PaymentIntent)
   }
 }
 
-// // Handle a completed Stripe checkout session for Stripe Checkout
+// // Handle a completed Stripe checkout session for Stripe Checkout only
 // async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) {
 //   console.log('Checkout session was completed!')
 //   const config = await configPromise

@@ -35,18 +35,8 @@ export async function sendConfirmationEmail(order: Order) {
       // Pass the order data to the OrderConfirmationEmail component to generate the email content
       react: OrderConfirmationEmail(order),
     })
-    console.log(`Confirmation email sent for order ${order.id}`) // Log a success message with the order ID
+    console.log(`Confirmation email sent for order ${order.orderNumber}`) // Log a success message with the order ID
   } catch (error) {
     console.error('Error sending confirmation email:', error) // Log any errors that occurred during email sending
   }
 }
-
-/*
-  No performance considerations or side effects noted.
-  No specific accessibility (a11y) considerations noted.
-  No state management or complex logic involved.
-  Future compatibility:
-    - The email sending integration is using the Resend library, which may be updated or replaced in the future.
-    - The environment variables (RESEND_KEY, RESEND_DEFAULT_EMAIL) may change or be renamed.
-    - The OrderConfirmationEmail component may be updated or replaced with a different implementation.
-*/
