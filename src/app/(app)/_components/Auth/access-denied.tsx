@@ -1,4 +1,5 @@
-import { signIn } from "next-auth/react"
+import { signIn } from 'next-auth/react'
+import * as React from 'react'
 
 export default function AccessDenied() {
   return (

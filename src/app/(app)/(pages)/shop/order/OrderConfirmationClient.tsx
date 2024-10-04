@@ -4,8 +4,6 @@ import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { jsPDF } from 'jspdf'
-import html2canvas from 'html2canvas'
 import { Order } from '@/payload-types'
 import { Button } from '@app/_components/ui/button'
 import { Input } from '@app/_components/ui/input'
@@ -18,6 +16,7 @@ import {
   FormMessage,
 } from '@app/_components/ui/form'
 import { useRouter } from 'next/navigation'
+import { Document, Page, Text, View, StyleSheet, PDFDownloadLink } from '@react-pdf/renderer'
 
 interface OrderConfirmationClientProps {
   order?: Order
@@ -53,20 +52,6 @@ const OrderConfirmationClient: React.FC<OrderConfirmationClientProps> = ({ order
       console.error('Error searching for order:', error)
       alert('An error occurred while searching for the order')
     }
-  }
-
-  const generatePDF = async () => {
-    const orderToUse = order || searchedOrder
-    if (!orderToUse) return
-
-    const input = document.getElementById('order-details')
-    if (!input) return
-
-    const canvas = await html2canvas(input)
-    const imgData = canvas.toDataURL('image/png')
-    const pdf = new jsPDF()
-    pdf.addImage(imgData, 'PNG', 0, 0)
-    pdf.save(`order-${orderToUse.orderNumber}.pdf`)
   }
 
   const handleLogin = () => {
@@ -117,11 +102,53 @@ const OrderConfirmationClient: React.FC<OrderConfirmationClientProps> = ({ order
     )
   }
 
+  const orderToUse = order || searchedOrder
+
+  const styles = StyleSheet.create({
+    page: {
+      flexDirection: 'column',
+      backgroundColor: '#E4E4E4',
+      padding: 30,
+    },
+    section: {
+      margin: 10,
+      padding: 10,
+      flexGrow: 1,
+    },
+    title: {
+      fontSize: 24,
+      marginBottom: 10,
+    },
+    text: {
+      fontSize: 12,
+      marginBottom: 5,
+    },
+  })
+
+  const PDFDocument = ({ order }: { order: Order }) => (
+    <Document>
+      <Page size="A4" style={styles.page}>
+        <View style={styles.section}>
+          <Text style={styles.title}>Order Invoice</Text>
+          <Text style={styles.text}>Order Number: {order.orderNumber}</Text>
+          {/* Add more order details here */}
+        </View>
+      </Page>
+    </Document>
+  )
+
   return (
     <div>
-      <Button onClick={generatePDF} className="mt-4">
-        Download Invoice PDF
-      </Button>
+      {orderToUse && (
+        <PDFDownloadLink
+          document={<PDFDocument order={orderToUse} />}
+          fileName={`Thankly Tax Invoice Order-${orderToUse.orderNumber}.pdf`}
+        >
+          {({ blob, url, loading, error }) =>
+            loading ? 'Loading document...' : <Button className="mt-4">Download Invoice PDF</Button>
+          }
+        </PDFDownloadLink>
+      )}
     </div>
   )
 }
