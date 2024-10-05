@@ -16,11 +16,14 @@ import { Button } from '@/app/(app)/_components/ui/button'
 import { upsertPayloadCart } from '@/app/(app)/_providers/Cart/upsertPayloadCart'
 import { createOrder } from '@/app/(app)/api/stripeWebhooks/createOrder'
 import * as React from 'react'
+import { useSession } from 'next-auth/react'
+import { Cart } from '@/payload-types'
 
 export const PaymentForm = () => {
   const stripe = useStripe()
   const elements = useElements()
-  const { cart, clearCart } = useCart()
+  const { cart, clearCart, setCart } = useCart()
+  const { data: session } = useSession()
 
   const [validationMessage, setValidationMessage] = useState<string>('')
   const [errorMessage, setErrorMessage] = useState()
@@ -71,6 +74,8 @@ export const PaymentForm = () => {
     if (!stripe || !elements) {
       // Stripe.js hasn't yet loaded.
       // Make sure to disable form submission until Stripe.js has loaded.
+      console.log('stripe or elements not ready')
+
       return
     }
     setLoading(true)
@@ -82,9 +87,19 @@ export const PaymentForm = () => {
       return
     }
 
+    if (session?.user?.id) {
+      console.log('what is the fucking cart -- ', cart)
+
+      // Update the cart with the user ID
+      const updatedCart: Cart = {
+        ...cart,
+        billing: { orderedBy: session.user.id as unknown as number },
+      }
+      setCart(updatedCart)
+      console.log('what is after fucking cart -- ', cart)
+    }
+
     // save the server cart here and use it to generate the order later off the webhook
-    // TODO: there's probably a better way to do it instead of here but Alex refactored all my code and I dont know where everything is
-    console.log('cart to save -- ', cart)
     await upsertPayloadCart(cart)
 
     // generate an order number

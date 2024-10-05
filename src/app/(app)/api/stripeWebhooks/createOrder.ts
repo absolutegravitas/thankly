@@ -22,7 +22,12 @@ export async function createOrder(cart: Cart, orderNumber: string, paymentIntent
       discount: cart.totals.discount || null,
       total: cart.totals.total,
     },
-    billing: cart.billing,
+    billing: cart.billing
+      ? {
+          ...cart.billing,
+          orderedBy: cart.billing.orderedBy ? Number(cart.billing.orderedBy) : null,
+        }
+      : undefined,
     items: cart.items?.map((item) => ({
       itemId: item.itemId,
       quantity: item.quantity,

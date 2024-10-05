@@ -4,7 +4,7 @@ import { getPayloadHMR } from '@payloadcms/next/utilities'
 import configPromise from '@payload-config'
 import { User } from '@/payload-types'
 
-export async function fetchUserDetails(userId: string): Promise<Partial<User>> {
+export async function fetchUserDetails(userId: string | number): Promise<Partial<User>> {
   const config = await configPromise
   let payload: any = await getPayloadHMR({ config })
 
@@ -28,7 +28,10 @@ export async function fetchUserDetails(userId: string): Promise<Partial<User>> {
   }
 }
 
-export async function updateUserDetails(userId: string, data: Partial<User>): Promise<void> {
+export async function updateUserDetails(
+  userId: string | number,
+  data: Partial<User>,
+): Promise<void> {
   const config = await configPromise
   let payload: any = await getPayloadHMR({ config })
 
