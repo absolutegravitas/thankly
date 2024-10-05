@@ -46,7 +46,7 @@ export default function GeneralSettings({ user }: { user: Partial<User> }) {
   useEffect(() => {
     const loadUserDetails = async () => {
       try {
-        const userDetails = await fetchUserDetails(user.id as string)
+        const userDetails = await fetchUserDetails(user.id as unknown as string)
         form.reset({
           firstName: userDetails.firstName || '',
           lastName: userDetails.lastName || '',
@@ -71,7 +71,7 @@ export default function GeneralSettings({ user }: { user: Partial<User> }) {
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true)
     try {
-      await updateUserDetails(user.id as string, values)
+      await updateUserDetails(user.id as unknown as string, values)
       toast({
         title: 'Success',
         description: 'Your details have been successfully updated.',

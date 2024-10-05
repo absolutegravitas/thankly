@@ -137,20 +137,20 @@ const OrderConfirmationClient: React.FC<OrderConfirmationClientProps> = ({ order
     </Document>
   )
 
-  return (
-    <div>
-      {orderToUse && (
-        <PDFDownloadLink
-          document={<PDFDocument order={orderToUse} />}
-          fileName={`Thankly Tax Invoice Order-${orderToUse.orderNumber}.pdf`}
-        >
-          {({ blob, url, loading, error }) =>
-            loading ? 'Loading document...' : <Button className="mt-4">Download Invoice PDF</Button>
-          }
-        </PDFDownloadLink>
-      )}
-    </div>
-  )
+  // return (
+  //   <div>
+  //     {orderToUse && (
+  //       <PDFDownloadLink
+  //         document={<PDFDocument order={orderToUse} />}
+  //         fileName={`Thankly Tax Invoice Order-${orderToUse.orderNumber}.pdf`}
+  //       >
+  //         {({ blob, url, loading, error }) =>
+  //           loading ? 'Loading document...' : <Button className="mt-4">Download Invoice PDF</Button>
+  //         }
+  //       </PDFDownloadLink>
+  //     )}
+  //   </div>
+  // )
 }
 
 export default OrderConfirmationClient
