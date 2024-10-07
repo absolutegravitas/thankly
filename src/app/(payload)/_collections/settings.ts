@@ -7,7 +7,7 @@ import { adminsOnly } from '../../../utilities/access'
 
 export const Settings: GlobalConfig = {
   slug: 'settings',
-  admin: { group: '9. Common' },
+  admin: { group: 'Global' },
   access: {
     read: () => true,
     update: adminsOnly,
@@ -24,7 +24,7 @@ export const Settings: GlobalConfig = {
         {
           name: 'visible',
           type: 'checkbox',
-          defaultValue: false
+          defaultValue: false,
         },
         contentField(),
       ],

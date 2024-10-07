@@ -11,18 +11,18 @@ export interface Config {
     users: UserAuthOperations;
   };
   collections: {
+    products: Product;
+    reviews: Review;
+    carts: Cart;
+    orders: Order;
+    discountcodes: Discountcode;
     pages: Page;
     reusable: Reusable;
-    orders: Order;
-    products: Product;
-    carts: Cart;
-    reviews: Review;
-    media: Media;
     users: User;
-    tags: Tag;
-    categories: Category;
     sessions: Session;
-    discountcodes: Discountcode;
+    media: Media;
+    categories: Category;
+    tags: Tag;
     forms: Form;
     'form-submissions': FormSubmission;
     'payload-preferences': PayloadPreference;
@@ -48,218 +48,6 @@ export interface UserAuthOperations {
     email: string;
     password: string;
   };
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "pages".
- */
-export interface Page {
-  id: number;
-  title: string;
-  slug?: string | null;
-  layout?: {
-    root: {
-      type: string;
-      children: {
-        type: string;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  meta?: {
-    title?: string | null;
-    description?: string | null;
-    image?: number | Media | null;
-  };
-  updatedAt: string;
-  createdAt: string;
-  _status?: ('draft' | 'published') | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media".
- */
-export interface Media {
-  id: number;
-  alt: string;
-  caption?: {
-    root: {
-      type: string;
-      children: {
-        type: string;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  updatedAt: string;
-  createdAt: string;
-  url?: string | null;
-  thumbnailURL?: string | null;
-  filename?: string | null;
-  mimeType?: string | null;
-  filesize?: number | null;
-  width?: number | null;
-  height?: number | null;
-  focalX?: number | null;
-  focalY?: number | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "reusable".
- */
-export interface Reusable {
-  id: number;
-  title: string;
-  layout?: {
-    root: {
-      type: string;
-      children: {
-        type: string;
-        version: number;
-        [k: string]: unknown;
-      }[];
-      direction: ('ltr' | 'rtl') | null;
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-      indent: number;
-      version: number;
-    };
-    [k: string]: unknown;
-  } | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "orders".
- */
-export interface Order {
-  id: number;
-  orderNumber?: string | null;
-  status: 'pending' | 'processing' | 'completed' | 'cancelled' | 'onhold';
-  discountCodeApplied?: string | null;
-  stripeId?: string | null;
-  totals: {
-    cost: number;
-    shipping?: number | null;
-    discount?: number | null;
-    total: number;
-  };
-  billing?: {
-    orderedBy?: (number | null) | User;
-    firstName?: string | null;
-    lastName?: string | null;
-    email?: string | null;
-    contactNumber?: number | null;
-    orgName?: string | null;
-    orgId?: string | null;
-    address?: {
-      addressLine1?: string | null;
-      addressLine2?: string | null;
-      city?: string | null;
-      state?: string | null;
-      postcode?: string | null;
-    };
-  };
-  items?:
-    | {
-        itemId: string;
-        quantity: number;
-        price: number;
-        product: number | Product;
-        addOns?: (number | Product)[] | null;
-        receiverId?: string | null;
-        giftCard: {
-          message: string;
-          writingStyle: string;
-        };
-        id?: string | null;
-      }[]
-    | null;
-  receivers?:
-    | {
-        receiverId: string;
-        firstName: string;
-        lastName: string;
-        address: {
-          addressLine1: string;
-          addressLine2?: string | null;
-          city: string;
-          state: string;
-          postcode: string;
-        };
-        delivery?: {
-          tracking?: {
-            id?: string | null;
-            link?: string | null;
-          };
-          shippingMethod?: ('standardMail' | 'expressMail' | 'standardParcel' | 'expressParcel') | null;
-          shippingPrice?: number | null;
-        };
-        id?: string | null;
-      }[]
-    | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "users".
- */
-export interface User {
-  id: number;
-  firstName?: string | null;
-  lastName?: string | null;
-  orgName?: string | null;
-  orgId?: string | null;
-  website?: string | null;
-  imageUrl?: string | null;
-  status?: ('active' | 'inactive') | null;
-  type?: ('staff' | 'guest' | 'retail' | 'business' | 'partner')[] | null;
-  roles: ('admin' | 'public' | 'customer')[];
-  stripeId?: string | null;
-  orders?: (number | Order)[] | null;
-  accounts?:
-    | {
-        provider?: string | null;
-        providerAccountId?: string | null;
-        providerSearchString?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  verificationTokens?:
-    | {
-        identifier?: string | null;
-        token?: string | null;
-        expires?: string | null;
-        id?: string | null;
-      }[]
-    | null;
-  emailVerified?: string | null;
-  updatedAt: string;
-  createdAt: string;
-  enableAPIKey?: boolean | null;
-  apiKey?: string | null;
-  apiKeyIndex?: string | null;
-  email: string;
-  resetPasswordToken?: string | null;
-  resetPasswordExpiration?: string | null;
-  salt?: string | null;
-  hash?: string | null;
-  loginAttempts?: number | null;
-  lockUntil?: string | null;
-  password?: string | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -384,6 +172,40 @@ export interface Tag {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media".
+ */
+export interface Media {
+  id: number;
+  alt: string;
+  caption?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "reviews".
  */
 export interface Review {
@@ -472,13 +294,122 @@ export interface Cart {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "sessions".
+ * via the `definition` "users".
  */
-export interface Session {
+export interface User {
   id: number;
-  user: number | User;
-  sessionToken: string;
-  expires?: string | null;
+  firstName?: string | null;
+  lastName?: string | null;
+  orgName?: string | null;
+  orgId?: string | null;
+  website?: string | null;
+  imageUrl?: string | null;
+  status?: ('active' | 'inactive') | null;
+  type?: ('staff' | 'guest' | 'retail' | 'business' | 'partner')[] | null;
+  roles: ('admin' | 'public' | 'customer')[];
+  stripeId?: string | null;
+  orders?: (number | Order)[] | null;
+  accounts?:
+    | {
+        provider?: string | null;
+        providerAccountId?: string | null;
+        providerSearchString?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  verificationTokens?:
+    | {
+        identifier?: string | null;
+        token?: string | null;
+        expires?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  emailVerified?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  enableAPIKey?: boolean | null;
+  apiKey?: string | null;
+  apiKeyIndex?: string | null;
+  email: string;
+  resetPasswordToken?: string | null;
+  resetPasswordExpiration?: string | null;
+  salt?: string | null;
+  hash?: string | null;
+  loginAttempts?: number | null;
+  lockUntil?: string | null;
+  password?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "orders".
+ */
+export interface Order {
+  id: number;
+  orderNumber?: string | null;
+  status: 'pending' | 'processing' | 'completed' | 'cancelled' | 'onhold';
+  discountCodeApplied?: string | null;
+  stripeId?: string | null;
+  totals: {
+    cost: number;
+    shipping?: number | null;
+    discount?: number | null;
+    total: number;
+  };
+  billing?: {
+    orderedBy?: (number | null) | User;
+    firstName?: string | null;
+    lastName?: string | null;
+    email?: string | null;
+    contactNumber?: number | null;
+    orgName?: string | null;
+    orgId?: string | null;
+    address?: {
+      addressLine1?: string | null;
+      addressLine2?: string | null;
+      city?: string | null;
+      state?: string | null;
+      postcode?: string | null;
+    };
+  };
+  items?:
+    | {
+        itemId: string;
+        quantity: number;
+        price: number;
+        product: number | Product;
+        addOns?: (number | Product)[] | null;
+        receiverId?: string | null;
+        giftCard: {
+          message: string;
+          writingStyle: string;
+        };
+        id?: string | null;
+      }[]
+    | null;
+  receivers?:
+    | {
+        receiverId: string;
+        firstName: string;
+        lastName: string;
+        address: {
+          addressLine1: string;
+          addressLine2?: string | null;
+          city: string;
+          state: string;
+          postcode: string;
+        };
+        delivery?: {
+          tracking?: {
+            id?: string | null;
+            link?: string | null;
+          };
+          shippingMethod?: ('standardMail' | 'expressMail' | 'standardParcel' | 'expressParcel') | null;
+          shippingPrice?: number | null;
+        };
+        id?: string | null;
+      }[]
+    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -500,6 +431,75 @@ export interface Discountcode {
     starts?: string | null;
     expires?: string | null;
   };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pages".
+ */
+export interface Page {
+  id: number;
+  title: string;
+  slug?: string | null;
+  layout?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  meta?: {
+    title?: string | null;
+    description?: string | null;
+    image?: number | Media | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "reusable".
+ */
+export interface Reusable {
+  id: number;
+  title: string;
+  layout?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "sessions".
+ */
+export interface Session {
+  id: number;
+  user: number | User;
+  sessionToken: string;
+  expires?: string | null;
   updatedAt: string;
   createdAt: string;
 }

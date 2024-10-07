@@ -40,7 +40,15 @@ export async function upsertPayloadCart(cart: Cart) {
       product: typeof item.product === 'object' ? item.product.id : item.product,
       addOns: item.addOns?.map((addOn) => (typeof addOn === 'object' ? addOn.id : addOn)),
     })),
+    billing: cart.billing
+      ? {
+          ...cart.billing,
+          orderedBy: cart.billing.orderedBy ? Number(cart.billing.orderedBy) : undefined,
+        }
+      : undefined,
   }
+
+  console.log('Transformed cart:', JSON.stringify(transformedCart, null, 2))
 
   try {
     let { docs } = await payload.find({

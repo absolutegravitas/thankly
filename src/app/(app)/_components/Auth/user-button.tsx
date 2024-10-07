@@ -13,7 +13,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { CMSLink } from '../CMSLink'
 import { LogInIcon } from 'lucide-react'
-
+import * as React from 'react'
 export default function UserButton() {
   //fetch session data
   const { status, data: session } = useSession()

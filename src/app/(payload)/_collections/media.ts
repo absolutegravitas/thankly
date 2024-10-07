@@ -10,7 +10,7 @@ const dirname = path.dirname(filename)
 
 export const Media: CollectionConfig = {
   slug: 'media',
-  admin: { group: '9. Common' },
+  admin: { group: 'Global' },
   upload: { staticDir: path.resolve(dirname, '../../media') },
 
   access: {

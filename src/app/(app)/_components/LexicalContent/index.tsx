@@ -222,7 +222,7 @@ const LexicalContent: React.FC<{
 
   const renderedChildren = childrenNodes.map((node, ix) => {
     if (!node) return null
-    const attributes = getNodeClassNames(node || '')
+    const attributes = getNodeClassNames(node)
     if (node.type === 'text') {
       return (
         <TextComponent key={ix} format={node.format}>

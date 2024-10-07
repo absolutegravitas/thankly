@@ -4,23 +4,30 @@ import { getPayloadHMR } from '@payloadcms/next/utilities'
 import configPromise from '@payload-config'
 import { Cart, User } from '@/payload-types'
 
-export async function createOrder(cart: Cart, orderNumber: string, paymentIntentId: string) {
+export async function createOrder(cart: Cart, orderNumber: string, paymentIntentId?: string) {
   const config = await configPromise
   let payload: any = await getPayloadHMR({ config })
   let order: Order | null = null
+
+  console.log('cart to turn into order -- ', cart)
 
   const orderData = {
     orderNumber,
     status: 'pending' as const,
     discountCodeApplied: cart.discountCodeApplied,
-    stripeId: null, // You might want to generate this if needed
+    stripeId: null,
     totals: {
       cost: cart.totals.cost,
       shipping: cart.totals.shipping || null,
       discount: cart.totals.discount || null,
       total: cart.totals.total,
     },
-    billing: cart.billing,
+    billing: cart.billing
+      ? {
+          ...cart.billing,
+          orderedBy: cart.billing.orderedBy ? Number(cart.billing.orderedBy) : null,
+        }
+      : undefined,
     items: cart.items?.map((item) => ({
       itemId: item.itemId,
       quantity: item.quantity,

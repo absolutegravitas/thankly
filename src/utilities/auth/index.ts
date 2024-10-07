@@ -1,4 +1,3 @@
-
 // import NextAuth from 'next-auth'
 // import { getPayloadHMR } from '@payloadcms/next/utilities'
 // import configPromise from '@payload-config'
@@ -9,13 +8,11 @@
 // import Facebook from 'next-auth/providers/facebook'
 // // import Resend from "next-auth/providers/resend"
 
-
-
 // async function getPayload() {
 //   const config = await configPromise
 //   const payload: any = await getPayloadHMR({ config })
 //   return payload
-// } 
+// }
 
 // export const handlers = NextAuth({
 //   adapter: PayloadAdapter(getPayload()),
@@ -63,5 +60,3 @@
 //   //   strategy: 'jwt',
 //   // },
 // })
-
-

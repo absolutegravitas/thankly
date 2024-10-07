@@ -39,6 +39,7 @@ import { Menu, Setting } from '@payload-types'
 import FetchGlobal from '@/utilities/PayloadQueries/fetchGlobal'
 import { MainMenuHeader } from '@app/_components/MainMenuHeader'
 import BannerBlock, { BannerBlockProps } from '../_blocks/Banner'
+import { Toaster } from '@app/_components/ui/toaster'
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const settings: Setting = await FetchGlobal({ slug: 'settings', depth: 1 })
@@ -82,6 +83,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               </div>
 
               <main className="flex-grow mt-[var(--header-height,0px)] z-0">{children}</main>
+              <Toaster />
 
               {settings?.footer && <Footer {...settings?.footer} />}
             </div>

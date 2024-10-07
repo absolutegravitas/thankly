@@ -1,18 +1,18 @@
-import { Review } from "@/payload-types";
-import { adminsOnly, publishedOnly } from "@/utilities/access";
-import { CollectionAfterChangeHook, CollectionConfig } from "payload";
+import { Review } from '@/payload-types'
+import { adminsOnly, publishedOnly } from '@/utilities/access'
+import { CollectionAfterChangeHook, CollectionConfig } from 'payload'
 
 export const Reviews: CollectionConfig = {
   slug: 'reviews',
   admin: {
     useAsTitle: 'title',
-    group: '3. Marketing'
+    group: 'Commerce',
   },
   access: {
     create: adminsOnly,
     read: publishedOnly,
     update: adminsOnly,
-    delete: adminsOnly
+    delete: adminsOnly,
   },
   fields: [
     {
@@ -20,7 +20,7 @@ export const Reviews: CollectionConfig = {
       fields: [
         {
           name: 'title',
-          type: 'text'
+          type: 'text',
         },
         {
           name: 'starRating',
@@ -59,19 +59,16 @@ export const Reviews: CollectionConfig = {
             },
           },
         },
-      ]
+      ],
     },
     {
       name: 'body',
-      type: 'textarea'
+      type: 'textarea',
     },
     {
       name: 'reviewer',
       type: 'group',
-      fields: [
-        { name:'name', type:'text'},
-      ]
+      fields: [{ name: 'name', type: 'text' }],
     },
-
-  ]
+  ],
 }

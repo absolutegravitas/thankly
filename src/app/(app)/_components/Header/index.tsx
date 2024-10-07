@@ -1,7 +1,7 @@
 'use client'
 import * as React from 'react'
 import { useScrollInfo } from '@faceless-ui/scroll-info'
-import { TopBar } from '@app/_components/TopBar'
+// import { TopBar } from '@app/_components/TopBar'
 import { useHeaderObserver } from '@app/_providers/HeaderIntersectionObserver'
 import { DesktopNav } from './DesktopNav'
 import { MobileNav } from './MobileNav'

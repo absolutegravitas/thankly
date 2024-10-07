@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Order, Product } from '@/payload-types'
 import { format } from 'date-fns'
 import { Card, CardContent, CardHeader, CardTitle } from '@app/_components/ui/card'
@@ -12,8 +12,11 @@ import {
   TableHeader,
   TableRow,
 } from '@app/_components/ui/table'
+import { useCart } from '../../_providers/Cart'
 
 export default function OrderDetails({ order }: { order: Order }) {
+  const { clearCart } = useCart()
+
   if (!order) {
     return (
       <Card>
@@ -21,6 +24,10 @@ export default function OrderDetails({ order }: { order: Order }) {
       </Card>
     )
   }
+
+  useEffect(() => {
+    clearCart()
+  }, [])
 
   const formatCurrency = (amount: number | undefined) =>
     amount !== undefined

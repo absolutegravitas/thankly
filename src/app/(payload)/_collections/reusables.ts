@@ -15,7 +15,7 @@ import { adminsOnly } from '@/utilities/access'
  */
 export const Reusable: CollectionConfig = {
   slug: 'reusable',
-  admin: { useAsTitle: 'title', group: '1. Website' },
+  admin: { useAsTitle: 'title', group: 'Site' },
   access: {
     create: adminsOnly, // @payloadHook Access control hook for create operation
     read: () => true, // Allow read access for everyone

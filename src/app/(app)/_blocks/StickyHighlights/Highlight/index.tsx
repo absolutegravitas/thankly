@@ -75,7 +75,6 @@ export const StickyHighlightComponent: React.FC<Props> = ({
         resizeObserver = new ResizeObserver((entries) => {
           entries.forEach((entry) => {
             setCenterCodeMedia(
-              // @ts-expect-error
               entry.contentRect.height > (codeMediaInnerRef?.current?.clientHeight || 0),
             )
           })
