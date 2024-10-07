@@ -6,6 +6,7 @@ import { ExtractBlockProps } from '@/utilities/extractBlockProps'
 import { Media, Product } from '@/payload-types'
 import { fetchProductsByCategory } from '@/utilities/PayloadQueries/fetchProductsByCategory'
 import { useRouter } from 'next/navigation'
+import ShopProductCard from '../../_components/Shop/ShopProductCard.tsx'
 
 export type ProductShowcaseProps = ExtractBlockProps<'productShowcase'>
 
@@ -24,7 +25,7 @@ interface CollectionItem {
   }
 }
 
-const CARD_WIDTH = 256 // Fixed width for each product card in pixels
+const CARD_WIDTH = 350 // Fixed width for each product card in pixels
 
 export default function ProductShowcase({ collections }: ProductShowcaseProps) {
   const router = useRouter()
@@ -137,48 +138,9 @@ export default function ProductShowcase({ collections }: ProductShowcaseProps) {
         >
           {products.map((product, index) => (
             <div key={index} className="flex-shrink-0" style={{ width: `${CARD_WIDTH}px` }}>
-              {/* <ShopProductCard product={product} /> */}
-              <a href={`/shop/${product.slug}`} className="block p-4">
-                <div className="border rounded-lg p-4">
-                  {product.media !== null &&
-                  product.media !== undefined &&
-                  product.media.length > 0 &&
-                  product.media[0].mediaItem ? (
-                    <img
-                      src={(product.media[0].mediaItem as Media).url ?? undefined}
-                      alt={(product.media[0].mediaItem as Media).alt ?? undefined}
-                      className="aspect-square h-full w-full object-cover object-center group-hover:opacity-75"
-                    />
-                  ) : (
-                    <img
-                      src={`https://placehold.co/600x600?text=No\nImage`}
-                      alt={''}
-                      className="aspect-square h-full w-full object-cover object-center group-hover:opacity-75"
-                    />
-                  )}
-                  <h3 className="font-semibold mb-2">{product.title}</h3>
-                  {product.starRating !== null && (
-                    <div className="flex">
-                      {product.starRating !== undefined && product.starRating > 0 ? (
-                        <>
-                          {[...Array(5)].map((_, i) => (
-                            <Star
-                              key={i}
-                              className={`h-5 w-5 ${
-                                i < (product.starRating as number)
-                                  ? 'text-green-600 fill-current'
-                                  : 'text-gray-300'
-                              }`}
-                            />
-                          ))}
-                        </>
-                      ) : (
-                        <div className="h-5 w-5" />
-                      )}
-                    </div>
-                  )}
-                </div>
-              </a>
+              <div className="block p-4">
+                <ShopProductCard key={product.id} product={product} />
+              </div>
             </div>
           ))}
         </div>
