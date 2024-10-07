@@ -2,8 +2,10 @@ import { useState, useRef, useEffect } from 'react'
 import { Button } from '@app/_components/ui/button'
 import { ChevronLeft, ChevronRight, Star } from 'lucide-react'
 import { ExtractBlockProps } from '@/utilities/extractBlockProps'
-import { Product } from '@/payload-types'
+import { Media, Product } from '@/payload-types'
 import { fetchProductsByCategory } from '@/utilities/PayloadQueries/fetchProductsByCategory'
+import Image from 'next/image'
+import { getImageUrl } from '@/utilities/getImageDetails'
 // import { getPayloadHMR } from '@payloadcms/next/utilities'
 // import configPromise from '@payload-config'
 // import ShopProductCard from '../../_components/Shop/ShopProductCard.tsx'
@@ -24,15 +26,6 @@ interface CollectionItem {
     id: number
   }
 }
-
-const products = [
-  { name: 'The Celebration', rating: 4 },
-  { name: 'The Congratulations', rating: 4 },
-  { name: 'The Sip & Savour', rating: 4 },
-  { name: 'The Sweet Recovery', rating: 4 },
-  { name: 'The Gourmet Delight', rating: 5 },
-  { name: 'The Comfort Package', rating: 4 },
-]
 
 const CARD_WIDTH = 256 // Fixed width for each product card in pixels
 
@@ -57,6 +50,7 @@ export default function ProductShowcase({ collections }: ProductShowcaseProps) {
       try {
         const fetchedProducts = await fetchProductsByCategory(activeTab.categoryId)
         setProducts(fetchedProducts)
+        console.log('PRODUCTS:', products)
       } catch (error) {
         console.error('Error fetching products:', error)
       }
@@ -146,22 +140,47 @@ export default function ProductShowcase({ collections }: ProductShowcaseProps) {
           {products.map((product, index) => (
             <div key={index} className="flex-shrink-0" style={{ width: `${CARD_WIDTH}px` }}>
               {/* <ShopProductCard product={product} /> */}
-              <div className="p-4">
+              <a href={`/shop/${product.slug}`} className="block p-4">
                 <div className="border rounded-lg p-4">
-                  <div className="bg-gray-200 w-full h-56 mb-4 rounded-md"></div>
-                  <h3 className="font-semibold mb-2">{product.name}</h3>
-                  <div className="flex">
-                    {[...Array(5)].map((_, i) => (
-                      <Star
-                        key={i}
-                        className={`h-5 w-5 ${
-                          i < product.rating ? 'text-green-600 fill-current' : 'text-gray-300'
-                        }`}
-                      />
-                    ))}
-                  </div>
+                  {product.media !== null &&
+                  product.media !== undefined &&
+                  product.media.length > 0 &&
+                  product.media[0].mediaItem ? (
+                    <img
+                      src={(product.media[0].mediaItem as Media).url ?? undefined}
+                      alt={(product.media[0].mediaItem as Media).alt ?? undefined}
+                      className="aspect-square h-full w-full object-cover object-center group-hover:opacity-75"
+                    />
+                  ) : (
+                    <img
+                      src={`https://placehold.co/600x600?text=No\nImage`}
+                      alt={''}
+                      className="aspect-square h-full w-full object-cover object-center group-hover:opacity-75"
+                    />
+                  )}
+                  <h3 className="font-semibold mb-2">{product.title}</h3>
+                  {product.starRating !== null && (
+                    <div className="flex">
+                      {product.starRating !== undefined && product.starRating > 0 ? (
+                        <>
+                          {[...Array(5)].map((_, i) => (
+                            <Star
+                              key={i}
+                              className={`h-5 w-5 ${
+                                i < (product.starRating as number)
+                                  ? 'text-green-600 fill-current'
+                                  : 'text-gray-300'
+                              }`}
+                            />
+                          ))}
+                        </>
+                      ) : (
+                        <div className="h-5 w-5" />
+                      )}
+                    </div>
+                  )}
                 </div>
-              </div>
+              </a>
             </div>
           ))}
         </div>
@@ -184,29 +203,3 @@ export default function ProductShowcase({ collections }: ProductShowcaseProps) {
     </div>
   )
 }
-
-// const fetchProductsList = async (categoryId: number): Promise<Product[]> => {
-//   const config = await configPromise
-//   const payload: any = await getPayloadHMR({ config })
-
-//   const query: any = {
-//     collection: 'products',
-//     depth: 1,
-//     limit: 100, // Adjust this limit as needed
-//     where: {
-//       and: [
-//         { _status: { equals: 'published' } },
-//         { productType: { not_equals: 'addOn' } },
-//         { 'categories.id': { equals: categoryId } },
-//       ],
-//     },
-//   }
-
-//   try {
-//     const productsResult = await payload.find(query)
-//     return productsResult.docs
-//   } catch (error) {
-//     console.error('Error fetching products:', error)
-//     throw error
-//   }
-// }
