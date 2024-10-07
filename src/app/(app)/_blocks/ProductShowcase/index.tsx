@@ -1,14 +1,11 @@
+'use client'
 import { useState, useRef, useEffect } from 'react'
 import { Button } from '@app/_components/ui/button'
 import { ChevronLeft, ChevronRight, Star } from 'lucide-react'
 import { ExtractBlockProps } from '@/utilities/extractBlockProps'
 import { Media, Product } from '@/payload-types'
 import { fetchProductsByCategory } from '@/utilities/PayloadQueries/fetchProductsByCategory'
-import Image from 'next/image'
-import { getImageUrl } from '@/utilities/getImageDetails'
-// import { getPayloadHMR } from '@payloadcms/next/utilities'
-// import configPromise from '@payload-config'
-// import ShopProductCard from '../../_components/Shop/ShopProductCard.tsx'
+import { useRouter } from 'next/navigation'
 
 export type ProductShowcaseProps = ExtractBlockProps<'productShowcase'>
 
@@ -30,6 +27,7 @@ interface CollectionItem {
 const CARD_WIDTH = 256 // Fixed width for each product card in pixels
 
 export default function ProductShowcase({ collections }: ProductShowcaseProps) {
+  const router = useRouter()
   const productCollections: ProductCollection[] = collections.map(
     (item: CollectionItem, index: number) => ({
       id: index,
@@ -196,7 +194,11 @@ export default function ProductShowcase({ collections }: ProductShowcaseProps) {
       </div>
 
       <div className="flex justify-center mt-8">
-        <Button variant="default" className="bg-black text-white hover:bg-gray-800">
+        <Button
+          variant="default"
+          className="bg-black text-white hover:bg-gray-800"
+          onClick={() => router.push('/shop')}
+        >
           SHOP ALL
         </Button>
       </div>
