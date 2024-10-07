@@ -1,6 +1,6 @@
 'use client'
 import { Media, Product, Tag } from '@/payload-types'
-import React from 'react'
+import React, { SVGProps } from 'react'
 import StarRating from '@app/_components/StarRating'
 import { Button } from '@app/_components/ui/button'
 import { ShoppingCart } from 'lucide-react'
@@ -57,10 +57,10 @@ const ShopProductCard = ({ product, showTags = true }: Props) => {
         <div className="flex items-center mt-1 min-h-5">
           <StarRating rating={product.starRating} />
         </div>
-        <div className="flex justify-between items-center mt-4">
-          <span className="font-bold">${product.prices.basePrice}</span>
-          <Button size="icon" onClick={addToCart}>
-            <ShoppingCart className="h-4 w-4" />
+        <div className="flex justify-between items-center mt-4 bg-white">
+          <span className="font-bold text-black">${product.prices.basePrice}</span>
+          <Button size="icon" onClick={addToCart} className="bg-white text-black">
+            <FastAddToCartIcon className="h-5 w-5 text-black" />
             <span className="sr-only">Add to cart</span>
           </Button>
         </div>
@@ -70,3 +70,30 @@ const ShopProductCard = ({ product, showTags = true }: Props) => {
 }
 
 export default ShopProductCard
+
+interface FastAddToCartIconProps extends SVGProps<SVGSVGElement> {
+  size?: number
+}
+
+function FastAddToCartIcon({ size = 24, ...props }: FastAddToCartIconProps) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="currentColor"
+      {...props}
+    >
+      {/* Shopping Cart */}
+      <path d="M1 2h3l1 13h15V5H5" stroke="currentColor" strokeWidth="2" fill="none" />
+
+      {/* Cart Wheels */}
+      <circle cx="7" cy="21" r="1" stroke="currentColor" strokeWidth="2" fill="none" />
+      <circle cx="17" cy="21" r="1" stroke="currentColor" strokeWidth="2" fill="none" />
+
+      {/* Fast Forward Symbols (adjusted position: 1px higher and 1px to the right) */}
+      <path d="M9 6l4 4-4 4V6zM13 6l4 4-4 4V6z" />
+    </svg>
+  )
+}
