@@ -21,15 +21,12 @@ export async function deletePayloadCart(cart: Cart) {
   const config = await configPromise // Await the Payload CMS configuration object
   let payload: any = await getPayloadHMR({ config }) // Get the Payload CMS instance with HMR support
 
-  console.log('cart to delete -- ', JSON.stringify(cart)) // Log the cart object being deleted
-
   try {
     let { docs } = await payload.delete({
       // Call the delete method on the Payload CMS instance
       collection: 'carts', // The collection to delete from
       where: { cartNumber: { equals: cart.cartNumber } },
     })
-    console.log('cart deleted -- ', JSON.stringify(docs[0]))
   } catch (error) {
     console.error('Error upserting cart:', error) // Log any errors that occur during the delete operation
     throw new Error('Failed to delete cart') // Throw an error for higher-level error handling

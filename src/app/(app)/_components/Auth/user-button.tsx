@@ -18,8 +18,6 @@ export default function UserButton() {
   //fetch session data
   const { status, data: session } = useSession()
 
-  console.log('session:', session)
-
   //check if image available
   const hasProfileImage = session?.user.image !== null && session?.user.image.length > 0
 
