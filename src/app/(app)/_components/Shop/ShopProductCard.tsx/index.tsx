@@ -7,9 +7,10 @@ import Link from 'next/link'
 
 interface Props {
   product: Product
+  showTags?: boolean
 }
 
-const ShopProductCard = ({ product }: Props) => {
+const ShopProductCard = ({ product, showTags = true }: Props) => {
   return (
     <Link href={`/shop/${product.slug}`} className="block">
       <div className="border rounded-lg p-4 flex flex-col">
@@ -28,14 +29,15 @@ const ShopProductCard = ({ product }: Props) => {
             </div>
           )}
           <div className="absolute top-2 left-2 flex flex-wrap">
-            {product.displayTags?.map((item, index) => (
-              <span
-                key={index}
-                className="bg-green-100 text-green-800 text-xs font-semibold mr-2 mb-2 px-2.5 py-0.5 rounded"
-              >
-                {(item as Tag).title}
-              </span>
-            ))}
+            {showTags &&
+              product.displayTags?.map((item, index) => (
+                <span
+                  key={index}
+                  className="bg-green-100 text-green-800 text-xs font-semibold mr-2 mb-2 px-2.5 py-0.5 rounded"
+                >
+                  {(item as Tag).title}
+                </span>
+              ))}
           </div>
         </div>
         <h3 className="font-semibold mt-2">{product.title}</h3>

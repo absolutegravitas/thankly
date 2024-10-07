@@ -139,7 +139,7 @@ export default function ProductShowcase({ collections }: ProductShowcaseProps) {
           {products.map((product, index) => (
             <div key={index} className="flex-shrink-0" style={{ width: `${CARD_WIDTH}px` }}>
               <div className="block p-4">
-                <ShopProductCard key={product.id} product={product} />
+                <ShopProductCard key={product.id} product={product} showTags={false} />
               </div>
             </div>
           ))}
