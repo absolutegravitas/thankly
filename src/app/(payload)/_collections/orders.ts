@@ -1,8 +1,7 @@
 import type { CollectionConfig } from 'payload'
 import { adminsAndUserOnly, adminsOnly } from '@/utilities/access'
-
-let lastTimestamp = 0
-let counter = 1
+import { sendShippedEmail } from '@cms/_hooks/sendShippedEmail'
+import { Order } from '@/payload-types'
 
 export const Orders: CollectionConfig = {
   slug: 'orders',
@@ -12,7 +11,29 @@ export const Orders: CollectionConfig = {
     group: 'Commerce',
   },
   hooks: {
-    beforeChange: [],
+    beforeChange: [
+      async ({ req, data, originalDoc }) => {
+        if (data.status === 'shipped' && originalDoc.status !== 'shipped') {
+          req.payload.logger.info(
+            `Order ${data.orderNumber} status changed to shipped. Scheduling email.`,
+          )
+
+          console.log('data -- ', data)
+
+          setTimeout(async () => {
+            try {
+              await sendShippedEmail(data as Order)
+            } catch (error) {
+              req.payload.logger.error(
+                `Error in email sending process for order ${data.orderNumber}:`,
+                error,
+              )
+            }
+          }, 0)
+        }
+        return data
+      },
+    ],
     afterChange: [],
   },
 
@@ -43,10 +64,10 @@ export const Orders: CollectionConfig = {
           required: true,
           options: [
             { label: 'Pending', value: 'pending' }, // draft, created upon checkout
-            { label: 'Processing', value: 'processing' }, // paid, waiting to be fulfilled
-            { label: 'Completed', value: 'completed' }, // paid, fulfilled/shipped
-            { label: 'Cancelled', value: 'cancelled' }, // not paid, refunded, cancelled by user
-            { label: 'On Hold', value: 'onhold' },
+            { label: 'Shipped', value: 'shipped' }, // shipped
+            { label: 'Delivered', value: 'delivered' }, // delivered
+            { label: 'Cancelled', value: 'cancelled' }, // not paid, refunded, cancelled by user or admin
+            { label: 'On Hold', value: 'onhold' }, // on hold, awaiting payment
           ],
         },
         {

@@ -106,12 +106,9 @@ async function handlePaymentIntentSucceeded(paymentIntent: Stripe.PaymentIntent)
       console.log(`New order ${order?.id} created from payment intent ${paymentIntent.id}`)
 
       // // TODO: delete cart on payloadCMS as it's no longer valid
-      // await payload.delete({
-      //   collection: 'carts',
-      //   id: cart.id,
-      // })
 
       // send confirmation email to customer
+      console.log('order -- ', order)
       await sendConfirmationEmail(order)
 
       // generate sendle labels for each receiver in the order
