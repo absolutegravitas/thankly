@@ -49,7 +49,6 @@ export default function ProductShowcase({ collections }: ProductShowcaseProps) {
       try {
         const fetchedProducts = await fetchProductsByCategory(activeTab.categoryId)
         setProducts(fetchedProducts)
-        console.log('PRODUCTS:', products)
       } catch (error) {
         console.error('Error fetching products:', error)
       }
