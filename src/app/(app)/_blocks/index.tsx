@@ -32,6 +32,7 @@ const MediaBlock = dynamic(() => import('./MediaBlock'))
 const MediaContent = dynamic(() => import('./MediaContent'))
 const MediaContentAccordion = dynamic(() => import('./MediaContentAccordion'))
 const Pricing = dynamic(() => import('./Pricing'))
+const ProductShowcase = dynamic(() => import('./ProductShowcase'))
 const Reusable = dynamic(() => import('./Reusable'))
 const RichText = dynamic(() => import('./RichText'))
 const Slider = dynamic(() => import('./Slider'))
@@ -64,6 +65,7 @@ const blockComponents = {
   mediaBlock: MediaBlock,
   mediaContent: MediaContent,
   mediaContentAccordion: MediaContentAccordion,
+  productShowcase: ProductShowcase,
   reuse: Reusable,
   RichText: RichText,
   slider: Slider,

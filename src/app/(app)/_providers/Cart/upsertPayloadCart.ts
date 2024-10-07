@@ -62,7 +62,6 @@ export async function upsertPayloadCart(cart: Cart) {
 
     // no server cart found, create the server cart
     if (!docs || docs.length === 0) {
-      console.log('no serverCart found, so create a new one')
 
       serverCart = await payload.create({
         collection: 'carts',

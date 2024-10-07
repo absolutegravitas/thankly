@@ -124,9 +124,6 @@ const fetchProductsList = async ({
     })
   }
 
-  console.log('FILTERS =====', JSON.stringify(filters, null, 2))
-  console.log('QUERY =====', JSON.stringify(query, null, 2))
-
   // Set sorting option
   switch (sort) {
     case 'name_asc':

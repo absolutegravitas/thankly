@@ -127,7 +127,8 @@ const ProductBlockContent: React.FC<ProductBlockContentProps> = ({
     }
   }
 
-  const currentMediaItem = product.media?.[currentSlide].mediaItem
+  const currentMediaItem =
+    product.media && product.media.length > 0 ? product.media?.[currentSlide].mediaItem : undefined
 
   const isProduct = (item: unknown): item is Product => {
     return (item as Product).id !== undefined

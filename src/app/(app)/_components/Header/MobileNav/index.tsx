@@ -17,7 +17,6 @@ export const MobileNav: React.FC<{ tabs: any[] }> = ({ tabs }) => {
   }
 
   const handleLinkClick = () => {
-    console.log('Link clicked')
     setSidebarOpen(false)
   }
 
