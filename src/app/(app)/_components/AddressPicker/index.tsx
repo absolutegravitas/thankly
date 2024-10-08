@@ -180,7 +180,7 @@ export default function AddressPicker({
     <div className="w-full max-w-md">
       <div className="grid gap-2">
         <label htmlFor="delivery-address" className="font-semibold text-sm dark:text-slate-400">
-          To
+          Deliver to
         </label>
         <div className="relative">
           <DropdownMenu>

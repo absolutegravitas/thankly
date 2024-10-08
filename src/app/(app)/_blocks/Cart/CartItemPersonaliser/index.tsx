@@ -110,7 +110,7 @@ const CartItemPersonaliser = ({ cartItem, index }: Props) => {
             <Label htmlFor="message">Message</Label>
             <DebouncedTextarea
               id="message"
-              placeholder="Write your personalised message"
+              placeholder="Write your personalised message. Maximum 400 characters."
               className="min-h-[145px] w-full"
               value={cartItem.giftCard.message}
               onValueChange={handleMessageChange} //debounced
@@ -125,7 +125,7 @@ const CartItemPersonaliser = ({ cartItem, index }: Props) => {
           </div>
           <div className="grid gap-4 sm:flex sm:items-center sm:justify-between">
             <div className="grid gap-2 sm:flex sm:items-center sm:gap-2">
-              <Label>Writing Style</Label>
+              <Label>Writing style</Label>
               <Select
                 defaultValue="regular"
                 onValueChange={handleWritingStyleChange}
