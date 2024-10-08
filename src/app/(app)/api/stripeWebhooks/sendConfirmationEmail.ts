@@ -19,7 +19,7 @@ export async function sendConfirmationEmail(order: Order) {
     const recipientLastName = order.billing?.lastName || null
 
     // Initialize an array of email recipients with the hardcoded development emails
-    const toEmails: string[] = ['code@prasit.co', 'alexanderbowes@gmail.com']
+    let toEmails: string[]
 
     // If the recipient's email is available, add it to the recipients array
     if (recipientEmail) {

@@ -347,7 +347,7 @@ export interface User {
 export interface Order {
   id: number;
   orderNumber?: string | null;
-  status: 'pending' | 'processing' | 'completed' | 'cancelled' | 'onhold';
+  status: 'pending' | 'shipped' | 'delivered' | 'cancelled' | 'onhold';
   discountCodeApplied?: string | null;
   stripeId?: string | null;
   totals: {
