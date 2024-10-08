@@ -31,7 +31,7 @@ export const BannerBlock: React.FC<{
           <Button
             variant="ghost"
             size="icon"
-            className="text-white hover:bg-thankly-lightgreen focus:bg-thankly-lightgreen"
+            className="text-white hover:bg-transparent focus:bg-thankly-lightgreen"
             onClick={handleClose}
           >
             <XIcon className="h-5 w-5" />

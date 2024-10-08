@@ -68,7 +68,7 @@ export const MainMenuHeader: React.FC<any> = ({ menu }: any) => {
             )
           })}
         </nav>
-        <div className="flex items-center ml-12">
+        <div className="flex items-center ml-12 h-4">
           <Link
             href="#"
             className="text-muted-foreground transition-colors hover:text-foreground mr-2"

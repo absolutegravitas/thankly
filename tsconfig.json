@@ -40,6 +40,6 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "src/utilities/commentCode.js"
-  ],
+, "src/app/(app)/_components/Shop/ShopProductCard"  ],
   "exclude": ["node_modules"]
 }

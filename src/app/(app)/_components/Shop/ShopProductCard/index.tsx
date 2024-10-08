@@ -15,13 +15,14 @@ interface Props {
 
 const ShopProductCard = ({ product, showTags = true }: Props) => {
   const router = useRouter()
-  const { addCartItem } = useCart()
+  const { addCartItem, openSideCart } = useCart()
 
   const addToCart = (e: React.MouseEvent) => {
     e.preventDefault() // Prevent the link from being followed
     e.stopPropagation() // Prevent click from bubbling up to the link
     addCartItem(product, 1) // Assumes quantity = 1
-    router.push('/cart')
+    // router.push('/cart')
+    openSideCart()
   }
 
   return (
