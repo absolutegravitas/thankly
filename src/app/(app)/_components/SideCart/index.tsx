@@ -99,7 +99,7 @@ export default function SideCart() {
                                   (r) => r.receiverId === item.receiverId,
                                 )
                                 return receiver ? (
-                                  <p className="text-xs ">
+                                  <p className="text-xs pt-2">
                                     Deliver to: {receiver.firstName} {receiver.lastName}
                                   </p>
                                 ) : null

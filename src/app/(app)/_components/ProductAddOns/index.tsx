@@ -3,7 +3,7 @@ import React from 'react'
 
 interface Props {
   addOns?: (number | Product)[] | null
-  smallFont: boolean
+  smallFont?: boolean
 }
 
 const ProductAddOns = ({ addOns, smallFont = false }: Props) => {
