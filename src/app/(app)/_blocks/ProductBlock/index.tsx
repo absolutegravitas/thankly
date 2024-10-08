@@ -58,7 +58,7 @@ const ProductBlockContent: React.FC<ProductBlockContentProps> = ({
 
   const isMobile = useMediaQuery({ maxWidth: 639 })
   // Hook to access cart-related state and functions
-  const { isProductInCart, cart, addCartItem } = useCart()
+  const { isProductInCart, cart, addCartItem, openSideCart } = useCart()
 
   // State to track if the product is in the cart
   const [inCart, setInCart] = useState<boolean>(isProductInCart(product.id))
@@ -145,7 +145,8 @@ const ProductBlockContent: React.FC<ProductBlockContentProps> = ({
       quantity,
       selectedAddOnProducts.length > 0 ? selectedAddOnProducts : undefined,
     )
-    router.push('/cart')
+    // router.push('/cart')
+    openSideCart()
   }
 
   return (

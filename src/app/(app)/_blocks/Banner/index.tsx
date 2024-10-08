@@ -24,14 +24,14 @@ export const BannerBlock: React.FC<{
   }
 
   return (
-    <div className="w-full bg-thankly-green text-white py-1 pl-6 pr-12 flex items-center justify-center">
+    <div className="w-full bg-thankly-green text-white py-3 pl-6 pr-12 flex items-center justify-center">
       <div className="text-center">{content && <RichText content={content} />}</div>
       {addCheckmark && (
         <div className="absolute right-4">
           <Button
             variant="ghost"
             size="icon"
-            className="text-white hover:bg-thankly-lightgreen focus:bg-thankly-lightgreen"
+            className="text-white hover:bg-transparent focus:bg-thankly-lightgreen"
             onClick={handleClose}
           >
             <XIcon className="h-5 w-5" />

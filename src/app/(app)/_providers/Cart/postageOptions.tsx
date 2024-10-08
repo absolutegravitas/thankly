@@ -51,7 +51,7 @@ export const mailPostageOptions: PostageOption[] = [
     id: 'expressMail',
     name: 'Express Mail',
     description: 'Estimated delivery in 1-3 business days',
-    price: 9,
+    price: 8,
   },
 ]
 

@@ -6,7 +6,7 @@ import { ExtractBlockProps } from '@/utilities/extractBlockProps'
 import { Media, Product } from '@/payload-types'
 import { fetchProductsByCategory } from '@/utilities/PayloadQueries/fetchProductsByCategory'
 import { useRouter } from 'next/navigation'
-import ShopProductCard from '../../_components/Shop/ShopProductCard.tsx'
+import ShopProductCard from '../../_components/Shop/ShopProductCard'
 
 export type ProductShowcaseProps = ExtractBlockProps<'productShowcase'>
 

@@ -3,7 +3,6 @@ import { Media, Product, Tag } from '@/payload-types'
 import React, { SVGProps } from 'react'
 import StarRating from '@app/_components/StarRating'
 import { Button } from '@app/_components/ui/button'
-import { ShoppingCart } from 'lucide-react'
 import Link from 'next/link'
 import { useCart } from '@/app/(app)/_providers/Cart'
 import { useRouter } from 'next/navigation'
@@ -15,13 +14,14 @@ interface Props {
 
 const ShopProductCard = ({ product, showTags = true }: Props) => {
   const router = useRouter()
-  const { addCartItem } = useCart()
+  const { addCartItem, openSideCart } = useCart()
 
   const addToCart = (e: React.MouseEvent) => {
     e.preventDefault() // Prevent the link from being followed
     e.stopPropagation() // Prevent click from bubbling up to the link
     addCartItem(product, 1) // Assumes quantity = 1
-    router.push('/cart')
+    // router.push('/cart')
+    openSideCart()
   }
 
   return (
