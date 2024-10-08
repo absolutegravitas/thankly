@@ -7,6 +7,7 @@ import { Button } from '../ui/button'
 import { useCart } from '../../_providers/Cart'
 import ProductThumbnail from '../../_blocks/Cart/ProductThumbnail'
 import { Product } from '@/payload-types'
+import { useRouter } from 'next/navigation'
 
 // interface CartItem {
 //   id: number
@@ -21,6 +22,12 @@ import { Product } from '@/payload-types'
 export default function SideCart() {
   const { isSideCartOpen, openSideCart, closeSideCart, cart, updateQuantity, removeCartItem } =
     useCart()
+  const router = useRouter()
+
+  const checkout = () => {
+    closeSideCart()
+    router.push('/cart')
+  }
 
   return (
     <>
@@ -58,70 +65,62 @@ export default function SideCart() {
                 transition={{ type: 'spring', stiffness: 300, damping: 30 }}
                 className="fixed top-0 right-0 h-full w-full sm:w-96 bg-white z-50 overflow-y-auto"
               >
-                <div className="p-4">
-                  <div className="flex justify-between items-center mb-4">
+                <div className="p-8">
+                  <div className="flex justify-between items-center mb-8">
                     <h2 className="text-2xl font-bold text-black">Your Gifts.</h2>
                     <button onClick={closeSideCart} className="text-gray-500 hover:text-gray-700">
                       <X size={24} />
                     </button>
                   </div>
-
-                  {cart.items.map((item, index) => (
-                    <div key={index} className="mb-4 pb-4 border-b">
-                      <div className="flex gap-4">
-                        {/* <img src={item.image} alt={item.name} className="w-20 h-20 object-cover" /> */}
-                        <div className="flex-none w-16 h-16">
-                          <ProductThumbnail cartItem={item} />
+                  <div className="max-h-[60vh] overflow-y-auto pr-4">
+                    {cart.items.map((item, index) => (
+                      <div key={index} className="mb-4 pb-4 border-b text-black">
+                        <div className="flex gap-4">
+                          <div className="flex-none w-16 h-16">
+                            <ProductThumbnail cartItem={item} />
+                          </div>
+                          <div className="flex-grow">
+                            <div className="grid grid-cols-[1fr_auto] gap-4">
+                              <h3 className="text-left font-semibold">
+                                {(item.product as Product).title}
+                              </h3>
+                              <h3 className="text-right font-semibold">${item.price}</h3>
+                            </div>
+                            {item.receiverId &&
+                              (() => {
+                                const receiver = cart.receivers?.find(
+                                  (r) => r.receiverId === item.receiverId,
+                                )
+                                return receiver ? (
+                                  <p className="text-sm">
+                                    To: {receiver.firstName} {receiver.lastName}
+                                  </p>
+                                ) : null
+                              })()}
+                            <p className="text-sm">Message: {item.giftCard.message}</p>
+                          </div>
                         </div>
-                        <div className="flex-grow">
-                          <h3 className="font-semibold">{(item.product as Product).title}</h3>
-                          <p className="text-sm text-gray-600">${item.price}</p>
-                          {item.receiverId &&
-                            (() => {
-                              const receiver = cart.receivers?.find(
-                                (r) => r.receiverId === item.receiverId,
-                              )
-                              return receiver ? (
-                                <p className="text-sm">
-                                  To: {receiver.firstName} {receiver.lastName}
-                                </p>
-                              ) : null
-                            })()}
-                          <p className="text-sm">Message: {item.giftCard.message}</p>
-                        </div>
-                      </div>
-                      <div className="flex justify-between items-center mt-2">
-                        <div className="flex items-center gap-2">
+                        <div className="flex justify-between items-center mt-2">
                           <button
-                            onClick={() => updateQuantity(item.itemId, item.quantity - 1)}
+                            onClick={() => removeCartItem(item.itemId)}
                             className="text-gray-500 hover:text-gray-700"
                           >
-                            <Minus size={20} />
-                          </button>
-                          <span>{item.quantity}</span>
-                          <button
-                            onClick={() => updateQuantity(item.itemId, item.quantity + 1)}
-                            className="text-gray-500 hover:text-gray-700"
-                          >
-                            <Plus size={20} />
+                            <Trash2 size={20} />
                           </button>
                         </div>
-                        <button
-                          onClick={() => removeCartItem(item.itemId)}
-                          className="text-gray-500 hover:text-gray-700"
-                        >
-                          <Trash2 size={20} />
-                        </button>
                       </div>
-                    </div>
-                  ))}
-                  <div className="mt-4">
+                    ))}
+                  </div>
+                  <div className="mt-4 text-black">
                     <div className="flex justify-between items-center mb-4">
                       <span className="font-semibold">Subtotal</span>
                       <span className="font-semibold text-2xl">${cart.totals.cost}</span>
                     </div>
                     <p className="text-sm text-gray-600 mb-4">Shipping calculated at checkout</p>
-                    <button className="w-full bg-black text-white py-3 rounded font-semibold">
+                    <button
+                      className="w-full bg-black text-white py-3 rounded font-semibold"
+                      onClick={checkout}
+                    >
                       CHECKOUT
                     </button>
                   </div>
