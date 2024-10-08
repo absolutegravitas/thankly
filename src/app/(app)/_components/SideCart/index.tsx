@@ -9,6 +9,7 @@ import ProductThumbnail from '../../_blocks/Cart/ProductThumbnail'
 import { Product } from '@/payload-types'
 import { useRouter } from 'next/navigation'
 import { capitalize } from 'lodash'
+import ProductAddOns from '../ProductAddOns'
 
 // interface CartItem {
 //   id: number
@@ -111,6 +112,9 @@ export default function SideCart() {
                                 </p>
                               </>
                             )}
+
+                            <ProductAddOns addOns={item.addOns} smallFont={true} />
+
                             <div className="flex items-center space-x-4 pt-4">
                               <div className="flex items-center justify-center space-x-4 p-2 bg-white border border-grey-800">
                                 <button
