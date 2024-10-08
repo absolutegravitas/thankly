@@ -15,7 +15,7 @@ const cartItemSchema = z.object({
   receiverId: z.string().min(1, 'Delivery address is required'),
   giftMessage: z
     .string()
-    .min(1, 'Please enter a message for the hand written gift card')
+    .min(1, 'Please enter a message for the handwritten gift card')
     .max(400, 'Gift message cannot be longer than 400 characters'),
 })
 

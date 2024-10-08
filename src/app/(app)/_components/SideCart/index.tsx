@@ -82,9 +82,12 @@ export default function SideCart() {
                           </div>
                           <div className="flex-grow">
                             <div className="grid grid-cols-[1fr_auto] gap-4">
-                              <h3 className="text-left font-semibold">
-                                {(item.product as Product).title}
-                              </h3>
+                              <div className="text-left">
+                                <h3 className="text-left font-semibold">
+                                  {(item.product as Product).title}
+                                </h3>
+                                <h3 className="text-sm">{`$${item.price}`}</h3>
+                              </div>
                               <h3 className="text-right font-semibold">
                                 ${item.price * item.quantity}
                               </h3>
@@ -95,56 +98,52 @@ export default function SideCart() {
                                   (r) => r.receiverId === item.receiverId,
                                 )
                                 return receiver ? (
-                                  <p className="text-sm">
+                                  <p className="text-xs ">
                                     Deliver to: {receiver.firstName} {receiver.lastName}
                                   </p>
                                 ) : null
                               })()}
                             {item.giftCard.message.length > 0 && (
                               <>
-                                <p className="text-sm">Message:</p>
-                                <p className="text-sm">{item.giftCard.message}</p>
-                                <p className="text-sm">
+                                <p className="text-xs pt-2">Message: {item.giftCard.message}</p>
+                                <p className="text-xs pt-2">
                                   Writing style: {capitalize(item.giftCard.writingStyle)}
                                 </p>
                               </>
                             )}
-                          </div>
-                        </div>
-                        <div className="flex justify-center items-center mt-2">
-                          <div className="flex items-center space-x-4">
-                            <div className="flex items-center justify-center space-x-4 p-2 bg-white border border-grey-800">
+                            <div className="flex items-center space-x-4 pt-4">
+                              <div className="flex items-center justify-center space-x-4 p-2 bg-white border border-grey-800">
+                                <button
+                                  onClick={() => {
+                                    if (item.quantity > 1) {
+                                      updateQuantity(item.itemId, item.quantity - 1)
+                                    } else {
+                                      removeCartItem(item.itemId)
+                                    }
+                                  }}
+                                  className="text-gray-500 hover:text-gray-700 transition-colors"
+                                  aria-label="Decrease"
+                                >
+                                  <Minus className="w-3 h-3" />
+                                </button>
+                                <span className="text-xs font-semibold text-gray-700 w-8 text-center">
+                                  {item.quantity}
+                                </span>
+                                <button
+                                  onClick={() => updateQuantity(item.itemId, item.quantity + 1)}
+                                  className="text-gray-500 hover:text-gray-700 transition-colors"
+                                  aria-label="Increase"
+                                >
+                                  <Plus className="w-3 h-3" />
+                                </button>
+                              </div>
                               <button
-                                onClick={() => {
-                                  if (item.quantity > 1) {
-                                    updateQuantity(item.itemId, item.quantity - 1)
-                                  } else {
-                                    removeCartItem(item.itemId)
-                                  }
-                                }}
-                                className="text-gray-500 hover:text-gray-700 transition-colors"
-                                aria-label="Decrease"
+                                onClick={() => removeCartItem(item.itemId)}
+                                className="text-gray-500 hover:text-gray-700"
                               >
-                                <Minus className="w-4 h-4" />
-                              </button>
-                              {/* Placeholder for alignment when minus is hidden */}
-                              <span className="text-sm font-semibold text-gray-700 w-8 text-center">
-                                {item.quantity}
-                              </span>
-                              <button
-                                onClick={() => updateQuantity(item.itemId, item.quantity + 1)}
-                                className="text-gray-500 hover:text-gray-700 transition-colors"
-                                aria-label="Increase"
-                              >
-                                <Plus className="w-4 h-4" />
+                                <Trash2 size={15} />
                               </button>
                             </div>
-                            <button
-                              onClick={() => removeCartItem(item.itemId)}
-                              className="text-gray-500 hover:text-gray-700"
-                            >
-                              <Trash2 size={20} />
-                            </button>
                           </div>
                         </div>
                       </div>

@@ -6,10 +6,11 @@ export interface DebouncedTextareaProps extends TextareaProps {
   value?: string
   onValueChange?: (value: string) => void
   debounceTime?: number
+  maxLength?: number
 }
 
 const DebouncedTextarea = React.forwardRef<HTMLTextAreaElement, DebouncedTextareaProps>(
-  ({ value, onChange, onValueChange, debounceTime = 300, ...props }, ref) => {
+  ({ value, onChange, onValueChange, debounceTime = 300, maxLength, ...props }, ref) => {
     const [internalValue, setInternalValue] = React.useState(value || '')
 
     React.useEffect(() => {
@@ -39,7 +40,24 @@ const DebouncedTextarea = React.forwardRef<HTMLTextAreaElement, DebouncedTextare
       debouncedCallback(newValue)
     }
 
-    return <Textarea ref={ref} value={internalValue} onChange={handleChange} {...props} />
+    return (
+      <div className="relative">
+        <Textarea
+          ref={ref}
+          value={internalValue}
+          onChange={handleChange}
+          maxLength={maxLength}
+          {...props}
+        />
+        <div
+          className={`absolute bottom-2 right-8 text-xs italic ${
+            value.length > maxLength ? 'text-red-500' : 'text-gray-500'
+          }`}
+        >
+          {value.length} / {maxLength} chars
+        </div>
+      </div>
+    )
   },
 )
 

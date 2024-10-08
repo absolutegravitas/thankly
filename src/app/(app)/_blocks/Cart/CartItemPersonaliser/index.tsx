@@ -115,6 +115,7 @@ const CartItemPersonaliser = ({ cartItem, index }: Props) => {
               value={cartItem.giftCard.message}
               onValueChange={handleMessageChange} //debounced
               debounceTime={300}
+              maxLength={400}
               {...register(`cartItems.${index}.giftMessage`)}
             />
             {errors?.cartItems?.[index]?.giftMessage && (
