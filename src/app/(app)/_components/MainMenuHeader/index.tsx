@@ -43,8 +43,8 @@ export const MainMenuHeader: React.FC<any> = ({ menu }: any) => {
   return (
     <header
       className={`flex h-16 w-full items-center justify-between px-4 md:px-6
-        ${isHomePage ? 'absolute w-screen transition-all duration-300 ease-in-out' : ''}
-        ${!isHomePage || isScrolled ? 'bg-white text-black border-b-grey-500 border-b-0 border-solid' : 'bg-background text-white'}`}
+        ${!isHomePage || isScrolled ? 'bg-white text-black border-b-grey-500 border-b border-solid' : 'bg-background text-white border-b-0'}
+        ${isHomePage ? 'absolute w-screen transition-colors duration-300 ease-in-out' : ''}`}
     >
       <Link
         href="/"
