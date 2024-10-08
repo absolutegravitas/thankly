@@ -28,6 +28,7 @@ export type CartContext = {
   cartIsEmpty: boolean
   cartPersonalisationMissing: boolean
   cartPostageMissing: boolean
+  isSideCartOpen: boolean
 
   isProductInCart: (productId: string | number) => boolean
   // validateCart: () => boolean
@@ -47,6 +48,8 @@ export type CartContext = {
   applyDiscount: (discountCode: string, discountAmount: number) => void
   setCart: (newCart: Cart) => void
   clearCart: () => void
+  openSideCart: () => void
+  closeSideCart: () => void
 
   // address array actions
   addAddress: (newAddress: Address) => void
@@ -88,6 +91,15 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // checking methods
   const hasInitialized = useRef(false)
   const [hasInitializedCart, setHasInitialized] = useState(false)
+
+  // sidecart functions
+  const [isSideCartOpen, setSideCart] = useState(false)
+  const openSideCart = () => {
+    setSideCart(true)
+  }
+  const closeSideCart = () => {
+    setSideCart(false)
+  }
 
   // Memoized value for checking if the cart is empty
   const cartIsEmpty = useMemo(() => cart.items?.length === 0, [cart.items])
@@ -225,9 +237,12 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       cartPersonalisationMissing,
       cartPostageMissing,
       clearCart,
+      closeSideCart,
       hasInitializedCart,
       isProductInCart,
+      isSideCartOpen,
       linkReceiver,
+      openSideCart,
       removeCartItem,
       setCart,
       updateMessage,
@@ -246,9 +261,12 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       cartPersonalisationMissing,
       cartPostageMissing,
       clearCart,
+      closeSideCart,
       hasInitializedCart,
       isProductInCart,
+      isSideCartOpen,
       linkReceiver,
+      openSideCart,
       removeCartItem,
       setCart,
       updateMessage,

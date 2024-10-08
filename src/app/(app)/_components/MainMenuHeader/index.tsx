@@ -9,6 +9,7 @@ import { Sheet, SheetTrigger, SheetContent } from '@app/_components/ui/sheet'
 import { Button } from '@app/_components/ui/button'
 import { useEffect, useState } from 'react'
 import { usePathname, useRouter } from 'next/navigation'
+import SideCart from '../SideCart'
 
 // export default function MainMenuHeader() {
 export const MainMenuHeader: React.FC<any> = ({ menu }: any) => {
@@ -43,7 +44,7 @@ export const MainMenuHeader: React.FC<any> = ({ menu }: any) => {
     <header
       className={`flex h-16 w-full items-center justify-between px-4 md:px-6
         ${isHomePage ? 'absolute w-screen transition-all duration-300 ease-in-out' : ''}
-        ${!isHomePage || isScrolled ? 'bg-white text-black border-b-grey-500 border-b border-solid' : 'bg-background text-white'}`}
+        ${!isHomePage || isScrolled ? 'bg-white text-black border-b-grey-500 border-b-0 border-solid' : 'bg-background text-white'}`}
     >
       <Link
         href="/"
@@ -67,30 +68,16 @@ export const MainMenuHeader: React.FC<any> = ({ menu }: any) => {
             )
           })}
         </nav>
-        <div className="flex items-center gap-4 ml-12">
+        <div className="flex items-center ml-12">
           <Link
             href="#"
-            className="text-muted-foreground transition-colors hover:text-foreground"
+            className="text-muted-foreground transition-colors hover:text-foreground mr-2"
             prefetch={false}
           >
             <UserIcon className="h-6 w-6" />
             <span className="sr-only">Login</span>
           </Link>
-          <Link
-            href="#"
-            className="relative text-muted-foreground transition-colors hover:text-foreground"
-            prefetch={false}
-          >
-            <ShoppingCartIcon className="h-6 w-6 sm:mr-4" />
-            <span className="sr-only">Cart</span>
-            <div
-              className={`absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-xs text-primary-foreground ${
-                0 === 0 ? 'hidden' : ''
-              }`}
-            >
-              {0}
-            </div>
-          </Link>
+          <SideCart />
           <Sheet>
             <SheetTrigger asChild>
               <Button
@@ -146,27 +133,6 @@ function MenuIcon(props: any) {
       <line x1="4" x2="20" y1="12" y2="12" />
       <line x1="4" x2="20" y1="6" y2="6" />
       <line x1="4" x2="20" y1="18" y2="18" />
-    </svg>
-  )
-}
-
-function ShoppingCartIcon(props: any) {
-  return (
-    <svg
-      {...props}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <circle cx="8" cy="21" r="1" />
-      <circle cx="19" cy="21" r="1" />
-      <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" />
     </svg>
   )
 }
