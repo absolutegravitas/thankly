@@ -8,6 +8,7 @@ import { useCart } from '../../_providers/Cart'
 import ProductThumbnail from '../../_blocks/Cart/ProductThumbnail'
 import { Product } from '@/payload-types'
 import { useRouter } from 'next/navigation'
+import { capitalize } from 'lodash'
 
 // interface CartItem {
 //   id: number
@@ -74,7 +75,7 @@ export default function SideCart() {
                   </div>
                   <div className="max-h-[60vh] overflow-y-auto pr-4">
                     {cart.items.map((item, index) => (
-                      <div key={index} className="mb-4 pb-4 border-b text-black">
+                      <div key={index} className="mb-4 pb-4 pt-4 border-b text-black">
                         <div className="flex gap-4">
                           <div className="flex-none w-16 h-16">
                             <ProductThumbnail cartItem={item} />
@@ -84,7 +85,9 @@ export default function SideCart() {
                               <h3 className="text-left font-semibold">
                                 {(item.product as Product).title}
                               </h3>
-                              <h3 className="text-right font-semibold">${item.price}</h3>
+                              <h3 className="text-right font-semibold">
+                                ${item.price * item.quantity}
+                              </h3>
                             </div>
                             {item.receiverId &&
                               (() => {
@@ -93,20 +96,56 @@ export default function SideCart() {
                                 )
                                 return receiver ? (
                                   <p className="text-sm">
-                                    To: {receiver.firstName} {receiver.lastName}
+                                    Deliver to: {receiver.firstName} {receiver.lastName}
                                   </p>
                                 ) : null
                               })()}
-                            <p className="text-sm">Message: {item.giftCard.message}</p>
+                            {item.giftCard.message.length > 0 && (
+                              <>
+                                <p className="text-sm">Message:</p>
+                                <p className="text-sm">{item.giftCard.message}</p>
+                                <p className="text-sm">
+                                  Writing style: {capitalize(item.giftCard.writingStyle)}
+                                </p>
+                              </>
+                            )}
                           </div>
                         </div>
-                        <div className="flex justify-between items-center mt-2">
-                          <button
-                            onClick={() => removeCartItem(item.itemId)}
-                            className="text-gray-500 hover:text-gray-700"
-                          >
-                            <Trash2 size={20} />
-                          </button>
+                        <div className="flex justify-center items-center mt-2">
+                          <div className="flex items-center space-x-4">
+                            <div className="flex items-center justify-center space-x-4 p-2 bg-white border border-grey-800">
+                              <button
+                                onClick={() => {
+                                  if (item.quantity > 1) {
+                                    updateQuantity(item.itemId, item.quantity - 1)
+                                  } else {
+                                    removeCartItem(item.itemId)
+                                  }
+                                }}
+                                className="text-gray-500 hover:text-gray-700 transition-colors"
+                                aria-label="Decrease"
+                              >
+                                <Minus className="w-4 h-4" />
+                              </button>
+                              {/* Placeholder for alignment when minus is hidden */}
+                              <span className="text-sm font-semibold text-gray-700 w-8 text-center">
+                                {item.quantity}
+                              </span>
+                              <button
+                                onClick={() => updateQuantity(item.itemId, item.quantity + 1)}
+                                className="text-gray-500 hover:text-gray-700 transition-colors"
+                                aria-label="Increase"
+                              >
+                                <Plus className="w-4 h-4" />
+                              </button>
+                            </div>
+                            <button
+                              onClick={() => removeCartItem(item.itemId)}
+                              className="text-gray-500 hover:text-gray-700"
+                            >
+                              <Trash2 size={20} />
+                            </button>
+                          </div>
                         </div>
                       </div>
                     ))}
