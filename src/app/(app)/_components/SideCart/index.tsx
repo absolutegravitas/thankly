@@ -5,56 +5,22 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { X, Minus, Plus, Trash2 } from 'lucide-react'
 import { Button } from '../ui/button'
 import { useCart } from '../../_providers/Cart'
+import ProductThumbnail from '../../_blocks/Cart/ProductThumbnail'
+import { Product } from '@/payload-types'
 
-interface CartItem {
-  id: number
-  name: string
-  price: number
-  recipient: string
-  message: string
-  quantity: number
-  image: string
-}
+// interface CartItem {
+//   id: number
+//   name: string
+//   price: number
+//   recipient: string
+//   message: string
+//   quantity: number
+//   image: string
+// }
 
 export default function SideCart() {
-  const { isSideCartOpen, openSideCart, closeSideCart } = useCart()
-  // const [isOpen, setIsOpen] = useState(false)
-  const [cartItems, setCartItems] = useState<CartItem[]>([
-    {
-      id: 1,
-      name: 'The Happy Chappy',
-      price: 89,
-      recipient: 'Alex',
-      message: 'I love you, Love Kathy',
-      quantity: 1,
-      image: '/placeholder.svg?height=100&width=100',
-    },
-    {
-      id: 2,
-      name: 'The Happy Chappy',
-      price: 89,
-      recipient: 'Mochi',
-      message: 'I love you Mochi from Mum & Dad',
-      quantity: 1,
-      image: '/placeholder.svg?height=100&width=100',
-    },
-  ])
-
-  // const toggleCart = () => setIsOpen(!isOpen)
-
-  const updateQuantity = (id: number, change: number) => {
-    setCartItems((items) =>
-      items.map((item) =>
-        item.id === id ? { ...item, quantity: Math.max(0, item.quantity + change) } : item,
-      ),
-    )
-  }
-
-  const removeItem = (id: number) => {
-    setCartItems((items) => items.filter((item) => item.id !== id))
-  }
-
-  const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
+  const { isSideCartOpen, openSideCart, closeSideCart, cart, updateQuantity, removeCartItem } =
+    useCart()
 
   return (
     <>
@@ -74,13 +40,6 @@ export default function SideCart() {
       </Button>
 
       <div className="relative min-h-screen">
-        {/* <button
-          onClick={toggleCart}
-          className="fixed top-4 right-4 z-50 bg-black text-white p-2 rounded"
-        >
-          Open Cart
-        </button> */}
-
         <AnimatePresence>
           {isSideCartOpen && (
             <>
@@ -106,35 +65,49 @@ export default function SideCart() {
                       <X size={24} />
                     </button>
                   </div>
-                  {cartItems.map((item) => (
-                    <div key={item.id} className="mb-4 pb-4 border-b">
+
+                  {cart.items.map((item, index) => (
+                    <div key={index} className="mb-4 pb-4 border-b">
                       <div className="flex gap-4">
-                        <img src={item.image} alt={item.name} className="w-20 h-20 object-cover" />
+                        {/* <img src={item.image} alt={item.name} className="w-20 h-20 object-cover" /> */}
+                        <div className="flex-none w-16 h-16">
+                          <ProductThumbnail cartItem={item} />
+                        </div>
                         <div className="flex-grow">
-                          <h3 className="font-semibold">{item.name}</h3>
+                          <h3 className="font-semibold">{(item.product as Product).title}</h3>
                           <p className="text-sm text-gray-600">${item.price}</p>
-                          <p className="text-sm">To: {item.recipient}</p>
-                          <p className="text-sm">Message: {item.message}</p>
+                          {item.receiverId &&
+                            (() => {
+                              const receiver = cart.receivers?.find(
+                                (r) => r.receiverId === item.receiverId,
+                              )
+                              return receiver ? (
+                                <p className="text-sm">
+                                  To: {receiver.firstName} {receiver.lastName}
+                                </p>
+                              ) : null
+                            })()}
+                          <p className="text-sm">Message: {item.giftCard.message}</p>
                         </div>
                       </div>
                       <div className="flex justify-between items-center mt-2">
                         <div className="flex items-center gap-2">
                           <button
-                            onClick={() => updateQuantity(item.id, -1)}
+                            onClick={() => updateQuantity(item.itemId, item.quantity - 1)}
                             className="text-gray-500 hover:text-gray-700"
                           >
                             <Minus size={20} />
                           </button>
                           <span>{item.quantity}</span>
                           <button
-                            onClick={() => updateQuantity(item.id, 1)}
+                            onClick={() => updateQuantity(item.itemId, item.quantity + 1)}
                             className="text-gray-500 hover:text-gray-700"
                           >
                             <Plus size={20} />
                           </button>
                         </div>
                         <button
-                          onClick={() => removeItem(item.id)}
+                          onClick={() => removeCartItem(item.itemId)}
                           className="text-gray-500 hover:text-gray-700"
                         >
                           <Trash2 size={20} />
@@ -145,7 +118,7 @@ export default function SideCart() {
                   <div className="mt-4">
                     <div className="flex justify-between items-center mb-4">
                       <span className="font-semibold">Subtotal</span>
-                      <span className="font-semibold text-2xl">${subtotal}</span>
+                      <span className="font-semibold text-2xl">${cart.totals.cost}</span>
                     </div>
                     <p className="text-sm text-gray-600 mb-4">Shipping calculated at checkout</p>
                     <button className="w-full bg-black text-white py-3 rounded font-semibold">
