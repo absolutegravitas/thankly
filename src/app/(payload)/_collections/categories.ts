@@ -20,7 +20,17 @@ export const Categories: CollectionConfig = {
   fields: [
     {
       type: 'row',
-      fields: [{ name: 'title', type: 'text', required: true }],
+      fields: [{ name: 'title', type: 'text', required: true },
+        {
+          name: 'productType',
+          type: 'select',
+          defaultValue: 'gift',
+          options: [
+            { label: 'Card', value: 'card' },
+            { label: 'Gift', value: 'gift' },
+          ],
+        },
+      ],
     },
     {
       name: 'shopConfig',

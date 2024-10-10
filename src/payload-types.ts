@@ -152,6 +152,7 @@ export interface Product {
 export interface Category {
   id: number;
   title: string;
+  productType?: ('card' | 'gift') | null;
   shopConfig?: {
     visible?: boolean | null;
     shopFilterTitle?: string | null;
