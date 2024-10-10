@@ -5,15 +5,12 @@ import { Button } from '../../_components/ui/button'
 import { usePathname, useRouter, useSearchParams } from 'next/navigation'
 import { debounce } from 'lodash'
 import { Category } from '@/payload-types'
-
-interface Props {
-  categories: Category[]
-}
+import FetchItems from '@/utilities/PayloadQueries/fetchItems'
 
 const MIN_PRICE = parseInt(process.env.NEXT_PUBLIC_SHOP_MIN_PRICE || '0', 10)
 const MAX_PRICE = parseInt(process.env.NEXT_PUBLIC_SHOP_MAX_PRICE || '200', 10)
 
-const ShopSideFilter = ({ categories }: Props) => {
+const ShopSideFilter = () => {
   const [priceRange, setPriceRange] = useState([MIN_PRICE, MAX_PRICE])
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
 
@@ -31,6 +28,42 @@ const ShopSideFilter = ({ categories }: Props) => {
       maxPrice ? parseInt(maxPrice) : MAX_PRICE,
     ])
     setSelectedCategory(category || null)
+  }, [searchParams])
+
+  const [categories, setCategories] = useState<Category[]>([])
+  useEffect(() => {
+    const fetchCategories = async () => {
+      const productType = searchParams.get('productType')
+
+      type WhereCondition = {
+        shopConfig?: { visible: { equals: boolean } }
+        productType?: { equals: string }
+      }
+      type WhereClause = WhereCondition | { and: WhereCondition[] }
+
+      let categories_where_clause: WhereClause = { shopConfig: { visible: { equals: true } } }
+
+      if (productType) {
+        categories_where_clause = {
+          and: [
+            { shopConfig: { visible: { equals: true } } },
+            { productType: { equals: productType } },
+          ],
+        }
+      }
+
+      try {
+        const categories = await FetchItems({
+          collection: 'categories',
+          where: categories_where_clause,
+          sort: 'shopConfig.sortOrder',
+        })
+        setCategories(categories)
+      } catch (error) {
+        console.error('Error fetching product categories:', error)
+      }
+    }
+    fetchCategories()
   }, [searchParams])
 
   const updateURL = useCallback(
