@@ -77,8 +77,9 @@ const ShopTopFilter: React.FC = () => {
 
   return (
     <div className="flex flex-wrap gap-2 mb-6">
-      {productTypeFilterOptions.map((option) => renderFilterButton(option, 'productType'))}
-      {sortOptions.map((option) => renderFilterButton(option, 'sort'))}
+      {productTypeFilterOptions &&
+        productTypeFilterOptions.map((option) => renderFilterButton(option, 'productType'))}
+      {sortOptions && sortOptions.map((option) => renderFilterButton(option, 'sort'))}
     </div>
   )
 }
