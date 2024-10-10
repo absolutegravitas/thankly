@@ -51,7 +51,7 @@ const ShopSideFilter = () => {
       const params = new URLSearchParams(searchParams.toString())
       params.delete('minPrice')
       params.delete('maxPrice')
-      router.push(`${pathname}?${params.toString()}`, { shallow: true })
+      router.push(`${pathname}?${params.toString()}`)
     } else {
       const minPrice = searchParams.get('minPrice')
       const maxPrice = searchParams.get('maxPrice')
@@ -81,6 +81,9 @@ const ShopSideFilter = () => {
         } else {
           params.delete('maxPrice')
         }
+      } else {
+        params.delete('minPrice')
+        params.delete('maxPrice')
       }
 
       if (category) {
