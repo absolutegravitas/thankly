@@ -13,64 +13,59 @@ const MAX_PRICE = parseInt(process.env.NEXT_PUBLIC_SHOP_MAX_PRICE || '200', 10)
 const ShopSideFilter = () => {
   const [priceRange, setPriceRange] = useState([MIN_PRICE, MAX_PRICE])
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
+  const [categories, setCategories] = useState<Category[]>([])
 
   const searchParams = useSearchParams()
   const pathname = usePathname()
   const router = useRouter()
 
+  const fetchCategories = useCallback(async (productType?: string | null) => {
+    type WhereCondition = {
+      shopConfig?: { visible: { equals: boolean } }
+      productType?: { equals: string }
+    }
+    type WhereClause = WhereCondition | { and: WhereCondition[] }
+
+    let categories_where_clause: WhereClause = { shopConfig: { visible: { equals: true } } }
+
+    if (productType) {
+      categories_where_clause = {
+        and: [
+          { shopConfig: { visible: { equals: true } } },
+          { productType: { equals: productType } },
+        ],
+      }
+    }
+
+    try {
+      const fetchedCategories = await FetchItems({
+        collection: 'categories',
+        where: categories_where_clause,
+        sort: 'shopConfig.sortOrder',
+      })
+      setCategories(fetchedCategories)
+    } catch (error) {
+      console.error('Error fetching product categories:', error)
+    }
+  }, [])
+
   useEffect(() => {
     const minPrice = searchParams.get('minPrice')
     const maxPrice = searchParams.get('maxPrice')
     const category = searchParams.get('category')
+    const productType = searchParams.get('productType')
 
     setPriceRange([
       minPrice ? parseInt(minPrice) : MIN_PRICE,
       maxPrice ? parseInt(maxPrice) : MAX_PRICE,
     ])
     setSelectedCategory(category || null)
-  }, [searchParams])
-
-  const [categories, setCategories] = useState<Category[]>([])
-  useEffect(() => {
-    const fetchCategories = async () => {
-      const productType = searchParams.get('productType')
-
-      type WhereCondition = {
-        shopConfig?: { visible: { equals: boolean } }
-        productType?: { equals: string }
-      }
-      type WhereClause = WhereCondition | { and: WhereCondition[] }
-
-      let categories_where_clause: WhereClause = { shopConfig: { visible: { equals: true } } }
-
-      if (productType) {
-        categories_where_clause = {
-          and: [
-            { shopConfig: { visible: { equals: true } } },
-            { productType: { equals: productType } },
-          ],
-        }
-      }
-
-      try {
-        const categories = await FetchItems({
-          collection: 'categories',
-          where: categories_where_clause,
-          sort: 'shopConfig.sortOrder',
-        })
-        setCategories(categories)
-      } catch (error) {
-        console.error('Error fetching product categories:', error)
-      }
-    }
-    fetchCategories()
-  }, [searchParams])
+    fetchCategories(productType)
+  }, [searchParams, fetchCategories])
 
   const updateURL = useCallback(
     (newValues: number[], category: string | null) => {
       const params = new URLSearchParams(searchParams)
-
-      // Remove the 'page' parameter
       params.delete('page')
 
       if (newValues[0] > MIN_PRICE) {
@@ -93,7 +88,7 @@ const ShopSideFilter = () => {
 
       router.push(`${pathname}?${params.toString()}`)
     },
-    [searchParams, pathname, router, MIN_PRICE, MAX_PRICE],
+    [searchParams, pathname, router],
   )
 
   const debouncedUpdateURL = useMemo(() => debounce(updateURL, 300), [updateURL])
@@ -132,17 +127,16 @@ const ShopSideFilter = () => {
           >
             All
           </Button>
-          {categories &&
-            categories.map((item) => (
-              <Button
-                key={item.id}
-                variant="ghost"
-                className={`w-full justify-start ${selectedCategory === item.title ? 'font-extrabold' : ''}`}
-                onClick={() => handleCategoryChange(item.title)}
-              >
-                {item.shopConfig!.shopFilterTitle || item.title}
-              </Button>
-            ))}
+          {categories.map((item) => (
+            <Button
+              key={item.id}
+              variant="ghost"
+              className={`w-full justify-start ${selectedCategory === item.title ? 'font-extrabold' : ''}`}
+              onClick={() => handleCategoryChange(item.title)}
+            >
+              {item.shopConfig?.shopFilterTitle || item.title}
+            </Button>
+          ))}
         </nav>
         <div className="mt-8">
           <h3 className="font-semibold mb-2">Price</h3>
