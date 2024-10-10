@@ -11,7 +11,7 @@ interface Props {
 }
 
 const MIN_PRICE = parseInt(process.env.NEXT_PUBLIC_SHOP_MIN_PRICE || '0', 10)
-const MAX_PRICE = parseInt(process.env.NEXT_PUBLIC_SHOP_MAX_PRICE || '500', 10)
+const MAX_PRICE = parseInt(process.env.NEXT_PUBLIC_SHOP_MAX_PRICE || '200', 10)
 
 const ShopSideFilter = ({ categories }: Props) => {
   const [priceRange, setPriceRange] = useState([MIN_PRICE, MAX_PRICE])
@@ -36,6 +36,9 @@ const ShopSideFilter = ({ categories }: Props) => {
   const updateURL = useCallback(
     (newValues: number[], category: string | null) => {
       const params = new URLSearchParams(searchParams)
+
+      // Remove the 'page' parameter
+      params.delete('page')
 
       if (newValues[0] > MIN_PRICE) {
         params.set('minPrice', newValues[0].toString())

@@ -27,7 +27,7 @@ export type SortOption = 'name_asc' | 'name_desc' | 'price_asc' | 'price_desc' |
 export type FilterOptions = {
   category?: string[]
   tags?: string[]
-  productType?: string[]
+  productType?: string
   minPrice?: number
   maxPrice?: number
 }
@@ -41,7 +41,7 @@ export default async function ShopPage({
     sort?: SortOption
     category?: string[]
     tags?: string[]
-    productType?: string[]
+    productType?: string
     minPrice?: string
     maxPrice?: string
   }
@@ -62,9 +62,35 @@ export default async function ShopPage({
     filters = { ...filters, maxPrice: parseInt(searchParams.maxPrice) }
   }
 
+  const productType = searchParams?.productType
+
+  // const categories = await FetchItems({
+  //   collection: 'categories',
+  //   where: { shopConfig: { visible: { equals: true } } },
+  //   sort: 'shopConfig.sortOrder',
+  // })
+
+  type WhereCondition = {
+    shopConfig?: { visible: { equals: boolean } }
+    productType?: { equals: string }
+  }
+
+  type WhereClause = WhereCondition | { and: WhereCondition[] }
+
+  let categories_where_clause: WhereClause = { shopConfig: { visible: { equals: true } } }
+
+  if (searchParams?.productType) {
+    categories_where_clause = {
+      and: [
+        { shopConfig: { visible: { equals: true } } },
+        { productType: { equals: searchParams.productType } },
+      ],
+    }
+  }
+  console.log('where:', categories_where_clause)
   const categories = await FetchItems({
     collection: 'categories',
-    where: { shopConfig: { visible: { equals: true } } },
+    where: categories_where_clause,
     sort: 'shopConfig.sortOrder',
   })
 
