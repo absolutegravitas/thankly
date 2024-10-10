@@ -45,6 +45,7 @@ const ShopSideFilter = () => {
         sort: 'shopConfig.sortOrder',
       })
       setCategories(fetchedCategories)
+      console.log('Fetched categories: ', categories)
     } catch (error) {
       console.error('Error fetching product categories:', error)
     }
