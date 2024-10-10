@@ -38,6 +38,7 @@ const ShopSideFilter = () => {
       }
     }
     console.log('fetchCategories DEBUG 3')
+    console.log(categories_where_clause)
     try {
       const fetchedCategories = await FetchItems({
         collection: 'categories',
@@ -45,12 +46,17 @@ const ShopSideFilter = () => {
         sort: 'shopConfig.sortOrder',
       })
       console.log('fetchCategories DEBUG 4')
+      console.log('fetchedCategories: ', fetchedCategories)
       setCategories(fetchedCategories)
-      console.log('Fetched categories: ', categories)
+      console.log('categories: ', categories)
     } catch (error) {
       console.error('Error fetching product categories:', error)
     }
   }, [])
+
+  useEffect(() => {
+    console.log('Updated categories:', categories)
+  }, [categories])
 
   useEffect(() => {
     console.log('SearchParams changed:', searchParams.toString())
