@@ -19,6 +19,8 @@ const ShopSideFilter = () => {
   const pathname = usePathname()
   const router = useRouter()
 
+  const isCardsOnly = searchParams.get('productType') === 'card'
+
   const fetchAllCategories = useCallback(async () => {
     try {
       const fetchedCategories = await FetchItems({
@@ -43,32 +45,42 @@ const ShopSideFilter = () => {
   }, [allCategories, searchParams])
 
   useEffect(() => {
-    const minPrice = searchParams.get('minPrice')
-    const maxPrice = searchParams.get('maxPrice')
+    if (isCardsOnly) {
+      setPriceRange([MIN_PRICE, MAX_PRICE])
+      // Remove price filters from URL if "Cards Only" is selected
+      const params = new URLSearchParams(searchParams.toString())
+      params.delete('minPrice')
+      params.delete('maxPrice')
+      router.push(`${pathname}?${params.toString()}`, { shallow: true })
+    } else {
+      const minPrice = searchParams.get('minPrice')
+      const maxPrice = searchParams.get('maxPrice')
+      setPriceRange([
+        minPrice ? parseInt(minPrice) : MIN_PRICE,
+        maxPrice ? parseInt(maxPrice) : MAX_PRICE,
+      ])
+    }
     const category = searchParams.get('category')
-
-    setPriceRange([
-      minPrice ? parseInt(minPrice) : MIN_PRICE,
-      maxPrice ? parseInt(maxPrice) : MAX_PRICE,
-    ])
     setSelectedCategory(category || null)
-  }, [searchParams])
+  }, [searchParams, isCardsOnly, router, pathname])
 
   const updateURL = useCallback(
     (newValues: number[], category: string | null) => {
       const params = new URLSearchParams(searchParams)
       params.delete('page')
 
-      if (newValues[0] > MIN_PRICE) {
-        params.set('minPrice', newValues[0].toString())
-      } else {
-        params.delete('minPrice')
-      }
+      if (!isCardsOnly) {
+        if (newValues[0] > MIN_PRICE) {
+          params.set('minPrice', newValues[0].toString())
+        } else {
+          params.delete('minPrice')
+        }
 
-      if (newValues[1] < MAX_PRICE) {
-        params.set('maxPrice', newValues[1].toString())
-      } else {
-        params.delete('maxPrice')
+        if (newValues[1] < MAX_PRICE) {
+          params.set('maxPrice', newValues[1].toString())
+        } else {
+          params.delete('maxPrice')
+        }
       }
 
       if (category) {
@@ -79,17 +91,19 @@ const ShopSideFilter = () => {
 
       router.push(`${pathname}?${params.toString()}`)
     },
-    [searchParams, pathname, router],
+    [searchParams, pathname, router, isCardsOnly],
   )
 
   const debouncedUpdateURL = useMemo(() => debounce(updateURL, 300), [updateURL])
 
   const handlePriceRangeChange = useCallback(
     (newValues: number[]) => {
-      setPriceRange(newValues)
-      debouncedUpdateURL(newValues, selectedCategory)
+      if (!isCardsOnly) {
+        setPriceRange(newValues)
+        debouncedUpdateURL(newValues, selectedCategory)
+      }
     },
-    [debouncedUpdateURL, selectedCategory],
+    [debouncedUpdateURL, selectedCategory, isCardsOnly],
   )
 
   const handleCategoryChange = useCallback(
@@ -129,33 +143,35 @@ const ShopSideFilter = () => {
             </Button>
           ))}
         </nav>
-        <div className="mt-8">
-          <h3 className="font-semibold mb-2">Price</h3>
-          <Slider.Root
-            className="relative flex items-center select-none touch-none w-full h-5"
-            value={priceRange}
-            onValueChange={handlePriceRangeChange}
-            min={MIN_PRICE}
-            max={MAX_PRICE}
-            step={1}
-          >
-            <Slider.Track className="bg-gray-300 relative grow rounded-full h-1.5">
-              <Slider.Range className="absolute bg-gray-700 rounded-full h-full" />
-            </Slider.Track>
-            <Slider.Thumb
-              className="block w-3.5 h-3.5 bg-white border-2 border-gray-700 rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-700 focus-visible:ring-opacity-75"
-              aria-label="Minimum price"
-            />
-            <Slider.Thumb
-              className="block w-3.5 h-3.5 bg-white border-2 border-gray-700 rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-700 focus-visible:ring-opacity-75"
-              aria-label="Maximum price"
-            />
-          </Slider.Root>
-          <div className="flex justify-between mt-2 text-sm">
-            <span>${priceRange[0]}</span>
-            <span>${priceRange[1]}</span>
+        {!isCardsOnly && (
+          <div className="mt-8">
+            <h3 className="font-semibold mb-2">Price</h3>
+            <Slider.Root
+              className="relative flex items-center select-none touch-none w-full h-5"
+              value={priceRange}
+              onValueChange={handlePriceRangeChange}
+              min={MIN_PRICE}
+              max={MAX_PRICE}
+              step={1}
+            >
+              <Slider.Track className="bg-gray-300 relative grow rounded-full h-1.5">
+                <Slider.Range className="absolute bg-gray-700 rounded-full h-full" />
+              </Slider.Track>
+              <Slider.Thumb
+                className="block w-3.5 h-3.5 bg-white border-2 border-gray-700 rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-700 focus-visible:ring-opacity-75"
+                aria-label="Minimum price"
+              />
+              <Slider.Thumb
+                className="block w-3.5 h-3.5 bg-white border-2 border-gray-700 rounded-full focus:outline-none focus-visible:ring-2 focus-visible:ring-gray-700 focus-visible:ring-opacity-75"
+                aria-label="Maximum price"
+              />
+            </Slider.Root>
+            <div className="flex justify-between mt-2 text-sm">
+              <span>${priceRange[0]}</span>
+              <span>${priceRange[1]}</span>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   )
