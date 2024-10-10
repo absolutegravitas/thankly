@@ -1,5 +1,5 @@
 {
-  "id": "9ddbdc3a-bdc1-45d7-924a-a1bab41a4416",
+  "id": "20edf465-5b7f-4015-ac91-23cdee7fdc31",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "5",
   "dialect": "pg",
@@ -3199,6 +3199,12 @@
           "primaryKey": false,
           "notNull": true
         },
+        "productType": {
+          "name": "productType",
+          "type": "enum_categories_product_type",
+          "primaryKey": false,
+          "notNull": false
+        },
         "shop_config_visible": {
           "name": "shop_config_visible",
           "type": "boolean",
@@ -5374,6 +5380,12 @@
           "primaryKey": false,
           "notNull": false
         },
+        "default_gift_card_default_gift_card_id": {
+          "name": "default_gift_card_default_gift_card_id",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
         "updated_at": {
           "name": "updated_at",
           "type": "timestamp(3) with time zone",
@@ -5388,7 +5400,21 @@
         }
       },
       "indexes": {},
-      "foreignKeys": {},
+      "foreignKeys": {
+        "settings_default_gift_card_default_gift_card_id_products_id_fk": {
+          "name": "settings_default_gift_card_default_gift_card_id_products_id_fk",
+          "tableFrom": "settings",
+          "tableTo": "products",
+          "columnsFrom": [
+            "default_gift_card_default_gift_card_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "set null",
+          "onUpdate": "no action"
+        }
+      },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
@@ -5654,6 +5680,13 @@
         "admin": "admin",
         "public": "public",
         "customer": "customer"
+      }
+    },
+    "enum_categories_product_type": {
+      "name": "enum_categories_product_type",
+      "values": {
+        "card": "card",
+        "gift": "gift"
       }
     },
     "enum_forms_confirmation_type": {
