@@ -99,16 +99,17 @@ const ShopSideFilter = ({ categories }: Props) => {
           >
             All
           </Button>
-          {categories.map((item) => (
-            <Button
-              key={item.id}
-              variant="ghost"
-              className={`w-full justify-start ${selectedCategory === item.title ? 'font-extrabold' : ''}`}
-              onClick={() => handleCategoryChange(item.title)}
-            >
-              {item.shopConfig!.shopFilterTitle || item.title}
-            </Button>
-          ))}
+          {categories &&
+            categories.map((item) => (
+              <Button
+                key={item.id}
+                variant="ghost"
+                className={`w-full justify-start ${selectedCategory === item.title ? 'font-extrabold' : ''}`}
+                onClick={() => handleCategoryChange(item.title)}
+              >
+                {item.shopConfig!.shopFilterTitle || item.title}
+              </Button>
+            ))}
         </nav>
         <div className="mt-8">
           <h3 className="font-semibold mb-2">Price</h3>

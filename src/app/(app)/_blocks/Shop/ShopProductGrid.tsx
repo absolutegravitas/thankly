@@ -30,9 +30,8 @@ const ShopProductGrid = async ({ page, sort, filters }: Props) => {
               <p className="text-gray-500">No products found for your filters.</p>
             </div>
           )}
-          {products.map((product) => (
-            <ShopProductCard key={product.id} product={product} />
-          ))}
+          {products &&
+            products.map((product) => <ShopProductCard key={product.id} product={product} />)}
         </div>
         {/* Pagination */}
         <div className="mt-8 flex justify-center">
