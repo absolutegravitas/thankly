@@ -26,9 +26,9 @@ const ShopSideFilter = () => {
       productType?: { equals: string }
     }
     type WhereClause = WhereCondition | { and: WhereCondition[] }
-
+    console.log('fetchCategories DEBUG 1')
     let categories_where_clause: WhereClause = { shopConfig: { visible: { equals: true } } }
-
+    console.log('fetchCategories DEBUG 2')
     if (productType) {
       categories_where_clause = {
         and: [
@@ -37,13 +37,14 @@ const ShopSideFilter = () => {
         ],
       }
     }
-
+    console.log('fetchCategories DEBUG 3')
     try {
       const fetchedCategories = await FetchItems({
         collection: 'categories',
         where: categories_where_clause,
         sort: 'shopConfig.sortOrder',
       })
+      console.log('fetchCategories DEBUG 4')
       setCategories(fetchedCategories)
       console.log('Fetched categories: ', categories)
     } catch (error) {
