@@ -14,28 +14,21 @@ const ShopSideFilter = () => {
   const [priceRange, setPriceRange] = useState([MIN_PRICE, MAX_PRICE])
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
   const [allCategories, setAllCategories] = useState<Category[]>([])
-  const [isLoading, setIsLoading] = useState(false)
 
   const searchParams = useSearchParams()
   const pathname = usePathname()
   const router = useRouter()
 
   const fetchAllCategories = useCallback(async () => {
-    setIsLoading(true)
-    console.log('Fetching all categories')
-
     try {
       const fetchedCategories = await FetchItems({
         collection: 'categories',
         where: { shopConfig: { visible: { equals: true } } },
         sort: 'shopConfig.sortOrder',
       })
-      console.log('Fetched all categories:', fetchedCategories)
       setAllCategories(fetchedCategories)
     } catch (error) {
       console.error('Error fetching product categories:', error)
-    } finally {
-      setIsLoading(false)
     }
   }, [])
 
