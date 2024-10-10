@@ -3,6 +3,30 @@ import { MigrateUpArgs, MigrateDownArgs, sql } from '@payloadcms/db-postgres'
 export async function up({ payload, req }: MigrateUpArgs): Promise<void> {
 await payload.db.drizzle.execute(sql`
  DO $$ BEGIN
+ CREATE TYPE "enum_pages_status" AS ENUM('draft', 'published');
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+
+DO $$ BEGIN
+ CREATE TYPE "enum__pages_v_version_status" AS ENUM('draft', 'published');
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+
+DO $$ BEGIN
+ CREATE TYPE "enum_orders_status" AS ENUM('pending', 'processing', 'completed', 'cancelled', 'onhold');
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+
+DO $$ BEGIN
+ CREATE TYPE "enum_orders_receivers_delivery_shipping_method" AS ENUM('standardMail', 'expressMail', 'standardParcel', 'expressParcel');
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+
+DO $$ BEGIN
  CREATE TYPE "enum_products_product_type" AS ENUM('card', 'gift', 'addOn');
 EXCEPTION
  WHEN duplicate_object THEN null;
@@ -51,12 +75,6 @@ EXCEPTION
 END $$;
 
 DO $$ BEGIN
- CREATE TYPE "enum_reviews_star_rating" AS ENUM('1', '2', '3', '4', '5');
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
-
-DO $$ BEGIN
  CREATE TYPE "enum_carts_status" AS ENUM('pending', 'completed', 'cancelled');
 EXCEPTION
  WHEN duplicate_object THEN null;
@@ -69,31 +87,7 @@ EXCEPTION
 END $$;
 
 DO $$ BEGIN
- CREATE TYPE "enum_orders_status" AS ENUM('pending', 'shipped', 'delivered', 'cancelled', 'onhold');
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
-
-DO $$ BEGIN
- CREATE TYPE "enum_orders_receivers_delivery_shipping_method" AS ENUM('standardMail', 'expressMail', 'standardParcel', 'expressParcel');
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
-
-DO $$ BEGIN
- CREATE TYPE "enum_discountcodes_discount_type" AS ENUM('percentOff', 'dollarsOff');
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
-
-DO $$ BEGIN
- CREATE TYPE "enum_pages_status" AS ENUM('draft', 'published');
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
-
-DO $$ BEGIN
- CREATE TYPE "enum__pages_v_version_status" AS ENUM('draft', 'published');
+ CREATE TYPE "enum_reviews_star_rating" AS ENUM('1', '2', '3', '4', '5');
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -117,7 +111,7 @@ EXCEPTION
 END $$;
 
 DO $$ BEGIN
- CREATE TYPE "enum_categories_product_type" AS ENUM('card', 'gift');
+ CREATE TYPE "enum_discountcodes_discount_type" AS ENUM('percentOff', 'dollarsOff');
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -175,6 +169,108 @@ DO $$ BEGIN
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
+
+CREATE TABLE IF NOT EXISTS "pages" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"title" varchar,
+	"slug" varchar,
+	"layout" jsonb,
+	"meta_title" varchar,
+	"meta_description" varchar,
+	"meta_image_id" integer,
+	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
+	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
+	"_status" "enum_pages_status"
+);
+
+CREATE TABLE IF NOT EXISTS "_pages_v" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"parent_id" integer,
+	"version_title" varchar,
+	"version_slug" varchar,
+	"version_layout" jsonb,
+	"version_meta_title" varchar,
+	"version_meta_description" varchar,
+	"version_meta_image_id" integer,
+	"version_updated_at" timestamp(3) with time zone,
+	"version_created_at" timestamp(3) with time zone,
+	"version__status" "enum__pages_v_version_status",
+	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
+	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
+	"latest" boolean
+);
+
+CREATE TABLE IF NOT EXISTS "reusable" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"title" varchar NOT NULL,
+	"layout" jsonb,
+	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
+	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS "orders_items" (
+	"_order" integer NOT NULL,
+	"_parent_id" integer NOT NULL,
+	"id" varchar PRIMARY KEY NOT NULL,
+	"item_id" varchar NOT NULL,
+	"quantity" numeric NOT NULL,
+	"price" numeric NOT NULL,
+	"product_id" integer NOT NULL,
+	"receiver_id" varchar,
+	"gift_card_message" varchar NOT NULL,
+	"gift_card_writing_style" varchar NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS "orders_receivers" (
+	"_order" integer NOT NULL,
+	"_parent_id" integer NOT NULL,
+	"id" varchar PRIMARY KEY NOT NULL,
+	"receiver_id" varchar NOT NULL,
+	"first_name" varchar NOT NULL,
+	"last_name" varchar NOT NULL,
+	"address_address_line1" varchar NOT NULL,
+	"address_address_line2" varchar,
+	"address_city" varchar NOT NULL,
+	"address_state" varchar NOT NULL,
+	"address_postcode" varchar NOT NULL,
+	"delivery_tracking_link" varchar,
+	"delivery_shippingMethod" "enum_orders_receivers_delivery_shipping_method",
+	"delivery_shipping_price" numeric
+);
+
+CREATE TABLE IF NOT EXISTS "orders" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"order_number" varchar,
+	"status" "enum_orders_status" NOT NULL,
+	"discount_code_applied" varchar,
+	"stripe_id" varchar,
+	"totals_cost" numeric NOT NULL,
+	"totals_shipping" numeric,
+	"totals_discount" numeric,
+	"totals_total" numeric NOT NULL,
+	"billing_ordered_by_id" integer,
+	"billing_first_name" varchar,
+	"billing_last_name" varchar,
+	"billing_email" varchar,
+	"billing_contact_number" numeric,
+	"billing_org_name" varchar,
+	"billing_org_id" varchar,
+	"billing_address_address_line1" varchar,
+	"billing_address_address_line2" varchar,
+	"billing_address_city" varchar,
+	"billing_address_state" varchar,
+	"billing_address_postcode" varchar,
+	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
+	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS "orders_rels" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"order" integer,
+	"parent_id" integer NOT NULL,
+	"path" varchar NOT NULL,
+	"products_id" integer
+);
 
 CREATE TABLE IF NOT EXISTS "products_extra_details" (
 	"_order" integer NOT NULL,
@@ -284,17 +380,6 @@ CREATE TABLE IF NOT EXISTS "_products_v_rels" (
 	"reviews_id" integer
 );
 
-CREATE TABLE IF NOT EXISTS "reviews" (
-	"id" serial PRIMARY KEY NOT NULL,
-	"title" varchar,
-	"starRating" "enum_reviews_star_rating",
-	"review_date" timestamp(3) with time zone,
-	"body" varchar,
-	"reviewer_name" varchar,
-	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
-	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
-);
-
 CREATE TABLE IF NOT EXISTS "carts_items" (
 	"_order" integer NOT NULL,
 	"_parent_id" integer NOT NULL,
@@ -358,122 +443,32 @@ CREATE TABLE IF NOT EXISTS "carts_rels" (
 	"products_id" integer
 );
 
-CREATE TABLE IF NOT EXISTS "orders_items" (
-	"_order" integer NOT NULL,
-	"_parent_id" integer NOT NULL,
-	"id" varchar PRIMARY KEY NOT NULL,
-	"item_id" varchar NOT NULL,
-	"quantity" numeric NOT NULL,
-	"price" numeric NOT NULL,
-	"product_id" integer NOT NULL,
-	"receiver_id" varchar,
-	"gift_card_message" varchar NOT NULL,
-	"gift_card_writing_style" varchar NOT NULL
-);
-
-CREATE TABLE IF NOT EXISTS "orders_receivers" (
-	"_order" integer NOT NULL,
-	"_parent_id" integer NOT NULL,
-	"id" varchar PRIMARY KEY NOT NULL,
-	"receiver_id" varchar NOT NULL,
-	"first_name" varchar NOT NULL,
-	"last_name" varchar NOT NULL,
-	"address_address_line1" varchar NOT NULL,
-	"address_address_line2" varchar,
-	"address_city" varchar NOT NULL,
-	"address_state" varchar NOT NULL,
-	"address_postcode" varchar NOT NULL,
-	"delivery_tracking_link" varchar,
-	"delivery_shippingMethod" "enum_orders_receivers_delivery_shipping_method",
-	"delivery_shipping_price" numeric
-);
-
-CREATE TABLE IF NOT EXISTS "orders" (
-	"id" serial PRIMARY KEY NOT NULL,
-	"order_number" varchar,
-	"status" "enum_orders_status" NOT NULL,
-	"discount_code_applied" varchar,
-	"stripe_id" varchar,
-	"totals_cost" numeric NOT NULL,
-	"totals_shipping" numeric,
-	"totals_discount" numeric,
-	"totals_total" numeric NOT NULL,
-	"billing_ordered_by_id" integer,
-	"billing_first_name" varchar,
-	"billing_last_name" varchar,
-	"billing_email" varchar,
-	"billing_contact_number" numeric,
-	"billing_org_name" varchar,
-	"billing_org_id" varchar,
-	"billing_address_address_line1" varchar,
-	"billing_address_address_line2" varchar,
-	"billing_address_city" varchar,
-	"billing_address_state" varchar,
-	"billing_address_postcode" varchar,
-	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
-	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
-);
-
-CREATE TABLE IF NOT EXISTS "orders_rels" (
-	"id" serial PRIMARY KEY NOT NULL,
-	"order" integer,
-	"parent_id" integer NOT NULL,
-	"path" varchar NOT NULL,
-	"products_id" integer
-);
-
-CREATE TABLE IF NOT EXISTS "discountcodes" (
-	"id" serial PRIMARY KEY NOT NULL,
-	"slug" varchar NOT NULL,
-	"cart_description" varchar NOT NULL,
-	"discount_amount" numeric NOT NULL,
-	"discountType" "enum_discountcodes_discount_type" NOT NULL,
-	"starts" timestamp(3) with time zone NOT NULL,
-	"expires" timestamp(3) with time zone NOT NULL,
-	"home_page_details_on_home_page" boolean NOT NULL,
-	"home_page_details_advertised_description" varchar,
-	"home_page_details_starts" timestamp(3) with time zone,
-	"home_page_details_expires" timestamp(3) with time zone,
-	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
-	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
-);
-
-CREATE TABLE IF NOT EXISTS "pages" (
+CREATE TABLE IF NOT EXISTS "reviews" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"title" varchar,
-	"slug" varchar,
-	"layout" jsonb,
-	"meta_title" varchar,
-	"meta_description" varchar,
-	"meta_image_id" integer,
-	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
-	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
-	"_status" "enum_pages_status"
-);
-
-CREATE TABLE IF NOT EXISTS "_pages_v" (
-	"id" serial PRIMARY KEY NOT NULL,
-	"parent_id" integer,
-	"version_title" varchar,
-	"version_slug" varchar,
-	"version_layout" jsonb,
-	"version_meta_title" varchar,
-	"version_meta_description" varchar,
-	"version_meta_image_id" integer,
-	"version_updated_at" timestamp(3) with time zone,
-	"version_created_at" timestamp(3) with time zone,
-	"version__status" "enum__pages_v_version_status",
-	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
-	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
-	"latest" boolean
-);
-
-CREATE TABLE IF NOT EXISTS "reusable" (
-	"id" serial PRIMARY KEY NOT NULL,
-	"title" varchar NOT NULL,
-	"layout" jsonb,
+	"starRating" "enum_reviews_star_rating",
+	"review_date" timestamp(3) with time zone,
+	"body" varchar,
+	"reviewer_name" varchar,
 	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
 	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS "media" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"alt" varchar NOT NULL,
+	"caption" jsonb,
+	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
+	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
+	"url" varchar,
+	"thumbnail_u_r_l" varchar,
+	"filename" varchar,
+	"mime_type" varchar,
+	"filesize" numeric,
+	"width" numeric,
+	"height" numeric,
+	"focal_x" numeric,
+	"focal_y" numeric
 );
 
 CREATE TABLE IF NOT EXISTS "users_type" (
@@ -516,6 +511,23 @@ CREATE TABLE IF NOT EXISTS "users_rels" (
 	"orders_id" integer
 );
 
+CREATE TABLE IF NOT EXISTS "tags" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"title" varchar,
+	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
+	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS "categories" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"title" varchar NOT NULL,
+	"shop_config_visible" boolean,
+	"shop_config_shop_filter_title" varchar,
+	"shop_config_sort_order" numeric,
+	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
+	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS "sessions" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"user_id" integer NOT NULL,
@@ -525,37 +537,18 @@ CREATE TABLE IF NOT EXISTS "sessions" (
 	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
 );
 
-CREATE TABLE IF NOT EXISTS "media" (
+CREATE TABLE IF NOT EXISTS "discountcodes" (
 	"id" serial PRIMARY KEY NOT NULL,
-	"alt" varchar NOT NULL,
-	"caption" jsonb,
-	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
-	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
-	"url" varchar,
-	"thumbnail_u_r_l" varchar,
-	"filename" varchar,
-	"mime_type" varchar,
-	"filesize" numeric,
-	"width" numeric,
-	"height" numeric,
-	"focal_x" numeric,
-	"focal_y" numeric
-);
-
-CREATE TABLE IF NOT EXISTS "categories" (
-	"id" serial PRIMARY KEY NOT NULL,
-	"title" varchar NOT NULL,
-	"productType" "enum_categories_product_type",
-	"shop_config_visible" boolean,
-	"shop_config_shop_filter_title" varchar,
-	"shop_config_sort_order" numeric,
-	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
-	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
-);
-
-CREATE TABLE IF NOT EXISTS "tags" (
-	"id" serial PRIMARY KEY NOT NULL,
-	"title" varchar,
+	"slug" varchar NOT NULL,
+	"cart_description" varchar NOT NULL,
+	"discount_amount" numeric NOT NULL,
+	"discountType" "enum_discountcodes_discount_type" NOT NULL,
+	"starts" timestamp(3) with time zone NOT NULL,
+	"expires" timestamp(3) with time zone NOT NULL,
+	"home_page_details_on_home_page" boolean NOT NULL,
+	"home_page_details_advertised_description" varchar,
+	"home_page_details_starts" timestamp(3) with time zone,
+	"home_page_details_expires" timestamp(3) with time zone,
 	"updated_at" timestamp(3) with time zone DEFAULT now() NOT NULL,
 	"created_at" timestamp(3) with time zone DEFAULT now() NOT NULL
 );
@@ -793,7 +786,6 @@ CREATE TABLE IF NOT EXISTS "settings" (
 	"id" serial PRIMARY KEY NOT NULL,
 	"top_bar_visible" boolean,
 	"top_bar_content" jsonb,
-	"default_gift_card_default_gift_card_id" integer,
 	"updated_at" timestamp(3) with time zone,
 	"created_at" timestamp(3) with time zone
 );
@@ -823,6 +815,22 @@ ALTER TABLE "users" ADD COLUMN "email_verified" timestamp(3) with time zone;
 ALTER TABLE "users" ADD COLUMN "enable_a_p_i_key" boolean;
 ALTER TABLE "users" ADD COLUMN "api_key" varchar;
 ALTER TABLE "users" ADD COLUMN "api_key_index" varchar;
+CREATE INDEX IF NOT EXISTS "pages_slug_idx" ON "pages" ("slug");
+CREATE INDEX IF NOT EXISTS "pages_created_at_idx" ON "pages" ("created_at");
+CREATE INDEX IF NOT EXISTS "_pages_v_version_version_slug_idx" ON "_pages_v" ("version_slug");
+CREATE INDEX IF NOT EXISTS "_pages_v_version_version_created_at_idx" ON "_pages_v" ("version_created_at");
+CREATE INDEX IF NOT EXISTS "_pages_v_created_at_idx" ON "_pages_v" ("created_at");
+CREATE INDEX IF NOT EXISTS "_pages_v_updated_at_idx" ON "_pages_v" ("updated_at");
+CREATE INDEX IF NOT EXISTS "_pages_v_latest_idx" ON "_pages_v" ("latest");
+CREATE INDEX IF NOT EXISTS "reusable_created_at_idx" ON "reusable" ("created_at");
+CREATE INDEX IF NOT EXISTS "orders_items_order_idx" ON "orders_items" ("_order");
+CREATE INDEX IF NOT EXISTS "orders_items_parent_id_idx" ON "orders_items" ("_parent_id");
+CREATE INDEX IF NOT EXISTS "orders_receivers_order_idx" ON "orders_receivers" ("_order");
+CREATE INDEX IF NOT EXISTS "orders_receivers_parent_id_idx" ON "orders_receivers" ("_parent_id");
+CREATE INDEX IF NOT EXISTS "orders_created_at_idx" ON "orders" ("created_at");
+CREATE INDEX IF NOT EXISTS "orders_rels_order_idx" ON "orders_rels" ("order");
+CREATE INDEX IF NOT EXISTS "orders_rels_parent_idx" ON "orders_rels" ("parent_id");
+CREATE INDEX IF NOT EXISTS "orders_rels_path_idx" ON "orders_rels" ("path");
 CREATE INDEX IF NOT EXISTS "products_extra_details_order_idx" ON "products_extra_details" ("_order");
 CREATE INDEX IF NOT EXISTS "products_extra_details_parent_id_idx" ON "products_extra_details" ("_parent_id");
 CREATE INDEX IF NOT EXISTS "products_media_order_idx" ON "products_media" ("_order");
@@ -844,7 +852,6 @@ CREATE INDEX IF NOT EXISTS "_products_v_latest_idx" ON "_products_v" ("latest");
 CREATE INDEX IF NOT EXISTS "_products_v_rels_order_idx" ON "_products_v_rels" ("order");
 CREATE INDEX IF NOT EXISTS "_products_v_rels_parent_idx" ON "_products_v_rels" ("parent_id");
 CREATE INDEX IF NOT EXISTS "_products_v_rels_path_idx" ON "_products_v_rels" ("path");
-CREATE INDEX IF NOT EXISTS "reviews_created_at_idx" ON "reviews" ("created_at");
 CREATE INDEX IF NOT EXISTS "carts_items_order_idx" ON "carts_items" ("_order");
 CREATE INDEX IF NOT EXISTS "carts_items_parent_id_idx" ON "carts_items" ("_parent_id");
 CREATE INDEX IF NOT EXISTS "carts_receivers_order_idx" ON "carts_receivers" ("_order");
@@ -853,24 +860,9 @@ CREATE INDEX IF NOT EXISTS "carts_created_at_idx" ON "carts" ("created_at");
 CREATE INDEX IF NOT EXISTS "carts_rels_order_idx" ON "carts_rels" ("order");
 CREATE INDEX IF NOT EXISTS "carts_rels_parent_idx" ON "carts_rels" ("parent_id");
 CREATE INDEX IF NOT EXISTS "carts_rels_path_idx" ON "carts_rels" ("path");
-CREATE INDEX IF NOT EXISTS "orders_items_order_idx" ON "orders_items" ("_order");
-CREATE INDEX IF NOT EXISTS "orders_items_parent_id_idx" ON "orders_items" ("_parent_id");
-CREATE INDEX IF NOT EXISTS "orders_receivers_order_idx" ON "orders_receivers" ("_order");
-CREATE INDEX IF NOT EXISTS "orders_receivers_parent_id_idx" ON "orders_receivers" ("_parent_id");
-CREATE INDEX IF NOT EXISTS "orders_created_at_idx" ON "orders" ("created_at");
-CREATE INDEX IF NOT EXISTS "orders_rels_order_idx" ON "orders_rels" ("order");
-CREATE INDEX IF NOT EXISTS "orders_rels_parent_idx" ON "orders_rels" ("parent_id");
-CREATE INDEX IF NOT EXISTS "orders_rels_path_idx" ON "orders_rels" ("path");
-CREATE INDEX IF NOT EXISTS "discountcodes_slug_idx" ON "discountcodes" ("slug");
-CREATE INDEX IF NOT EXISTS "discountcodes_created_at_idx" ON "discountcodes" ("created_at");
-CREATE INDEX IF NOT EXISTS "pages_slug_idx" ON "pages" ("slug");
-CREATE INDEX IF NOT EXISTS "pages_created_at_idx" ON "pages" ("created_at");
-CREATE INDEX IF NOT EXISTS "_pages_v_version_version_slug_idx" ON "_pages_v" ("version_slug");
-CREATE INDEX IF NOT EXISTS "_pages_v_version_version_created_at_idx" ON "_pages_v" ("version_created_at");
-CREATE INDEX IF NOT EXISTS "_pages_v_created_at_idx" ON "_pages_v" ("created_at");
-CREATE INDEX IF NOT EXISTS "_pages_v_updated_at_idx" ON "_pages_v" ("updated_at");
-CREATE INDEX IF NOT EXISTS "_pages_v_latest_idx" ON "_pages_v" ("latest");
-CREATE INDEX IF NOT EXISTS "reusable_created_at_idx" ON "reusable" ("created_at");
+CREATE INDEX IF NOT EXISTS "reviews_created_at_idx" ON "reviews" ("created_at");
+CREATE INDEX IF NOT EXISTS "media_created_at_idx" ON "media" ("created_at");
+CREATE UNIQUE INDEX IF NOT EXISTS "media_filename_idx" ON "media" ("filename");
 CREATE INDEX IF NOT EXISTS "users_type_order_idx" ON "users_type" ("order");
 CREATE INDEX IF NOT EXISTS "users_type_parent_idx" ON "users_type" ("parent_id");
 CREATE INDEX IF NOT EXISTS "users_roles_order_idx" ON "users_roles" ("order");
@@ -882,12 +874,12 @@ CREATE INDEX IF NOT EXISTS "users_verification_tokens_parent_id_idx" ON "users_v
 CREATE INDEX IF NOT EXISTS "users_rels_order_idx" ON "users_rels" ("order");
 CREATE INDEX IF NOT EXISTS "users_rels_parent_idx" ON "users_rels" ("parent_id");
 CREATE INDEX IF NOT EXISTS "users_rels_path_idx" ON "users_rels" ("path");
+CREATE INDEX IF NOT EXISTS "tags_created_at_idx" ON "tags" ("created_at");
+CREATE INDEX IF NOT EXISTS "categories_created_at_idx" ON "categories" ("created_at");
 CREATE INDEX IF NOT EXISTS "sessions_session_token_idx" ON "sessions" ("session_token");
 CREATE INDEX IF NOT EXISTS "sessions_created_at_idx" ON "sessions" ("created_at");
-CREATE INDEX IF NOT EXISTS "media_created_at_idx" ON "media" ("created_at");
-CREATE UNIQUE INDEX IF NOT EXISTS "media_filename_idx" ON "media" ("filename");
-CREATE INDEX IF NOT EXISTS "categories_created_at_idx" ON "categories" ("created_at");
-CREATE INDEX IF NOT EXISTS "tags_created_at_idx" ON "tags" ("created_at");
+CREATE INDEX IF NOT EXISTS "discountcodes_slug_idx" ON "discountcodes" ("slug");
+CREATE INDEX IF NOT EXISTS "discountcodes_created_at_idx" ON "discountcodes" ("created_at");
 CREATE INDEX IF NOT EXISTS "forms_blocks_checkbox_order_idx" ON "forms_blocks_checkbox" ("_order");
 CREATE INDEX IF NOT EXISTS "forms_blocks_checkbox_parent_id_idx" ON "forms_blocks_checkbox" ("_parent_id");
 CREATE INDEX IF NOT EXISTS "forms_blocks_checkbox_path_idx" ON "forms_blocks_checkbox" ("_path");
@@ -948,6 +940,60 @@ END $$;
 
 DO $$ BEGIN
  ALTER TABLE "payload_preferences_rels" ADD CONSTRAINT "payload_preferences_rels_users_fk" FOREIGN KEY ("users_id") REFERENCES "users"("id") ON DELETE cascade ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+
+DO $$ BEGIN
+ ALTER TABLE "pages" ADD CONSTRAINT "pages_meta_image_id_media_id_fk" FOREIGN KEY ("meta_image_id") REFERENCES "media"("id") ON DELETE set null ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+
+DO $$ BEGIN
+ ALTER TABLE "_pages_v" ADD CONSTRAINT "_pages_v_parent_id_pages_id_fk" FOREIGN KEY ("parent_id") REFERENCES "pages"("id") ON DELETE set null ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+
+DO $$ BEGIN
+ ALTER TABLE "_pages_v" ADD CONSTRAINT "_pages_v_version_meta_image_id_media_id_fk" FOREIGN KEY ("version_meta_image_id") REFERENCES "media"("id") ON DELETE set null ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+
+DO $$ BEGIN
+ ALTER TABLE "orders_items" ADD CONSTRAINT "orders_items_product_id_products_id_fk" FOREIGN KEY ("product_id") REFERENCES "products"("id") ON DELETE set null ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+
+DO $$ BEGIN
+ ALTER TABLE "orders_items" ADD CONSTRAINT "orders_items_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "orders"("id") ON DELETE cascade ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+
+DO $$ BEGIN
+ ALTER TABLE "orders_receivers" ADD CONSTRAINT "orders_receivers_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "orders"("id") ON DELETE cascade ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+
+DO $$ BEGIN
+ ALTER TABLE "orders" ADD CONSTRAINT "orders_billing_ordered_by_id_users_id_fk" FOREIGN KEY ("billing_ordered_by_id") REFERENCES "users"("id") ON DELETE set null ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+
+DO $$ BEGIN
+ ALTER TABLE "orders_rels" ADD CONSTRAINT "orders_rels_parent_fk" FOREIGN KEY ("parent_id") REFERENCES "orders"("id") ON DELETE cascade ON UPDATE no action;
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+
+DO $$ BEGIN
+ ALTER TABLE "orders_rels" ADD CONSTRAINT "orders_rels_products_fk" FOREIGN KEY ("products_id") REFERENCES "products"("id") ON DELETE cascade ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -1098,60 +1144,6 @@ END $$;
 
 DO $$ BEGIN
  ALTER TABLE "carts_rels" ADD CONSTRAINT "carts_rels_products_fk" FOREIGN KEY ("products_id") REFERENCES "products"("id") ON DELETE cascade ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
-
-DO $$ BEGIN
- ALTER TABLE "orders_items" ADD CONSTRAINT "orders_items_product_id_products_id_fk" FOREIGN KEY ("product_id") REFERENCES "products"("id") ON DELETE set null ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
-
-DO $$ BEGIN
- ALTER TABLE "orders_items" ADD CONSTRAINT "orders_items_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "orders"("id") ON DELETE cascade ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
-
-DO $$ BEGIN
- ALTER TABLE "orders_receivers" ADD CONSTRAINT "orders_receivers_parent_id_fk" FOREIGN KEY ("_parent_id") REFERENCES "orders"("id") ON DELETE cascade ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
-
-DO $$ BEGIN
- ALTER TABLE "orders" ADD CONSTRAINT "orders_billing_ordered_by_id_users_id_fk" FOREIGN KEY ("billing_ordered_by_id") REFERENCES "users"("id") ON DELETE set null ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
-
-DO $$ BEGIN
- ALTER TABLE "orders_rels" ADD CONSTRAINT "orders_rels_parent_fk" FOREIGN KEY ("parent_id") REFERENCES "orders"("id") ON DELETE cascade ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
-
-DO $$ BEGIN
- ALTER TABLE "orders_rels" ADD CONSTRAINT "orders_rels_products_fk" FOREIGN KEY ("products_id") REFERENCES "products"("id") ON DELETE cascade ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
-
-DO $$ BEGIN
- ALTER TABLE "pages" ADD CONSTRAINT "pages_meta_image_id_media_id_fk" FOREIGN KEY ("meta_image_id") REFERENCES "media"("id") ON DELETE set null ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
-
-DO $$ BEGIN
- ALTER TABLE "_pages_v" ADD CONSTRAINT "_pages_v_parent_id_pages_id_fk" FOREIGN KEY ("parent_id") REFERENCES "pages"("id") ON DELETE set null ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
-
-DO $$ BEGIN
- ALTER TABLE "_pages_v" ADD CONSTRAINT "_pages_v_version_meta_image_id_media_id_fk" FOREIGN KEY ("version_meta_image_id") REFERENCES "media"("id") ON DELETE set null ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
@@ -1325,12 +1317,6 @@ EXCEPTION
 END $$;
 
 DO $$ BEGIN
- ALTER TABLE "settings" ADD CONSTRAINT "settings_default_gift_card_default_gift_card_id_products_id_fk" FOREIGN KEY ("default_gift_card_default_gift_card_id") REFERENCES "products"("id") ON DELETE set null ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
-
-DO $$ BEGIN
  ALTER TABLE "settings_rels" ADD CONSTRAINT "settings_rels_parent_fk" FOREIGN KEY ("parent_id") REFERENCES "settings"("id") ON DELETE cascade ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
@@ -1352,7 +1338,14 @@ END $$;
 
 export async function down({ payload, req }: MigrateDownArgs): Promise<void> {
 await payload.db.drizzle.execute(sql`
- DROP TABLE "products_extra_details";
+ DROP TABLE "pages";
+DROP TABLE "_pages_v";
+DROP TABLE "reusable";
+DROP TABLE "orders_items";
+DROP TABLE "orders_receivers";
+DROP TABLE "orders";
+DROP TABLE "orders_rels";
+DROP TABLE "products_extra_details";
 DROP TABLE "products_media";
 DROP TABLE "products";
 DROP TABLE "products_rels";
@@ -1360,28 +1353,21 @@ DROP TABLE "_products_v_version_extra_details";
 DROP TABLE "_products_v_version_media";
 DROP TABLE "_products_v";
 DROP TABLE "_products_v_rels";
-DROP TABLE "reviews";
 DROP TABLE "carts_items";
 DROP TABLE "carts_receivers";
 DROP TABLE "carts";
 DROP TABLE "carts_rels";
-DROP TABLE "orders_items";
-DROP TABLE "orders_receivers";
-DROP TABLE "orders";
-DROP TABLE "orders_rels";
-DROP TABLE "discountcodes";
-DROP TABLE "pages";
-DROP TABLE "_pages_v";
-DROP TABLE "reusable";
+DROP TABLE "reviews";
+DROP TABLE "media";
 DROP TABLE "users_type";
 DROP TABLE "users_roles";
 DROP TABLE "users_accounts";
 DROP TABLE "users_verification_tokens";
 DROP TABLE "users_rels";
-DROP TABLE "sessions";
-DROP TABLE "media";
-DROP TABLE "categories";
 DROP TABLE "tags";
+DROP TABLE "categories";
+DROP TABLE "sessions";
+DROP TABLE "discountcodes";
 DROP TABLE "forms_blocks_checkbox";
 DROP TABLE "forms_blocks_country";
 DROP TABLE "forms_blocks_email";
