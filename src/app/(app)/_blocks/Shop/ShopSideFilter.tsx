@@ -26,9 +26,9 @@ const ShopSideFilter = () => {
       productType?: { equals: string }
     }
     type WhereClause = WhereCondition | { and: WhereCondition[] }
-    console.log('fetchCategories DEBUG 1')
+
     let categories_where_clause: WhereClause = { shopConfig: { visible: { equals: true } } }
-    console.log('fetchCategories DEBUG 2')
+
     if (productType) {
       categories_where_clause = {
         and: [
@@ -37,41 +37,36 @@ const ShopSideFilter = () => {
         ],
       }
     }
-    console.log('fetchCategories DEBUG 3')
-    console.log(categories_where_clause)
+
     try {
       const fetchedCategories = await FetchItems({
         collection: 'categories',
         where: categories_where_clause,
         sort: 'shopConfig.sortOrder',
       })
-      console.log('fetchCategories DEBUG 4')
-      console.log('fetchedCategories: ', fetchedCategories)
+      console.log('Fetched categories:', fetchedCategories)
       setCategories(fetchedCategories)
-      console.log('categories: ', categories)
     } catch (error) {
       console.error('Error fetching product categories:', error)
     }
   }, [])
 
   useEffect(() => {
-    console.log('Updated categories:', categories)
-  }, [categories])
+    const productType = searchParams.get('productType')
+    fetchCategories(productType)
+  }, [searchParams, fetchCategories])
 
   useEffect(() => {
-    console.log('SearchParams changed:', searchParams.toString())
     const minPrice = searchParams.get('minPrice')
     const maxPrice = searchParams.get('maxPrice')
     const category = searchParams.get('category')
-    const productType = searchParams.get('productType')
 
     setPriceRange([
       minPrice ? parseInt(minPrice) : MIN_PRICE,
       maxPrice ? parseInt(maxPrice) : MAX_PRICE,
     ])
     setSelectedCategory(category || null)
-    fetchCategories(productType)
-  }, [searchParams, fetchCategories])
+  }, [searchParams])
 
   const updateURL = useCallback(
     (newValues: number[], category: string | null) => {
