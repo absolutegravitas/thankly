@@ -20,6 +20,7 @@ const ShopSideFilter = () => {
   const router = useRouter()
 
   const fetchCategories = useCallback(async (productType?: string | null) => {
+    console.log('Fetching categories with productType:', productType)
     type WhereCondition = {
       shopConfig?: { visible: { equals: boolean } }
       productType?: { equals: string }
@@ -50,6 +51,7 @@ const ShopSideFilter = () => {
   }, [])
 
   useEffect(() => {
+    console.log('SearchParams changed:', searchParams.toString())
     const minPrice = searchParams.get('minPrice')
     const maxPrice = searchParams.get('maxPrice')
     const category = searchParams.get('category')
