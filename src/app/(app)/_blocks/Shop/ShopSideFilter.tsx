@@ -13,48 +13,41 @@ const MAX_PRICE = parseInt(process.env.NEXT_PUBLIC_SHOP_MAX_PRICE || '200', 10)
 const ShopSideFilter = () => {
   const [priceRange, setPriceRange] = useState([MIN_PRICE, MAX_PRICE])
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
-  const [categories, setCategories] = useState<Category[]>([])
+  const [allCategories, setAllCategories] = useState<Category[]>([])
+  const [isLoading, setIsLoading] = useState(false)
 
   const searchParams = useSearchParams()
   const pathname = usePathname()
   const router = useRouter()
 
-  const fetchCategories = useCallback(async (productType?: string | null) => {
-    console.log('Fetching categories with productType:', productType)
-    type WhereCondition = {
-      shopConfig?: { visible: { equals: boolean } }
-      productType?: { equals: string }
-    }
-    type WhereClause = WhereCondition | { and: WhereCondition[] }
-
-    let categories_where_clause: WhereClause = { shopConfig: { visible: { equals: true } } }
-
-    if (productType) {
-      categories_where_clause = {
-        and: [
-          { shopConfig: { visible: { equals: true } } },
-          { productType: { equals: productType } },
-        ],
-      }
-    }
+  const fetchAllCategories = useCallback(async () => {
+    setIsLoading(true)
+    console.log('Fetching all categories')
 
     try {
       const fetchedCategories = await FetchItems({
         collection: 'categories',
-        where: categories_where_clause,
+        where: { shopConfig: { visible: { equals: true } } },
         sort: 'shopConfig.sortOrder',
       })
-      console.log('Fetched categories:', fetchedCategories)
-      setCategories(fetchedCategories)
+      console.log('Fetched all categories:', fetchedCategories)
+      setAllCategories(fetchedCategories)
     } catch (error) {
       console.error('Error fetching product categories:', error)
+    } finally {
+      setIsLoading(false)
     }
   }, [])
 
   useEffect(() => {
+    fetchAllCategories()
+  }, [fetchAllCategories])
+
+  const filteredCategories = useMemo(() => {
     const productType = searchParams.get('productType')
-    fetchCategories(productType)
-  }, [searchParams, fetchCategories])
+    if (!productType) return allCategories
+    return allCategories.filter((category) => category.productType === productType)
+  }, [allCategories, searchParams])
 
   useEffect(() => {
     const minPrice = searchParams.get('minPrice')
@@ -132,7 +125,7 @@ const ShopSideFilter = () => {
           >
             All
           </Button>
-          {categories.map((item) => (
+          {filteredCategories.map((item) => (
             <Button
               key={item.id}
               variant="ghost"
