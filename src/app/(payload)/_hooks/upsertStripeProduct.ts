@@ -16,6 +16,7 @@ export const upsertStripeProduct: CollectionBeforeChangeHook = async ({ req, dat
         description: data.shortDescription,
         metadata: {
           slug: data.slug,
+          id: data.id,
           stockOnHand: data.stockOnHand,
           lowStockThreshold: data.lowStockThreshold,
           type: data.type,
@@ -81,6 +82,7 @@ export const upsertStripeProduct: CollectionBeforeChangeHook = async ({ req, dat
         description: data.shortDescription,
         metadata: {
           slug: data.slug,
+          id: data.id,
           stockOnHand: data.stock?.stockOnHand,
           lowStockThreshold: data.stock?.lowStockThreshold,
           type: data.productType,
