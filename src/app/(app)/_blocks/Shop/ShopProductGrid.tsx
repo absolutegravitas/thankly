@@ -71,8 +71,8 @@ const fetchProductsList = async ({
   }
 
   // add product type filters if provided
-  if (filters.productType && filters.productType.length > 0) {
-    query.where.and.push({ productType: { in: filters.productType } })
+  if (filters.productType) {
+    query.where.and.push({ productType: { equals: filters.productType } })
   }
 
   // Add category filter if provided
