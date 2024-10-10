@@ -62,8 +62,6 @@ export default async function ShopPage({
     filters = { ...filters, maxPrice: parseInt(searchParams.maxPrice) }
   }
 
-  const productType = searchParams?.productType
-
   // const categories = await FetchItems({
   //   collection: 'categories',
   //   where: { shopConfig: { visible: { equals: true } } },
@@ -87,7 +85,7 @@ export default async function ShopPage({
       ],
     }
   }
-  console.log('where:', categories_where_clause)
+
   const categories = await FetchItems({
     collection: 'categories',
     where: categories_where_clause,
@@ -139,3 +137,5 @@ export async function generateMetadata(): Promise<Metadata> {
     },
   }
 }
+
+export const dynamic = 'force-dynamic'
