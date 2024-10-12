@@ -7,24 +7,6 @@ import { getPayloadHMR } from '@payloadcms/next/utilities'
 import configPromise from '@payload-config'
 import { unstable_cache } from 'next/cache'
 
-/**
- * Function to create or update a cart in the Payload CMS database.
- *
- * @param cart - The cart object to upsert (create or update).
- * @returns Promise that resolves to the upserted cart object if successful, or null if an error occurs.
- *
- * Performance considerations:
- * - Potential performance impact due to database operations.
- * - Optimization opportunities: Caching, batching operations, or limiting data fetched.
- *
- * API integrations or data management:
- * - Expects a Cart object with a cartNumber and items array containing product IDs or objects.
- * - Potential error states: Failed database operations, invalid data formats.
- *
- * Side effects:
- * - Creates or updates a cart in the Payload CMS database.
- */
-
 export async function upsertPayloadCart(cart: Cart) {
   const config = await configPromise
   let payload: any = await getPayloadHMR({ config })
@@ -62,7 +44,6 @@ export async function upsertPayloadCart(cart: Cart) {
 
     // no server cart found, create the server cart
     if (!docs || docs.length === 0) {
-
       serverCart = await payload.create({
         collection: 'carts',
         data: transformedCart,

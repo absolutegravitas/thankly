@@ -21,6 +21,10 @@ export async function fetchUserDetails(userId: string | number): Promise<Partial
       orgId: user.orgId,
       website: user.website,
       email: user.email,
+      billingAddress: {
+        ...user.billingAddress,
+        country: user.billingAddress?.country || '',
+      },
     }
   } catch (error) {
     console.error('Error fetching user details:', error)
