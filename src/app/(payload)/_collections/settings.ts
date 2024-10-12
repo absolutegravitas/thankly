@@ -18,7 +18,6 @@ export const Settings: GlobalConfig = {
   fields: [
     {
       name: 'topBar',
-      interfaceName: 'topBar',
       type: 'group',
       fields: [
         {
@@ -185,6 +184,7 @@ export const Settings: GlobalConfig = {
           name: 'enabled',
           type: 'checkbox',
           label: 'Enable Newsletter Popup',
+          defaultValue: true,
         },
         {
           name: 'title',
@@ -225,7 +225,8 @@ export const Settings: GlobalConfig = {
           name: 'retailListId',
           type: 'text',
           label: 'Retail Customer List ID',
-          required: true,
+          required: false,
+          defaultValue: '6  ',
           admin: {
             description: 'Enter the Brevo list ID for retail customers',
           },
@@ -234,7 +235,8 @@ export const Settings: GlobalConfig = {
           name: 'businessListId',
           type: 'text',
           label: 'Business Customer List ID',
-          required: true,
+          required: false,
+          defaultValue: '7',
           admin: {
             description: 'Enter the Brevo list ID for business customers',
           },
@@ -251,7 +253,7 @@ export const Settings: GlobalConfig = {
           type: 'number',
           label: 'Delay Before Popup (in seconds)',
           min: 0,
-          defaultValue: 0,
+          defaultValue: 3,
         },
         {
           name: 'suppressUntil',

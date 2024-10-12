@@ -555,7 +555,7 @@ export interface Setting {
   defaultGiftCard?: DefaultGiftCard;
   menu?: Menu;
   footer?: Footer;
-  newsletterPopup: {
+  newsletterPopup?: {
     enabled?: boolean | null;
     title?: string | null;
     description?: string | null;
@@ -564,8 +564,8 @@ export interface Setting {
     submitButtonText?: string | null;
     collapsedText?: string | null;
     image?: number | Media | null;
-    retailListId: string;
-    businessListId: string;
+    retailListId?: string | null;
+    businessListId?: string | null;
     displayOn?:
       | (
           | {
