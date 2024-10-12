@@ -103,23 +103,19 @@ export const Carts: CollectionConfig = {
                   required: false,
                   admin: { width: '50%' },
                 },
+                // for guest checkout
+                { name: 'subscribeToNewsletter', type: 'checkbox', required: false },
                 { name: 'firstName', label: 'First Name', type: 'text', admin: { width: '50%' } },
                 { name: 'lastName', label: 'Last Name', type: 'text', admin: { width: '50%' } },
                 { name: 'email', label: 'Email', type: 'email', admin: { width: '50%' } },
+                { name: 'orgName', label: 'Organization', type: 'text', admin: { width: '50%' } },
+                { name: 'orgId', label: 'ABN / ACN', type: 'text', admin: { width: '50%' } },
                 {
                   name: 'contactNumber',
                   label: 'Contact Number',
                   type: 'number',
                   admin: { width: '50%' },
                 },
-                {
-                  name: 'orgName',
-                  label: 'Company or Organisation',
-                  type: 'text',
-                  admin: { width: '50%' },
-                },
-
-                { name: 'orgId', label: 'ABN / ACN', type: 'text', admin: { width: '50%' } },
               ],
             },
             {

@@ -161,7 +161,7 @@ export const Settings: GlobalConfig = {
     },
     {
       name: 'footer',
-      interfaceName: 'footer', // optional
+      interfaceName: 'footer',
       type: 'group',
       fields: [
         {
@@ -173,6 +173,92 @@ export const Settings: GlobalConfig = {
             { name: 'label', label: 'Column Name', type: 'text' },
             { name: 'items', type: 'array', fields: [link({ looks: false })] },
           ],
+        },
+      ],
+    },
+    {
+      name: 'newsletterPopup',
+      type: 'group',
+      label: 'Newsletter Popup',
+      fields: [
+        {
+          name: 'enabled',
+          type: 'checkbox',
+          label: 'Enable Newsletter Popup',
+        },
+        {
+          name: 'title',
+          type: 'text',
+          label: 'Popup Title',
+        },
+        {
+          name: 'description',
+          type: 'textarea',
+          label: 'Popup Description',
+        },
+        {
+          name: 'businessCheckboxText',
+          type: 'text',
+          label: 'Business Checkbox Text',
+          defaultValue: `Yes, I'm a business owner or manager and would love to discover the latest corporate Thankly offers for my team, clients, or partners`,
+        },
+        {
+          name: 'submitMessage',
+          type: 'textarea',
+          label: 'Submit Message',
+          defaultValue: 'Thanks for subscribing! Please check your email for confirmation.',
+        },
+        {
+          name: 'submitButtonText',
+          type: 'text',
+          label: 'Submit Button Text',
+          defaultValue: 'Subscribe  ',
+        },
+        { name: 'collapsedText', type: 'text', label: 'Minimized Text' },
+        {
+          name: 'image',
+          type: 'upload',
+          relationTo: 'media',
+          label: 'Popup Image',
+        },
+        {
+          name: 'retailListId',
+          type: 'text',
+          label: 'Retail Customer List ID',
+          required: true,
+          admin: {
+            description: 'Enter the Brevo list ID for retail customers',
+          },
+        },
+        {
+          name: 'businessListId',
+          type: 'text',
+          label: 'Business Customer List ID',
+          required: true,
+          admin: {
+            description: 'Enter the Brevo list ID for business customers',
+          },
+        },
+        {
+          name: 'displayOn',
+          type: 'relationship',
+          relationTo: ['pages', 'products'],
+          hasMany: true,
+          label: 'Display on Pages/Products',
+        },
+        {
+          name: 'delayInSeconds',
+          type: 'number',
+          label: 'Delay Before Popup (in seconds)',
+          min: 0,
+          defaultValue: 0,
+        },
+        {
+          name: 'suppressUntil',
+          type: 'number',
+          label: 'Suppress Until (in days)',
+          min: 0,
+          defaultValue: 3,
         },
       ],
     },

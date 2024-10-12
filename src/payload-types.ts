@@ -236,12 +236,13 @@ export interface Cart {
   };
   billing?: {
     orderedBy?: (number | null) | User;
+    subscribeToNewsletter?: boolean | null;
     firstName?: string | null;
     lastName?: string | null;
     email?: string | null;
-    contactNumber?: number | null;
     orgName?: string | null;
     orgId?: string | null;
+    contactNumber?: number | null;
     address?: {
       addressLine1?: string | null;
       addressLine2?: string | null;
@@ -307,6 +308,14 @@ export interface User {
   type?: ('staff' | 'guest' | 'retail' | 'business' | 'partner')[] | null;
   roles: ('admin' | 'public' | 'customer')[];
   stripeId?: string | null;
+  billingAddress?: {
+    addressLine1?: string | null;
+    addressLine2?: string | null;
+    city?: string | null;
+    state?: string | null;
+    postcode?: string | null;
+  };
+  contactNumber?: string | null;
   orders?: (number | Order)[] | null;
   accounts?:
     | {
@@ -360,9 +369,9 @@ export interface Order {
     firstName?: string | null;
     lastName?: string | null;
     email?: string | null;
-    contactNumber?: number | null;
     orgName?: string | null;
     orgId?: string | null;
+    contactNumber?: number | null;
     address?: {
       addressLine1?: string | null;
       addressLine2?: string | null;
@@ -546,6 +555,32 @@ export interface Setting {
   defaultGiftCard?: DefaultGiftCard;
   menu?: Menu;
   footer?: Footer;
+  newsletterPopup: {
+    enabled?: boolean | null;
+    title?: string | null;
+    description?: string | null;
+    businessCheckboxText?: string | null;
+    submitMessage?: string | null;
+    submitButtonText?: string | null;
+    collapsedText?: string | null;
+    image?: number | Media | null;
+    retailListId: string;
+    businessListId: string;
+    displayOn?:
+      | (
+          | {
+              relationTo: 'pages';
+              value: number | Page;
+            }
+          | {
+              relationTo: 'products';
+              value: number | Product;
+            }
+        )[]
+      | null;
+    delayInSeconds?: number | null;
+    suppressUntil?: number | null;
+  };
   updatedAt?: string | null;
   createdAt?: string | null;
 }
