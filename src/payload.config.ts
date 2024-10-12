@@ -58,7 +58,7 @@ export default buildConfig({
 
   globals: [Settings],
   editor: lexicalEditor({}),
-  db: postgresAdapter({ pool: { connectionString: process.env.POSTGRES_URL } }),
+  db: postgresAdapter({ pool: { connectionString: process.env.POSTGRES_URL_OVERRIDE || process.env.POSTGRES_URL } }),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: { outputFile: path.resolve(dirname, 'payload-types.ts') },
   sharp,
