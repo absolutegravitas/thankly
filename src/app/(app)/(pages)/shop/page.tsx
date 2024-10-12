@@ -27,7 +27,7 @@ export type SortOption = 'name_asc' | 'name_desc' | 'price_asc' | 'price_desc' |
 export type FilterOptions = {
   category?: string[]
   tags?: string[]
-  productType?: string[]
+  productType?: string
   minPrice?: number
   maxPrice?: number
 }
@@ -41,13 +41,11 @@ export default async function ShopPage({
     sort?: SortOption
     category?: string[]
     tags?: string[]
-    productType?: string[]
+    productType?: string
     minPrice?: string
     maxPrice?: string
   }
 }) {
-  // console.log('Updated searchParams in page.tsx:', searchParams)
-
   const page = searchParams?.page ? parseInt(searchParams.page, 10) : 1
   const sort = searchParams?.sort as SortOption | undefined
   let filters: FilterOptions = {
@@ -62,20 +60,11 @@ export default async function ShopPage({
     filters = { ...filters, maxPrice: parseInt(searchParams.maxPrice) }
   }
 
-  const categories = await FetchItems({
-    collection: 'categories',
-    where: { shopConfig: { visible: { equals: true } } },
-    sort: 'shopConfig.sortOrder',
-  })
-
   return (
     <div className="container mx-auto p-4">
-      {/* <Filters />
-      <ProductGrid page={page} sort={sort} filters={filters} /> */}
-
       <div className="flex flex-col md:flex-row gap-8">
         {/* Sidebar */}
-        <ShopSideFilter categories={categories} />
+        <ShopSideFilter />
 
         {/* Main content */}
         <div className="w-full md:w-3/4">

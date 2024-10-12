@@ -1,3 +1,4 @@
+'use server'
 import { unstable_cache } from 'next/cache'
 import { getPayloadHMR } from '@payloadcms/next/utilities'
 import configPromise from '@payload-config'

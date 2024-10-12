@@ -152,6 +152,7 @@ export interface Product {
 export interface Category {
   id: number;
   title: string;
+  productType?: ('card' | 'gift') | null;
   shopConfig?: {
     visible?: boolean | null;
     shopFilterTitle?: string | null;
@@ -721,6 +722,7 @@ export interface PayloadMigration {
 export interface Setting {
   id: number;
   topBar?: TopBar;
+  defaultGiftCard?: DefaultGiftCard;
   menu?: Menu;
   footer?: Footer;
   updatedAt?: string | null;
@@ -747,6 +749,13 @@ export interface TopBar {
     };
     [k: string]: unknown;
   } | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "defaultGiftCard".
+ */
+export interface DefaultGiftCard {
+  defaultGiftCard?: (number | null) | Product;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

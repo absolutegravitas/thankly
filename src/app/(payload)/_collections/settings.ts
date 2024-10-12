@@ -30,6 +30,19 @@ export const Settings: GlobalConfig = {
       ],
     },
     {
+      name: 'defaultGiftCard',
+      interfaceName: 'defaultGiftCard',
+      type: 'group',
+      fields: [
+        {
+          name: 'defaultGiftCard',
+          type: 'relationship',
+          relationTo: 'products',
+          hasMany: false,
+        },
+      ],
+    },
+    {
       name: 'menu',
       interfaceName: 'menu',
       type: 'group',

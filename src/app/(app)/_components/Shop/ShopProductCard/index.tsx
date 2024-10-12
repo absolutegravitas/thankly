@@ -28,7 +28,7 @@ const ShopProductCard = ({ product, showTags = true }: Props) => {
     <Link href={`/shop/${product.slug}`} className="block">
       <div className="border rounded-lg p-4 flex flex-col">
         <div className="relative w-full pb-[100%] mb-2">
-          {product.media && product.media.length > 0 ? (
+          {product.media && product.media.length > 0 && product.media[0].mediaItem ? (
             <div className="absolute inset-0 overflow-hidden rounded-md">
               <img
                 src={(product.media?.[0].mediaItem as Media).url ?? undefined}

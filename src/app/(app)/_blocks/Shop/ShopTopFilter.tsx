@@ -26,13 +26,15 @@ const ShopTopFilter: React.FC = () => {
   const searchParams = useSearchParams()
 
   const createQueryString = useCallback(
-    (name: string, value: string | null) => {
+    (updates: { name: string; value: string | null }[]) => {
       const params = new URLSearchParams(searchParams.toString())
-      if (value === null) {
-        params.delete(name)
-      } else {
-        params.set(name, value)
-      }
+      updates.forEach(({ name, value }) => {
+        if (value === null) {
+          params.delete(name)
+        } else {
+          params.set(name, value)
+        }
+      })
       return params.toString()
     },
     [searchParams],
@@ -42,7 +44,17 @@ const ShopTopFilter: React.FC = () => {
     (paramName: string, paramValue: string) => {
       const currentValue = searchParams.get(paramName)
       const newValue = currentValue === paramValue ? null : paramValue
-      const newQueryString = createQueryString(paramName, newValue)
+      const updates = [
+        { name: paramName, value: newValue },
+        { name: 'page', value: null }, // Always remove the 'page' parameter
+      ]
+
+      // If we're changing productType, remove the category param
+      if (paramName === 'productType') {
+        updates.push({ name: 'category', value: null })
+      }
+
+      const newQueryString = createQueryString(updates)
       router.push(`?${newQueryString}`)
     },
     [router, searchParams, createQueryString],
@@ -65,8 +77,9 @@ const ShopTopFilter: React.FC = () => {
 
   return (
     <div className="flex flex-wrap gap-2 mb-6">
-      {productTypeFilterOptions.map((option) => renderFilterButton(option, 'productType'))}
-      {sortOptions.map((option) => renderFilterButton(option, 'sort'))}
+      {productTypeFilterOptions &&
+        productTypeFilterOptions.map((option) => renderFilterButton(option, 'productType'))}
+      {sortOptions && sortOptions.map((option) => renderFilterButton(option, 'sort'))}
     </div>
   )
 }
