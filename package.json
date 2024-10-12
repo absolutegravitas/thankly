@@ -28,6 +28,7 @@
     "@payload-enchants/fields-select": "^1.2.2",
     "@payloadcms/db-postgres": "beta",
     "@payloadcms/email-nodemailer": "beta",
+    "@payloadcms/email-resend": "3.0.0-beta.59",
     "@payloadcms/next": "beta",
     "@payloadcms/plugin-form-builder": "beta",
     "@payloadcms/plugin-nested-docs": "beta",

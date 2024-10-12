@@ -50,6 +50,9 @@ importers:
       '@payloadcms/email-nodemailer':
         specifier: beta
         version: 3.0.0-beta.59(payload@3.0.0-beta.59(@swc/core@1.3.101(@swc/helpers@0.5.13))(@swc/types@0.1.9)(graphql@16.9.0)(typescript@5.6.2))
+      '@payloadcms/email-resend':
+        specifier: 3.0.0-beta.59
+        version: 3.0.0-beta.59(payload@3.0.0-beta.59(@swc/core@1.3.101(@swc/helpers@0.5.13))(@swc/types@0.1.9)(graphql@16.9.0)(typescript@5.6.2))
       '@payloadcms/next':
         specifier: beta
         version: 3.0.0-beta.59(@types/react@18.3.7)(graphql@16.9.0)(monaco-editor@0.38.0)(next@15.0.0-rc.0(@babel/core@7.24.5)(babel-plugin-macros@3.1.0)(react-dom@19.0.0-beta-26f2496093-20240514(react@19.0.0-beta-26f2496093-20240514))(react@19.0.0-beta-26f2496093-20240514)(sass@1.77.8))(payload@3.0.0-beta.59(@swc/core@1.3.101(@swc/helpers@0.5.13))(@swc/types@0.1.9)(graphql@16.9.0)(typescript@5.6.2))(react-dom@19.0.0-beta-26f2496093-20240514(react@19.0.0-beta-26f2496093-20240514))(react@19.0.0-beta-26f2496093-20240514)(typescript@5.6.2)
@@ -2121,6 +2124,12 @@ packages:
 
   '@payloadcms/email-nodemailer@3.0.0-beta.59':
     resolution: {integrity: sha512-DAO7Osr9AWA9pNDpVIu8USBIEkbucah5PLLJNa6vaJmAHd5RnCSfh7M8b/91sM69oIeMWBkPsd/rEFlbV+59+g==}
+    engines: {node: ^18.20.2 || >=20.9.0}
+    peerDependencies:
+      payload: 3.0.0-beta.59
+
+  '@payloadcms/email-resend@3.0.0-beta.59':
+    resolution: {integrity: sha512-dfvhvvtPvdkPadb8teEHdve/CzMU4yrqG3EuF8yy0tdkn6VoOKM6ZAWKAZCTLeYg9b1n6nUvY8Lh1dp9snpcAw==}
     engines: {node: ^18.20.2 || >=20.9.0}
     peerDependencies:
       payload: 3.0.0-beta.59
@@ -9225,6 +9234,10 @@ snapshots:
   '@payloadcms/email-nodemailer@3.0.0-beta.59(payload@3.0.0-beta.59(@swc/core@1.3.101(@swc/helpers@0.5.13))(@swc/types@0.1.9)(graphql@16.9.0)(typescript@5.6.2))':
     dependencies:
       nodemailer: 6.9.10
+      payload: 3.0.0-beta.59(@swc/core@1.3.101(@swc/helpers@0.5.13))(@swc/types@0.1.9)(graphql@16.9.0)(typescript@5.6.2)
+
+  '@payloadcms/email-resend@3.0.0-beta.59(payload@3.0.0-beta.59(@swc/core@1.3.101(@swc/helpers@0.5.13))(@swc/types@0.1.9)(graphql@16.9.0)(typescript@5.6.2))':
+    dependencies:
       payload: 3.0.0-beta.59(@swc/core@1.3.101(@swc/helpers@0.5.13))(@swc/types@0.1.9)(graphql@16.9.0)(typescript@5.6.2)
 
   '@payloadcms/graphql@3.0.0-beta.59(graphql@16.9.0)(payload@3.0.0-beta.59(@swc/core@1.3.101(@swc/helpers@0.5.13))(@swc/types@0.1.9)(graphql@16.9.0)(typescript@5.6.2))(typescript@5.6.2)':

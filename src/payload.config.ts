@@ -20,6 +20,7 @@ import { Tags } from '@cms/_collections/tags'
 import { DiscountCodes } from '@cms/_collections/discountCodes'
 import { Categories } from '@cms/_collections/categories'
 import { Reviews } from '@cms/_collections/reviews'
+import { resendAdapter } from '@payloadcms/email-resend'
 
 // import { buildConfig } from 'payload/config' // deprecated
 import { buildConfig } from 'payload'
@@ -90,9 +91,16 @@ export default buildConfig({
     'http://localhost:3000',
   ].filter(Boolean),
 
+  email: resendAdapter({
+    defaultFromAddress: process.env.RESEND_DEFAULT_EMAIL || '',
+    defaultFromName: process.env.RESEND_DEFAULT_NAME || '',
+    apiKey: process.env.AUTH_RESEND_KEY || '',
+  }),
+
   plugins: [
     fieldsSelect(), // temp plugin for selectively pulling in fields for localAPI
     seoPlugin({ collections: ['pages', 'products'], uploadsCollection: 'media' }),
+
     vercelBlobStorage({
       collections: {
         [Media.slug]: true,
