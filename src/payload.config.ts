@@ -6,9 +6,6 @@ import { lexicalEditor } from '@payloadcms/richtext-lexical'
 // plugins
 import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
 import { seoPlugin } from '@payloadcms/plugin-seo'
-import { redirectsPlugin } from '@payloadcms/plugin-redirects'
-import { formBuilderPlugin } from '@payloadcms/plugin-form-builder'
-import { nestedDocsPlugin } from '@payloadcms/plugin-nested-docs'
 // collections
 import { Media } from '@cms/_collections/media'
 import { Products } from '@cms/_collections/products'
@@ -58,7 +55,9 @@ export default buildConfig({
 
   globals: [Settings],
   editor: lexicalEditor({}),
-  db: postgresAdapter({ pool: { connectionString: process.env.POSTGRES_URL_OVERRIDE || process.env.POSTGRES_URL } }),
+  db: postgresAdapter({
+    pool: { connectionString: process.env.POSTGRES_URL_OVERRIDE || process.env.POSTGRES_URL },
+  }),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: { outputFile: path.resolve(dirname, 'payload-types.ts') },
   sharp,
@@ -71,7 +70,9 @@ export default buildConfig({
     'https://thankly.com.au',
     'https://www.thankly.com.au',
     process.env.NEXT_PUBLIC_VERCEL_URL ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}` : '',
-    process.env.NEXT_PUBLIC_VERCEL_BRANCH_URL ? `https://${process.env.NEXT_PUBLIC_VERCEL_BRANCH_URL}` : '',
+    process.env.NEXT_PUBLIC_VERCEL_BRANCH_URL
+      ? `https://${process.env.NEXT_PUBLIC_VERCEL_BRANCH_URL}`
+      : '',
     'http://localhost:3000',
     'https://api.hcaptcha.com',
   ].filter(Boolean),
@@ -82,7 +83,9 @@ export default buildConfig({
     'https://thankly.com.au',
     'https://www.thankly.com.au',
     process.env.NEXT_PUBLIC_VERCEL_URL ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}` : '',
-    process.env.NEXT_PUBLIC_VERCEL_BRANCH_URL ? `https://${process.env.NEXT_PUBLIC_VERCEL_BRANCH_URL}` : '',
+    process.env.NEXT_PUBLIC_VERCEL_BRANCH_URL
+      ? `https://${process.env.NEXT_PUBLIC_VERCEL_BRANCH_URL}`
+      : '',
     'https://api.hcaptcha.com',
     'http://localhost:3000',
   ].filter(Boolean),
@@ -90,7 +93,6 @@ export default buildConfig({
   plugins: [
     fieldsSelect(), // temp plugin for selectively pulling in fields for localAPI
     seoPlugin({ collections: ['pages', 'products'], uploadsCollection: 'media' }),
-    formBuilderPlugin({ redirectRelationships: ['pages'], fields: { state: false } }),
     vercelBlobStorage({
       collections: {
         [Media.slug]: true,
