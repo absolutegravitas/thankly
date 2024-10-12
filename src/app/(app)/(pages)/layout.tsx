@@ -56,8 +56,8 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <head>
           <link rel="icon" href="/favicon.svg" sizes="32x32" />
           <link rel="preconnect" href="https://www.googletagmanager.com" />
-          <link rel="preconnect" href="https://www.google-analytics.com" />
-          <GoogleAnalytics />
+          {/* <link rel="preconnect" href="https://www.google-analytics.com" />
+          <GoogleAnalytics /> */}
           {/* <GoogleTagManager /> */}
           <Script
             id="theme-script"
