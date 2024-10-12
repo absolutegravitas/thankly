@@ -1,5 +1,5 @@
 {
-  "id": "c9ec085d-f8d8-4b0e-87be-be6d94c129af",
+  "id": "ce526ce3-bb59-440e-8ccc-29122133e581",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "5",
   "dialect": "pg",
@@ -4210,13 +4210,13 @@
           "name": "newsletter_popup_retail_list_id",
           "type": "varchar",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "newsletter_popup_business_list_id": {
           "name": "newsletter_popup_business_list_id",
           "type": "varchar",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "newsletter_popup_delay_in_seconds": {
           "name": "newsletter_popup_delay_in_seconds",

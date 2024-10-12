@@ -17,8 +17,8 @@ ALTER TABLE "settings" ADD COLUMN "newsletter_popup_submit_message" varchar;
 ALTER TABLE "settings" ADD COLUMN "newsletter_popup_submit_button_text" varchar;
 ALTER TABLE "settings" ADD COLUMN "newsletter_popup_collapsed_text" varchar;
 ALTER TABLE "settings" ADD COLUMN "newsletter_popup_image_id" integer;
-ALTER TABLE "settings" ADD COLUMN "newsletter_popup_retail_list_id" varchar NOT NULL;
-ALTER TABLE "settings" ADD COLUMN "newsletter_popup_business_list_id" varchar NOT NULL;
+ALTER TABLE "settings" ADD COLUMN "newsletter_popup_retail_list_id" varchar;
+ALTER TABLE "settings" ADD COLUMN "newsletter_popup_business_list_id" varchar;
 ALTER TABLE "settings" ADD COLUMN "newsletter_popup_delay_in_seconds" numeric;
 ALTER TABLE "settings" ADD COLUMN "newsletter_popup_suppress_until" numeric;
 DO $$ BEGIN

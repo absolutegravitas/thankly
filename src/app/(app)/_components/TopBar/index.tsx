@@ -4,12 +4,10 @@
 import * as React from 'react'
 import { RichText } from '@app/_blocks/RichText'
 
-import type { TopBar as TopBarType } from '@payload-types'
-
 import cn from '@/utilities/cn'
 import { contentFormats } from '../../_css/tailwindClasses'
 
-export const TopBar: React.FC<TopBarType> = (props) => {
+export const TopBar: React.FC<any> = (props) => {
   // const { isModalOpen } = useModal()
   // const isMobileNavOpen = isModalOpen(modalSlug)
   const { content } = props
