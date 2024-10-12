@@ -218,6 +218,9 @@ importers:
       react-facebook-pixel:
         specifier: ^1.0.4
         version: 1.0.4
+      react-google-recaptcha:
+        specifier: ^3.1.0
+        version: 3.1.0(react@19.0.0-beta-26f2496093-20240514)
       react-hook-form:
         specifier: ^7.53.0
         version: 7.53.0(react@19.0.0-beta-26f2496093-20240514)
@@ -6497,6 +6500,11 @@ packages:
       react: '>=16.8.0'
       react-dom: '>=16.8.0'
 
+  react-async-script@1.2.0:
+    resolution: {integrity: sha512-bCpkbm9JiAuMGhkqoAiC0lLkb40DJ0HOEJIku+9JDjxX3Rcs+ztEOG13wbrOskt3n2DTrjshhaQ/iay+SnGg5Q==}
+    peerDependencies:
+      react: '>=16.4.1'
+
   react-cookie@7.2.0:
     resolution: {integrity: sha512-mqhPERUyfOljq5yJ4woDFI33bjEtigsl8JDJdPPeNhr0eSVZmBc/2Vdf8mFxOUktQxhxTR1T+uF0/FRTZyBEgw==}
     peerDependencies:
@@ -6538,6 +6546,11 @@ packages:
 
   react-facebook-pixel@1.0.4:
     resolution: {integrity: sha512-givZY8MS0v/mdbRzvcvouBo/j0TtDiu/93f4gIjJXwDDgwlf6bYUiQvb2qcqjluOOD/hIKUQHNYLNsSOnoEklg==}
+
+  react-google-recaptcha@3.1.0:
+    resolution: {integrity: sha512-cYW2/DWas8nEKZGD7SCu9BSuVz8iOcOLHChHyi7upUuVhkpkhYG/6N3KDiTQ3XAiZ2UAZkfvYKMfAHOzBOcGEg==}
+    peerDependencies:
+      react: '>=16.4.1'
 
   react-hook-form@7.53.0:
     resolution: {integrity: sha512-M1n3HhqCww6S2hxLxciEXy2oISPnAzxY7gvwVPrtlczTM/1dDadXgUxDpHMrMTblDOcm/AXtXxHwZ3jpg1mqKQ==}
@@ -14226,6 +14239,12 @@ snapshots:
       react: 19.0.0-beta-26f2496093-20240514
       react-dom: 19.0.0-beta-26f2496093-20240514(react@19.0.0-beta-26f2496093-20240514)
 
+  react-async-script@1.2.0(react@19.0.0-beta-26f2496093-20240514):
+    dependencies:
+      hoist-non-react-statics: 3.3.2
+      prop-types: 15.8.1
+      react: 19.0.0-beta-26f2496093-20240514
+
   react-cookie@7.2.0(react@19.0.0-beta-26f2496093-20240514):
     dependencies:
       '@types/hoist-non-react-statics': 3.3.5
@@ -14298,6 +14317,12 @@ snapshots:
       react: 19.0.0-beta-26f2496093-20240514
 
   react-facebook-pixel@1.0.4: {}
+
+  react-google-recaptcha@3.1.0(react@19.0.0-beta-26f2496093-20240514):
+    dependencies:
+      prop-types: 15.8.1
+      react: 19.0.0-beta-26f2496093-20240514
+      react-async-script: 1.2.0(react@19.0.0-beta-26f2496093-20240514)
 
   react-hook-form@7.53.0(react@19.0.0-beta-26f2496093-20240514):
     dependencies:
