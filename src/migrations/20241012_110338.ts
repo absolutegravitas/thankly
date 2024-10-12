@@ -1,25 +1,26 @@
 import { MigrateUpArgs, MigrateDownArgs, sql } from '@payloadcms/db-postgres'
 
 export async function up({ payload, req }: MigrateUpArgs): Promise<void> {
-await payload.db.drizzle.execute(sql`
- DROP TABLE "forms_blocks_checkbox";
-DROP TABLE "forms_blocks_country";
-DROP TABLE "forms_blocks_email";
-DROP TABLE "forms_blocks_message";
-DROP TABLE "forms_blocks_number";
-DROP TABLE "forms_blocks_select_options";
-DROP TABLE "forms_blocks_select";
-DROP TABLE "forms_blocks_text";
-DROP TABLE "forms_blocks_textarea";
-DROP TABLE "forms_emails";
-DROP TABLE "forms";
-DROP TABLE "forms_rels";
-DROP TABLE "form_submissions_submission_data";
-DROP TABLE "form_submissions";`)
-};
+  await payload.db.drizzle.execute(sql`
+    DROP TABLE IF EXISTS "forms_blocks_checkbox" CASCADE;
+    DROP TABLE IF EXISTS "forms_blocks_country" CASCADE;
+    DROP TABLE IF EXISTS "forms_blocks_email" CASCADE;
+    DROP TABLE IF EXISTS "forms_blocks_message" CASCADE;
+    DROP TABLE IF EXISTS "forms_blocks_number" CASCADE;
+    DROP TABLE IF EXISTS "forms_blocks_select_options" CASCADE;
+    DROP TABLE IF EXISTS "forms_blocks_select" CASCADE;
+    DROP TABLE IF EXISTS "forms_blocks_text" CASCADE;
+    DROP TABLE IF EXISTS "forms_blocks_textarea" CASCADE;
+    DROP TABLE IF EXISTS "forms_emails" CASCADE;
+    DROP TABLE IF EXISTS "forms" CASCADE;
+    DROP TABLE IF EXISTS "forms_rels" CASCADE;
+    DROP TABLE IF EXISTS "form_submissions_submission_data" CASCADE;
+    DROP TABLE IF EXISTS "form_submissions" CASCADE;
+  `)
+}
 
 export async function down({ payload, req }: MigrateDownArgs): Promise<void> {
-await payload.db.drizzle.execute(sql`
+  await payload.db.drizzle.execute(sql`
  DO $$ BEGIN
  CREATE TYPE "enum_forms_confirmation_type" AS ENUM('message', 'redirect');
 EXCEPTION
@@ -305,4 +306,4 @@ EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
 `)
-};
+}
