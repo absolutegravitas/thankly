@@ -2,9 +2,6 @@
 'use client'
 
 import * as React from 'react'
-import { useModal } from '@faceless-ui/modal'
-
-// import { modalSlug } from '@app/_components/Header/MobileNav'
 import { RichText } from '@app/_blocks/RichText'
 
 import type { TopBar as TopBarType } from '@payload-types'
