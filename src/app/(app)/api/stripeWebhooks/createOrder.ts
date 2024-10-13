@@ -11,6 +11,27 @@ export async function createOrder(cart: Cart, orderNumber: string, paymentIntent
 
   console.log('cart to turn into order -- ', cart)
 
+  // Check if cart.billing.email exists and search for a user
+  let orderedBy = null
+  if (cart.billing?.email) {
+    try {
+      const user = await payload.find({
+        collection: 'users',
+        where: {
+          email: {
+            equals: cart.billing.email,
+          },
+        },
+      })
+
+      if (user.docs.length > 0) {
+        orderedBy = user.docs[0].id
+      }
+    } catch (error) {
+      console.error('Error searching for user:', error)
+    }
+  }
+
   const orderData = {
     orderNumber,
     status: 'pending' as const,
@@ -25,7 +46,7 @@ export async function createOrder(cart: Cart, orderNumber: string, paymentIntent
     billing: cart.billing
       ? {
           ...cart.billing,
-          orderedBy: cart.billing.orderedBy ? Number(cart.billing.orderedBy) : null,
+          orderedBy: orderedBy || (cart.billing.orderedBy ? Number(cart.billing.orderedBy) : null),
         }
       : undefined,
     items: cart.items?.map((item) => ({

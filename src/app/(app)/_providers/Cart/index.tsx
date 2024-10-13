@@ -53,6 +53,24 @@ export type CartContext = {
 
   // address array actions
   addAddress: (newAddress: Address) => void
+
+  updateBillingAddress: (billingAddress: {
+    firstName?: string
+    lastName?: string
+    email?: string
+    contactNumber?: string
+    orgName?: string
+    orgId?: string
+    address?: {
+      addressLine1?: string
+      addressLine2?: string
+      city?: string
+      state?: string
+      postcode?: string
+    }
+  }) => void
+
+  updateNewsletterSubscription: (subscribeToNewsletter: boolean) => void
 }
 
 //initialising cart context locally (which starts off as undefined)
@@ -198,6 +216,27 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
     [],
   )
 
+  const updateBillingAddress = useCallback(
+    (billingAddress: {
+      firstName?: string
+      lastName?: string
+      email?: string
+      contactNumber?: string
+      orgName?: string
+      orgId?: string
+      address?: {
+        addressLine1?: string
+        addressLine2?: string
+        city?: string
+        state?: string
+        postcode?: string
+      }
+    }) => {
+      dispatchCart({ type: 'UPDATE_BILLING_ADDRESS', payload: billingAddress })
+    },
+    [],
+  )
+
   const applyDiscount = useCallback((discountCode: string, discountAmount: number) => {
     dispatchCart({
       type: 'APPLY_DISCOUNT',
@@ -222,6 +261,13 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
   // address actions
   const addAddress = useCallback((address: Address) => {
     dispatchAddresses({ type: 'ADD_ADDRESS', payload: { address } })
+  }, [])
+
+  const updateNewsletterSubscription = useCallback((subscribeToNewsletter: boolean) => {
+    dispatchCart({
+      type: 'UPDATE_NEWSLETTER_SUBSCRIPTION',
+      payload: { subscribeToNewsletter },
+    })
   }, [])
 
   // Memoized value for the CartContext
@@ -249,6 +295,8 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       updateQuantity,
       updateShipping,
       // validateCart,
+      updateBillingAddress,
+      updateNewsletterSubscription,
     }),
     [
       addAddress,
@@ -273,6 +321,8 @@ export const CartProvider: React.FC<{ children: React.ReactNode }> = ({ children
       updateQuantity,
       updateShipping,
       // validateCart,
+      updateBillingAddress,
+      updateNewsletterSubscription,
     ],
   )
 

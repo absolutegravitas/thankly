@@ -1,9 +1,6 @@
 'use client'
 
 import React, { useId } from 'react'
-import { Text } from '@app/_components/forms/fields/Text'
-import FormComponent from '@app/_components/forms/Form'
-import { validateEmail } from '@app/_components/forms/validations'
 import { ArrowIcon } from '@app/_icons/ArrowIcon'
 import { Footer as FooterType } from '@payload-types'
 import { usePathname, useRouter } from 'next/navigation'
@@ -175,61 +172,6 @@ export const Footer: React.FC<FooterType> = (props) => {
             })}
 
             <div className={['cols-4 cols-m-4 cols-s-8'].filter(Boolean).join(' ')}>
-              {/* <h3
-                className={[
-                  contentFormats.global,
-                  `font-title text-lg font-semibold tracking-tighter`,
-                ].join(' ')}
-              >
-                Stay Connected
-              </h3>
-              <div>
-                <FormComponent onSubmit={onSubmit}>
-                  <label className="visually-hidden" htmlFor={newsletterId}>
-                    Your Name
-                  </label>
-                  <Text
-                    type="text"
-                    path={newsletterId}
-                    name="firstName"
-                    value={formData.firstName}
-                    customOnChange={handleChange}
-                    required
-                    // validate={}
-                    className={`classes.emailInput`}
-                    placeholder="Enter your name"
-                  />
-                  <div className={classes.inputWrap}>
-                    <label className="visually-hidden" htmlFor={newsletterId}>
-                    </label>
-                    <Text
-                      type="text"
-                      path={newsletterId}
-                      name="email"
-                      value={formData.email}
-                      customOnChange={handleChange}
-                      required
-                      validate={validateEmail}
-                      className={`classes.emailInput`}
-                      placeholder="Enter your email"
-                    />
-                    <button ref={submitButtonRef} className={classes.submitButton} type="submit">
-                      <ArrowIcon className={[classes.inputArrow].filter(Boolean).join(' ')} />
-                      <span className="visually-hidden">Submit</span>
-                    </button>
-                  </div>
-
-                  <div className={classes.subscribeAction}>
-                    <p
-                      className={[contentFormats.global, contentFormats.text].join(' ')}
-                    >
-                      Sign up to receive periodic updates to your email.
-                    </p>
-                  </div>
-                  {error && <div>{`${error.status || '500'}: ${error.message || ''}`}</div>}
-                </FormComponent>
-              </div> */}
-
               <div className="grid space-x-3 justify-start">
                 <Link
                   href="https://www.instagram.com/thankly.co"

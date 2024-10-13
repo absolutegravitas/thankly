@@ -4,46 +4,50 @@ const policies = {
     "'self'",
     "'unsafe-inline'",
     "'unsafe-eval'",
-    'https://va.vercel-scripts.com',
-    'https://checkout.stripe.com',
-    'https://js.stripe.com',
-    'https://maps.googleapis.com',
-    'https://*.maps.googleapis.com', // Added wildcard for subdomains
-    'https://fonts.googleapis.com',
-    'https://fonts.gstatic.com',
-    'http://cdn.jsdelivr.net',
-    'https://js.radar.com',
-    'https://www.googletagmanager.com',
-    'https://unpkg.com',
+    'https://va.vercel-scripts.com', // for vercel
+    'https://checkout.stripe.com', // for stripe
+    'https://js.stripe.com', // for stripe
+    'https://maps.googleapis.com', // for google maps
+    'https://*.maps.googleapis.com', // for google maps
+    'https://fonts.googleapis.com', // for google fonts
+    'https://fonts.gstatic.com', // for google fonts
+    'http://cdn.jsdelivr.net', // for jsdelivr
+    'https://js.radar.com', // for radar
+    'https://www.googletagmanager.com', // for google tag manager
+    'https://unpkg.com', // for unpkg
+    'https://sibforms.com', // for sendinblue
+    'https://www.google.com', // for reCAPTCHA
+    'https://www.gstatic.com',
   ],
   'child-src': ["'self'", 'http://cdn.jsdelivr.net'],
   'style-src': [
     "'self'",
     "'unsafe-inline'",
-    'https://fonts.googleapis.com',
-    'https://fonts.gstatic.com',
-    'http://cdn.jsdelivr.net',
-    'https://js.radar.com',
+    'https://fonts.googleapis.com', // for google fonts
+    'https://fonts.gstatic.com', // for google fonts
+    'http://cdn.jsdelivr.net', // for jsdelivr
+    'https://js.radar.com', // for radar
   ],
   'img-src': [
     "'self'",
     'data:',
     'blob:',
-    'https://*.stripe.com',
-    'https://thankly.vercel.app',
-    'https://thankly.co',
-    'https://tailwindui.com',
-    'https://images.unsplash.com',
+    'https://*.stripe.com', // for stripe
+    'https://thankly.vercel.app', // for thankly
+    'https://thankly.co', // for thankly
+    'https://tailwindui.com', // for tailwindui
+    'https://images.unsplash.com', // for unsplash
     'http://cdn.jsdelivr.net',
     'https://maps.gstatic.com',
-    'https://*.maps.gstatic.com', // Added wildcard for subdomains
+    'https://*.maps.gstatic.com', // for google maps
     'https://google.com.au',
-    'https://www.gravatar.com',
-    'https://placehold.co',
-    'https://authjs.dev',
-    'https://lh3.googleusercontent.com',
-    'https://media.licdn.com',
-    'https://platform-lookaside.fbsbx.com',
+    'https://www.google.com.au',
+    'https://www.gravatar.com', // for gravatar
+    'https://placehold.co', // for placehold
+    'https://authjs.dev', // for authjs
+    'https://lh3.googleusercontent.com', // for google login
+    'https://media.licdn.com', // for linkedin login
+    'https://platform-lookaside.fbsbx.com', // for facebook login
   ],
   'font-src': [
     "'self'",
@@ -53,20 +57,23 @@ const policies = {
   ],
   'frame-src': [
     "'self'",
-    'https://checkout.stripe.com',
-    'https://js.stripe.com',
-    'https://hooks.stripe.com',
-    'https://maps.googleapis.com', // Added for Google Maps
+    'https://checkout.stripe.com', // for stripe
+    'https://js.stripe.com', // for stripe
+    'https://hooks.stripe.com', // for stripe
+    'https://maps.googleapis.com', // for google maps
+    'https://www.google.com', // for reCAPTCHA
+    'https://www.gstatic.com', // for reCAPTCHA
   ],
   'connect-src': [
     "'self'",
-    'https://checkout.stripe.com',
-    'https://api.stripe.com',
-    'https://maps.googleapis.com',
-    'https://*.maps.googleapis.com', // Added wildcard for subdomains
-    'https://analytics.google.com',
-    'https://js.radar.com',
-    'https://api.radar.io',
+    'https://checkout.stripe.com', // for stripe
+    'https://api.stripe.com', // for stripe
+    'https://maps.googleapis.com', // for google maps
+    'https://*.maps.googleapis.com', // for google maps
+    'https://analytics.google.com', // for google analytics
+    'https://js.radar.com', // for radar
+    'https://api.radar.io', // for radar
+    'https://api.brevo.com', // for brevo
   ],
 }
 

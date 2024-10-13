@@ -174,6 +174,36 @@ export const Users: CollectionConfig = {
           ],
         },
         {
+          label: 'Billing',
+          fields: [
+            {
+              name: 'billingAddress',
+              type: 'group',
+              label: 'Billing Address',
+              fields: [
+                {
+                  type: 'row',
+                  fields: [
+                    { name: 'addressLine1', type: 'text', admin: { width: '50%' } },
+                    { name: 'addressLine2', type: 'text', admin: { width: '50%' } },
+                    { name: 'city', type: 'text', admin: { width: '50%' } },
+                    { name: 'state', type: 'text', admin: { width: '50%' } },
+                    { name: 'postcode', type: 'text', admin: { width: '50%' } },
+                  ],
+                },
+              ],
+            },
+            {
+              name: 'contactNumber',
+              label: 'Contact Number',
+              type: 'text',
+              admin: {
+                width: '50%',
+              },
+            },
+          ],
+        },
+        {
           label: 'Orders',
           fields: [
             {

@@ -30,6 +30,7 @@ const nextConfig = {
       { protocol: 'https', hostname: '**fonts.googleapis.com**' },
       { protocol: 'https', hostname: '**cdn.jsdelivr.net**' },
       { protocol: 'https', hostname: '**google.com.au**' },
+      { protocol: 'https', hostname: '**images.unsplash.com**' },
       { protocol: 'https', hostname: '**api.radar.io**' },
       { protocol: 'https', hostname: '**placehold.co**' },
       { protocol: 'https', hostname: '**authjs.dev**' }, // for auth providers
