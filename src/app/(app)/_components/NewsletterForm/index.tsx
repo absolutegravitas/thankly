@@ -28,7 +28,7 @@ const formSchema = z.object({
 type FormData = z.infer<typeof formSchema>
 
 interface Props {
-  onSubmit?: (e: React.FormEvent) => Promise<void>
+  onSubmit?: () => void
   hiddenFields?: boolean
   newsletterProps: Setting['newsletterPopup']
 }
@@ -196,7 +196,7 @@ export const NewsletterForm: React.FC<Props> = ({
         }
 
         //tell parent that form has submitted ok
-        await onSubmit(e)
+        await onSubmit()
       } else {
         const errorText = await response.text()
         console.error('Brevo API error:', errorText)

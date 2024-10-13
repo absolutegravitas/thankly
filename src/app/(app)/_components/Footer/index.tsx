@@ -17,7 +17,7 @@ export const Footer: React.FC<Setting> = (props) => {
         <div className="space-y-8 md:w-1/3 order-2 md:order-1">
           <div className="max-w-md">
             <h2 className="text-3xl font-bold font-['leaguespartan'] tracking-tighter">thankly</h2>
-            <p className="text-sm text-gray-600 mt-2">
+            <p className="text-sm text-gray-600 my-2">
               Well done, you made it down here. Be in the loop on the latest offers, new arrivals,
               and receive a cheeky 10% off on your first purchase! 🎉
             </p>
