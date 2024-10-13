@@ -18,8 +18,8 @@ export const Footer: React.FC<Setting> = (props) => {
           <div className="max-w-md">
             <h2 className="text-3xl font-bold font-['leaguespartan'] tracking-tighter">thankly</h2>
             <p className="text-sm text-gray-600 my-2">
-              Well done, you made it down here. Be in the loop on the latest offers, new arrivals,
-              and receive a cheeky 10% off on your first purchase! 🎉
+              {newsletterPopup.footerDescription ||
+                'Well done, you made it down here. Be in the loop on the latest offers, new arrivals, and receive a cheeky 10% off on your first purchase! 🎉'}
             </p>
             {newsletterPopup && <NewsletterForm newsletterProps={newsletterPopup} />}
           </div>

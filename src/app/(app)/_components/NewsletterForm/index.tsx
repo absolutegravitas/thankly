@@ -12,7 +12,6 @@ import {
 } from '@app/_components/ui/select'
 import { Label } from '@app/_components/ui/label'
 import { ScrollArea } from '@app/_components/ui/scroll-area'
-import { Checkbox } from '@app/_components/ui/checkbox'
 import { Setting } from '@payload-types'
 import ReCAPTCHA from 'react-google-recaptcha'
 import { z } from 'zod'
@@ -296,7 +295,8 @@ export const NewsletterForm: React.FC<Props> = ({
                 onChange={handleInputChange}
               />
               <Label htmlFor="isBusiness" className="text-sm text-gray-600">
-                Interested in the latest corporate offers?
+                {newsletterProps.businessCheckboxText ||
+                  'Interested in the latest corporate offers?'}
               </Label>
             </div>
             {process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY && (
@@ -308,7 +308,7 @@ export const NewsletterForm: React.FC<Props> = ({
           </>
         )}
         <Button type="submit" className="w-full bg-gray-900 text-white hover:bg-gray-800">
-          Join the Thankly loop
+          {newsletterProps.submitButtonText || 'Join the Thankly loop'}
         </Button>
         <p className="text-xs text-gray-500 text-center">No spam, unsubscribe anytime.</p>
       </form>
