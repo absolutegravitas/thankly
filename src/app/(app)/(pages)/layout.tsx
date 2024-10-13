@@ -75,7 +75,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
               </main>
               <Toaster />
 
-              {settings?.footer && <Footer {...settings?.footer} />}
+              {settings && <Footer {...settings} />}
             </div>
             <PrivacyBanner />
             <Analytics />
