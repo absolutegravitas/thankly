@@ -28,7 +28,7 @@ const formSchema = z.object({
 type FormData = z.infer<typeof formSchema>
 
 interface Props {
-  onSubmit?: () => void
+  onSubmit?: (e: React.FormEvent) => Promise<void>
   hiddenFields?: boolean
   newsletterProps: Setting['newsletterPopup']
 }
@@ -65,7 +65,7 @@ export const NewsletterForm: React.FC<Props> = ({
     if (month && day) {
       const formattedMonth = formatMonth(month)
       const formattedDay = day.padStart(2, '0') // Ensure day is two digits
-      const birthdayString = `2000-${formattedMonth}-${formattedDay}` // Default year is 2000
+      const birthdayString = `0000-${formattedMonth}-${formattedDay}` // Default year is 0000
       setFormData((prev) => ({ ...prev, birthday: birthdayString }))
     }
   }
@@ -196,7 +196,7 @@ export const NewsletterForm: React.FC<Props> = ({
         }
 
         //tell parent that form has submitted ok
-        await onSubmit()
+        await onSubmit(e)
       } else {
         const errorText = await response.text()
         console.error('Brevo API error:', errorText)
@@ -211,14 +211,7 @@ export const NewsletterForm: React.FC<Props> = ({
   }
 
   return (
-    <div className="space-y-8 md:w-1/3 order-2 md:order-1">
-      <div className="max-w-md">
-        <h2 className="text-3xl font-bold font-['leaguespartan'] tracking-tighter">thankly</h2>
-        <p className="text-sm text-gray-600 mt-2">
-          Well done, you made it down here. Be in the loop on the latest offers, new arrivals, and
-          receive a cheeky 10% off on your first purchase! 🎉
-        </p>
-      </div>
+    <>
       <form onSubmit={handleSubmit} className="space-y-4 max-w-md">
         <div className="flex space-x-2">
           <Input
@@ -320,7 +313,7 @@ export const NewsletterForm: React.FC<Props> = ({
         <p className="text-xs text-gray-500 text-center">No spam, unsubscribe anytime.</p>
       </form>
       {submitMessage && <p className="text-sm text-center text-thankly-green">{submitMessage}</p>}
-    </div>
+    </>
   )
 }
 

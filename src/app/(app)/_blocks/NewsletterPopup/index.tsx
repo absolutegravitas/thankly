@@ -4,12 +4,13 @@ import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@app/_components/ui/dialog'
 import { Button } from '@app/_components/ui/button'
-import { Media, Page, Product } from '@/payload-types'
+import { Media, Page, Product, Setting } from '@/payload-types'
 import ReCAPTCHA from 'react-google-recaptcha'
 import { z } from 'zod'
 import { X } from 'lucide-react'
 import Link from 'next/link'
 import { format, subYears } from 'date-fns'
+import NewsletterForm from '../../_components/NewsletterForm'
 
 // Define the validation schema
 const formSchema = z.object({
@@ -25,27 +26,28 @@ const formSchema = z.object({
 
 type FormData = z.infer<typeof formSchema>
 
-interface NewsletterPopupSettings {
-  enabled: boolean
-  title: string
-  description: string
-  image: Media
-  retailListId: string
-  businessListId: string
-  displayOn: Array<{
-    relationTo: 'pages' | 'products'
-    value: Page | Product
-  }>
-  delayInSeconds: number
-  submitMessage: string
-  submitButtonText: string
-  suppressUntil: number
-  collapsedText: string
-  businessCheckboxText: string
-}
+// export interface NewsletterPopupSettings {
+//   enabled: boolean
+//   title: string
+//   description: string
+//   image: Media
+//   retailListId: string
+//   businessListId: string
+//   displayOn: Array<{
+//     relationTo: 'pages' | 'products'
+//     value: Page | Product
+//   }>
+//   delayInSeconds: number
+//   submitMessage: string
+//   submitButtonText: string
+//   suppressUntil: number
+//   collapsedText: string
+//   businessCheckboxText: string
+// }
 
 interface NewsletterPopupProps {
-  settings: NewsletterPopupSettings
+  settings: Setting['newsletterPopup'] //NewsletterPopupSettings
+  //settings: NewsletterPopupSettings
   currentSlug: string
 }
 
@@ -79,7 +81,8 @@ export function NewsletterPopup({ settings, currentSlug }: NewsletterPopupProps)
 
   const shouldDisplayOnCurrentPage = () => {
     return settings.displayOn.some((item) => {
-      const itemSlug = 'slug' in item.value ? item.value.slug : null
+      const itemSlug =
+        'slug' in (item.value as Page | Product) ? (item.value as Page | Product).slug : null
       return itemSlug === currentSlug
     })
   }
@@ -189,8 +192,8 @@ export function NewsletterPopup({ settings, currentSlug }: NewsletterPopupProps)
             <div className="w-full md:w-1/2">
               {settings.image && (
                 <Image
-                  src={settings.image.url}
-                  alt={settings.image.alt}
+                  src={(settings.image as Media).url}
+                  alt={(settings.image as Media).alt}
                   width={400}
                   height={400}
                   className="object-cover w-full h-full"
@@ -206,74 +209,11 @@ export function NewsletterPopup({ settings, currentSlug }: NewsletterPopupProps)
               </DialogHeader>
               <div className="grid gap-4 py-4">
                 <p className="text-sm text-gray-500">{settings.description}</p>
-                <form onSubmit={handleSubmit} className="space-y-4">
-                  <input
-                    type="text"
-                    name="firstName"
-                    value={formData.firstName}
-                    onChange={handleInputChange}
-                    placeholder="First name"
-                    className="w-full px-3 py-2 border rounded-md"
-                  />
-                  {errors.firstName && <p className="text-red-500 text-sm">{errors.firstName}</p>}
-
-                  <input
-                    type="text"
-                    name="lastName"
-                    value={formData.lastName}
-                    onChange={handleInputChange}
-                    placeholder="Last name"
-                    className="w-full px-3 py-2 border rounded-md"
-                  />
-                  {errors.lastName && <p className="text-red-500 text-sm">{errors.lastName}</p>}
-
-                  <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    placeholder="Email address"
-                    className="w-full px-3 py-2 border rounded-md"
-                  />
-                  {errors.email && <p className="text-red-500 text-sm">{errors.email}</p>}
-
-                  <div className="flex items-center">
-                    <input
-                      type="checkbox"
-                      name="isBusiness"
-                      checked={formData.isBusiness}
-                      onChange={handleInputChange}
-                      className="mr-2"
-                    />
-                    <label className="text-sm">{settings.businessCheckboxText}</label>
-                  </div>
-                  {errors.isBusiness && <p className="text-red-500 text-sm">{errors.isBusiness}</p>}
-                  <div>
-                    <label className="block text-sm mb-1">
-                      {`Let's celebrate you too! When's your birthday? (18+ only)`}
-                    </label>
-                    <input
-                      type="date"
-                      name="birthday"
-                      value={formData.birthday}
-                      onChange={handleInputChange}
-                      max={format(subYears(new Date(), 18), 'yyyy-MM-dd')}
-                      className="w-full px-3 py-2 border rounded-md"
-                    />
-                  </div>
-                  {errors.birthday && <p className="text-red-500 text-sm">{errors.birthday}</p>}
-
-                  <ReCAPTCHA
-                    sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY!}
-                    onChange={(token) => setRecaptchaToken(token as string)}
-                  />
-                  <Button type="submit" disabled={isSubmitting || !recaptchaToken}>
-                    {isSubmitting ? 'Subscribing...' : settings.submitButtonText || 'Subscribe'}
-                  </Button>
-                </form>
-                {submitMessage && (
-                  <p className="text-sm text-center text-thankly-green">{submitMessage}</p>
-                )}
+                <NewsletterForm
+                  newsletterProps={settings}
+                  onSubmit={handleSubmit}
+                  hiddenFields={false}
+                />
                 <p className="text-xs text-gray-500 mt-2">
                   By subscribing, you agree to our{' '}
                   <Link href="/privacy" className="underline">
