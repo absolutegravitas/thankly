@@ -14,7 +14,7 @@ export const Footer: React.FC<Setting> = (props) => {
   return (
     <footer className="bg-white py-4 px-4 sm:px-6 lg:px-8 border-t">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:justify-between md:space-x-12">
-        {newsletterPopup && <NewsletterForm {...newsletterPopup} />}
+        {newsletterPopup && <NewsletterForm newsletterProps={newsletterPopup} />}
         <nav className="mb-8 md:mb-0 order-1 md:order-2 md:w-1/2">
           <div
             className={`grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-${columns?.length || 4}`}

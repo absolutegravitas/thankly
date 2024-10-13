@@ -128,7 +128,11 @@ export function NewsletterPopup({ settings, currentSlug }: NewsletterPopupProps)
       })
 
       const response = await fetch(`https://api.brevo.com/v3/contacts`, {
-        // ... existing headers ...
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'api-key': process.env.NEXT_PUBLIC_BREVO_API_KEY,
+        },
         body: JSON.stringify({
           email: formData.email,
           attributes: {
@@ -267,7 +271,9 @@ export function NewsletterPopup({ settings, currentSlug }: NewsletterPopupProps)
                     {isSubmitting ? 'Subscribing...' : settings.submitButtonText || 'Subscribe'}
                   </Button>
                 </form>
-                {submitMessage && <p className="text-sm text-center">{submitMessage}</p>}
+                {submitMessage && (
+                  <p className="text-sm text-center text-thankly-green">{submitMessage}</p>
+                )}
                 <p className="text-xs text-gray-500 mt-2">
                   By subscribing, you agree to our{' '}
                   <Link href="/privacy" className="underline">
