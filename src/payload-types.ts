@@ -569,13 +569,13 @@ export interface Setting {
       [k: string]: unknown;
     } | null;
   };
-  defaultGiftCard?: DefaultGiftCard;
   menu?: Menu;
   footer?: Footer;
   newsletterPopup?: {
     enabled?: boolean | null;
     title?: string | null;
     description?: string | null;
+    footerDescription?: string | null;
     businessCheckboxText?: string | null;
     submitMessage?: string | null;
     submitButtonText?: string | null;
@@ -598,15 +598,9 @@ export interface Setting {
     delayInSeconds?: number | null;
     suppressUntil?: number | null;
   };
+  defaultGiftCard?: DefaultGiftCard;
   updatedAt?: string | null;
   createdAt?: string | null;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "defaultGiftCard".
- */
-export interface DefaultGiftCard {
-  defaultGiftCard?: (number | null) | Product;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -773,6 +767,13 @@ export interface Footer {
         id?: string | null;
       }[]
     | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "defaultGiftCard".
+ */
+export interface DefaultGiftCard {
+  defaultGiftCard?: (number | null) | Product;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

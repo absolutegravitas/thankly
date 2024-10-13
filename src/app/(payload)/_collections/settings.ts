@@ -17,136 +17,140 @@ export const Settings: GlobalConfig = {
   },
   fields: [
     {
-      name: 'topBar',
-      type: 'group',
-      fields: [
+      type: 'tabs',
+      tabs: [
         {
-          name: 'visible',
-          type: 'checkbox',
-          defaultValue: false,
-        },
-        contentField(),
-      ],
-    },
-    {
-      name: 'defaultGiftCard',
-      interfaceName: 'defaultGiftCard',
-      type: 'group',
-      fields: [
-        {
-          name: 'defaultGiftCard',
-          type: 'relationship',
-          relationTo: 'products',
-          hasMany: false,
-        },
-      ],
-    },
-    {
-      name: 'menu',
-      interfaceName: 'menu',
-      type: 'group',
-      fields: [
-        {
-          name: 'tabs',
-          type: 'array',
+          label: 'Banner',
+          description: 'The top banner running across the top of the screen across all pages',
           fields: [
-            { name: 'label', required: true, type: 'text' },
             {
-              type: 'row',
+              name: 'topBar',
+              type: 'group',
               fields: [
-                { type: 'checkbox', name: 'enableDirectLink' },
-                { type: 'checkbox', name: 'enableDropdown' },
+                {
+                  name: 'visible',
+                  type: 'checkbox',
+                  defaultValue: false,
+                },
+                contentField(),
               ],
             },
+          ]
+        },
+        {
+          label: 'Header',
+          description: 'All the Header menu settings',
+          fields: [
             {
-              label: 'Direct Link',
-              type: 'collapsible',
-              admin: {
-                condition: (_, siblingData) => siblingData.enableDirectLink,
-              },
-              fields: [link({ looks: false, disableLabel: true })],
-            },
-            {
-              label: 'Dropdown Menu',
-              type: 'collapsible',
-              admin: {
-                condition: (_, siblingData) => siblingData.enableDropdown,
-              },
+              name: 'menu',
+              interfaceName: 'menu',
+              type: 'group',
               fields: [
-                { name: 'description', type: 'textarea' },
                 {
-                  name: 'descriptionLinks',
+                  name: 'tabs',
                   type: 'array',
-                  fields: [link({ overrides: { label: false }, looks: false })],
-                },
-                {
-                  name: 'items',
-                  type: 'array',
-                  admin: {
-                    components: {
-                      RowLabel: ({ data }) => {
-                        if (data?.style === 'default') {
-                          return data.defaultLink?.link.label
-                        }
-                        if (data?.style === 'featured') {
-                          return data.featuredLink?.tag
-                        }
-                        if (data?.style === 'list') {
-                          return data.listLinks?.tag
-                        }
-                      },
-                    },
-                  },
                   fields: [
+                    { name: 'label', required: true, type: 'text' },
                     {
-                      name: 'style',
-                      type: 'select',
-                      defaultValue: 'default',
-                      options: [
-                        { label: 'Default', value: 'default' },
-                        { label: 'Featured', value: 'featured' },
-                        { label: 'List', value: 'list' },
+                      type: 'row',
+                      fields: [
+                        { type: 'checkbox', name: 'enableDirectLink' },
+                        { type: 'checkbox', name: 'enableDropdown' },
                       ],
                     },
                     {
-                      name: 'defaultLink',
-                      type: 'group',
+                      label: 'Direct Link',
+                      type: 'collapsible',
                       admin: {
-                        condition: (_, siblingData) => siblingData.style === 'default',
+                        condition: (_, siblingData) => siblingData.enableDirectLink,
+                      },
+                      fields: [link({ looks: false, disableLabel: true })],
+                    },
+                    {
+                      label: 'Dropdown Menu',
+                      type: 'collapsible',
+                      admin: {
+                        condition: (_, siblingData) => siblingData.enableDropdown,
                       },
                       fields: [
-                        link({ overrides: { label: false }, looks: false }),
                         { name: 'description', type: 'textarea' },
-                      ],
-                    },
-                    {
-                      name: 'featuredLink',
-                      type: 'group',
-                      admin: {
-                        condition: (_, siblingData) => siblingData.style === 'featured',
-                      },
-                      fields: [
-                        { name: 'tag', type: 'text' },
-                        { name: 'label', type: 'richText' },
                         {
-                          name: 'links',
+                          name: 'descriptionLinks',
                           type: 'array',
                           fields: [link({ overrides: { label: false }, looks: false })],
                         },
-                      ],
-                    },
-                    {
-                      name: 'listLinks',
-                      type: 'group',
-                      admin: {
-                        condition: (_, siblingData) => siblingData.style === 'list',
-                      },
-                      fields: [
-                        { name: 'tag', type: 'text' },
                         {
-                          name: 'links',
+                          name: 'items',
                           type: 'array',
-                          fields: [link({ overrides: { label: false }, looks: false })],
+                          admin: {
+                            components: {
+                              RowLabel: ({ data }) => {
+                                if (data?.style === 'default') {
+                                  return data.defaultLink?.link.label
+                                }
+                                if (data?.style === 'featured') {
+                                  return data.featuredLink?.tag
+                                }
+                                if (data?.style === 'list') {
+                                  return data.listLinks?.tag
+                                }
+                              },
+                            },
+                          },
+                          fields: [
+                            {
+                              name: 'style',
+                              type: 'select',
+                              defaultValue: 'default',
+                              options: [
+                                { label: 'Default', value: 'default' },
+                                { label: 'Featured', value: 'featured' },
+                                { label: 'List', value: 'list' },
+                              ],
+                            },
+                            {
+                              name: 'defaultLink',
+                              type: 'group',
+                              admin: {
+                                condition: (_, siblingData) => siblingData.style === 'default',
+                              },
+                              fields: [
+                                link({ overrides: { label: false }, looks: false }),
+                                { name: 'description', type: 'textarea' },
+                              ],
+                            },
+                            {
+                              name: 'featuredLink',
+                              type: 'group',
+                              admin: {
+                                condition: (_, siblingData) => siblingData.style === 'featured',
+                              },
+                              fields: [
+                                { name: 'tag', type: 'text' },
+                                { name: 'label', type: 'richText' },
+                                {
+                                  name: 'links',
+                                  type: 'array',
+                                  fields: [link({ overrides: { label: false }, looks: false })],
+                                },
+                              ],
+                            },
+                            {
+                              name: 'listLinks',
+                              type: 'group',
+                              admin: {
+                                condition: (_, siblingData) => siblingData.style === 'list',
+                              },
+                              fields: [
+                                { name: 'tag', type: 'text' },
+                                {
+                                  name: 'links',
+                                  type: 'array',
+                                  fields: [link({ overrides: { label: false }, looks: false })],
+                                },
+                              ],
+                            },
+                          ],
                         },
                       ],
                     },
@@ -154,115 +158,152 @@ export const Settings: GlobalConfig = {
                 },
               ],
             },
-          ],
+          ]
         },
-      ],
-    },
-    {
-      name: 'footer',
-      interfaceName: 'footer',
-      type: 'group',
-      fields: [
         {
-          name: 'columns',
-          type: 'array',
-          minRows: 1,
-          maxRows: 4,
+          label: 'Footer',
+          description: 'All the footer menu settings',
           fields: [
-            { name: 'label', label: 'Column Name', type: 'text' },
-            { name: 'items', type: 'array', fields: [link({ looks: false })] },
-          ],
+            {
+              name: 'footer',
+              interfaceName: 'footer',
+              type: 'group',
+              fields: [
+                {
+                  name: 'columns',
+                  type: 'array',
+                  minRows: 1,
+                  maxRows: 4,
+                  fields: [
+                    { name: 'label', label: 'Column Name', type: 'text' },
+                    { name: 'items', type: 'array', fields: [link({ looks: false })] },
+                  ],
+                },
+              ],
+            },
+          ]
         },
-      ],
+        {
+          label: 'Newsletter',
+          description: 'All the newsletter form settings',
+          fields: [
+            {
+              name: 'newsletterPopup',
+              type: 'group',
+              label: 'Newsletter Popup',
+              fields: [
+                {
+                  name: 'enabled',
+                  type: 'checkbox',
+                  label: 'Enable Newsletter Popup',
+                  defaultValue: true,
+                },
+                {
+                  name: 'title',
+                  type: 'text',
+                  label: 'Popup Title',
+                },
+                {
+                  name: 'description',
+                  type: 'textarea',
+                  label: 'Popup Description',
+                },
+                {
+                  name: 'footerDescription',
+                  type: 'textarea',
+                  label: 'Footer Description',
+                },
+                {
+                  name: 'businessCheckboxText',
+                  type: 'text',
+                  label: 'Business Checkbox Text',
+                  defaultValue: `Yes, I'm a business owner or manager and would love to discover the latest corporate Thankly offers for my team, clients, or partners`,
+                },
+                {
+                  name: 'submitMessage',
+                  type: 'textarea',
+                  label: 'Submit Message',
+                  defaultValue: 'Thanks for subscribing! Please check your email for confirmation.',
+                },
+                {
+                  name: 'submitButtonText',
+                  type: 'text',
+                  label: 'Submit Button Text',
+                  defaultValue: 'Subscribe  ',
+                },
+                { name: 'collapsedText', type: 'text', label: 'Minimized Text' },
+                {
+                  name: 'image',
+                  type: 'upload',
+                  relationTo: 'media',
+                  label: 'Popup Image',
+                },
+                {
+                  name: 'retailListId',
+                  type: 'text',
+                  label: 'Retail Customer List ID',
+                  required: false,
+                  defaultValue: '6  ',
+                  admin: {
+                    description: 'Enter the Brevo list ID for retail customers',
+                  },
+                },
+                {
+                  name: 'businessListId',
+                  type: 'text',
+                  label: 'Business Customer List ID',
+                  required: false,
+                  defaultValue: '7',
+                  admin: {
+                    description: 'Enter the Brevo list ID for business customers',
+                  },
+                },
+                {
+                  name: 'displayOn',
+                  type: 'relationship',
+                  relationTo: ['pages', 'products'],
+                  hasMany: true,
+                  label: 'Display on Pages/Products',
+                },
+                {
+                  name: 'delayInSeconds',
+                  type: 'number',
+                  label: 'Delay Before Popup (in seconds)',
+                  min: 0,
+                  defaultValue: 3,
+                },
+                {
+                  name: 'suppressUntil',
+                  type: 'number',
+                  label: 'Suppress Until (in days)',
+                  min: 0,
+                  defaultValue: 3,
+                },
+              ],
+            },
+          ]
+        },
+        {
+          label: 'Misc',
+          description: 'All the other misc settings',
+          fields: [
+            {
+              name: 'defaultGiftCard',
+              interfaceName: 'defaultGiftCard',
+              type: 'group',
+              fields: [
+                {
+                  name: 'defaultGiftCard',
+                  type: 'relationship',
+                  relationTo: 'products',
+                  hasMany: false,
+                },
+              ],
+            },
+          ]
+        }
+      ]
     },
-    {
-      name: 'newsletterPopup',
-      type: 'group',
-      label: 'Newsletter Popup',
-      fields: [
-        {
-          name: 'enabled',
-          type: 'checkbox',
-          label: 'Enable Newsletter Popup',
-          defaultValue: true,
-        },
-        {
-          name: 'title',
-          type: 'text',
-          label: 'Popup Title',
-        },
-        {
-          name: 'description',
-          type: 'textarea',
-          label: 'Popup Description',
-        },
-        {
-          name: 'businessCheckboxText',
-          type: 'text',
-          label: 'Business Checkbox Text',
-          defaultValue: `Yes, I'm a business owner or manager and would love to discover the latest corporate Thankly offers for my team, clients, or partners`,
-        },
-        {
-          name: 'submitMessage',
-          type: 'textarea',
-          label: 'Submit Message',
-          defaultValue: 'Thanks for subscribing! Please check your email for confirmation.',
-        },
-        {
-          name: 'submitButtonText',
-          type: 'text',
-          label: 'Submit Button Text',
-          defaultValue: 'Subscribe  ',
-        },
-        { name: 'collapsedText', type: 'text', label: 'Minimized Text' },
-        {
-          name: 'image',
-          type: 'upload',
-          relationTo: 'media',
-          label: 'Popup Image',
-        },
-        {
-          name: 'retailListId',
-          type: 'text',
-          label: 'Retail Customer List ID',
-          required: false,
-          defaultValue: '6  ',
-          admin: {
-            description: 'Enter the Brevo list ID for retail customers',
-          },
-        },
-        {
-          name: 'businessListId',
-          type: 'text',
-          label: 'Business Customer List ID',
-          required: false,
-          defaultValue: '7',
-          admin: {
-            description: 'Enter the Brevo list ID for business customers',
-          },
-        },
-        {
-          name: 'displayOn',
-          type: 'relationship',
-          relationTo: ['pages', 'products'],
-          hasMany: true,
-          label: 'Display on Pages/Products',
-        },
-        {
-          name: 'delayInSeconds',
-          type: 'number',
-          label: 'Delay Before Popup (in seconds)',
-          min: 0,
-          defaultValue: 3,
-        },
-        {
-          name: 'suppressUntil',
-          type: 'number',
-          label: 'Suppress Until (in days)',
-          min: 0,
-          defaultValue: 3,
-        },
-      ],
-    },
+
   ],
 }
