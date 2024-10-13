@@ -70,10 +70,9 @@ export default buildConfig({
     'https://www.thankly.co',
     'https://thankly.com.au',
     'https://www.thankly.com.au',
-    process.env.NEXT_PUBLIC_VERCEL_URL ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}` : '',
-    process.env.NEXT_PUBLIC_VERCEL_BRANCH_URL
-      ? `https://${process.env.NEXT_PUBLIC_VERCEL_BRANCH_URL}`
-      : '',
+    'https://thankly.vercel.app',
+    process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : '',
+    process.env.VERCEL_BRANCH_URL ? `https://${process.env.VERCEL_BRANCH_URL}` : '',
     'http://localhost:3000',
     'https://api.hcaptcha.com',
   ].filter(Boolean),
@@ -83,10 +82,9 @@ export default buildConfig({
     'https://www.thankly.co',
     'https://thankly.com.au',
     'https://www.thankly.com.au',
-    process.env.NEXT_PUBLIC_VERCEL_URL ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}` : '',
-    process.env.NEXT_PUBLIC_VERCEL_BRANCH_URL
-      ? `https://${process.env.NEXT_PUBLIC_VERCEL_BRANCH_URL}`
-      : '',
+    'https://thankly.vercel.app',
+    process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : '',
+    process.env.VERCEL_BRANCH_URL ? `https://${process.env.VERCEL_BRANCH_URL}` : '',
     'https://api.hcaptcha.com',
     'http://localhost:3000',
   ].filter(Boolean),
