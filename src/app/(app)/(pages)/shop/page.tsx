@@ -19,6 +19,12 @@ import ShopSideFilter from '../../_blocks/Shop/ShopSideFilter'
 import ShopTopFilter from '../../_blocks/Shop/ShopTopFilter'
 import ShopProductGrid from '../../_blocks/Shop/ShopProductGrid'
 import FetchItems from '@/utilities/PayloadQueries/fetchItems'
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '../../_components/ui/accordion'
 
 // Define a type alias for the sort options
 export type SortOption = 'name_asc' | 'name_desc' | 'price_asc' | 'price_desc' | 'star_rating'
@@ -62,14 +68,31 @@ export default async function ShopPage({
 
   return (
     <div className="container mx-auto p-4">
-      <div className="flex flex-col md:flex-row gap-8">
-        {/* Sidebar */}
-        <ShopSideFilter />
+      <div className="flex flex-col md:flex-row gap-4">
+        {/* Mobile Accordion */}
+        <div className="md:hidden w-full mb-4">
+          <Accordion type="single" collapsible>
+            <AccordionItem value="sort-and-filter">
+              <AccordionTrigger className="flex justify-end py-1">Shop Options</AccordionTrigger>
+              <AccordionContent>
+                <ShopSideFilter />
+                <ShopTopFilter />
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+        </div>
+
+        {/* Desktop Sidebar */}
+        <div className="hidden md:block md:w-1/4">
+          <ShopSideFilter />
+        </div>
 
         {/* Main content */}
         <div className="w-full md:w-3/4">
           {/* Sort options */}
-          <ShopTopFilter />
+          <div className="hidden md:block">
+            <ShopTopFilter />
+          </div>
 
           {/* Product grid */}
           <Suspense fallback={<LoadingShop />}>
