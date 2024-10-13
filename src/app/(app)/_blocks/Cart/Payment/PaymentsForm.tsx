@@ -18,17 +18,34 @@ import { createOrder } from '@/app/(app)/api/stripeWebhooks/createOrder'
 import * as React from 'react'
 import { useSession } from 'next-auth/react'
 import { Cart } from '@/payload-types'
+import { fetchUserDetails } from '@/app/(app)/(pages)/account/userActions'
+import { User } from '@/payload-types'
+import { UseFormReturn } from 'react-hook-form'
+import { addToNewsletterList } from '@/app/(app)/(pages)/cart/payment/newsletterActions'
 
-export const PaymentForm = () => {
+export const PaymentForm = ({ guestData }: { guestData: any }) => {
   const stripe = useStripe()
   const elements = useElements()
   const { cart, clearCart, setCart } = useCart()
   const { data: session } = useSession()
 
-  const [validationMessage, setValidationMessage] = useState<string>('')
   const [errorMessage, setErrorMessage] = useState()
   const [loading, setLoading] = useState(false)
   const [visibility, setVisibility] = useState('hidden')
+
+  useEffect(() => {
+    const getUserDetails = async () => {
+      if (session?.user?.id) {
+        try {
+          const details = await fetchUserDetails(session.user.id)
+        } catch (error) {
+          console.error('Error fetching user details:', error)
+        }
+      }
+    }
+
+    getUserDetails()
+  }, [session])
 
   //https://docs.stripe.com/elements/express-checkout-element/accept-a-payment#payment-button-control
   // for express checkout (apple pay / google pay)
@@ -66,49 +83,56 @@ export const PaymentForm = () => {
   // handles stripe payment form submit (old school card payment form)
   // also should be OK to handle express checkout payment
   const handleSubmit = async (event: any) => {
-    // We don't want to let default form submission happen here,
-    // which would refresh the page.
     event.preventDefault()
 
     if (!stripe || !elements) {
-      // Stripe.js hasn't yet loaded.
-      // Make sure to disable form submission until Stripe.js has loaded.
       console.log('stripe or elements not ready')
-
       return
     }
 
     setLoading(true)
 
-    // Trigger form validation and wallet collection
     const { error: submitError } = await elements.submit()
     if (submitError) {
       handleError(submitError)
       return
     }
 
-    if (session?.user?.id) {
-      console.log('what is the fucking cart -- ', cart)
+    // Use the guestData or session data to update the cart
+    const updatedCart = session?.user?.id
+      ? {
+          ...cart,
+          billing: {
+            orderedBy: session.user.id as unknown as number,
+            email: session.user.email,
+            address: session.user.billingAddress,
+            firstName: session.user.firstName,
+            lastName: session.user.lastName,
+            contactNumber: session.user.phoneNumber,
+          },
+        }
+      : {
+          ...cart,
+          billing: {
+            email: guestData.email,
+            address: guestData.billingAddress,
+            firstName: guestData.firstName,
+            lastName: guestData.lastName,
+            contactNumber: guestData.phoneNumber,
+          },
+        }
 
-      // Update the cart with the user ID
-      const updatedCart: Cart = {
-        ...cart,
-        billing: { orderedBy: session.user.id as unknown as number },
-      }
-      setCart(updatedCart)
-      console.log('what is after fucking cart -- ', cart)
-    }
+    setCart(updatedCart)
 
     // save the server cart here and use it to generate the order later off the webhook
-    await upsertPayloadCart(cart)
+    await upsertPayloadCart(updatedCart)
 
-    // generate an order number
-    const orderNumber =
-      `${Math.floor(1000 + Math.random() * 9000)}-${Math.floor(1000 + Math.random() * 9000)}` as string
-    const { client_secret: clientSecret } = await createPaymentIntent(cart, orderNumber)
+    const orderNumber = `${Math.floor(1000 + Math.random() * 9000)}-${Math.floor(
+      1000 + Math.random() * 9000,
+    )}` as string
+    const { client_secret: clientSecret } = await createPaymentIntent(updatedCart, orderNumber)
 
-    // create a draft order by copying the cart
-    const draftOrder = await createOrder(cart, orderNumber)
+    const draftOrder = await createOrder(updatedCart, orderNumber)
     console.log('draft order -- ', draftOrder)
 
     // Confirm the PaymentIntent to actually take a payment using the details collected by the Payment Element
@@ -128,6 +152,14 @@ export const PaymentForm = () => {
       // Your customer is redirected to your `return_url`. For some payment
       // methods like iDEAL, your customer is redirected to an intermediate
       // site first to authorize the payment, then redirected to the `return_url`.
+      // If payment is successful and newsletter subscription is checked, subscribe the user
+      if (guestData.subscribeToNewsletter) {
+        try {
+          await addToNewsletterList(guestData.email, guestData.phoneNumber)
+        } catch (newsletterError) {
+          console.error('Failed to subscribe to newsletter:', newsletterError)
+        }
+      }
     }
   }
 
@@ -148,13 +180,7 @@ export const PaymentForm = () => {
       />
 
       <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-        {/* https://docs.stripe.com/elements/address-element/collect-addresses?platform=web#customize-appearance */}
-        <AddressElement
-          className={`py-5`}
-          options={{ mode: 'billing', fields: { phone: 'always' } }}
-        />
         <PaymentElement
-          // old school payment form, adjust methods on stripe dashboard
           id="payment-element"
           options={{
             layout: {
@@ -176,11 +202,17 @@ export const PaymentForm = () => {
           <DollarSign /> {'Pay Now'}
         </Button>
 
-        <div className={`text-center`}>
-          <div className={'flex items-center justify-center space-x-2 space-y-4'}>
-            <LockIcon className="h-4 w-4 text-gray-400" aria-hidden="true" />
-            <span className="text-sm text-gray-600">Secure payment powered by stripe.com</span>
-          </div>
+        <div className="mt-4 flex items-center justify-center space-x-2 text-sm text-gray-500">
+          <LockIcon className="h-4 w-4" aria-hidden="true" />
+          <span>Secure payment powered by</span>
+          <a
+            href="https://stripe.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-medium text-gray-700 hover:text-gray-900 transition-colors"
+          >
+            stripe.com
+          </a>
         </div>
       </form>
     </>
@@ -207,39 +239,49 @@ const expressCheckoutOptions = {
 export const stripeElementsAppearance = {
   theme: 'flat' as const,
   variables: {
-    // colorPrimary: '#557755',
-    // colorBackground: '#f9fafb',
-    // colorText: '#111827',
-    // colorDanger: '#dc2626',
     fontFamily:
       'ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"',
     spacingUnit: '4px',
     borderRadius: '0px',
   },
-  // rules: {
-  //   '.Input': {
-  //     border: 'none',
-  //     borderBottom: '1px solid #d1d5db',
-  //     boxShadow: 'none',
-  //     fontSize: '14px',
-  //     padding: '8px 4px',
-  //   },
-  //   '.Input:focus': {
-  //     border: 'none',
-  //     borderBottom: '2px solid #557755',
-  //     boxShadow: 'none',
-  //   },
-  //   '.Input::placeholder': {
-  //     color: '#9ca3af',
-  //   },
-  //   '.Label': {
-  //     fontSize: '14px',
-  //     fontWeight: '500',
-  //     color: '#111827',
-  //   },
-  //   '.Error': {
-  //     color: '#dc2626',
-  //     fontSize: '14px',
-  //   },
-  // },
+  rules: {
+    '.Input': {
+      border: 'none',
+      borderBottom: '1px solid #d1d5db',
+      boxShadow: 'none',
+      fontSize: '14px',
+      padding: '8px 4px',
+      borderRadius: '0px',
+    },
+    '.Input:focus': {
+      border: 'none',
+      borderBottom: '2px solid #557755',
+      boxShadow: 'none',
+      borderRadius: '0px',
+    },
+    '.Tab': {
+      border: 'none',
+      boxShadow: 'none',
+      borderRadius: '0px',
+    },
+    '.Tab:focus': {
+      border: 'none',
+      boxShadow: 'none',
+      borderRadius: '0px',
+    },
+    '.Tab--selected': {
+      border: 'none',
+      boxShadow: 'none',
+      borderRadius: '0px',
+    },
+    '.Label': {
+      borderRadius: '0px',
+    },
+    '.Input--invalid': {
+      borderRadius: '0px',
+    },
+    '.TabIcon': {
+      borderRadius: '0px',
+    },
+  },
 }

@@ -6,9 +6,6 @@ import { lexicalEditor } from '@payloadcms/richtext-lexical'
 // plugins
 import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
 import { seoPlugin } from '@payloadcms/plugin-seo'
-import { redirectsPlugin } from '@payloadcms/plugin-redirects'
-import { formBuilderPlugin } from '@payloadcms/plugin-form-builder'
-import { nestedDocsPlugin } from '@payloadcms/plugin-nested-docs'
 // collections
 import { Media } from '@cms/_collections/media'
 import { Products } from '@cms/_collections/products'
@@ -23,6 +20,7 @@ import { Tags } from '@cms/_collections/tags'
 import { DiscountCodes } from '@cms/_collections/discountCodes'
 import { Categories } from '@cms/_collections/categories'
 import { Reviews } from '@cms/_collections/reviews'
+import { resendAdapter } from '@payloadcms/email-resend'
 
 // import { buildConfig } from 'payload/config' // deprecated
 import { buildConfig } from 'payload'
@@ -58,7 +56,9 @@ export default buildConfig({
 
   globals: [Settings],
   editor: lexicalEditor({}),
-  db: postgresAdapter({ pool: { connectionString: process.env.POSTGRES_URL_OVERRIDE || process.env.POSTGRES_URL } }),
+  db: postgresAdapter({
+    pool: { connectionString: process.env.POSTGRES_URL_OVERRIDE || process.env.POSTGRES_URL },
+  }),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: { outputFile: path.resolve(dirname, 'payload-types.ts') },
   sharp,
@@ -87,10 +87,16 @@ export default buildConfig({
     'http://localhost:3000',
   ].filter(Boolean),
 
+  email: resendAdapter({
+    defaultFromAddress: process.env.RESEND_DEFAULT_EMAIL || '',
+    defaultFromName: process.env.RESEND_DEFAULT_NAME || '',
+    apiKey: process.env.AUTH_RESEND_KEY || '',
+  }),
+
   plugins: [
     fieldsSelect(), // temp plugin for selectively pulling in fields for localAPI
     seoPlugin({ collections: ['pages', 'products'], uploadsCollection: 'media' }),
-    formBuilderPlugin({ redirectRelationships: ['pages'], fields: { state: false } }),
+
     vercelBlobStorage({
       collections: {
         [Media.slug]: true,

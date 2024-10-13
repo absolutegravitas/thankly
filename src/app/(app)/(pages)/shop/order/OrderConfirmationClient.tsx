@@ -101,56 +101,6 @@ const OrderConfirmationClient: React.FC<OrderConfirmationClientProps> = ({ order
       </div>
     )
   }
-
-  const orderToUse = order || searchedOrder
-
-  const styles = StyleSheet.create({
-    page: {
-      flexDirection: 'column',
-      backgroundColor: '#E4E4E4',
-      padding: 30,
-    },
-    section: {
-      margin: 10,
-      padding: 10,
-      flexGrow: 1,
-    },
-    title: {
-      fontSize: 24,
-      marginBottom: 10,
-    },
-    text: {
-      fontSize: 12,
-      marginBottom: 5,
-    },
-  })
-
-  const PDFDocument = ({ order }: { order: Order }) => (
-    <Document>
-      <Page size="A4" style={styles.page}>
-        <View style={styles.section}>
-          <Text style={styles.title}>Order Invoice</Text>
-          <Text style={styles.text}>Order Number: {order.orderNumber}</Text>
-          {/* Add more order details here */}
-        </View>
-      </Page>
-    </Document>
-  )
-
-  // return (
-  //   <div>
-  //     {orderToUse && (
-  //       <PDFDownloadLink
-  //         document={<PDFDocument order={orderToUse} />}
-  //         fileName={`Thankly Tax Invoice Order-${orderToUse.orderNumber}.pdf`}
-  //       >
-  //         {({ blob, url, loading, error }) =>
-  //           loading ? 'Loading document...' : <Button className="mt-4">Download Invoice PDF</Button>
-  //         }
-  //       </PDFDownloadLink>
-  //     )}
-  //   </div>
-  // )
 }
 
 export default OrderConfirmationClient

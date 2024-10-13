@@ -59,6 +59,26 @@ export type CartAction =
     }
   | { type: 'SET_CART'; payload: Cart }
   | { type: 'CLEAR_CART' }
+  | {
+      type: 'UPDATE_BILLING_ADDRESS'
+      payload: {
+        firstName?: string
+        lastName?: string
+        email?: string
+
+        address?: {
+          addressLine1?: string
+          addressLine2?: string
+          city?: string
+          state?: string
+          postcode?: string
+        }
+      }
+    }
+  | {
+      type: 'UPDATE_NEWSLETTER_SUBSCRIPTION'
+      payload: { subscribeToNewsletter: boolean }
+    }
 
 // Helper function to get the product ID from a CartItem
 const getProductId = (product: CartItem['product']): string | number => {
@@ -272,6 +292,26 @@ export const cartReducer = (cart: Cart, action: CartAction): Cart => {
 
     case 'SET_CART': {
       return action.payload
+    }
+
+    case 'UPDATE_BILLING_ADDRESS': {
+      return {
+        ...cart,
+        billing: {
+          ...cart.billing,
+          ...action.payload,
+        },
+      }
+    }
+
+    case 'UPDATE_NEWSLETTER_SUBSCRIPTION': {
+      return {
+        ...cart,
+        billing: {
+          ...cart.billing,
+          subscribeToNewsletter: action.payload.subscribeToNewsletter,
+        },
+      }
     }
 
     default: {

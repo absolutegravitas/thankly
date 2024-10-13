@@ -122,7 +122,7 @@ ORDER BY table_schema, table_name;
 Run the following command every time the database structure changes and before pushing a commit to ensure proper builds on Vercel:
 
 ```bash
-pnpm payload migrate:create && pnpm generate:types && pnpm build
+pnpm generate:types && pnpm payload migrate:create &&  pnpm build
 ```
 
 ### Additional Docker Commands

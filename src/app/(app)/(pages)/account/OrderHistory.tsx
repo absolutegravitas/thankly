@@ -128,8 +128,8 @@ function OrderDetails({ order }: { order: Order }) {
                   {order.billing.firstName} {order.billing.lastName}
                 </p>
                 <p>{order.billing.email}</p>
-                {order.billing.contactNumber && <p>Phone: {order.billing.contactNumber}</p>}
-                {order.billing.orgName && <p>Organization: {order.billing.orgName}</p>}
+
+                {/* {order.billing.orgName && <p>Organization: {order.billing.orgName}</p>} */}
                 {order.billing.address && (
                   <p>
                     {order.billing.address.addressLine1},
