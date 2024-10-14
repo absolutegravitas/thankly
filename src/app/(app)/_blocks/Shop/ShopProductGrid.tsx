@@ -49,7 +49,7 @@ export default ShopProductGrid
 
 const fetchProductsList = async ({
   page = 1,
-  sort = 'name_asc',
+  sort,
   filters = {},
 }: Props): Promise<{
   products: Product[]
@@ -139,6 +139,8 @@ const fetchProductsList = async ({
       break
     case 'star_rating':
       query.sort = '-starRating'
+    default:
+      query.sort = '-promoted'
   }
 
   try {

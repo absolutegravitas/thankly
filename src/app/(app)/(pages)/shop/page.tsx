@@ -1,35 +1,16 @@
-// This file is a server component in Next.js 14 that renders the Shop page of a web application.
-// It displays a grid of available products fetched from a content management system (CMS) called Payload.
-// If no products are available, it shows a message indicating an empty shop.
-import React, { useState } from 'react'
+import React from 'react'
 import { Metadata } from 'next'
-import { BlockWrapper } from '@app/_components/BlockWrapper'
-import { Gutter } from '@app/_components/Gutter'
-import { notFound } from 'next/navigation'
-import { getPaddingClasses } from '../../_css/tailwindClasses'
 import { Suspense } from 'react'
 import LoadingShop from './loading'
-import ProductGrid from '../../_blocks/ProductGrid'
-import Filters from '../../_blocks/Shop/Filters'
 
-import * as Slider from '@radix-ui/react-slider'
-import { Button } from '@app/_components/ui/button'
-import { Star, ShoppingCart, Check } from 'lucide-react'
 import ShopSideFilter from '../../_blocks/Shop/ShopSideFilter'
 import ShopTopFilter from '../../_blocks/Shop/ShopTopFilter'
 import ShopProductGrid from '../../_blocks/Shop/ShopProductGrid'
-import FetchItems from '@/utilities/PayloadQueries/fetchItems'
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '../../_components/ui/accordion'
+import { Button } from '../../_components/ui/button'
+import { Sheet, SheetContent, SheetTrigger } from '../../_components/ui/sheet'
 
-// Define a type alias for the sort options
 export type SortOption = 'name_asc' | 'name_desc' | 'price_asc' | 'price_desc' | 'star_rating'
 
-// Define a type alias for the filter options
 export type FilterOptions = {
   category?: string[]
   tags?: string[]
@@ -69,17 +50,23 @@ export default async function ShopPage({
   return (
     <div className="container mx-auto p-4">
       <div className="flex flex-col md:flex-row gap-4">
-        {/* Mobile Accordion */}
+        {/* Mobile Sheet */}
         <div className="md:hidden w-full mb-4">
-          <Accordion type="single" collapsible>
-            <AccordionItem value="sort-and-filter">
-              <AccordionTrigger className="flex justify-end py-1">Shop Options</AccordionTrigger>
-              <AccordionContent>
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="outline" className="w-full">
+                Shop Options
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left" className="w-[300px] sm:w-[400px]">
+              <div className="py-4 h-full overflow-y-auto">
                 <ShopSideFilter />
-                <ShopTopFilter />
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
+                <div className="pt-2">
+                  <ShopTopFilter />
+                </div>
+              </div>
+            </SheetContent>
+          </Sheet>
         </div>
 
         {/* Desktop Sidebar */}
@@ -90,7 +77,7 @@ export default async function ShopPage({
         {/* Main content */}
         <div className="w-full md:w-3/4">
           {/* Sort options */}
-          <div className="hidden md:block">
+          <div className="hidden md:block mb-4">
             <ShopTopFilter />
           </div>
 
@@ -104,9 +91,7 @@ export default async function ShopPage({
   )
 }
 
-// Generates metadata for the Shop page
 export async function generateMetadata(): Promise<Metadata> {
-  // Static metadata values
   const defaultTitle = 'thankly shop'
   const defaultDescription = 'Our full range of currently available Thankly Gifts and Cards.'
   const defaultImageURL = `${process.env.NEXT_PUBLIC_SERVER_URL}images/og-image.png`
