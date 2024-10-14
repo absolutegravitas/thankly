@@ -58,6 +58,7 @@ export interface Product {
   categories?: (number | Category)[] | null;
   tags?: (number | Tag)[] | null;
   shippingSize?: ('mini' | 'small' | 'medium' | 'large') | null;
+  promoted: number;
   prices: {
     basePrice: number;
     salePrice?: number | null;

@@ -49,7 +49,7 @@ export default ShopProductGrid
 
 const fetchProductsList = async ({
   page = 1,
-  sort = 'name_asc',
+  sort,
   filters = {},
 }: Props): Promise<{
   products: Product[]

@@ -119,6 +119,17 @@ export const Products: CollectionConfig = {
       ],
     },
     {
+      type: 'row',
+      fields: [
+        { name: 'promoted',
+          type: 'number',
+          label: 'Promoted (The higher the number, the higher it appears in the shop)',
+          required: true,
+          defaultValue: 0,
+        }
+      ]
+    },
+    {
       name: 'prices',
       type: 'group',
       fields: [
