@@ -1,26 +1,33 @@
 'use client'
 import { Media, Product, Tag } from '@/payload-types'
-import React, { SVGProps } from 'react'
+import React, { SVGProps, useState } from 'react'
 import StarRating from '@app/_components/StarRating'
 import { Button } from '@app/_components/ui/button'
 import Link from 'next/link'
 import { useCart } from '@/app/(app)/_providers/Cart'
 import { useRouter } from 'next/navigation'
+import Image from 'next/image'
 
 interface Props {
   product: Product
   showTags?: boolean
 }
 
+const ImageSkeleton = () => (
+  <div className="absolute inset-0 bg-gray-200 rounded-md animate-pulse">
+    <div className="h-full w-full bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 animate-shimmer"></div>
+  </div>
+)
+
 const ShopProductCard = ({ product, showTags = true }: Props) => {
   const router = useRouter()
   const { addCartItem, openSideCart } = useCart()
+  const [imageLoaded, setImageLoaded] = useState(false)
 
   const addToCart = (e: React.MouseEvent) => {
-    e.preventDefault() // Prevent the link from being followed
-    e.stopPropagation() // Prevent click from bubbling up to the link
-    addCartItem(product, 1) // Assumes quantity = 1
-    // router.push('/cart')
+    e.preventDefault()
+    e.stopPropagation()
+    addCartItem(product, 1)
     openSideCart()
   }
 
@@ -29,13 +36,17 @@ const ShopProductCard = ({ product, showTags = true }: Props) => {
       <div className="border rounded-lg flex flex-col">
         <div className="relative w-full pb-[100%] mb-2">
           {product.media && product.media.length > 0 && product.media[0].mediaItem ? (
-            <div className="absolute inset-0 overflow-hidden rounded-md">
-              <img
-                src={(product.media?.[0].mediaItem as Media).url ?? undefined}
-                alt={(product.media?.[0].mediaItem as Media).alt ?? undefined}
-                className="w-full h-full object-cover absolute inset-0"
+            <>
+              {!imageLoaded && <ImageSkeleton />}
+              <Image
+                src={(product.media?.[0].mediaItem as Media).url ?? ''}
+                alt={(product.media?.[0].mediaItem as Media).alt ?? ''}
+                layout="fill"
+                objectFit="cover"
+                className={`rounded-md transition-opacity duration-300 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+                onLoadingComplete={() => setImageLoaded(true)}
               />
-            </div>
+            </>
           ) : (
             <div className="absolute inset-0 bg-gray-200 rounded-md flex items-center justify-center">
               <span className="text-gray-400">Image not found</span>
@@ -87,14 +98,9 @@ function FastAddToCartIcon({ size = 24, ...props }: FastAddToCartIconProps) {
       fill="currentColor"
       {...props}
     >
-      {/* Shopping Cart */}
       <path d="M1 2h3l1 13h15V5H5" stroke="currentColor" strokeWidth="2" fill="none" />
-
-      {/* Cart Wheels */}
       <circle cx="7" cy="21" r="1" stroke="currentColor" strokeWidth="2" fill="none" />
       <circle cx="17" cy="21" r="1" stroke="currentColor" strokeWidth="2" fill="none" />
-
-      {/* Fast Forward Symbols (adjusted position: 1px higher and 1px to the right) */}
       <path d="M9 6l4 4-4 4V6zM13 6l4 4-4 4V6z" />
     </svg>
   )
