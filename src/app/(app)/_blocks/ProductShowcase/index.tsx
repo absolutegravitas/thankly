@@ -102,15 +102,21 @@ export default function ProductShowcase({ collections }: ProductShowcaseProps) {
         >
           <CarouselContent>
             {loading
-              ? Array.from({ length: 3 }).map((_, index) => (
-                  <CarouselItem key={`skeleton-${index}`} className="md:basis-1/2 lg:basis-1/3">
+              ? Array.from({ length: 4 }).map((_, index) => (
+                  <CarouselItem
+                    key={`skeleton-${index}`}
+                    className="basis-full md:basis-1/2 lg:basis-1/2 xl:basis-1/3 2xl:basis-1/4"
+                  >
                     <div className="p-1">
                       <SkeletonLoader />
                     </div>
                   </CarouselItem>
                 ))
               : currentProducts.map((product, index) => (
-                  <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
+                  <CarouselItem
+                    key={index}
+                    className="basis-full md:basis-1/2 lg:basis-1/2 xl:basis-1/3 2xl:basis-1/4"
+                  >
                     <div className="p-1">
                       <ShopProductCard product={product} showTags={false} />
                     </div>
@@ -124,7 +130,7 @@ export default function ProductShowcase({ collections }: ProductShowcaseProps) {
       <div className="flex justify-center mt-8">
         <Button
           variant="default"
-          className="bg-black text-white hover:bg-gray-800"
+          className="bg-black text-white hover:bg-gray-800 px-8"
           onClick={() => router.push('/shop')}
         >
           SHOP ALL
