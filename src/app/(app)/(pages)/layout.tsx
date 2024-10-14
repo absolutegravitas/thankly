@@ -29,11 +29,17 @@ import { NewsletterPopupWrapper } from '@app/_blocks/NewsletterPopup/NewsletterP
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const settings: Setting = await FetchGlobal({ slug: 'settings', depth: 1 })
 
-  const bannerFields: BannerBlockProps = {
-    addCheckmark: true,
-    content: settings.topBar?.content || '',
-    visible: settings.topBar?.visible || false,
-  }
+  const bannerFields: BannerBlockProps = settings.topBar
+    ? {
+        addCheckmark: true,
+        content: '',
+        visible: false,
+      }
+    : {
+        addCheckmark: true,
+        content: settings.topBar.content || '',
+        visible: settings.topBar.visible || false,
+      }
 
   return (
     <html lang="en" suppressHydrationWarning>
