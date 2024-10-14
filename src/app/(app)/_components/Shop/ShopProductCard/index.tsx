@@ -26,7 +26,7 @@ const ShopProductCard = ({ product, showTags = true }: Props) => {
 
   return (
     <Link href={`/shop/${product.slug}`} className="block">
-      <div className="border rounded-lg p-4 flex flex-col">
+      <div className="border rounded-lg flex flex-col">
         <div className="relative w-full pb-[100%] mb-2">
           {product.media && product.media.length > 0 && product.media[0].mediaItem ? (
             <div className="absolute inset-0 overflow-hidden rounded-md">
@@ -53,16 +53,18 @@ const ShopProductCard = ({ product, showTags = true }: Props) => {
               ))}
           </div>
         </div>
-        <h3 className="font-semibold mt-2">{product.title}</h3>
-        <div className="flex items-center mt-1 min-h-5">
-          <StarRating rating={product.starRating} />
-        </div>
-        <div className="flex justify-between items-center mt-4 bg-white">
-          <span className="font-bold text-black">${product.prices.basePrice}</span>
-          <Button size="icon" onClick={addToCart} className="bg-white text-black">
-            <FastAddToCartIcon className="h-5 w-5 text-black" />
-            <span className="sr-only">Add to cart</span>
-          </Button>
+        <div className="px-4 pb-4">
+          <h3 className=" mt-2">{product.title}</h3>
+          <div className="flex items-center mt-1 min-h-5">
+            <StarRating rating={product.starRating} />
+          </div>
+          <div className="flex justify-between items-center bg-white">
+            <span className=" text-black">${product.prices.basePrice}</span>
+            <Button size="icon" onClick={addToCart} className="bg-white text-black">
+              <FastAddToCartIcon className="h-5 w-5 text-black" />
+              <span className="sr-only">Add to cart</span>
+            </Button>
+          </div>
         </div>
       </div>
     </Link>

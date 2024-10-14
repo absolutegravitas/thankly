@@ -70,12 +70,12 @@ export default async function ShopPage({
         </div>
 
         {/* Desktop Sidebar */}
-        <div className="hidden md:block md:w-1/4">
+        <div className="hidden md:block md:w-60">
           <ShopSideFilter />
         </div>
 
         {/* Main content */}
-        <div className="w-full md:w-3/4">
+        <div className="w-full">
           {/* Sort options */}
           <div className="hidden md:block mb-4">
             <ShopTopFilter />

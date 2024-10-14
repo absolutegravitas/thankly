@@ -24,7 +24,7 @@ const ShopProductGrid = async ({ page, sort, filters }: Props) => {
     return (
       <div>
         {/* Product grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
           {(!products || products.length === 0) && (
             <div className="h-96 rounded-lg border-4 border-dashed border-gray-200 flex items-center justify-center">
               <p className="text-gray-500">No products found for your filters.</p>
