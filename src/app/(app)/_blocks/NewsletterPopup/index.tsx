@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import Image from 'next/image'
+import Image from "next/legacy/image"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@app/_components/ui/dialog'
 import { Button } from '@app/_components/ui/button'
 import { Media, Page, Product, Setting } from '@/payload-types'

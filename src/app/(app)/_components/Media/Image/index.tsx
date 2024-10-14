@@ -74,8 +74,8 @@ export const ImageComponent: React.FC<Props> = (props) => {
           }
         }}
         fill={fill}
-        width={!fill ? width ?? undefined : undefined}
-        height={!fill ? height ?? undefined : undefined}
+        width={!fill ? (width ?? undefined) : undefined}
+        height={!fill ? (height ?? undefined) : undefined}
         sizes={sizes}
         priority={priority}
       />

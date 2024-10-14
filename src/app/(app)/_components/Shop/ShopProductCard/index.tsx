@@ -6,7 +6,7 @@ import { Button } from '@app/_components/ui/button'
 import Link from 'next/link'
 import { useCart } from '@/app/(app)/_providers/Cart'
 import { useRouter } from 'next/navigation'
-import Image from 'next/image'
+import Image from 'next/legacy/image'
 
 interface Props {
   product: Product
@@ -14,8 +14,14 @@ interface Props {
 }
 
 const ImageSkeleton = () => (
-  <div className="absolute inset-0 bg-gray-200 rounded-md animate-pulse">
-    <div className="h-full w-full bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 animate-shimmer"></div>
+  <div className="absolute inset-0 bg-gray-200 rounded-md overflow-hidden">
+    <div
+      className="h-full w-full bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 animate-shimmer"
+      style={{
+        backgroundSize: '200% 100%',
+        animation: 'shimmer 1.5s infinite',
+      }}
+    ></div>
   </div>
 )
 
@@ -35,18 +41,16 @@ const ShopProductCard = ({ product, showTags = true }: Props) => {
     <Link href={`/shop/${product.slug}`} className="block">
       <div className="border rounded-lg flex flex-col">
         <div className="relative w-full pb-[100%] mb-2">
+          {!imageLoaded && <ImageSkeleton />}
           {product.media && product.media.length > 0 && product.media[0].mediaItem ? (
-            <>
-              {!imageLoaded && <ImageSkeleton />}
-              <Image
-                src={(product.media?.[0].mediaItem as Media).url ?? ''}
-                alt={(product.media?.[0].mediaItem as Media).alt ?? ''}
-                layout="fill"
-                objectFit="cover"
-                className={`rounded-md transition-opacity duration-300 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
-                onLoadingComplete={() => setImageLoaded(true)}
-              />
-            </>
+            <Image
+              src={(product.media?.[0].mediaItem as Media).url ?? ''}
+              alt={(product.media?.[0].mediaItem as Media).alt ?? ''}
+              layout="fill"
+              objectFit="cover"
+              className={`rounded-md transition-opacity duration-300 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+              onLoad={() => setImageLoaded(true)}
+            />
           ) : (
             <div className="absolute inset-0 bg-gray-200 rounded-md flex items-center justify-center">
               <span className="text-gray-400">Image not found</span>
@@ -65,12 +69,12 @@ const ShopProductCard = ({ product, showTags = true }: Props) => {
           </div>
         </div>
         <div className="px-4 pb-4">
-          <h3 className=" mt-2">{product.title}</h3>
+          <h3 className="mt-2">{product.title}</h3>
           <div className="flex items-center mt-1 min-h-5">
             <StarRating rating={product.starRating} />
           </div>
           <div className="flex justify-between items-center bg-white">
-            <span className=" text-black">${product.prices.basePrice}</span>
+            <span className="text-black">${product.prices.basePrice}</span>
             <Button size="icon" onClick={addToCart} className="bg-white text-black">
               <FastAddToCartIcon className="h-5 w-5 text-black" />
               <span className="sr-only">Add to cart</span>

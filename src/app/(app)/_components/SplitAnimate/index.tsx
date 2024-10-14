@@ -29,7 +29,7 @@ const SplitAnimate: React.FC<Props> = ({
       .trim()
       .replace('-', '‑')
       .replace(/&#8232;/g, ' ') // Replaces figma inserted character, see: https://forum.figma.com/t/creating-new-line-via-shift-enter-adds-a-l-sep-symbol/2856/4
-      .split(' ')
+      .split(' ');
   }, [text])
 
   const innerWorldSelector = `.${classes.innerWord}`

@@ -10,7 +10,7 @@ import ensurePath from '@/utilities/ensurePath'
 import clsx from 'clsx'
 import Link from 'next/link'
 import React, { CSSProperties, type FC, type ReactElement } from 'react'
-import Image from 'next/image'
+import Image from "next/legacy/image"
 import {
   IS_BOLD,
   IS_CODE,

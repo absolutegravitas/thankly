@@ -20,6 +20,7 @@ const ShopSideFilter = () => {
   const router = useRouter()
 
   const isCardsOnly = searchParams.get('productType') === 'card'
+  const isGiftsOnly = searchParams.get('productType') === 'gift'
 
   const fetchAllCategories = useCallback(async () => {
     try {
@@ -132,7 +133,7 @@ const ShopSideFilter = () => {
           className={`w-full justify-start ${selectedCategory === null ? 'font-extrabold' : ''}`}
           onClick={() => handleCategoryChange(null)}
         >
-          All Categories
+          {isCardsOnly ? 'All Cards' : isGiftsOnly ? 'All Gifts' : 'All Categories'}
         </Button>
         {filteredCategories.map((item) => (
           <Button

@@ -9,7 +9,7 @@
 
 import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
-import Image from 'next/image'
+import Image from "next/legacy/image"
 import { ChevronRightIcon, FrownIcon } from 'lucide-react'
 import cn from '@/utilities/cn'
 import { contentFormats } from '@app/_css/tailwindClasses'
@@ -166,5 +166,5 @@ export const ProductCard: React.FC<ProductCardProps> = (product: Product) => {
         </div>
       </div>
     </React.Fragment>
-  )
+  );
 }

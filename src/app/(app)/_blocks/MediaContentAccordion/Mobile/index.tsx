@@ -5,7 +5,7 @@ import {
   CollapsibleGroup,
   CollapsibleToggler,
 } from '@faceless-ui/collapsibles'
-import Image from 'next/image'
+import Image from "next/legacy/image"
 
 import { BackgroundScanline } from '@app/_components/BackgroundScanline'
 import { CMSLink } from '@app/_components/CMSLink'
