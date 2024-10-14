@@ -42,9 +42,9 @@ export const MainMenuHeader: React.FC<any> = ({ menu }: any) => {
 
   return (
     <header
-      className={`flex h-16 w-full items-center justify-between px-4 md:px-6
-        ${!isHomePage || isScrolled ? 'bg-white text-black border-b-grey-500 border-b border-solid' : 'bg-background text-white border-b-0'}
-        ${isHomePage ? 'absolute w-screen transition-colors duration-300 ease-in-out' : ''}`}
+      className={`flex h-16 items-center justify-between px-4 md:px-6
+      ${!isHomePage || isScrolled ? 'bg-white text-black border-b-grey-500 border-b border-solid' : 'bg-background text-white border-b-0'}
+      ${isHomePage ? 'fixed top-0 left-0 right-0 transition-colors duration-300 ease-in-out' : ''}`}
     >
       <Link
         href="/"
@@ -55,18 +55,16 @@ export const MainMenuHeader: React.FC<any> = ({ menu }: any) => {
       </Link>
       <div className="flex items-center gap-6">
         <nav className="hidden items-center gap-6 md:flex">
-          {(menu?.tabs || []).map((tab: any, tabIndex: any) => {
-            return (
-              <Link
-                key={tabIndex}
-                href={tab.link.url}
-                className="text-lg font-medium text-muted-foreground transition-colors hover:text-foreground"
-                prefetch={false}
-              >
-                {tab.label}
-              </Link>
-            )
-          })}
+          {(menu?.tabs || []).map((tab, tabIndex) => (
+            <Link
+              key={tabIndex}
+              href={tab.link.url}
+              className="text-lg font-medium text-muted-foreground transition-colors hover:text-foreground"
+              prefetch={false}
+            >
+              {tab.label}
+            </Link>
+          ))}
         </nav>
         <div className="flex items-center ml-12 h-4">
           <Link
@@ -83,30 +81,24 @@ export const MainMenuHeader: React.FC<any> = ({ menu }: any) => {
               <Button
                 variant="outline"
                 size="icon"
-                className={`md:hidden border-none bg-transparent`}
+                className="md:hidden border-none bg-transparent"
               >
-                <MenuIcon
-                  className={`h-6 w-6
-     
-                  `}
-                />
+                <MenuIcon className="h-6 w-6" />
                 <span className="sr-only">Toggle navigation menu</span>
               </Button>
             </SheetTrigger>
             <SheetContent side="right">
               <div className="grid gap-2 py-6">
-                {(menu?.tabs || []).map((tab: any, tabIndex: any) => {
-                  return (
-                    <Link
-                      key={tabIndex}
-                      href={tab.link.url}
-                      className="flex w-full items-center py-2 text-lg font-semibold"
-                      prefetch={false}
-                    >
-                      {tab.label}
-                    </Link>
-                  )
-                })}
+                {(menu?.tabs || []).map((tab, tabIndex) => (
+                  <Link
+                    key={tabIndex}
+                    href={tab.link.url}
+                    className="flex w-full items-center py-2 text-lg font-semibold"
+                    prefetch={false}
+                  >
+                    {tab.label}
+                  </Link>
+                ))}
               </div>
             </SheetContent>
           </Sheet>

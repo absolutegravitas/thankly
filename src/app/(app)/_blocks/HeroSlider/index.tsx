@@ -48,6 +48,8 @@ function useImageCycle(images: HeroItem[], interval: number) {
   return [currentIndex, setCurrentIndex] as const
 }
 
+const HERO_HEIGHT_PERCENTAGE = 1.0 //100% of screen height
+
 export default function HeroSlider({ slider }: HeroSliderProps) {
   const heroItems = slider.map((item: SliderItem) => ({
     desktopImageUrl: item.desktopImage.url,
@@ -56,18 +58,18 @@ export default function HeroSlider({ slider }: HeroSliderProps) {
     buttonText: item.buttonLink.label,
     buttonLink: item.buttonLink.url,
   }))
-  const [height, setHeight] = useState('90vh')
+  const [height, setHeight] = useState(`${HERO_HEIGHT_PERCENTAGE * 100}vh`)
   const [currentIndex, setCurrentIndex] = useImageCycle(heroItems, 8000)
   const isMobile = useMediaQuery({ maxWidth: 639 })
 
   const updateHeight = useCallback(() => {
     if (isMobile) {
       // Set height to approximate height of a cell phone (e.g., 100vh)
-      setHeight('90vh')
+      setHeight(`${HERO_HEIGHT_PERCENTAGE * 100}vh`)
     } else {
-      const vh = window.innerHeight * 0.01 * 0.9
+      const vh = window.innerHeight * 0.01 * HERO_HEIGHT_PERCENTAGE
       document.documentElement.style.setProperty('--vh', `${vh}px`)
-      setHeight(`${window.innerHeight * 0.9}px`)
+      setHeight(`${window.innerHeight * HERO_HEIGHT_PERCENTAGE}px`)
     }
   }, [isMobile])
 
@@ -91,7 +93,7 @@ export default function HeroSlider({ slider }: HeroSliderProps) {
             backgroundPosition: 'center',
           }}
         >
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent">
+          <div className="absolute inset-x-0 bottom-0 h-[30%] bg-gradient-to-t from-black/70 to-transparent">
             <div className="absolute bottom-16 left-16 max-w-6xl text-white">
               <div
                 className={`${isMobile ? 'text-3xl' : 'text-5xl'}
