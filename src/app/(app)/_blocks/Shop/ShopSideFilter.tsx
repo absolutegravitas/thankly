@@ -132,7 +132,7 @@ const ShopSideFilter = () => {
           className={`w-full justify-start ${selectedCategory === null ? 'font-extrabold' : ''}`}
           onClick={() => handleCategoryChange(null)}
         >
-          All
+          All Categories
         </Button>
         {filteredCategories.map((item) => (
           <Button

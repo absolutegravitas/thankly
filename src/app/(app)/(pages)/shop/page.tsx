@@ -61,7 +61,9 @@ export default async function ShopPage({
             <SheetContent side="left" className="w-[300px] sm:w-[400px]">
               <div className="py-4 h-full overflow-y-auto">
                 <ShopSideFilter />
-                <ShopTopFilter />
+                <div className="pt-2">
+                  <ShopTopFilter />
+                </div>
               </div>
             </SheetContent>
           </Sheet>
