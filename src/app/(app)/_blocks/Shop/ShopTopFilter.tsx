@@ -66,10 +66,14 @@ const ShopTopFilter: React.FC = () => {
       <Button
         key={option.id}
         variant={isActive ? 'default' : 'outline'}
-        className="flex items-center space-x-2 rounded-lg w-full sm:w-auto justify-start"
+        className={`flex items-center space-x-2 rounded-lg w-full sm:w-auto justify-start ${
+          isActive
+            ? 'bg-gray-200 text-gray-800 border-2 border-gray-300 hover:bg-gray-300'
+            : 'hover:bg-gray-100'
+        }`}
         onClick={() => toggleFilter(paramName, option.paramValue)}
       >
-        {isActive && <Check className="w-4 h-4 text-white" />}
+        {isActive && <Check className="w-4 h-4 text-gray-800" />}
         <span>{option.label}</span>
       </Button>
     )
