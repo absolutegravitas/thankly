@@ -1,6 +1,6 @@
 'use client'
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
-import Image from 'next/image'
+import Image from "next/legacy/image"
 
 import { BackgroundGrid } from '@app/_components/BackgroundGrid'
 import { BlockWrapper, PaddingProps } from '@app/_components/BlockWrapper'

@@ -10,7 +10,7 @@ import {
 
 import { signIn, signOut, useSession } from 'next-auth/react'
 import Link from 'next/link'
-import Image from 'next/image'
+import Image from "next/legacy/image"
 import { CMSLink } from '../CMSLink'
 import { LogInIcon } from 'lucide-react'
 import * as React from 'react'

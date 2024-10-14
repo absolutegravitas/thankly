@@ -13,7 +13,7 @@ import {
 } from '@app/_components/ui/card'
 import { Button } from '@app/_components/ui/button'
 import { Separator } from '@app/_components/ui/separator'
-import Image from 'next/image'
+import Image from "next/legacy/image"
 
 export default function OrderDetails({ order }: { order: Order }) {
   if (!order) {

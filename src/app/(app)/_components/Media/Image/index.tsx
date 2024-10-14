@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import Image, { StaticImageData } from 'next/image'
+import Image, { StaticImageData } from "next/legacy/image"
 
 import { breakpoints } from '@app/_css/cssVariables'
 import { Props } from '../types'

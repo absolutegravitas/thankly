@@ -6,7 +6,7 @@ import { Button } from '@app/_components/ui/button'
 import Link from 'next/link'
 import { useCart } from '@/app/(app)/_providers/Cart'
 import { useRouter } from 'next/navigation'
-import Image from 'next/image'
+import Image from "next/legacy/image"
 
 interface Props {
   product: Product
