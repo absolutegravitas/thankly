@@ -44,7 +44,7 @@ const ShopProductCard = ({ product, showTags = true }: Props) => {
                 layout="fill"
                 objectFit="cover"
                 className={`rounded-md transition-opacity duration-300 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
-                onLoadingComplete={() => setImageLoaded(true)}
+                onLoad={() => setImageLoaded(true)}
               />
             </>
           ) : (
