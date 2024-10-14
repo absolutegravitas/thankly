@@ -139,6 +139,8 @@ const fetchProductsList = async ({
       break
     case 'star_rating':
       query.sort = '-starRating'
+    default:
+      query.sort = '-promoted'
   }
 
   try {
