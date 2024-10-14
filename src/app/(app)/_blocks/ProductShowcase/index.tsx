@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback, useRef } from 'react'
 import { Button } from '@app/_components/ui/button'
 import {
   Carousel,
@@ -40,6 +40,7 @@ const SkeletonLoader = () => (
 
 export default function ProductShowcase({ collections }: ProductShowcaseProps) {
   const router = useRouter()
+  const containerRef = useRef<HTMLDivElement>(null)
   const productCollections: ProductCollection[] = collections.map(
     (item: CollectionItem, index: number) => ({
       id: index,
@@ -50,27 +51,44 @@ export default function ProductShowcase({ collections }: ProductShowcaseProps) {
   const [activeTab, setActiveTab] = useState<ProductCollection>(productCollections[0])
   const [allProducts, setAllProducts] = useState<Record<number, Product[]>>({})
   const [loading, setLoading] = useState(true)
+  const [transitioning, setTransitioning] = useState(false)
+
+  const fetchAllProducts = useCallback(async () => {
+    setLoading(true)
+    try {
+      const productPromises = productCollections.map((collection) =>
+        fetchProductsByCategory(collection.categoryId),
+      )
+      const results = await Promise.all(productPromises)
+      const productsMap: Record<number, Product[]> = {}
+      productCollections.forEach((collection, index) => {
+        productsMap[collection.categoryId] = results[index]
+      })
+      setAllProducts(productsMap)
+    } catch (error) {
+      console.error('Error fetching products:', error)
+    } finally {
+      setLoading(false)
+    }
+  }, [productCollections])
 
   useEffect(() => {
-    const fetchAllProducts = async () => {
-      setLoading(true)
-      try {
-        const productPromises = productCollections.map((collection) =>
-          fetchProductsByCategory(collection.categoryId),
-        )
-        const results = await Promise.all(productPromises)
-        const productsMap: Record<number, Product[]> = {}
-        productCollections.forEach((collection, index) => {
-          productsMap[collection.categoryId] = results[index]
-        })
-        setAllProducts(productsMap)
-      } catch (error) {
-        console.error('Error fetching products:', error)
-      } finally {
-        setLoading(false)
-      }
-    }
     fetchAllProducts()
+  }, [])
+
+  const handleTabChange = useCallback((newTab: ProductCollection) => {
+    if (containerRef.current) {
+      const height = containerRef.current.offsetHeight
+      containerRef.current.style.height = `${height}px`
+    }
+    setTransitioning(true)
+    setTimeout(() => {
+      setActiveTab(newTab)
+      setTransitioning(false)
+      if (containerRef.current) {
+        containerRef.current.style.height = 'auto'
+      }
+    }, 300)
   }, [])
 
   const currentProducts = allProducts[activeTab.categoryId] || []
@@ -85,47 +103,57 @@ export default function ProductShowcase({ collections }: ProductShowcaseProps) {
               className={`px-4 py-2 rounded-full relative z-10 transition-colors duration-300 ${
                 activeTab.id === item.id ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-600'
               }`}
-              onClick={() => setActiveTab(item)}
+              onClick={() => handleTabChange(item)}
             >
               {item.name}
             </button>
           ))}
         </div>
       </div>
-      <div className="px-12 relative w-full">
-        <Carousel
-          opts={{
-            align: 'start',
-            loop: false,
-          }}
-          className="w-full mx-auto"
+      <div
+        ref={containerRef}
+        className="px-12 relative w-full overflow-hidden transition-height duration-300 ease-in-out"
+      >
+        <div
+          className={`transition-opacity duration-300 ease-in-out ${
+            transitioning ? 'opacity-0' : 'opacity-100'
+          }`}
         >
-          <CarouselContent>
-            {loading
-              ? Array.from({ length: 4 }).map((_, index) => (
-                  <CarouselItem
-                    key={`skeleton-${index}`}
-                    className="basis-full md:basis-1/2 lg:basis-1/2 xl:basis-1/3 2xl:basis-1/4"
-                  >
-                    <div className="p-1">
-                      <SkeletonLoader />
-                    </div>
-                  </CarouselItem>
-                ))
-              : currentProducts.map((product, index) => (
-                  <CarouselItem
-                    key={index}
-                    className="basis-full md:basis-1/2 lg:basis-1/2 xl:basis-1/3 2xl:basis-1/4"
-                  >
-                    <div className="p-1">
-                      <ShopProductCard product={product} showTags={false} />
-                    </div>
-                  </CarouselItem>
-                ))}
-          </CarouselContent>
-          <CarouselPrevious />
-          <CarouselNext />
-        </Carousel>
+          <Carousel
+            key={activeTab.id}
+            opts={{
+              align: 'start',
+              loop: false,
+            }}
+            className="w-full mx-auto"
+          >
+            <CarouselContent>
+              {loading
+                ? Array.from({ length: 4 }).map((_, index) => (
+                    <CarouselItem
+                      key={`skeleton-${index}`}
+                      className="basis-full md:basis-1/2 lg:basis-1/2 xl:basis-1/3 2xl:basis-1/4"
+                    >
+                      <div className="p-1">
+                        <SkeletonLoader />
+                      </div>
+                    </CarouselItem>
+                  ))
+                : currentProducts.map((product, index) => (
+                    <CarouselItem
+                      key={`${activeTab.id}-${index}`}
+                      className="basis-full md:basis-1/2 lg:basis-1/2 xl:basis-1/3 2xl:basis-1/4"
+                    >
+                      <div className="p-1">
+                        <ShopProductCard product={product} showTags={false} />
+                      </div>
+                    </CarouselItem>
+                  ))}
+            </CarouselContent>
+            <CarouselPrevious />
+            <CarouselNext />
+          </Carousel>
+        </div>
       </div>
       <div className="flex justify-center mt-8">
         <Button
