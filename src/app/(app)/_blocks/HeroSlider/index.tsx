@@ -93,15 +93,15 @@ export default function HeroSlider({ slider }: HeroSliderProps) {
             backgroundPosition: 'center',
           }}
         >
-          <div className="absolute inset-x-0 bottom-0 h-[30%] bg-gradient-to-t from-black/70 to-transparent">
-            <div className="absolute bottom-16 left-16 max-w-6xl text-white">
+          <div className="absolute inset-x-0 bottom-0 h-[20%] bg-gradient-to-t from-black/70 to-transparent">
+            <div className="absolute bottom-24 left-16 max-w-6xl text-white">
               <div
                 className={`${isMobile ? 'text-3xl' : 'text-5xl'}
                  font-bold mb-6 leading-tight`}
               >
                 <DynamicHtml htmlContent={item.content} />
               </div>
-              <Button asChild size="lg" className="mt-4">
+              <Button asChild size="lg" className="">
                 <a href={item.buttonLink}>{item.buttonText}</a>
               </Button>
             </div>
