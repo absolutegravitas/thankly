@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react'
-import Image, { StaticImageData } from "next/legacy/image"
+import Image, { StaticImageData } from 'next/image'
 
 import { breakpoints } from '@app/_css/cssVariables'
 import { Props } from '../types'
@@ -74,8 +74,8 @@ export const ImageComponent: React.FC<Props> = (props) => {
           }
         }}
         fill={fill}
-        width={!fill ? width ?? undefined : undefined}
-        height={!fill ? height ?? undefined : undefined}
+        width={!fill ? (width ?? undefined) : undefined}
+        height={!fill ? (height ?? undefined) : undefined}
         sizes={sizes}
         priority={priority}
       />
