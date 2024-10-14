@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect, useCallback, useRef } from 'react'
+import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react'
 import { Button } from '@app/_components/ui/button'
 import {
   Carousel,
@@ -41,14 +41,19 @@ const SkeletonLoader = () => (
 export default function ProductShowcase({ collections }: ProductShowcaseProps) {
   const router = useRouter()
   const containerRef = useRef<HTMLDivElement>(null)
-  const productCollections: ProductCollection[] = collections.map(
-    (item: CollectionItem, index: number) => ({
-      id: index,
-      name: item.collectionName,
-      categoryId: item.category.id,
-    }),
+  const toggleRef = useRef<HTMLDivElement>(null)
+
+  const productCollections = useMemo(
+    () =>
+      collections.map((item: CollectionItem, index: number) => ({
+        id: index,
+        name: item.collectionName,
+        categoryId: item.category.id,
+      })),
+    [collections],
   )
-  const [activeTab, setActiveTab] = useState<ProductCollection>(productCollections[0])
+
+  const [activeTab, setActiveTab] = useState<ProductCollection>(() => productCollections[0])
   const [allProducts, setAllProducts] = useState<Record<number, Product[]>>({})
   const [loading, setLoading] = useState(true)
   const [transitioning, setTransitioning] = useState(false)
@@ -74,22 +79,46 @@ export default function ProductShowcase({ collections }: ProductShowcaseProps) {
 
   useEffect(() => {
     fetchAllProducts()
+  }, [fetchAllProducts])
+
+  const updateTogglePosition = useCallback((tabId: number) => {
+    if (toggleRef.current) {
+      const activeButton = document.querySelector(`button[data-id="${tabId}"]`) as HTMLElement
+      if (activeButton) {
+        const { offsetLeft, offsetWidth } = activeButton
+        toggleRef.current.style.left = `${offsetLeft}px`
+        toggleRef.current.style.width = `${offsetWidth}px`
+      }
+    }
   }, [])
 
-  const handleTabChange = useCallback((newTab: ProductCollection) => {
-    if (containerRef.current) {
-      const height = containerRef.current.offsetHeight
-      containerRef.current.style.height = `${height}px`
+  useEffect(() => {
+    // Set initial toggle position
+    if (productCollections.length > 0) {
+      updateTogglePosition(productCollections[0].id)
     }
-    setTransitioning(true)
-    setTimeout(() => {
-      setActiveTab(newTab)
-      setTransitioning(false)
+  }, [productCollections, updateTogglePosition])
+
+  const handleTabChange = useCallback(
+    (newTab: ProductCollection) => {
       if (containerRef.current) {
-        containerRef.current.style.height = 'auto'
+        const height = containerRef.current.offsetHeight
+        containerRef.current.style.height = `${height}px`
       }
-    }, 300)
-  }, [])
+      setTransitioning(true)
+      setTimeout(() => {
+        setActiveTab(newTab)
+        setTransitioning(false)
+        if (containerRef.current) {
+          containerRef.current.style.height = 'auto'
+        }
+      }, 300)
+
+      // Update toggle position
+      updateTogglePosition(newTab.id)
+    },
+    [updateTogglePosition],
+  )
 
   const currentProducts = allProducts[activeTab.categoryId] || []
 
@@ -97,11 +126,16 @@ export default function ProductShowcase({ collections }: ProductShowcaseProps) {
     <div className="container mx-auto px-4 py-8">
       <div className="flex justify-center mb-8">
         <div className="inline-flex rounded-full bg-gray-200 p-1 relative">
+          <div
+            ref={toggleRef}
+            className="absolute top-1 bottom-1 rounded-full bg-white transition-all duration-300 ease-in-out"
+          />
           {productCollections.map((item: ProductCollection) => (
             <button
               key={item.id}
+              data-id={item.id}
               className={`px-4 py-2 rounded-full relative z-10 transition-colors duration-300 ${
-                activeTab.id === item.id ? 'bg-white text-gray-800 shadow-sm' : 'text-gray-600'
+                activeTab.id === item.id ? 'text-gray-800' : 'text-gray-600'
               }`}
               onClick={() => handleTabChange(item)}
             >
