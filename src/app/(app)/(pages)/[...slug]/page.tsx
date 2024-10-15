@@ -29,7 +29,8 @@ import Blocks from '@app/_blocks'
 
 const Page = async ({ params: { slug = 'home' } }) => {
   const page: Page | null = await fetchPage(slug || 'home') //, isDraftMode)
-
+  console.log('slug', slug)
+  console.log('page', page)
   if (!page) return notFound()
 
   return <Blocks blocks={page?.layout?.root?.children} />
