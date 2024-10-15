@@ -29,12 +29,10 @@ import { LogoGrid } from '@cms/_blocks/LogoGrid'
 import { MediaBlock } from '@cms/_blocks/Media'
 import { MediaContent } from '@cms/_blocks/MediaContent'
 import { MediaContentAccordion } from '@cms/_blocks/MediaContentAccordion'
-// import { Pricing } from '@cms/_blocks/Pricing'
 import { MediaSlider } from '@cms/_blocks/MediaSlider'
 import { ProductShowcase } from '@cms/_blocks/ProductShowcase'
 import { Reuse } from '@cms/_blocks/Reuse'
 import { Slider } from '@cms/_blocks/Slider'
-import { Statement } from '@cms/_blocks/Statement'
 import { Steps } from '@cms/_blocks/Steps'
 import { StickyHighlights } from '@cms/_blocks/StickyHighlights'
 
@@ -67,7 +65,6 @@ export const layoutField: LayoutField = (
     'ProductShowcase',
     'Reuse',
     'Slider',
-    'Statement',
     'Steps',
     'StickyHighlights',
   ],
@@ -121,8 +118,6 @@ export const layoutField: LayoutField = (
           return Reuse
         case 'Slider':
           return Slider
-        case 'Statement':
-          return Statement
         case 'Steps':
           return Steps
         case 'StickyHighlights':
@@ -149,19 +144,3 @@ export const layoutField: LayoutField = (
     fieldOverrides || {},
   )
 }
-
-// const BlockHtmlConverter: HTMLConverter<SerializedBlockNode> = {
-//   // server side conversion of blocks to html
-
-//   converter({ node }) {
-//     // console.log('blockType', node.fields.blockType)
-
-//     switch (node.fields.blockType) {
-//       case 'p5js':
-//         return `<p5>${node.fields.p5js_code}</p5>`
-//       default:
-//         return `<span>unknown node.</span>`
-//     }
-//   },
-//   nodeTypes: ['block'],
-// }

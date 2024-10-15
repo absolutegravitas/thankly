@@ -69,7 +69,7 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     async session({ session, user }) {
       // console.log(user);
-      console.log('DEBUG: SESSION:', session, 'USER:', user)
+      // console.log('DEBUG: SESSION:', session, 'USER:', user)
       session.user.id = user.id
       session.user.image = user.image
       // session.user.stripeId = user.stripeId;

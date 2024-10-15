@@ -8,7 +8,6 @@ import React, { useEffect, useRef, useState } from 'react'
 
 import { BackgroundGrid } from '@app/_components/BackgroundGrid'
 import { BlockWrapper } from '@app/_components/BlockWrapper'
-import { ChangeHeaderTheme } from '@app/_components/ChangeHeaderTheme'
 import { CMSLink } from '@app/_components/CMSLink'
 import { Gutter } from '@app/_components/Gutter'
 
@@ -116,78 +115,76 @@ export const HomeHero: React.FC<
   const contentWrapperHeight = getContentWrapperHeight()
 
   return (
-    <ChangeHeaderTheme theme={theme}>
-      <BlockWrapper setPadding={false} className={getPaddingClasses('hero')}>
-        <div className="relative">
-          <div className="absolute z-1 top-0 right-0 bottom-0 left-0 overflow-hidden min-h-[600px]">
-            <div className="relative h-full">
-              {typeof media === 'object' && media !== null && (
-                <Media
-                  ref={laptopMediaRef}
-                  resource={media}
-                  className="w-full absolute bottom-0 z-1 -ml-[10rem] #w-[calc(100%+10rem)] sm:-ml-[6rem] sm:w-[calc(100%+8rem)]"
-                  priority
-                  width={2560}
-                  height={1971}
-                />
-              )}
-            </div>
-          </div>
-
-          <div className="pt-[calc(1971/2560*100%)] sm:pt-0" style={contentWrapperHeight}>
-            <Gutter className="flex flex-col items-center justify-between h-full pt-[7rem] 3xl:pt-[8rem] xl:pt-[7.5rem] lg:pt-[6.5rem] md:pt-[2rem] sm:pt-[1rem] sm:relative sm:top-0">
-              <div className="flex items-start" data-theme={theme}>
-                <div
-                  className={[
-                    'grid grid-rows-[auto,min-content] relative z-2 mt-[1rem] md:mt-[1rem]',
-                    'grid',
-                  ]
-                    .filter(Boolean)
-                    .join(' ')}
-                >
-                  <div className={['cols-14 start-1'].filter(Boolean).join(' ')}>
-                    {enableAnnouncement && (
-                      <div className="inline-block relative px-1 mb-[2rem] overflow-hidden transition-[box-shadow] shadow-[0_0.25rem_1rem_-0.75rem_var(--theme-success-250)] animate-fade-in-up opacity-0 transform translate-y-[1rem] animate-delay-[1s] sm:mb-0">
-                        <CMSLink {...announcementLink} />
-                      </div>
-                    )}
-                    <RichText content={description} />
-                    {Array.isArray(primaryButtons) && (
-                      <ul
-                        className={[
-                          'list-none m-0 p-0 max-w-[50%] bg-[var(--theme-success-50)] border-[var(--theme-success-50)] md:max-w-full',
-                        ]
-                          .filter(Boolean)
-                          .join(' ')}
-                      >
-                        {primaryButtons.map(({ link }, i) => {
-                          return (
-                            <li key={i}>
-                              <CMSLink
-                                {...link}
-                                appearance="default"
-                                fullWidth
-                                buttonProps={{
-                                  icon: 'arrow',
-                                  hideHorizontalBorders: false,
-                                }}
-                              />
-                            </li>
-                          )
-                        })}
-                      </ul>
-                    )}
-                    <div
-                      className="hidden md:block relative overflow-hidden w-[calc(100%+var(--gutter-h)*2)] -ml-[var(--gutter-h)]"
-                      style={{ height: mobileMediaWrapperHeight }}
-                    ></div>
-                  </div>
-                </div>
-              </div>
-            </Gutter>
+    <BlockWrapper setPadding={false} className={getPaddingClasses('hero')}>
+      <div className="relative">
+        <div className="absolute z-1 top-0 right-0 bottom-0 left-0 overflow-hidden min-h-[600px]">
+          <div className="relative h-full">
+            {typeof media === 'object' && media !== null && (
+              <Media
+                ref={laptopMediaRef}
+                resource={media}
+                className="w-full absolute bottom-0 z-1 -ml-[10rem] #w-[calc(100%+10rem)] sm:-ml-[6rem] sm:w-[calc(100%+8rem)]"
+                priority
+                width={2560}
+                height={1971}
+              />
+            )}
           </div>
         </div>
-      </BlockWrapper>
-    </ChangeHeaderTheme>
+
+        <div className="pt-[calc(1971/2560*100%)] sm:pt-0" style={contentWrapperHeight}>
+          <Gutter className="flex flex-col items-center justify-between h-full pt-[7rem] 3xl:pt-[8rem] xl:pt-[7.5rem] lg:pt-[6.5rem] md:pt-[2rem] sm:pt-[1rem] sm:relative sm:top-0">
+            <div className="flex items-start" data-theme={theme}>
+              <div
+                className={[
+                  'grid grid-rows-[auto,min-content] relative z-2 mt-[1rem] md:mt-[1rem]',
+                  'grid',
+                ]
+                  .filter(Boolean)
+                  .join(' ')}
+              >
+                <div className={['cols-14 start-1'].filter(Boolean).join(' ')}>
+                  {enableAnnouncement && (
+                    <div className="inline-block relative px-1 mb-[2rem] overflow-hidden transition-[box-shadow] shadow-[0_0.25rem_1rem_-0.75rem_var(--theme-success-250)] animate-fade-in-up opacity-0 transform translate-y-[1rem] animate-delay-[1s] sm:mb-0">
+                      <CMSLink {...announcementLink} />
+                    </div>
+                  )}
+                  <RichText content={description} />
+                  {Array.isArray(primaryButtons) && (
+                    <ul
+                      className={[
+                        'list-none m-0 p-0 max-w-[50%] bg-[var(--theme-success-50)] border-[var(--theme-success-50)] md:max-w-full',
+                      ]
+                        .filter(Boolean)
+                        .join(' ')}
+                    >
+                      {primaryButtons.map(({ link }, i) => {
+                        return (
+                          <li key={i}>
+                            <CMSLink
+                              {...link}
+                              appearance="default"
+                              fullWidth
+                              buttonProps={{
+                                icon: 'arrow',
+                                hideHorizontalBorders: false,
+                              }}
+                            />
+                          </li>
+                        )
+                      })}
+                    </ul>
+                  )}
+                  <div
+                    className="hidden md:block relative overflow-hidden w-[calc(100%+var(--gutter-h)*2)] -ml-[var(--gutter-h)]"
+                    style={{ height: mobileMediaWrapperHeight }}
+                  ></div>
+                </div>
+              </div>
+            </div>
+          </Gutter>
+        </div>
+      </div>
+    </BlockWrapper>
   )
 }
