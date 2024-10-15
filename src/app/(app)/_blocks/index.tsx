@@ -21,10 +21,12 @@ const CallToAction = dynamic(() => import('./CallToAction'))
 const CardGrid = dynamic(() => import('./CardGrid'))
 const Content = dynamic(() => import('./Content'))
 const ContentGrid = dynamic(() => import('./ContentGrid'))
+const Heading = dynamic(() => import('./Heading'))
 const Hero = dynamic(() => import('./Hero'))
 const HeroSlider = dynamic(() => import('./HeroSlider'))
 const HoverCards = dynamic(() => import('./HoverCards'))
 const HoverHighlights = dynamic(() => import('./HoverHighlights'))
+const HtmlBlock = dynamic(() => import('./HtmlBlock'))
 const LinkGrid = dynamic(() => import('./LinkGrid'))
 const LogoGrid = dynamic(() => import('./LogoGrid'))
 const MediaBlock = dynamic(() => import('./MediaBlock'))
@@ -52,10 +54,12 @@ const blockComponents = {
   content: Content,
   contentGrid: ContentGrid,
   cta: CallToAction,
+  heading: Heading,
   hero: Hero,
   heroSlider: HeroSlider,
   hoverCards: HoverCards,
   hoverHighlights: HoverHighlights,
+  htmlBlock: HtmlBlock,
   linkGrid: LinkGrid,
   logoGrid: LogoGrid,
   mediaBlock: MediaBlock,

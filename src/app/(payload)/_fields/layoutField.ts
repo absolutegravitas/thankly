@@ -20,10 +20,12 @@ import { CallToAction } from '@cms/_blocks/CallToAction'
 import { CardGrid } from '@cms/_blocks/CardGrid'
 import { Content } from '@cms/_blocks/Content'
 import { ContentGrid } from '@cms/_blocks/ContentGrid'
+import { Heading } from '@cms/_blocks/Heading'
 import { Hero } from '@cms/_blocks/Hero'
 import { HeroSlider } from '@cms/_blocks/HeroSlider'
 import { HoverCards } from '@cms/_blocks/HoverCards'
 import { HoverHighlights } from '@cms/_blocks/HoverHighlights'
+import { HtmlBlock } from '@cms/_blocks/HtmlBlock'
 import { LinkGrid } from '@cms/_blocks/LinkGrid'
 import { LogoGrid } from '@cms/_blocks/LogoGrid'
 import { MediaBlock } from '@cms/_blocks/Media'
@@ -52,10 +54,12 @@ export const layoutField: LayoutField = (
     'CardGrid',
     'Content',
     'ContentGrid',
+    'Heading',
     'Hero',
     'HeroSlider',
     'HoverCards',
     'HoverHighlights',
+    'HtmlBlock',
     'LinkGrid',
     'LogoGrid',
     'MediaBlock',
@@ -84,12 +88,12 @@ export const layoutField: LayoutField = (
           return CallToAction
         case 'CardGrid':
           return CardGrid
-
         case 'Content':
           return Content
         case 'ContentGrid':
           return ContentGrid
-
+        case 'Heading':
+          return Heading
         case 'Hero':
           return Hero
         case 'HeroSlider':
@@ -98,6 +102,8 @@ export const layoutField: LayoutField = (
           return HoverCards
         case 'HoverHighlights':
           return HoverHighlights
+        case 'HtmlBlock':
+          return HtmlBlock
         case 'LinkGrid':
           return LinkGrid
         case 'LogoGrid':
@@ -108,8 +114,6 @@ export const layoutField: LayoutField = (
           return MediaContent
         case 'MediaContentAccordion':
           return MediaContentAccordion
-        // case 'Pricing':
-        //   return Pricing
         case 'MediaSlider':
           return MediaSlider
         case 'ProductShowcase':

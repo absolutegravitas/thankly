@@ -4,11 +4,12 @@ import { CallToAction } from './CallToAction'
 import { CardGrid } from './CardGrid'
 import { Content } from './Content'
 import { ContentGrid } from './ContentGrid'
-// import { Form } from './Form'
+import { Heading } from './Heading'
 import { Hero } from './Hero'
 import { HeroSlider } from './HeroSlider'
 import { HoverCards } from './HoverCards'
 import { HoverHighlights } from './HoverHighlights'
+import { HtmlBlock } from './HtmlBlock'
 import { LinkGrid } from './LinkGrid'
 import { LogoGrid } from './LogoGrid'
 import { Logos } from './Logos'
@@ -28,10 +29,12 @@ export default [
   CardGrid,
   Content,
   ContentGrid,
+  Heading,
   Hero,
   HeroSlider,
   HoverCards,
   HoverHighlights,
+  HtmlBlock,
   LinkGrid,
   LogoGrid,
   Logos,

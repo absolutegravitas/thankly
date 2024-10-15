@@ -19,8 +19,11 @@ import { CallToAction } from '@app/_blocks/CallToAction'
 import { CardGrid } from '@app/_blocks/CardGrid'
 import { ContentBlock } from '@app/_blocks/Content'
 import { ContentGrid } from '@app/_blocks/ContentGrid'
+
+import { Heading } from '@app/_blocks/Heading'
 import { HoverCards } from '@app/_blocks/HoverCards'
 import { HoverHighlights } from '@app/_blocks/HoverHighlights'
+import { HtmlBlock } from '@app/_blocks/HtmlBlock'
 import { LinkGrid } from '@app/_blocks/LinkGrid'
 import { LogoGrid } from '@app/_blocks/LogoGrid'
 import { MediaBlock } from '@app/_blocks/MediaBlock'
@@ -48,8 +51,10 @@ export const blockComponents: any = {
   content: ContentBlock,
   contentGrid: ContentGrid,
   cta: CallToAction,
+  heading: Heading,
   hoverCards: HoverCards,
   hoverHighlights: HoverHighlights,
+  htmlBlock: HtmlBlock,
   linkGrid: LinkGrid,
   logoGrid: LogoGrid,
   mediaBlock: MediaBlock,
