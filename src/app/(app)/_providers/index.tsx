@@ -10,7 +10,6 @@ import { WindowInfoProvider } from '@faceless-ui/window-info'
 import { CartProvider } from '@/app/(app)/_providers/Cart'
 import { HeaderIntersectionObserver } from '@app/_providers/HeaderIntersectionObserver'
 import { PageTransition } from './PageTransition'
-import { ThemePreferenceProvider } from './Theme'
 import AuthProvider from './Auth'
 
 export const Providers: React.FC<{
@@ -29,42 +28,40 @@ export const Providers: React.FC<{
                   l: '(max-width: 1600px)',
                 }}
               >
-                <ThemePreferenceProvider>
-                  <GridProvider
-                    breakpoints={{
-                      s: 768,
-                      m: 1024,
-                      l: 1680,
-                    }}
-                    rowGap={{
-                      s: '1rem',
-                      m: '1rem',
-                      l: '2rem',
-                      xl: '4rem',
-                    }}
-                    colGap={{
-                      s: '1rem',
-                      m: '2rem',
-                      l: '2rem',
-                      xl: '3rem',
-                    }}
-                    cols={{
-                      s: 8,
-                      m: 8,
-                      l: 12,
-                      xl: 12,
-                    }}
-                  >
-                    <ModalProvider transTime={0} zIndex="var(--z-modal)">
-                      <PageTransition>
-                        <HeaderIntersectionObserver>
-                          {children}
-                          <ModalContainer />
-                        </HeaderIntersectionObserver>
-                      </PageTransition>
-                    </ModalProvider>
-                  </GridProvider>
-                </ThemePreferenceProvider>
+                <GridProvider
+                  breakpoints={{
+                    s: 768,
+                    m: 1024,
+                    l: 1680,
+                  }}
+                  rowGap={{
+                    s: '1rem',
+                    m: '1rem',
+                    l: '2rem',
+                    xl: '4rem',
+                  }}
+                  colGap={{
+                    s: '1rem',
+                    m: '2rem',
+                    l: '2rem',
+                    xl: '3rem',
+                  }}
+                  cols={{
+                    s: 8,
+                    m: 8,
+                    l: 12,
+                    xl: 12,
+                  }}
+                >
+                  <ModalProvider transTime={0} zIndex="var(--z-modal)">
+                    <PageTransition>
+                      <HeaderIntersectionObserver>
+                        {children}
+                        <ModalContainer />
+                      </HeaderIntersectionObserver>
+                    </PageTransition>
+                  </ModalProvider>
+                </GridProvider>
               </WindowInfoProvider>
             </MouseInfoProvider>
           </ScrollInfoProvider>

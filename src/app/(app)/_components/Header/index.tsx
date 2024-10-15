@@ -12,7 +12,6 @@ export const Header: React.FC<any> = ({
   menu,
   // topBar
 }: any) => {
-  const { headerTheme } = useHeaderObserver()
   const { y } = useScrollInfo()
   const [hideBackground, setHideBackground] = React.useState(true)
   const [isHydrated, setIsHydrated] = React.useState(false)

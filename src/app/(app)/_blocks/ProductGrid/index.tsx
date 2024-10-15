@@ -4,7 +4,6 @@
 
 import React from 'react'
 import { ProductCard } from '@app/_components/ProductCard'
-import { unstable_cache } from 'next/cache'
 import { getPayloadHMR } from '@payloadcms/next/utilities'
 import configPromise from '@payload-config'
 import { Product, Category, Tag } from '@/payload-types'

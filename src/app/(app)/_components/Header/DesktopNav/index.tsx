@@ -24,7 +24,6 @@ export const DesktopNav: React.FC<DesktopNavType> = ({ tabs, hideBackground }) =
   })
   const bgHeight = hideBackground ? { top: '0px' } : ''
   const [underlineStyles, setUnderlineStyles] = React.useState<any>({})
-  const { headerTheme } = useHeaderObserver()
   const [activeDropdownItem, setActiveDropdownItem] = React.useState<number | undefined>(undefined)
 
   const menuItemRefs = [] as (HTMLButtonElement | null)[]

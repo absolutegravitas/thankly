@@ -5,7 +5,6 @@ import { Cart } from '@/payload-types'
 // Import utility functions from the @payloadcms/next package for server-side data management
 import { getPayloadHMR } from '@payloadcms/next/utilities'
 import configPromise from '@payload-config'
-import { unstable_cache } from 'next/cache'
 
 export async function upsertPayloadCart(cart: Cart) {
   const config = await configPromise

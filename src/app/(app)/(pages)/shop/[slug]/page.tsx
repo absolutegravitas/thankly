@@ -1,9 +1,3 @@
-// This file is responsible for rendering the product details page for a specific product in the Thankly Shop application.
-// It uses Next.js 14's App Router and server components to fetch and display the product information.
-// The generateMetadata function generates the metadata (title, description, and OpenGraph data) for the page based on the product information.
-// The generateStaticParams function fetches a list of all available product slugs from the Payload CMS, which is used for static site generation.
-// The fetchProduct utility function fetches the product data from the Payload CMS based on the provided slug and caches the response using Next.js's unstable_cache.
-
 import React from 'react'
 import { draftMode } from 'next/headers'
 import { notFound } from 'next/navigation'

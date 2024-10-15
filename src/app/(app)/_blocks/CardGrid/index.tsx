@@ -3,7 +3,6 @@
 import React, { CSSProperties, useState } from 'react'
 
 import { BackgroundGrid } from '@app/_components/BackgroundGrid'
-import { BackgroundScanline } from '@app/_components/BackgroundScanline'
 import { BlockWrapper, PaddingProps } from '@app/_components/BlockWrapper'
 import { SquareCard } from '@app/_components/cards/SquareCard'
 import { CMSLink } from '@app/_components/CMSLink'

@@ -13,7 +13,6 @@ const policies = {
     'https://fonts.gstatic.com', // for google fonts
     'http://cdn.jsdelivr.net', // for jsdelivr
     'https://js.radar.com', // for radar
-    'https://www.googletagmanager.com', // for google tag manager
     'https://unpkg.com', // for unpkg
     'https://sibforms.com', // for sendinblue
     'https://www.google.com', // for reCAPTCHA
@@ -70,7 +69,6 @@ const policies = {
     'https://api.stripe.com', // for stripe
     'https://maps.googleapis.com', // for google maps
     'https://*.maps.googleapis.com', // for google maps
-    'https://analytics.google.com', // for google analytics
     'https://js.radar.com', // for radar
     'https://api.radar.io', // for radar
     'https://api.brevo.com', // for brevo
