@@ -245,25 +245,25 @@ $breakpoint-l-height: 1000px;
 @mixin data-theme-selector($theme, $exclusive: false) {
   @if $exclusive == true {
     @if $theme == 'light' {
-      [data-theme='light']:not(:has([data-theme='dark'])) & {
+      [data-theme='light']:not(:has([data-theme='light'])) & {
         @content;
       }
-    } @else if $theme == 'dark' {
-      [data-theme='dark']:not(:has([data-theme='light'])) & {
-        @content;
-      }
+      // } @else if $theme == 'dark' {
+      //   [data-theme='dark']:not(:has([data-theme='light'])) & {
+      //     @content;
+      //   }
     }
   } @else {
     @if $theme == 'light' {
       [data-theme='light'] &,
-      [data-theme='light']:not(:has([data-theme='dark'])) & {
+      [data-theme='light']:not(:has([data-theme='light'])) & {
         @content;
       }
-    } @else if $theme == 'dark' {
-      [data-theme='dark'] &,
-      [data-theme='dark']:not(:has([data-theme='light'])) & {
-        @content;
-      }
+      // } @else if $theme == 'dark' {
+      //   [data-theme='dark'] &,
+      //   [data-theme='dark']:not(:has([data-theme='light'])) & {
+      //     @content;
+      //   }
     }
   }
 }

@@ -80,7 +80,7 @@
     background: var(--color-base-0);
   }
 
-  @include data-theme-selector('dark') {
+  @include data-theme-selector('light') {
     background: var(--color-base-1000);
   }
 }

@@ -63,7 +63,7 @@
   &:hover {
     border-color: var(--grid-line-dark);
 
-    @include data-theme-selector('dark') {
+    @include data-theme-selector('light') {
       border-color: var(--grid-line-dark);
     }
 
@@ -99,7 +99,7 @@
       opacity: 0.08;
     }
 
-    @include data-theme-selector('dark') {
+    @include data-theme-selector('light') {
       background-image: url('/images/scanline-light.png');
       opacity: 0.1;
     }

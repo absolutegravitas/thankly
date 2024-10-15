@@ -13,7 +13,7 @@
   transition-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
   // border-bottom: 1px solid var(--grid-line-light);
 
-  @include data-theme-selector('dark') {
+  @include data-theme-selector('light') {
     border-color: var(--grid-line-dark);
   }
 
