@@ -4,6 +4,7 @@ import { CallToAction } from './CallToAction'
 import { CardGrid } from './CardGrid'
 import { Content } from './Content'
 import { ContentGrid } from './ContentGrid'
+import { CounterAnimation } from './CounterAnimation'
 import { Heading } from './Heading'
 import { Hero } from './Hero'
 import { HeroSlider } from './HeroSlider'
@@ -30,6 +31,7 @@ export default [
   CardGrid,
   Content,
   ContentGrid,
+  CounterAnimation,
   Heading,
   Hero,
   HeroSlider,
@@ -45,7 +47,6 @@ export default [
   Pricing,
   Reuse,
   Slider,
-  // Statement,
   Steps,
   StickyHighlights,
 ]

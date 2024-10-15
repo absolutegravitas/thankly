@@ -20,6 +20,7 @@ import { CallToAction } from '@cms/_blocks/CallToAction'
 import { CardGrid } from '@cms/_blocks/CardGrid'
 import { Content } from '@cms/_blocks/Content'
 import { ContentGrid } from '@cms/_blocks/ContentGrid'
+import { CounterAnimation } from '@cms/_blocks/CounterAnimation'
 import { Heading } from '@cms/_blocks/Heading'
 import { Hero } from '@cms/_blocks/Hero'
 import { HeroSlider } from '@cms/_blocks/HeroSlider'
@@ -56,6 +57,7 @@ export const layoutField: LayoutField = (
     'CardGrid',
     'Content',
     'ContentGrid',
+    'CounterAnimation',
     'Heading',
     'Hero',
     'HeroSlider',
@@ -95,6 +97,8 @@ export const layoutField: LayoutField = (
           return Content
         case 'ContentGrid':
           return ContentGrid
+        case 'CounterAnimation':
+          return CounterAnimation
         case 'Heading':
           return Heading
         case 'Hero':

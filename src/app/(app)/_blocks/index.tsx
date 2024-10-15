@@ -21,6 +21,7 @@ const CallToAction = dynamic(() => import('./CallToAction'))
 const CardGrid = dynamic(() => import('./CardGrid'))
 const Content = dynamic(() => import('./Content'))
 const ContentGrid = dynamic(() => import('./ContentGrid'))
+const CounterAnimation = dynamic(() => import('./CounterAnimation'))
 const Heading = dynamic(() => import('./Heading'))
 const Hero = dynamic(() => import('./Hero'))
 const HeroSlider = dynamic(() => import('./HeroSlider'))
@@ -32,7 +33,6 @@ const LogoGrid = dynamic(() => import('./LogoGrid'))
 const MediaBlock = dynamic(() => import('./MediaBlock'))
 const MediaContent = dynamic(() => import('./MediaContent'))
 const MediaContentAccordion = dynamic(() => import('./MediaContentAccordion'))
-const Pricing = dynamic(() => import('./Pricing'))
 const ProductShowcase = dynamic(() => import('./ProductShowcase'))
 const Reusable = dynamic(() => import('./Reusable'))
 const RichText = dynamic(() => import('./RichText'))
@@ -56,6 +56,7 @@ const blockComponents = {
   content: Content,
   contentGrid: ContentGrid,
   cta: CallToAction,
+  counterAnimation: CounterAnimation,
   heading: Heading,
   hero: Hero,
   heroSlider: HeroSlider,

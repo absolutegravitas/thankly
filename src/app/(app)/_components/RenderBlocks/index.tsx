@@ -19,6 +19,8 @@ import { CallToAction } from '@app/_blocks/CallToAction'
 import { CardGrid } from '@app/_blocks/CardGrid'
 import { ContentBlock } from '@app/_blocks/Content'
 import { ContentGrid } from '@app/_blocks/ContentGrid'
+import { CounterAnimation } from '@app/_blocks/CounterAnimation'
+
 // import { FormBlock } from '@app/_blocks/FormBlock'
 import { Heading } from '@app/_blocks/Heading'
 import { HoverCards } from '@app/_blocks/HoverCards'
@@ -56,6 +58,7 @@ export const blockComponents: any = {
   contentGrid: ContentGrid,
   cta: CallToAction,
   // form: FormBlock,
+  counterAnimation: CounterAnimation,
   heading: Heading,
   hoverCards: HoverCards,
   hoverHighlights: HoverHighlights,
