@@ -46,25 +46,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       <PrivacyProvider>
         <head>
           <link rel="icon" href="/favicon.svg" sizes="32x32" />
-          <link rel="preconnect" href="https://www.googletagmanager.com" />
-          {/* <link rel="preconnect" href="https://www.google-analytics.com" />
-          <GoogleAnalytics /> */}
-          {/* <GoogleTagManager /> */}
-          <Script
-            id="theme-script"
-            strategy="beforeInteractive"
-            dangerouslySetInnerHTML={{
-              __html: `
-            (function () {
-             var themeToSet = 'light';
-             document.documentElement.setAttribute('data-theme', themeToSet);
-             document.documentElement.classList.add(themeToSet);
-            })()`,
-            }}
-          />
         </head>
         <body
-          className={`${[leaguespartan.variable, inter.variable, raleway.variable].join(' ')} dark:bg-neutral-900 dark:text-dark-text font-sans`}
+          className={`${[leaguespartan.variable, inter.variable, raleway.variable].join(' ')} font-sans`}
         >
           <Providers>
             <div className="flex flex-col min-h-screen relative">
