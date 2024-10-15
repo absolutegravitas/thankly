@@ -21,6 +21,7 @@ const CallToAction = dynamic(() => import('./CallToAction'))
 const CardGrid = dynamic(() => import('./CardGrid'))
 const Content = dynamic(() => import('./Content'))
 const ContentGrid = dynamic(() => import('./ContentGrid'))
+const Heading = dynamic(() => import('./Heading'))
 const Hero = dynamic(() => import('./Hero'))
 const HeroSlider = dynamic(() => import('./HeroSlider'))
 const HoverCards = dynamic(() => import('./HoverCards'))
@@ -55,6 +56,7 @@ const blockComponents = {
   content: Content,
   contentGrid: ContentGrid,
   cta: CallToAction,
+  heading: Heading,
   hero: Hero,
   heroSlider: HeroSlider,
   hoverCards: HoverCards,

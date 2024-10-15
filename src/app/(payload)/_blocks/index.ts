@@ -4,7 +4,7 @@ import { CallToAction } from './CallToAction'
 import { CardGrid } from './CardGrid'
 import { Content } from './Content'
 import { ContentGrid } from './ContentGrid'
-// import { Form } from './Form'
+import { Heading } from './Heading'
 import { Hero } from './Hero'
 import { HeroSlider } from './HeroSlider'
 import { HoverCards } from './HoverCards'
@@ -19,7 +19,6 @@ import { MediaContentAccordion } from './MediaContentAccordion'
 import { Pricing } from './Pricing'
 import { Reuse } from './Reuse'
 import { Slider } from './Slider'
-// import { Statement } from './Statement'
 import { Steps } from './Steps'
 import { StickyHighlights } from './StickyHighlights'
 
@@ -31,7 +30,7 @@ export default [
   CardGrid,
   Content,
   ContentGrid,
-  // Form,
+  Heading,
   Hero,
   HeroSlider,
   HoverCards,

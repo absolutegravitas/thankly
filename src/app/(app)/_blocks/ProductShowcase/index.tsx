@@ -123,7 +123,7 @@ export default function ProductShowcase({ collections }: ProductShowcaseProps) {
   const currentProducts = allProducts[activeTab.categoryId] || []
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 pb-8">
       <div className="flex justify-center mb-8">
         <div className="inline-flex rounded-full bg-gray-200 p-1 relative">
           <div

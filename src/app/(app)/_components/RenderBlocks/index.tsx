@@ -20,6 +20,7 @@ import { CardGrid } from '@app/_blocks/CardGrid'
 import { ContentBlock } from '@app/_blocks/Content'
 import { ContentGrid } from '@app/_blocks/ContentGrid'
 // import { FormBlock } from '@app/_blocks/FormBlock'
+import { Heading } from '@app/_blocks/Heading'
 import { HoverCards } from '@app/_blocks/HoverCards'
 import { HoverHighlights } from '@app/_blocks/HoverHighlights'
 import { HtmlBlock } from '@app/_blocks/HtmlBlock'
@@ -55,6 +56,7 @@ export const blockComponents: any = {
   contentGrid: ContentGrid,
   cta: CallToAction,
   // form: FormBlock,
+  heading: Heading,
   hoverCards: HoverCards,
   hoverHighlights: HoverHighlights,
   htmlBlock: HtmlBlock,
