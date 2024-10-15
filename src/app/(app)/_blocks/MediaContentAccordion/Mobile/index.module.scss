@@ -147,7 +147,7 @@
     }
   }
 
-  @include data-theme-selector('dark') {
+  @include data-theme-selector('light') {
     border-top: 1px solid var(--grid-line-dark);
 
     &:before {
@@ -200,7 +200,7 @@
     }
   }
 
-  @include data-theme-selector('dark') {
+  @include data-theme-selector('light') {
     &:hover {
       .title {
         color: var(--color-base-0);
@@ -218,7 +218,7 @@
     color: var(--text-light);
   }
 
-  @include data-theme-selector('dark') {
+  @include data-theme-selector('light') {
     color: var(--text-dark);
   }
 }
@@ -234,7 +234,7 @@
       color: var(--color-base-1000);
     }
 
-    @include data-theme-selector('dark') {
+    @include data-theme-selector('light') {
       color: var(--color-base-0);
     }
   }
@@ -263,7 +263,7 @@
     color: var(--text-light);
   }
 
-  @include data-theme-selector('dark') {
+  @include data-theme-selector('light') {
     color: var(--text-dark);
   }
 }
@@ -303,7 +303,7 @@
     }
   }
 
-  @include data-theme-selector('dark') {
+  @include data-theme-selector('light') {
     color: var(--color-base-0);
 
     .arrowIcon {

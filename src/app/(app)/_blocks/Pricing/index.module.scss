@@ -30,7 +30,7 @@
     }
   }
 
-  @include data-theme-selector('dark') {
+  @include data-theme-selector('light') {
     border-color: var(--grid-line-dark);
   }
 
@@ -81,7 +81,7 @@
   height: 4.2rem;
   border-bottom: 1px solid var(--grid-line-dark);
 
-  @include data-theme-selector('dark') {
+  @include data-theme-selector('light') {
     border-color: var(--grid-line-dark);
   }
 
