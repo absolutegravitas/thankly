@@ -1,9 +1,7 @@
 'use client'
 
 import React, { useEffect, useState } from 'react'
-import { ChangeHeaderTheme } from '@app/_components/ChangeHeaderTheme'
 import { Page } from '@payload-types'
-import { useThemePreference } from '@app/_providers/Theme'
 import { ExtractBlockProps } from '@/utilities/extractBlockProps'
 import classes from './index.module.scss'
 
@@ -59,22 +57,20 @@ export const BlockWrapper: React.FC<Props> = ({
   const paddingClasses = [`py-content-${appliedPadding.top}`, `pb-content-${appliedPadding.bottom}`]
 
   return (
-    <ChangeHeaderTheme theme={'light'}>
-      <div
-        className={[
-          classes.blockWrapper,
-          // theme && classes[`theme-${theme}`],
-          ...paddingClasses,
-          setPadding && classes.setPadding,
-          className,
-        ]
-          .filter(Boolean)
-          .join(' ')}
-        {...rest}
-        // {...(theme ? { 'data-theme': theme } : {})}
-      >
-        {children}
-      </div>
-    </ChangeHeaderTheme>
+    <div
+      className={[
+        classes.blockWrapper,
+        // theme && classes[`theme-${theme}`],
+        ...paddingClasses,
+        setPadding && classes.setPadding,
+        className,
+      ]
+        .filter(Boolean)
+        .join(' ')}
+      {...rest}
+      // {...(theme ? { 'data-theme': theme } : {})}
+    >
+      {children}
+    </div>
   )
 }

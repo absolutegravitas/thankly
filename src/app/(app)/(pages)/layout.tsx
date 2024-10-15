@@ -1,8 +1,6 @@
 import React from 'react'
 import { Providers } from '@app/_providers/'
-import { defaultTheme, themeLocalStorageKey } from '@app/_providers/Theme/shared'
 import { Metadata } from 'next'
-import Script from 'next/script'
 
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import { Analytics } from '@vercel/analytics/react'
