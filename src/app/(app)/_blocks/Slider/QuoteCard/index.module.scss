@@ -43,7 +43,7 @@ $curve: cubic-bezier(0.165, 0.84, 0.44, 1);
       }
     }
 
-    @include data-theme-selector('dark') {
+    @include data-theme-selector('light') {
       background-image: url('/images/scanline-light.png');
 
       &.isActive {
@@ -60,7 +60,7 @@ $curve: cubic-bezier(0.165, 0.84, 0.44, 1);
         opacity: 0.08;
       }
 
-      @include data-theme-selector('dark') {
+      @include data-theme-selector('light') {
         opacity: 0.1;
       }
     }
@@ -71,7 +71,7 @@ $curve: cubic-bezier(0.165, 0.84, 0.44, 1);
     border-color: var(--grid-line-light);
   }
 
-  @include data-theme-selector('dark') {
+  @include data-theme-selector('light') {
     background: var(--color-base-1000);
     border-color: var(--grid-line-dark);
   }

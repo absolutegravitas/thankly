@@ -20,7 +20,7 @@
     }
   }
 
-  @include data-theme-selector('dark') {
+  @include data-theme-selector('light') {
     border-color: var(--grid-line-dark);
   }
 

@@ -21,7 +21,7 @@ $curve: cubic-bezier(0.165, 0.84, 0.44, 1);
   margin-bottom: 0;
   line-height: 1.1;
 
-  @include data-theme-selector('dark') {
+  @include data-theme-selector('light') {
     background: radial-gradient(circle at center, #dfedf4 0%, #628699 20%, #628699 100%);
     background-repeat: no-repeat;
     background-position: right;
@@ -57,7 +57,7 @@ $curve: cubic-bezier(0.165, 0.84, 0.44, 1);
     display: inline;
     font-style: normal;
 
-    @include data-theme-selector('dark') {
+    @include data-theme-selector('light') {
       color: white;
     }
     @include data-theme-selector('light') {

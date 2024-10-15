@@ -51,7 +51,7 @@
     background: var(--grid-line-light);
   }
 
-  @include data-theme-selector('dark') {
+  @include data-theme-selector('light') {
     background: var(--grid-line-dark);
   }
 }
