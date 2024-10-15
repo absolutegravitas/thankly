@@ -22,6 +22,7 @@ import { ContentGrid } from '@app/_blocks/ContentGrid'
 // import { FormBlock } from '@app/_blocks/FormBlock'
 import { HoverCards } from '@app/_blocks/HoverCards'
 import { HoverHighlights } from '@app/_blocks/HoverHighlights'
+import { HtmlBlock } from '@app/_blocks/HtmlBlock'
 import { LinkGrid } from '@app/_blocks/LinkGrid'
 import { LogoGrid } from '@app/_blocks/LogoGrid'
 import { MediaBlock } from '@app/_blocks/MediaBlock'
@@ -56,6 +57,7 @@ export const blockComponents: any = {
   // form: FormBlock,
   hoverCards: HoverCards,
   hoverHighlights: HoverHighlights,
+  htmlBlock: HtmlBlock,
   linkGrid: LinkGrid,
   logoGrid: LogoGrid,
   mediaBlock: MediaBlock,
