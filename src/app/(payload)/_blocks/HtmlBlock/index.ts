@@ -9,7 +9,7 @@ export const HtmlBlock: Block = {
       type: 'code',
       admin: {
         language: 'html',
-        description: 'Enter GTML content with Tailwind classes',
+        description: 'Enter HTML content with Tailwind classes',
       },
     },
   ],
