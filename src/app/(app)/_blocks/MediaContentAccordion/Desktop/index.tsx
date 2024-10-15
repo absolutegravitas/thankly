@@ -5,9 +5,8 @@ import {
   CollapsibleGroup,
   CollapsibleToggler,
 } from '@faceless-ui/collapsibles'
-import Image from "next/legacy/image"
+import Image from 'next/legacy/image'
 
-import { BackgroundScanline } from '@app/_components/BackgroundScanline'
 import { CMSLink } from '@app/_components/CMSLink'
 import { Media } from '@app/_components/Media'
 import { RichText } from '@app/_blocks/RichText'
@@ -399,7 +398,7 @@ export const DesktopMediaContentAccordion: React.FC<MediaContentAccordionProps> 
                           />
                         </div>
                       )}
-                      {item.background === 'scanlines' && (
+                      {/* {item.background === 'scanlines' && (
                         <div
                           className={[
                             classes.scanlineDesktopWrapper,
@@ -425,7 +424,7 @@ export const DesktopMediaContentAccordion: React.FC<MediaContentAccordionProps> 
                             className={[classes.crosshairBottomTwo].filter(Boolean).join(' ')}
                           />
                         </div>
-                      )}
+                      )} */}
                       {item.background === 'none' && (
                         <div
                           className={[

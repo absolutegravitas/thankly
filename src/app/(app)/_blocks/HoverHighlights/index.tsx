@@ -1,7 +1,6 @@
 import React from 'react'
 
 import { Gutter } from '@app/_components/Gutter'
-import { PixelBackground } from '@app/_components/PixelBackground'
 import { RichText } from '@app/_blocks/RichText'
 import { Page } from '@payload-types'
 import { HoverHighlight } from './HoverHighlight'

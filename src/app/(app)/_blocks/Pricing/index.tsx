@@ -2,7 +2,6 @@ import React from 'react'
 import { Collapsible, CollapsibleContent, CollapsibleToggler } from '@faceless-ui/collapsibles'
 
 import { BackgroundGrid } from '@app/_components/BackgroundGrid'
-import { BackgroundScanline } from '@app/_components/BackgroundScanline'
 import { BlockWrapper, PaddingProps } from '@app/_components/BlockWrapper'
 import { PricingCard } from '@app/_components/PricingCard'
 import { CMSLink } from '@app/_components/CMSLink'

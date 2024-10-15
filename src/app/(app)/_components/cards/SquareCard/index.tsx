@@ -1,7 +1,6 @@
 import React from 'react'
 import { ArrowIcon } from '@app/_icons/ArrowIcon'
 
-import { BackgroundScanline } from '@app/_components/BackgroundScanline'
 import { CMSLink, CMSLinkType } from '@app/_components/CMSLink'
 import { SquareCardProps } from '../types'
 
