@@ -67,13 +67,24 @@ const fetchPageSlugs = cache(async (): Promise<{ slug: string }[]> => {
 })
 
 const Page = async ({ params: { slug = 'home' } }) => {
-  console.log('===SLUG===', slug)
+  console.log('Rendering page for slug:', slug)
   const slugString = Array.isArray(slug) ? slug.join('/') : slug
-  console.log('===slugstring===', slugString)
-  const page: Page | null = await fetchPage(slugString)
-  console.log('===page===', page)
-  if (!page) return notFound()
+  console.log('Fetching page data for slugString:', slugString)
 
+  let page: Page | null = null
+  try {
+    page = await fetchPage(slugString)
+    console.log('Fetched page data:', page)
+  } catch (error) {
+    console.error('Error fetching page data:', error)
+  }
+
+  if (!page) {
+    console.warn('Page not found, rendering 404')
+    return notFound()
+  }
+
+  console.log('Rendering page with blocks:', page?.layout?.root?.children)
   return <Blocks blocks={page?.layout?.root?.children} />
 }
 
