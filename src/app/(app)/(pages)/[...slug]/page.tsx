@@ -9,8 +9,11 @@ import { generateMeta } from '@/utilities/generateMeta'
 import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
 import Blocks from '@app/_blocks'
 
-// ISR: Revalidate every 60 seconds
-export const revalidate = process.env.PAGE_CACHE_REVALIDATE || 60 // Adjust interval as needed
+// ISR: Revalidate every 60 seconds (or as per PAGE_CACHE_REVALIDATE env setting)
+export const revalidate = (() => {
+  const value = Number(process.env.PAGE_CACHE_REVALIDATE)
+  return isNaN(value) ? 60 : value
+})()
 
 const fetchPage = cache(async (slug: string): Promise<Page | null> => {
   const config = await configPromise
