@@ -4,17 +4,19 @@ export const ReviewShowcase: Block = {
   slug: 'reviewShowcase',
   fields: [
     {
-      name: 'collections',
-      type: 'array',
-      minRows: 1,
-      fields: [
-        {
-          name: 'review',
-          type: 'text',
-          required: true,
-          admin: { width: '40%' }
-        }
-      ]
-    }
+      name: 'htmlHeading',
+      label: 'Heading Section',
+      type: 'code',
+      admin: {
+        language: 'html',
+        description: 'Enter HTML content with Tailwind classes',
+      },
+    },
+    {
+      name: 'reviews',
+      type: 'relationship',
+      relationTo: 'reviews',
+      hasMany: true,
+    },
   ]
 }

@@ -1,203 +1,104 @@
 'use client'
 
-import React, { useState, useEffect, useCallback, useRef, useMemo } from 'react'
-import { Button } from '@app/_components/ui/button'
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from '@app/_components/ui/carousel'
+import { useState, useEffect, useRef } from 'react'
+import { Star } from 'lucide-react'
 import { ExtractBlockProps } from '@/utilities/extractBlockProps'
-import { Product } from '@/payload-types'
-import { fetchProductsByCategory } from '@/utilities/PayloadQueries/fetchProductsByCategory'
-import { useRouter } from 'next/navigation'
-import ShopProductCard from '../../_components/Shop/ShopProductCard'
+import DynamicHtml from '../../_components/DynamicHtml'
+import StarRating from '../../_components/StarRating'
 
-export type ProductShowcaseProps = ExtractBlockProps<'productShowcase'>
+// const reviews = [
+//   { id: 1, body: 'Excellent service! Highly recommended.', author: 'Alice Johnson', rating: 5 },
+//   { id: 2, body: 'Great product quality. Will buy again.', author: 'Bob Smith', rating: 4 },
+//   { id: 3, body: 'Fast shipping and good customer support.', author: 'Charlie Brown', rating: 5 },
+//   { id: 4, body: 'Decent experience overall.', author: 'Diana Ross', rating: 3 },
+//   { id: 5, body: 'Love the variety of products offered.', author: 'Ethan Hunt', rating: 5 },
+//   { id: 6, body: 'Good value for money.', author: 'Fiona Apple', rating: 4 },
+//   {
+//     id: 7,
+//     body: 'Impressive selection and easy to navigate.',
+//     author: 'George Clooney',
+//     rating: 5,
+//   },
+//   {
+//     id: 8,
+//     body: 'Had a small issue but it was quickly resolved.',
+//     author: 'Hannah Montana',
+//     rating: 4,
+//   },
+//   {
+//     id: 9,
+//     body: 'Consistently good experiences with this company.',
+//     author: 'Ian McKellen',
+//     rating: 5,
+//   },
+// ]
 
-interface ProductCollection {
-  id: number
-  name: string
-  categoryId: number
-}
+export type ReviewShowcaseProps = ExtractBlockProps<'reviewShowcase'>
 
-interface CollectionItem {
-  collectionName: string
-  category: {
-    id: number
-  }
-}
-
-const SkeletonLoader = () => (
-  <div className="animate-pulse">
-    <div className="bg-gray-300 h-48 w-full mb-4 rounded"></div>
-    <div className="bg-gray-300 h-4 w-3/4 mb-2 rounded"></div>
-    <div className="bg-gray-300 h-4 w-1/2 rounded"></div>
-  </div>
-)
-
-export function ReviewShowcase({ collections }: ProductShowcaseProps) {
-  const router = useRouter()
+export function ReviewShowcase({ htmlHeading, reviews }: ReviewShowcaseProps) {
+  const [currentIndex, setCurrentIndex] = useState(0)
+  const [isMobile, setIsMobile] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
-  const toggleRef = useRef<HTMLDivElement>(null)
-
-  const productCollections = useMemo(
-    () =>
-      collections.map((item: CollectionItem, index: number) => ({
-        id: index,
-        name: item.collectionName,
-        categoryId: item.category.id,
-      })),
-    [collections],
-  )
-
-  const [activeTab, setActiveTab] = useState<ProductCollection>(() => productCollections[0])
-  const [allProducts, setAllProducts] = useState<Record<number, Product[]>>({})
-  const [loading, setLoading] = useState(true)
-  const [transitioning, setTransitioning] = useState(false)
-
-  const fetchAllProducts = useCallback(async () => {
-    setLoading(true)
-    try {
-      const productPromises = productCollections.map((collection) =>
-        fetchProductsByCategory(collection.categoryId),
-      )
-      const results = await Promise.all(productPromises)
-      const productsMap: Record<number, Product[]> = {}
-      productCollections.forEach((collection, index) => {
-        productsMap[collection.categoryId] = results[index]
-      })
-      setAllProducts(productsMap)
-    } catch (error) {
-      console.error('Error fetching products:', error)
-    } finally {
-      setLoading(false)
-    }
-  }, [productCollections])
 
   useEffect(() => {
-    fetchAllProducts()
-  }, [fetchAllProducts])
-
-  const updateTogglePosition = useCallback((tabId: number) => {
-    if (toggleRef.current) {
-      const activeButton = document.querySelector(`button[data-id="${tabId}"]`) as HTMLElement
-      if (activeButton) {
-        const { offsetLeft, offsetWidth } = activeButton
-        toggleRef.current.style.left = `${offsetLeft}px`
-        toggleRef.current.style.width = `${offsetWidth}px`
-      }
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768)
     }
+
+    handleResize()
+    window.addEventListener('resize', handleResize)
+
+    return () => window.removeEventListener('resize', handleResize)
   }, [])
 
   useEffect(() => {
-    // Set initial toggle position
-    if (productCollections.length > 0) {
-      updateTogglePosition(productCollections[0].id)
+    const timer = setInterval(() => {
+      setCurrentIndex((prevIndex) => {
+        const nextIndex = prevIndex + 1
+        return nextIndex >= reviews.length ? 0 : nextIndex
+      })
+    }, 5000)
+
+    return () => clearInterval(timer)
+  }, [])
+
+  useEffect(() => {
+    if (containerRef.current) {
+      const scrollAmount = isMobile
+        ? containerRef.current.offsetWidth
+        : containerRef.current.offsetWidth / 3
+      containerRef.current.scrollTo({
+        left: currentIndex * scrollAmount,
+        behavior: 'smooth',
+      })
     }
-  }, [productCollections, updateTogglePosition])
-
-  const handleTabChange = useCallback(
-    (newTab: ProductCollection) => {
-      if (containerRef.current) {
-        const height = containerRef.current.offsetHeight
-        containerRef.current.style.height = `${height}px`
-      }
-      setTransitioning(true)
-      setTimeout(() => {
-        setActiveTab(newTab)
-        setTransitioning(false)
-        if (containerRef.current) {
-          containerRef.current.style.height = 'auto'
-        }
-      }, 300)
-
-      // Update toggle position
-      updateTogglePosition(newTab.id)
-    },
-    [updateTogglePosition],
-  )
-
-  const currentProducts = allProducts[activeTab.categoryId] || []
+  }, [currentIndex, isMobile])
 
   return (
-    <div className="container mx-auto px-4 pb-8">
-      <div className="flex justify-center mb-8">
-        <div className="inline-flex rounded-full bg-gray-200 p-1 relative">
-          <div
-            ref={toggleRef}
-            className="absolute top-1 bottom-1 rounded-full bg-white transition-all duration-300 ease-in-out"
-          />
-          {productCollections.map((item: ProductCollection) => (
-            <button
-              key={item.id}
-              data-id={item.id}
-              className={`px-4 py-2 rounded-full relative z-10 transition-colors duration-300 ${
-                activeTab.id === item.id ? 'text-gray-800' : 'text-gray-600'
-              }`}
-              onClick={() => handleTabChange(item)}
-            >
-              {item.name}
-            </button>
-          ))}
+    <div className="flex justify-center">
+      <section className="w-full max-w-screen-xl pt-8 pb-12 px-4 md:px-6 lg:px-8 bg-[#e8f0eb]">
+        <div className="text-xl font-bold mb-8 text-center md:text-left px-3">
+          <DynamicHtml htmlContent={htmlHeading || ''} />
         </div>
-      </div>
-      <div
-        ref={containerRef}
-        className="px-12 relative w-full overflow-hidden transition-height duration-300 ease-in-out"
-      >
-        <div
-          className={`transition-opacity duration-300 ease-in-out ${
-            transitioning ? 'opacity-0' : 'opacity-100'
-          }`}
-        >
-          <Carousel
-            key={activeTab.id}
-            opts={{
-              align: 'start',
-              loop: false,
-            }}
-            className="w-full mx-auto"
-          >
-            <CarouselContent>
-              {loading
-                ? Array.from({ length: 4 }).map((_, index) => (
-                    <CarouselItem
-                      key={`skeleton-${index}`}
-                      className="basis-full md:basis-1/2 lg:basis-1/2 xl:basis-1/3 2xl:basis-1/4"
-                    >
-                      <div className="p-1">
-                        <SkeletonLoader />
-                      </div>
-                    </CarouselItem>
-                  ))
-                : currentProducts.map((product, index) => (
-                    <CarouselItem
-                      key={`${activeTab.id}-${index}`}
-                      className="basis-full md:basis-1/2 lg:basis-1/2 xl:basis-1/3 2xl:basis-1/4"
-                    >
-                      <div className="p-1">
-                        <ShopProductCard product={product} showTags={false} />
-                      </div>
-                    </CarouselItem>
-                  ))}
-            </CarouselContent>
-            <CarouselPrevious />
-            <CarouselNext />
-          </Carousel>
+        <div className="relative overflow-hidden" ref={containerRef}>
+          <div className="flex">
+            {reviews.map((review) => (
+              <div key={review.id} className="w-full md:w-1/3 flex-shrink-0 px-3">
+                <div className="bg-white p-6 rounded-lg shadow-sm h-full flex flex-col">
+                  <div className="flex items-center py-2 min-h-5">
+                    <StarRating rating={review.starRating} />
+                  </div>
+                  <p className="text-gray-600 mb-4 font-semibold">{review.title}</p>
+                  <p className="text-gray-600 mb-4 flex-grow">{review.body}</p>
+                  <p className="text-sm text-gray-400 mt-auto">
+                    {review.reviewer ? `- ${review.reviewer.name}` : ''}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
-      </div>
-      <div className="flex justify-center mt-8">
-        <Button
-          variant="default"
-          className="bg-black text-white hover:bg-gray-800 px-8"
-          onClick={() => router.push('/shop')}
-        >
-          SHOP ALL
-        </Button>
-      </div>
+      </section>
     </div>
   )
 }
