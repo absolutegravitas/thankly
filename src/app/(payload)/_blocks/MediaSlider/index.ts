@@ -5,7 +5,7 @@ export const MediaSlider: Block = {
   slug: 'mediaSlider',
   fields: [
     blockFields({
-      name: 's',
+      name: 'mediaSliderFields',
       fields: [
         {
           name: 'slides',
@@ -19,13 +19,19 @@ export const MediaSlider: Block = {
         },
         { name: 'showArrows', type:'checkbox', label: 'Show left & right arrows?', defaultValue: false },
         {
-          type: 'row',
-          fields: [
-            { name: 'visibleMobile', type:'number', required: true, min: 1, max: 10 },
-            { name: 'visibleMedium', type:'number', required: true, min: 1, max: 10 },
-            { name: 'visibleLarge', type:'number', required: true, min: 1, max: 10 },
-            { name: 'visibleXLarge', type:'number', required: true, min: 1, max: 10 },
-            { name: 'visible2XLarge', type:'number', required: true, min: 1, max: 10 },
+          type: 'tabs',
+          tabs: [
+            {
+              label: 'Columns',
+              description: 'Columns settings',
+              fields: [                
+                { name: 'colsMobile', type:'number', required: true, min: 1, max: 10 },
+                { name: 'colsMedium', type:'number', required: true, min: 1, max: 10 },
+                { name: 'colsLarge', type:'number', required: true, min: 1, max: 10 },
+                { name: 'colsXLarge', type:'number', required: true, min: 1, max: 10 },
+                { name: 'cols2XLarge', type:'number', required: true, min: 1, max: 10 },
+              ]
+            },
           ]
         }
       ],

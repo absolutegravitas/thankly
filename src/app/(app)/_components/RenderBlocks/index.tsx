@@ -29,6 +29,7 @@ import { LogoGrid } from '@app/_blocks/LogoGrid'
 import { MediaBlock } from '@app/_blocks/MediaBlock'
 import { MediaContent } from '@app/_blocks/MediaContent'
 import { MediaContentAccordion } from '@app/_blocks/MediaContentAccordion'
+import { MediaSlider } from '@app/_blocks/MediaSlider'
 import { ReusableContentBlock } from '@app/_blocks/Reusable'
 import { Slider } from '@app/_blocks/Slider'
 import { Steps } from '@app/_blocks/Steps'
@@ -60,6 +61,7 @@ export const blockComponents: any = {
   mediaBlock: MediaBlock,
   mediaContent: MediaContent,
   mediaContentAccordion: MediaContentAccordion,
+  mediaSlider: MediaSlider,
   reusableContentBlock: ReusableContentBlock,
   slider: Slider,
   steps: Steps,
