@@ -11,7 +11,7 @@
 
 'use client'
 
-import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useMemo } from 'react'
 
 import { BannerBlock } from '@app/_blocks/Banner'
 import { Callout } from '@app/_blocks/Callout'
@@ -19,7 +19,6 @@ import { CallToAction } from '@app/_blocks/CallToAction'
 import { CardGrid } from '@app/_blocks/CardGrid'
 import { ContentBlock } from '@app/_blocks/Content'
 import { ContentGrid } from '@app/_blocks/ContentGrid'
-// import { FormBlock } from '@app/_blocks/FormBlock'
 import { Heading } from '@app/_blocks/Heading'
 import { HoverCards } from '@app/_blocks/HoverCards'
 import { HoverHighlights } from '@app/_blocks/HoverHighlights'
@@ -36,16 +35,11 @@ import { ReusableContentBlock } from '@app/_blocks/Reusable'
 import { ReviewShowcase } from '@app/_blocks/ReviewShowcase'
 import { Slider } from '@app/_blocks/Slider'
 import { Steps } from '@app/_blocks/Steps'
-
 import { toKebabCase } from '@/utilities/to-kebab-case'
-
 import { PaddingProps, Settings } from '@app/_components/BlockWrapper'
 import { getFieldsKeyFromBlock } from '@app/_components/RenderBlocks/utilities'
-import { Page, Reusable } from '@payload-types'
-
-// type ReusableContentBlockType = Extract<Page['layout'][0], { blockType: 'reusableContentBlock' }>
-
 import { ExtractBlockProps } from '@/utilities/extractBlockProps'
+
 type ReusableContentBlockType = ExtractBlockProps<'reusableContentBlock'>
 
 export const blockComponents: any = {
