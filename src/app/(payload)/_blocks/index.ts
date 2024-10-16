@@ -15,6 +15,7 @@ import { LinkGrid } from './LinkGrid'
 import { LogoGrid } from './LogoGrid'
 import { Logos } from './Logos'
 import { MediaBlock } from './Media'
+import { MediaCarousel } from './MediaCarousel'
 import { MediaContent } from './MediaContent'
 import { MediaContentAccordion } from './MediaContentAccordion'
 import { MediaGrid } from './MediaGrid'
@@ -42,6 +43,7 @@ export default [
   LogoGrid,
   Logos,
   MediaBlock,
+  MediaCarousel,
   MediaContent,
   MediaContentAccordion,
   MediaGrid,

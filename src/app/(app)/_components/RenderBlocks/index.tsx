@@ -27,6 +27,7 @@ import { HtmlBlock } from '@app/_blocks/HtmlBlock'
 import { LinkGrid } from '@app/_blocks/LinkGrid'
 import { LogoGrid } from '@app/_blocks/LogoGrid'
 import { MediaBlock } from '@app/_blocks/MediaBlock'
+import { MediaCarousel } from '@app/_blocks/MediaCarousel'
 import { MediaContent } from '@app/_blocks/MediaContent'
 import { MediaContentAccordion } from '@app/_blocks/MediaContentAccordion'
 import { MediaGrid } from '@/app/(app)/_blocks/MediaGrid'
@@ -59,6 +60,7 @@ export const blockComponents: any = {
   linkGrid: LinkGrid,
   logoGrid: LogoGrid,
   mediaBlock: MediaBlock,
+  mediaCarousel: MediaCarousel,
   mediaContent: MediaContent,
   mediaContentAccordion: MediaContentAccordion,
   mediaGrid: MediaGrid,

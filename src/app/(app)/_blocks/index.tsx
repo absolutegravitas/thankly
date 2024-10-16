@@ -31,6 +31,7 @@ const HtmlBlock = dynamic(() => import('./HtmlBlock'))
 const LinkGrid = dynamic(() => import('./LinkGrid'))
 const LogoGrid = dynamic(() => import('./LogoGrid'))
 const MediaBlock = dynamic(() => import('./MediaBlock'))
+const MediaCarousel = dynamic(() => import('./MediaCarousel'))
 const MediaContent = dynamic(() => import('./MediaContent'))
 const MediaContentAccordion = dynamic(() => import('./MediaContentAccordion'))
 const MediaGrid = dynamic(() => import('./MediaGrid'))
@@ -66,6 +67,7 @@ const blockComponents = {
   linkGrid: LinkGrid,
   logoGrid: LogoGrid,
   mediaBlock: MediaBlock,
+  mediaCarousel: MediaCarousel,
   mediaContent: MediaContent,
   mediaContentAccordion: MediaContentAccordion,
   mediaGrid: MediaGrid,

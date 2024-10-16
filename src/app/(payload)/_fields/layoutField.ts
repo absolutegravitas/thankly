@@ -30,6 +30,7 @@ import { HtmlBlock } from '@cms/_blocks/HtmlBlock'
 import { LinkGrid } from '@cms/_blocks/LinkGrid'
 import { LogoGrid } from '@cms/_blocks/LogoGrid'
 import { MediaBlock } from '@cms/_blocks/Media'
+import { MediaCarousel } from '@cms/_blocks/MediaCarousel'
 import { MediaContent } from '@cms/_blocks/MediaContent'
 import { MediaContentAccordion } from '@cms/_blocks/MediaContentAccordion'
 import { MediaGrid} from '@/app/(payload)/_blocks/MediaGrid'
@@ -65,6 +66,7 @@ export const layoutField: LayoutField = (
     'LinkGrid',
     'LogoGrid',
     'MediaBlock',
+    'MediaCarousel',
     'MediaContent',
     'MediaContentAccordion',
     'MediaGrid',
@@ -114,6 +116,8 @@ export const layoutField: LayoutField = (
           return LogoGrid
         case 'MediaBlock':
           return MediaBlock
+        case 'MediaCarousel':
+          return MediaCarousel
         case 'MediaContent':
           return MediaContent
         case 'MediaContentAccordion':
