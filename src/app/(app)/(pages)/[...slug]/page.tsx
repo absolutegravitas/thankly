@@ -67,9 +67,11 @@ const fetchPageSlugs = cache(async (): Promise<{ slug: string }[]> => {
 })
 
 const Page = async ({ params: { slug = 'home' } }) => {
+  console.log('===SLUG===', slug)
   const slugString = Array.isArray(slug) ? slug.join('/') : slug
+  console.log('===slugstring===', slugString)
   const page: Page | null = await fetchPage(slugString)
-  console.log('page', page)
+  console.log('===page===', page)
   if (!page) return notFound()
 
   return <Blocks blocks={page?.layout?.root?.children} />
