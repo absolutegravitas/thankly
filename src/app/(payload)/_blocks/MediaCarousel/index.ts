@@ -16,7 +16,8 @@ export const MediaCarousel: Block = {
             { name: 'image', type: 'upload', relationTo: 'media', required: false },
           ],
         },
-        { name: 'imageTailwind', type:'text', required: false }
+        { name: 'columnsMobile', type:'number', required: true, min:1, max:12 },
+        { name: 'columnsDesktop', type:'number', required: true, min:1, max:12 }
       ],
     }),
   ],
