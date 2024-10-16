@@ -31,7 +31,7 @@ const fetchPage = cache(async (slug: string): Promise<Page | null> => {
 
     page = docs[0]
 
-    console.log('PAGE ---', page)
+    console.log(page)
   } catch (error) {
     console.error(`Error fetching page: ${slug}`, error)
   }
