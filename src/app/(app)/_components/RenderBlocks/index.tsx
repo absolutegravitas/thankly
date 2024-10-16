@@ -31,6 +31,7 @@ import { MediaCarousel } from '@app/_blocks/MediaCarousel'
 import { MediaContent } from '@app/_blocks/MediaContent'
 import { MediaContentAccordion } from '@app/_blocks/MediaContentAccordion'
 import { MediaGrid } from '@/app/(app)/_blocks/MediaGrid'
+import { ProductShowcase } from '@/app/(app)/_blocks/ProductShowcase'
 import { ReusableContentBlock } from '@app/_blocks/Reusable'
 import { ReviewShowcase } from '@app/_blocks/ReviewShowcase'
 import { Slider } from '@app/_blocks/Slider'
@@ -65,6 +66,7 @@ export const blockComponents: any = {
   mediaContent: MediaContent,
   mediaContentAccordion: MediaContentAccordion,
   mediaGrid: MediaGrid,
+  productShowcase: ProductShowcase,
   reusableContentBlock: ReusableContentBlock,
   reviewShowcase: ReviewShowcase,
   slider: Slider,

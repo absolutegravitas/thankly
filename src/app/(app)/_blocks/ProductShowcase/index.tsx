@@ -38,7 +38,7 @@ const SkeletonLoader = () => (
   </div>
 )
 
-export default function ProductShowcase({ collections }: ProductShowcaseProps) {
+export function ProductShowcase({ collections }: ProductShowcaseProps) {
   const router = useRouter()
   const containerRef = useRef<HTMLDivElement>(null)
   const toggleRef = useRef<HTMLDivElement>(null)
@@ -201,3 +201,5 @@ export default function ProductShowcase({ collections }: ProductShowcaseProps) {
     </div>
   )
 }
+
+export default ProductShowcase
