@@ -7,7 +7,7 @@ export type Props = ExtractBlockProps<'mediaGrid'>
 
 export const MediaCarousel = ({ mediaCarouselFields }: Props) => {
   return (
-    <div className="flex justify-center border bg-red-400">
+    <div className="flex justify-center">
       <Carousel
         opts={{
           align: 'start',
@@ -15,7 +15,7 @@ export const MediaCarousel = ({ mediaCarouselFields }: Props) => {
         }}
         className="w-full"
       >
-        <CarouselContent className="flex justify-center border bg-green-400">
+        <CarouselContent className="flex justify-center">
           {mediaCarouselFields.items?.map((item, index) => (
             <CarouselItem key={index} className="flex-none">
               <Image
