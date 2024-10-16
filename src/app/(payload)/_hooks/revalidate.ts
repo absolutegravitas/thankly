@@ -3,7 +3,7 @@ import type { Payload } from 'payload'
 // Revalidate the page in the background, so the user doesn't have to wait
 // Notice that the function itself is not async and we are not awaiting `revalidate`
 
-export const revalidate = async (args: {
+export const revalidatePayload = async (args: {
   collection: string
   slug: string
   payload: Payload
