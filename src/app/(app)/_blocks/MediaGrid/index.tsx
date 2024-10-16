@@ -16,7 +16,7 @@ export const MediaGrid = ({ mediaGridFields }: Props) => {
 
   return (
     <div className="flex justify-center">
-      <div className="w-full max-w-6xl p-4 pt-0">
+      <div className="w-full max-w-screen-xl p-4 pt-0">
         <div className={`grid ${columnSettings} gap-4`}>
           {mediaGridFields.items?.map((item, index) => (
             <div key={index} className="flex flex-col">
