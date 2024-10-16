@@ -38,7 +38,6 @@ const ProductShowcase = dynamic(() => import('./ProductShowcase'))
 const Reusable = dynamic(() => import('./Reusable'))
 const RichText = dynamic(() => import('./RichText'))
 const Slider = dynamic(() => import('./Slider'))
-const Statement = dynamic(() => import('./Statement'))
 const Steps = dynamic(() => import('./Steps'))
 const StickyHighlights = dynamic(() => import('./StickyHighlights'))
 
@@ -75,7 +74,6 @@ const blockComponents = {
   RichText: RichText,
   slider: Slider,
   steps: Steps,
-  statement: Statement,
   stickyHighlights: StickyHighlights,
 }
 

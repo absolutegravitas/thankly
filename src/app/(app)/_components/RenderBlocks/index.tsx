@@ -19,8 +19,6 @@ import { CallToAction } from '@app/_blocks/CallToAction'
 import { CardGrid } from '@app/_blocks/CardGrid'
 import { ContentBlock } from '@app/_blocks/Content'
 import { ContentGrid } from '@app/_blocks/ContentGrid'
-import { CounterAnimation } from '@app/_blocks/CounterAnimation'
-
 // import { FormBlock } from '@app/_blocks/FormBlock'
 import { Heading } from '@app/_blocks/Heading'
 import { HoverCards } from '@app/_blocks/HoverCards'
@@ -31,20 +29,15 @@ import { LogoGrid } from '@app/_blocks/LogoGrid'
 import { MediaBlock } from '@app/_blocks/MediaBlock'
 import { MediaContent } from '@app/_blocks/MediaContent'
 import { MediaContentAccordion } from '@app/_blocks/MediaContentAccordion'
-import { MediaSlider } from '@app/_blocks/MediaSlider'
-import { Pricing } from '@app/_blocks/Pricing'
 import { ReusableContentBlock } from '@app/_blocks/Reusable'
 import { Slider } from '@app/_blocks/Slider'
 import { Steps } from '@app/_blocks/Steps'
-import { StickyHighlights } from '@app/_blocks/StickyHighlights'
 
 import { toKebabCase } from '@/utilities/to-kebab-case'
 
 import { PaddingProps, Settings } from '@app/_components/BlockWrapper'
 import { getFieldsKeyFromBlock } from '@app/_components/RenderBlocks/utilities'
 import { Page, Reusable } from '@payload-types'
-import { useThemePreference } from '@app/_providers/Theme'
-import { Theme } from '@app/_providers/Theme/types'
 
 // type ReusableContentBlockType = Extract<Page['layout'][0], { blockType: 'reusableContentBlock' }>
 
@@ -58,8 +51,6 @@ export const blockComponents: any = {
   content: ContentBlock,
   contentGrid: ContentGrid,
   cta: CallToAction,
-  // form: FormBlock,
-  counterAnimation: CounterAnimation,
   heading: Heading,
   hoverCards: HoverCards,
   hoverHighlights: HoverHighlights,
@@ -69,12 +60,9 @@ export const blockComponents: any = {
   mediaBlock: MediaBlock,
   mediaContent: MediaContent,
   mediaContentAccordion: MediaContentAccordion,
-  mediaSlider: MediaSlider,
-  pricing: Pricing,
   reusableContentBlock: ReusableContentBlock,
   slider: Slider,
   steps: Steps,
-  stickyHighlights: StickyHighlights,
 }
 
 export type BlocksProp = ReusableContentBlockType // | Reusable['layout'][0]
@@ -102,34 +90,15 @@ export const RenderBlocks: React.FC<Props> = (props) => {
   } = props
   // const heroTheme = hero?.type === 'home' ? 'dark' : hero?.theme
   const hasBlocks = blocks && Array.isArray(blocks) && blocks.length > 0
-  const { theme: themeFromContext } = useThemePreference()
-  const [themeState, setThemeState] = useState<Theme>()
   const [docPadding, setDocPadding] = React.useState(0)
   const docRef = React.useRef<HTMLDivElement>(null)
 
-  // This is needed to avoid hydration errors when the theme is not yet available
-  useEffect(() => {
-    if (themeFromContext) setThemeState(themeFromContext)
-  }, [themeFromContext])
-
-  const paddingExceptions = useMemo(
-    () => [
-      'banner',
-      // 'blogContent',
-      // 'blogMarkdown',
-      // 'code',
-      'reusableContentBlock',
-      'caseStudyParallax',
-    ],
-    [],
-  )
+  const paddingExceptions = useMemo(() => ['banner', 'reusableContentBlock'], [])
 
   const getPaddingProps = useCallback(
     (block: (typeof blocks)[number], index: number) => {
       const isFirst = index === 0
       const isLast = index + 1 === blocks.length
-
-      const theme = themeState
 
       let topPadding: PaddingProps['top']
       let bottomPadding: PaddingProps['bottom']
@@ -142,9 +111,6 @@ export const RenderBlocks: React.FC<Props> = (props) => {
       let nextBlockKey, nextBlockSettings
 
       let currentBlockSettings: Settings = block[getFieldsKeyFromBlock(block)]?.settings
-      let currentBlockTheme
-
-      currentBlockTheme = currentBlockSettings?.theme ?? theme
 
       if (previousBlock) {
         previousBlockKey = getFieldsKeyFromBlock(previousBlock)
@@ -157,26 +123,6 @@ export const RenderBlocks: React.FC<Props> = (props) => {
       }
 
       // If first block in the layout, add top padding based on the hero
-      if (isFirst) {
-        // if (heroTheme) {
-        //   topPadding = heroTheme === currentBlockTheme ? 'small' : 'large'
-        // } else {
-        topPadding = theme === currentBlockTheme ? 'small' : 'large'
-        // }
-      } else {
-        if (previousBlockSettings?.theme) {
-          topPadding = currentBlockTheme === previousBlockSettings?.theme ? 'small' : 'large'
-        } else {
-          topPadding = theme === currentBlockTheme ? 'small' : 'large'
-        }
-      }
-
-      if (nextBlockSettings?.theme) {
-        bottomPadding = currentBlockTheme === nextBlockSettings?.theme ? 'small' : 'large'
-      } else {
-        bottomPadding = theme === currentBlockTheme ? 'small' : 'large'
-      }
-
       if (isLast) bottomPadding = 'large'
 
       if (paddingExceptions.includes(block.blockType)) bottomPadding = 'large'
@@ -186,7 +132,7 @@ export const RenderBlocks: React.FC<Props> = (props) => {
         bottom: bottomPadding ?? undefined,
       }
     },
-    [themeState, blocks, paddingExceptions],
+    [, blocks, paddingExceptions],
   )
 
   React.useEffect(() => {

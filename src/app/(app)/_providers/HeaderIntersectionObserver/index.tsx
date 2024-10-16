@@ -4,21 +4,14 @@ import * as React from 'react'
 import { useWindowInfo } from '@faceless-ui/window-info'
 import { usePathname } from 'next/navigation'
 
-import { useThemePreference } from '@app/_providers/Theme'
-import { Theme } from '@app/_providers/Theme/types'
-
 import classes from './index.module.scss'
 
 type ContextT = {
   addObservable: (el: HTMLElement, isAttached: boolean) => void
-  headerTheme?: Theme | null
-  setHeaderTheme: (theme?: Theme | null) => void
   debug?: boolean
 }
 const Context = React.createContext<ContextT>({
   addObservable: () => {},
-  headerTheme: null,
-  setHeaderTheme: () => {},
   debug: false,
 })
 export const useHeaderObserver = (): ContextT => React.useContext(Context)
@@ -32,8 +25,6 @@ export const HeaderIntersectionObserver: React.FC<HeaderIntersectionObserverProp
   debug = false,
 }) => {
   const { height: windowHeight, width: windowWidth } = useWindowInfo()
-  const { theme } = useThemePreference()
-  const [headerTheme, setHeaderTheme] = React.useState<Theme | null | undefined>(theme)
   const [observer, setObserver] = React.useState<IntersectionObserver | undefined>(undefined)
   const [tick, setTick] = React.useState<number | undefined>(undefined)
   const pathname = usePathname()
@@ -72,10 +63,6 @@ export const HeaderIntersectionObserver: React.FC<HeaderIntersectionObserverProp
       observerRef = new IntersectionObserver(
         (entries) => {
           const intersectingElement = entries.find((entry) => entry.isIntersecting)
-
-          if (intersectingElement) {
-            setHeaderTheme(intersectingElement.target.getAttribute('data-theme') as Theme)
-          }
         },
         {
           // intersection area is top of the screen from 0px to 50% of the header height
@@ -95,19 +82,13 @@ export const HeaderIntersectionObserver: React.FC<HeaderIntersectionObserverProp
         observerRef.disconnect()
       }
     }
-  }, [windowWidth, windowHeight, theme, tick])
-
-  React.useEffect(() => {
-    setHeaderTheme(theme)
-  }, [pathname])
+  }, [windowWidth, windowHeight, tick])
 
   return (
     <Context.Provider
       value={{
         addObservable,
-        headerTheme,
         debug,
-        setHeaderTheme,
       }}
     >
       <React.Fragment>

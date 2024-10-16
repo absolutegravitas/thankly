@@ -1,13 +1,9 @@
 import React from 'react'
 import { Providers } from '@app/_providers/'
-import { defaultTheme, themeLocalStorageKey } from '@app/_providers/Theme/shared'
 import { Metadata } from 'next'
-import Script from 'next/script'
 
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import { Analytics } from '@vercel/analytics/react'
-import { GoogleAnalytics } from '@app/_components/Analytics/GoogleAnalytics'
-// import { GoogleTagManager } from '@app/_components/Analytics/GoogleTagManager'
 import { PrivacyBanner } from '@app/_components/PrivacyBanner'
 import { PrivacyProvider } from '@app/_providers/Privacy'
 import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'

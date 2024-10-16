@@ -1,7 +1,6 @@
 import React, { Fragment, useEffect, useRef, useState } from 'react'
 // import { CSSTransition } from 'react-transition-group'
 
-import { BackgroundScanline } from '@app/_components/BackgroundScanline'
 import { CMSLink } from '@app/_components/CMSLink'
 import { Gutter } from '@app/_components/Gutter'
 import { Media } from '@app/_components/Media'
