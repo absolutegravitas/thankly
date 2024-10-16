@@ -4,7 +4,7 @@
 
 import type { Payload } from 'payload'
 
-export const revalidate = async (args: {
+export const revalidatePayload = async (args: {
   collection: string
   slug: string
   payload: Payload
