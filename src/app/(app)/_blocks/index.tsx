@@ -28,6 +28,7 @@ const HeroSlider = dynamic(() => import('./HeroSlider'))
 const HoverCards = dynamic(() => import('./HoverCards'))
 const HoverHighlights = dynamic(() => import('./HoverHighlights'))
 const HtmlBlock = dynamic(() => import('./HtmlBlock'))
+const InstagramFeed = dynamic(() => import('./InstagramFeed'))
 const LinkGrid = dynamic(() => import('./LinkGrid'))
 const LogoGrid = dynamic(() => import('./LogoGrid'))
 const MediaBlock = dynamic(() => import('./MediaBlock'))
@@ -65,6 +66,7 @@ const blockComponents = {
   hoverCards: HoverCards,
   hoverHighlights: HoverHighlights,
   htmlBlock: HtmlBlock,
+  instagramFeed: InstagramFeed,
   linkGrid: LinkGrid,
   logoGrid: LogoGrid,
   mediaBlock: MediaBlock,

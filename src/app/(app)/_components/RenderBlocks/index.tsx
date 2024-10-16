@@ -23,6 +23,7 @@ import { Heading } from '@app/_blocks/Heading'
 import { HoverCards } from '@app/_blocks/HoverCards'
 import { HoverHighlights } from '@app/_blocks/HoverHighlights'
 import { HtmlBlock } from '@app/_blocks/HtmlBlock'
+import { InstagramFeed } from '@app/_blocks/InstagramFeed'
 import { LinkGrid } from '@app/_blocks/LinkGrid'
 import { LogoGrid } from '@app/_blocks/LogoGrid'
 import { MediaBlock } from '@app/_blocks/MediaBlock'
@@ -53,6 +54,7 @@ export const blockComponents: any = {
   hoverCards: HoverCards,
   hoverHighlights: HoverHighlights,
   htmlBlock: HtmlBlock,
+  instagramFeed: InstagramFeed,
   linkGrid: LinkGrid,
   logoGrid: LogoGrid,
   mediaBlock: MediaBlock,

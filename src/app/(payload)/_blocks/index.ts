@@ -11,6 +11,7 @@ import { HeroSlider } from './HeroSlider'
 import { HoverCards } from './HoverCards'
 import { HoverHighlights } from './HoverHighlights'
 import { HtmlBlock } from './HtmlBlock'
+import { InstagramFeed } from './InstagramFeed'
 import { LinkGrid } from './LinkGrid'
 import { LogoGrid } from './LogoGrid'
 import { Logos } from './Logos'
@@ -40,6 +41,7 @@ export default [
   HoverCards,
   HoverHighlights,
   HtmlBlock,
+  InstagramFeed,
   LinkGrid,
   LogoGrid,
   Logos,

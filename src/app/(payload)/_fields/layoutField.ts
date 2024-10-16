@@ -27,6 +27,7 @@ import { HeroSlider } from '@cms/_blocks/HeroSlider'
 import { HoverCards } from '@cms/_blocks/HoverCards'
 import { HoverHighlights } from '@cms/_blocks/HoverHighlights'
 import { HtmlBlock } from '@cms/_blocks/HtmlBlock'
+import { InstagramFeed } from '@cms/_blocks/InstagramFeed'
 import { LinkGrid } from '@cms/_blocks/LinkGrid'
 import { LogoGrid } from '@cms/_blocks/LogoGrid'
 import { MediaBlock } from '@cms/_blocks/Media'
@@ -64,6 +65,7 @@ export const layoutField: LayoutField = (
     'HoverCards',
     'HoverHighlights',
     'HtmlBlock',
+    'InstagramFeed',
     'LinkGrid',
     'LogoGrid',
     'MediaBlock',
@@ -112,6 +114,8 @@ export const layoutField: LayoutField = (
           return HoverHighlights
         case 'HtmlBlock':
           return HtmlBlock
+        case 'InstagramFeed':
+          return InstagramFeed
         case 'LinkGrid':
           return LinkGrid
         case 'LogoGrid':
