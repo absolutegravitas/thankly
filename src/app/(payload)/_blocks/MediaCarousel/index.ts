@@ -16,22 +16,7 @@ export const MediaCarousel: Block = {
             { name: 'image', type: 'upload', relationTo: 'media', required: false },
           ],
         },
-        {
-          type: 'tabs',
-          tabs: [
-            {
-              label: 'Columns',
-              description: 'Columns settings',
-              fields: [                
-                { name: 'colsMobile', type:'number', required: true, min: 1, max: 12 },
-                { name: 'colsMedium', type:'number', required: true, min: 1, max: 12 },
-                { name: 'colsLarge', type:'number', required: true, min: 1, max: 12 },
-                { name: 'colsXLarge', type:'number', required: true, min: 1, max: 12 },
-                { name: 'cols2XLarge', type:'number', required: true, min: 1, max: 12 },
-              ]
-            },
-          ]
-        }
+        { name: 'imageTailwind', type:'text', required: false }
       ],
     }),
   ],

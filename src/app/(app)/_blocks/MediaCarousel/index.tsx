@@ -1,42 +1,34 @@
 import Image from 'next/image'
 import { ExtractBlockProps } from '@/utilities/extractBlockProps'
 import { Media } from '@/payload-types'
+import { Carousel, CarouselContent, CarouselItem } from '../../_components/ui/carousel'
 
 export type Props = ExtractBlockProps<'mediaGrid'>
 
 export const MediaCarousel = ({ mediaCarouselFields }: Props) => {
-  const { colsMobile, colsMedium, colsLarge, colsXLarge, cols2XLarge } = mediaCarouselFields
-
-  const countToTailwind = (count: number) => {
-    if (count === 1) return 'full'
-    return `1/${count}`
-  }
-
-  const widthSettings = `
-    w-${countToTailwind(colsMobile)}
-    md:w-${countToTailwind(colsMedium)}
-    lg:w-${countToTailwind(colsLarge)}
-    xl:w-${countToTailwind(colsXLarge)}
-    2xl:w-${countToTailwind(cols2XLarge)}`
-
   return (
-    <div className="flex justify-center">
-      <div className="flex flex-grow flex-wrap p-4 pt-0 max-w-6xl">
-        {mediaCarouselFields.items?.map((item, index) => (
-          <div key={index} className={`flex flex-col ${widthSettings} px-3`}>
-            <div className="flex justify-center items-start">
+    <div className="flex justify-center border bg-red-400">
+      <Carousel
+        opts={{
+          align: 'start',
+          loop: true,
+        }}
+        className="w-full"
+      >
+        <CarouselContent className="flex justify-center border bg-green-400">
+          {mediaCarouselFields.items?.map((item, index) => (
+            <CarouselItem key={index} className="flex-none">
               <Image
-                className="object-cover"
+                className={`w-auto object-cover ${mediaCarouselFields.imageTailwind ?? ''}`}
                 src={item.image ? (item.image as Media).url : ''}
                 alt={item.image ? (item.image as Media).alt : ''}
-                width={1000}
-                height={1000}
+                height={200}
+                width={200}
               />
-            </div>
-            <div className="text-center text-xs md:text-sm">{item.text}</div>
-          </div>
-        ))}
-      </div>
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+      </Carousel>
     </div>
   )
 }
