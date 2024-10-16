@@ -9,6 +9,9 @@ import { generateMeta } from '@/utilities/generateMeta'
 import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
 import Blocks from '@app/_blocks'
 
+// ISR: Revalidate every 60 seconds
+export const revalidate = 60 // Adjust interval as needed
+
 const fetchPage = cache(async (slug: string): Promise<Page | null> => {
   const config = await configPromise
   let payload: any = await getPayloadHMR({ config })
