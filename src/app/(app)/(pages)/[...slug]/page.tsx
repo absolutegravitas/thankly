@@ -68,7 +68,8 @@ const fetchPageSlugs = cache(async (): Promise<{ slug: string }[]> => {
 
 const Page = async ({ params: { slug = 'home' } }) => {
   console.log('===SLUG===', slug)
-  const slugString = Array.isArray(slug) ? slug.join('/') : slug
+  // Handle the home page slug
+  const slugString = slug.length === 0 ? 'home' : Array.isArray(slug) ? slug.join('/') : slug
   console.log('===slugstring===', slugString)
   const page: Page | null = await fetchPage(slugString)
   console.log('===page===', page)
@@ -83,9 +84,12 @@ export default Page
 export async function generateStaticParams() {
   const pages = await fetchPageSlugs()
 
-  return pages.map(({ slug }) => ({
-    slug: slug.split('/').filter(Boolean),
-  }))
+  return [
+    { slug: [] }, // This line adds the homepage slug
+    ...pages.map(({ slug }) => ({
+      slug: slug.split('/').filter(Boolean),
+    })),
+  ]
 }
 
 export async function generateMetadata({
