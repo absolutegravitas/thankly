@@ -1,22 +1,26 @@
 import { Block } from "payload";
 
 export const InstagramFeed: Block = {
-  slug: 'reviewShowcase',
+  slug: 'instagramFeed',
   fields: [
     {
-      name: 'htmlHeading',
-      label: 'Heading Section',
-      type: 'code',
-      admin: {
-        language: 'html',
-        description: 'Enter HTML content with Tailwind classes',
-      },
-    },
-    {
-      name: 'reviews',
-      type: 'relationship',
-      relationTo: 'reviews',
-      hasMany: true,
-    },
+      name: 'posts',
+      type: 'array',
+      label: "Instagram Posts",
+      minRows: 3,
+      fields: [
+        {
+          name:'postUrl',
+          type:'text',
+          label: "Instagram post (eg: https://www.instagram.com/hellokathy___/p/CoGGjfiBnj4/ )",
+          required: true
+        },
+        { 
+          name: 'showOnMobile',
+          type: 'checkbox',
+          defaultValue: true
+        }
+      ]
+    }
   ]
 }

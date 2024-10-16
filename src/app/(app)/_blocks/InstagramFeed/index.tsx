@@ -1,41 +1,61 @@
+import { useState } from 'react'
+import { ScrollArea } from '@app/_components/ui/scroll-area'
+import { Card, CardContent } from '@app/_components/ui/card'
 import Image from 'next/image'
 import { ExtractBlockProps } from '@/utilities/extractBlockProps'
-import { Media } from '@/payload-types'
+
+interface InstagramPost {
+  id: string
+  imageUrl: string
+  link: string
+}
+
+interface InstagramFeedProps {
+  totalImages: number
+  visibleImages: number
+}
 
 export type Props = ExtractBlockProps<'mediaGrid'>
 
-export const InstagramFeed = ({ mediaGridFields }: Props) => {
-  const { colsMobile, colsMedium, colsLarge, colsXLarge, cols2XLarge } = mediaGridFields
+//export const InstagramFeed = ({ mediaGridFields }: Props) => {
+export function InstagramFeed({ totalImages = 10, visibleImages = 5 }: InstagramFeedProps) {
+  // In a real application, you would fetch this data from the Instagram API
+  const [posts] = useState<InstagramPost[]>(() =>
+    Array.from({ length: totalImages }, (_, i) => ({
+      id: `post-${i + 1}`,
+      imageUrl: `/placeholder.svg?height=300&width=300&text=Post ${i + 1}`,
+      link: `https://www.instagram.com/p/placeholder-${i + 1}/`,
+    })),
+  )
 
-  const columnSettings = `
-    grid-cols-${colsMobile}
-    md:grid-cols-${colsMedium}
-    lg:grid-cols-${colsLarge}
-    xl:grid-cols-${colsXLarge}
-    2xl:grid-cols-${cols2XLarge}`
+  const openInstagramPost = (link: string) => {
+    window.open(link, '_blank', 'noopener,noreferrer')
+  }
 
   return (
-    <div className="flex justify-center">
-      <div className="w-full max-w-screen-xl p-4 pt-0">
-        <div className={`grid ${columnSettings} gap-4`}>
-          {mediaGridFields.items?.map((item, index) => (
-            <div key={index} className="flex flex-col">
-              <div className="flex justify-center items-start">
+    <Card className="w-full">
+      <CardContent className="p-4">
+        <ScrollArea className="w-full h-[220px]">
+          <div className="flex space-x-4">
+            {posts.map((post) => (
+              <div
+                key={post.id}
+                className="shrink-0 cursor-pointer"
+                onClick={() => openInstagramPost(post.link)}
+              >
                 <Image
-                  className="object-cover w-full h-auto"
-                  src={item.image ? (item.image as Media).url : ''}
-                  alt={item.image ? (item.image as Media).alt : ''}
-                  width={1000}
-                  height={1000}
+                  src={post.imageUrl}
+                  alt={`Instagram post ${post.id}`}
+                  width={200}
+                  height={200}
+                  className="rounded-md object-cover"
                 />
               </div>
-              <div className="text-center text-xs md:text-sm mt-2">{item.text}</div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
+            ))}
+          </div>
+        </ScrollArea>
+      </CardContent>
+    </Card>
   )
 }
-
 export default InstagramFeed
