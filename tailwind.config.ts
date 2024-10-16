@@ -2,6 +2,12 @@ import type { Config } from 'tailwindcss'
 
 const config = {
   darkMode: 'selector',
+  safelist: [
+    {
+      pattern: /^(grid-cols-|basis-)/,
+      variants: ['md', 'lg', 'xl', '2xl']
+    }
+  ],
   content: [
     './pages/**/*.{ts,tsx}',
     './components/**/*.{ts,tsx}',

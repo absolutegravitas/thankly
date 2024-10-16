@@ -11,7 +11,7 @@
 
 'use client'
 
-import React, { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
+import React, { useCallback, useMemo } from 'react'
 
 import { BannerBlock } from '@app/_blocks/Banner'
 import { Callout } from '@app/_blocks/Callout'
@@ -19,29 +19,28 @@ import { CallToAction } from '@app/_blocks/CallToAction'
 import { CardGrid } from '@app/_blocks/CardGrid'
 import { ContentBlock } from '@app/_blocks/Content'
 import { ContentGrid } from '@app/_blocks/ContentGrid'
-
 import { Heading } from '@app/_blocks/Heading'
 import { HoverCards } from '@app/_blocks/HoverCards'
 import { HoverHighlights } from '@app/_blocks/HoverHighlights'
 import { HtmlBlock } from '@app/_blocks/HtmlBlock'
+import { InstagramFeed } from '@app/_blocks/InstagramFeed'
 import { LinkGrid } from '@app/_blocks/LinkGrid'
 import { LogoGrid } from '@app/_blocks/LogoGrid'
 import { MediaBlock } from '@app/_blocks/MediaBlock'
+import { MediaCarousel } from '@app/_blocks/MediaCarousel'
 import { MediaContent } from '@app/_blocks/MediaContent'
 import { MediaContentAccordion } from '@app/_blocks/MediaContentAccordion'
+import { MediaGrid } from '@/app/(app)/_blocks/MediaGrid'
+import { ProductShowcase } from '@/app/(app)/_blocks/ProductShowcase'
 import { ReusableContentBlock } from '@app/_blocks/Reusable'
+import { ReviewShowcase } from '@app/_blocks/ReviewShowcase'
 import { Slider } from '@app/_blocks/Slider'
 import { Steps } from '@app/_blocks/Steps'
-
 import { toKebabCase } from '@/utilities/to-kebab-case'
-
 import { PaddingProps, Settings } from '@app/_components/BlockWrapper'
 import { getFieldsKeyFromBlock } from '@app/_components/RenderBlocks/utilities'
-import { Page, Reusable } from '@payload-types'
-
-// type ReusableContentBlockType = Extract<Page['layout'][0], { blockType: 'reusableContentBlock' }>
-
 import { ExtractBlockProps } from '@/utilities/extractBlockProps'
+
 type ReusableContentBlockType = ExtractBlockProps<'reusableContentBlock'>
 
 export const blockComponents: any = {
@@ -55,12 +54,17 @@ export const blockComponents: any = {
   hoverCards: HoverCards,
   hoverHighlights: HoverHighlights,
   htmlBlock: HtmlBlock,
+  instagramFeed: InstagramFeed,
   linkGrid: LinkGrid,
   logoGrid: LogoGrid,
   mediaBlock: MediaBlock,
+  mediaCarousel: MediaCarousel,
   mediaContent: MediaContent,
   mediaContentAccordion: MediaContentAccordion,
+  mediaGrid: MediaGrid,
+  productShowcase: ProductShowcase,
   reusableContentBlock: ReusableContentBlock,
+  reviewShowcase: ReviewShowcase,
   slider: Slider,
   steps: Steps,
 }

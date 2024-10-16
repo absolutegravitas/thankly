@@ -10,7 +10,6 @@ import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
 import Blocks from '@app/_blocks'
 
 const fetchPage = cache(async (slug: string): Promise<Page | null> => {
-  console.log('fetchPage fetching page', slug)
   const config = await configPromise
   let payload: any = await getPayloadHMR({ config })
   let page = null
@@ -25,7 +24,6 @@ const fetchPage = cache(async (slug: string): Promise<Page | null> => {
     })
 
     page = docs[0]
-    console.log('page fetched', page)
   } catch (error) {
     console.error(`Error fetching page: ${slug}`, error)
   }

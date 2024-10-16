@@ -4,19 +4,24 @@ import { CallToAction } from './CallToAction'
 import { CardGrid } from './CardGrid'
 import { Content } from './Content'
 import { ContentGrid } from './ContentGrid'
+import { CounterAnimation } from './CounterAnimation'
 import { Heading } from './Heading'
 import { Hero } from './Hero'
 import { HeroSlider } from './HeroSlider'
 import { HoverCards } from './HoverCards'
 import { HoverHighlights } from './HoverHighlights'
 import { HtmlBlock } from './HtmlBlock'
+import { InstagramFeed } from './InstagramFeed'
 import { LinkGrid } from './LinkGrid'
 import { LogoGrid } from './LogoGrid'
 import { Logos } from './Logos'
 import { MediaBlock } from './Media'
+import { MediaCarousel } from './MediaCarousel'
 import { MediaContent } from './MediaContent'
 import { MediaContentAccordion } from './MediaContentAccordion'
+import { MediaGrid } from './MediaGrid'
 import { Reuse } from './Reuse'
+import { ReviewShowcase } from './ReviewShowcase'
 import { Slider } from './Slider'
 import { Steps } from './Steps'
 import { StickyHighlights } from './StickyHighlights'
@@ -29,19 +34,24 @@ export default [
   CardGrid,
   Content,
   ContentGrid,
+  CounterAnimation,
   Heading,
   Hero,
   HeroSlider,
   HoverCards,
   HoverHighlights,
   HtmlBlock,
+  InstagramFeed,
   LinkGrid,
   LogoGrid,
   Logos,
   MediaBlock,
+  MediaCarousel,
   MediaContent,
   MediaContentAccordion,
+  MediaGrid,
   Reuse,
+  ReviewShowcase,
   Slider,
   Steps,
   StickyHighlights,

@@ -20,20 +20,24 @@ import { CallToAction } from '@cms/_blocks/CallToAction'
 import { CardGrid } from '@cms/_blocks/CardGrid'
 import { Content } from '@cms/_blocks/Content'
 import { ContentGrid } from '@cms/_blocks/ContentGrid'
+import { CounterAnimation } from '@cms/_blocks/CounterAnimation'
 import { Heading } from '@cms/_blocks/Heading'
 import { Hero } from '@cms/_blocks/Hero'
 import { HeroSlider } from '@cms/_blocks/HeroSlider'
 import { HoverCards } from '@cms/_blocks/HoverCards'
 import { HoverHighlights } from '@cms/_blocks/HoverHighlights'
 import { HtmlBlock } from '@cms/_blocks/HtmlBlock'
+import { InstagramFeed } from '@cms/_blocks/InstagramFeed'
 import { LinkGrid } from '@cms/_blocks/LinkGrid'
 import { LogoGrid } from '@cms/_blocks/LogoGrid'
 import { MediaBlock } from '@cms/_blocks/Media'
+import { MediaCarousel } from '@cms/_blocks/MediaCarousel'
 import { MediaContent } from '@cms/_blocks/MediaContent'
 import { MediaContentAccordion } from '@cms/_blocks/MediaContentAccordion'
-import { MediaSlider } from '@cms/_blocks/MediaSlider'
+import { MediaGrid} from '@/app/(payload)/_blocks/MediaGrid'
 import { ProductShowcase } from '@cms/_blocks/ProductShowcase'
 import { Reuse } from '@cms/_blocks/Reuse'
+import { ReviewShowcase } from '@cms/_blocks/ReviewShowcase'
 import { Slider } from '@cms/_blocks/Slider'
 import { Steps } from '@cms/_blocks/Steps'
 import { StickyHighlights } from '@cms/_blocks/StickyHighlights'
@@ -54,20 +58,24 @@ export const layoutField: LayoutField = (
     'CardGrid',
     'Content',
     'ContentGrid',
+    'CounterAnimation',
     'Heading',
     'Hero',
     'HeroSlider',
     'HoverCards',
     'HoverHighlights',
     'HtmlBlock',
+    'InstagramFeed',
     'LinkGrid',
     'LogoGrid',
     'MediaBlock',
+    'MediaCarousel',
     'MediaContent',
     'MediaContentAccordion',
-    'MediaSlider',
+    'MediaGrid',
     'ProductShowcase',
     'Reuse',
+    'ReviewShowcase',
     'Slider',
     'Steps',
     'StickyHighlights',
@@ -92,6 +100,8 @@ export const layoutField: LayoutField = (
           return Content
         case 'ContentGrid':
           return ContentGrid
+        case 'CounterAnimation':
+          return CounterAnimation
         case 'Heading':
           return Heading
         case 'Hero':
@@ -104,22 +114,28 @@ export const layoutField: LayoutField = (
           return HoverHighlights
         case 'HtmlBlock':
           return HtmlBlock
+        case 'InstagramFeed':
+          return InstagramFeed
         case 'LinkGrid':
           return LinkGrid
         case 'LogoGrid':
           return LogoGrid
         case 'MediaBlock':
           return MediaBlock
+        case 'MediaCarousel':
+          return MediaCarousel
         case 'MediaContent':
           return MediaContent
         case 'MediaContentAccordion':
           return MediaContentAccordion
-        case 'MediaSlider':
-          return MediaSlider
+        case 'MediaGrid':
+          return MediaGrid
         case 'ProductShowcase':
           return ProductShowcase
         case 'Reuse':
           return Reuse
+        case 'ReviewShowcase':
+          return ReviewShowcase
         case 'Slider':
           return Slider
         case 'Steps':

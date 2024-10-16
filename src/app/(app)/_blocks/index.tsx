@@ -21,19 +21,24 @@ const CallToAction = dynamic(() => import('./CallToAction'))
 const CardGrid = dynamic(() => import('./CardGrid'))
 const Content = dynamic(() => import('./Content'))
 const ContentGrid = dynamic(() => import('./ContentGrid'))
+const CounterAnimation = dynamic(() => import('./CounterAnimation'))
 const Heading = dynamic(() => import('./Heading'))
 const Hero = dynamic(() => import('./Hero'))
 const HeroSlider = dynamic(() => import('./HeroSlider'))
 const HoverCards = dynamic(() => import('./HoverCards'))
 const HoverHighlights = dynamic(() => import('./HoverHighlights'))
 const HtmlBlock = dynamic(() => import('./HtmlBlock'))
+const InstagramFeed = dynamic(() => import('./InstagramFeed'))
 const LinkGrid = dynamic(() => import('./LinkGrid'))
 const LogoGrid = dynamic(() => import('./LogoGrid'))
 const MediaBlock = dynamic(() => import('./MediaBlock'))
+const MediaCarousel = dynamic(() => import('./MediaCarousel'))
 const MediaContent = dynamic(() => import('./MediaContent'))
 const MediaContentAccordion = dynamic(() => import('./MediaContentAccordion'))
+const MediaGrid = dynamic(() => import('./MediaGrid'))
 const ProductShowcase = dynamic(() => import('./ProductShowcase'))
 const Reusable = dynamic(() => import('./Reusable'))
+const ReviewShowcase = dynamic(() => import('./ReviewShowcase'))
 const RichText = dynamic(() => import('./RichText'))
 const Slider = dynamic(() => import('./Slider'))
 const Steps = dynamic(() => import('./Steps'))
@@ -54,20 +59,25 @@ const blockComponents = {
   content: Content,
   contentGrid: ContentGrid,
   cta: CallToAction,
+  counterAnimation: CounterAnimation,
   heading: Heading,
   hero: Hero,
   heroSlider: HeroSlider,
   hoverCards: HoverCards,
   hoverHighlights: HoverHighlights,
   htmlBlock: HtmlBlock,
+  instagramFeed: InstagramFeed,
   linkGrid: LinkGrid,
   logoGrid: LogoGrid,
   mediaBlock: MediaBlock,
+  mediaCarousel: MediaCarousel,
   mediaContent: MediaContent,
   mediaContentAccordion: MediaContentAccordion,
+  mediaGrid: MediaGrid,
   productShowcase: ProductShowcase,
   reuse: Reusable,
-  RichText: RichText,
+  reviewShowcase: ReviewShowcase,
+  richText: RichText,
   slider: Slider,
   steps: Steps,
   stickyHighlights: StickyHighlights,
