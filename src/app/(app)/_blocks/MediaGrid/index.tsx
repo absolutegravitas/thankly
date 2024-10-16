@@ -2,11 +2,10 @@ import Image from 'next/image'
 import { ExtractBlockProps } from '@/utilities/extractBlockProps'
 import { Media } from '@/payload-types'
 
-export type Props = ExtractBlockProps<'mediaSlider'>
+export type Props = ExtractBlockProps<'mediaGrid'>
 
-export const MediaSlider = ({ mediaSliderFields }: Props) => {
-  const { colsMobile, colsMedium, colsLarge, colsXLarge, cols2XLarge } = mediaSliderFields
-  const { pxMobile, pxMedium, pxLarge, pxXLarge, px2XLarge } = mediaSliderFields
+export const MediaGrid = ({ mediaGridFields }: Props) => {
+  const { colsMobile, colsMedium, colsLarge, colsXLarge, cols2XLarge } = mediaGridFields
 
   const countToTailwind = (count: number) => {
     if (count === 1) return 'full'
@@ -22,19 +21,19 @@ export const MediaSlider = ({ mediaSliderFields }: Props) => {
 
   return (
     <div className="flex justify-center">
-      <div className="flex flex-grow flex-wrap p-4 max-w-6xl border">
-        {mediaSliderFields.slides?.map((slide, index) => (
+      <div className="flex flex-grow flex-wrap p-4 pt-0 max-w-6xl">
+        {mediaGridFields.items?.map((item, index) => (
           <div key={index} className={`flex flex-col ${widthSettings} px-3`}>
             <div className="flex justify-center items-start">
               <Image
                 className="object-cover"
-                src={slide.image ? (slide.image as Media).url : ''}
-                alt={slide.image ? (slide.image as Media).alt : ''}
+                src={item.image ? (item.image as Media).url : ''}
+                alt={item.image ? (item.image as Media).alt : ''}
                 width={1000}
                 height={1000}
               />
             </div>
-            <div className="text-center">{slide.text}</div>
+            <div className="text-center text-xs md:text-sm">{item.text}</div>
           </div>
         ))}
       </div>
@@ -42,4 +41,4 @@ export const MediaSlider = ({ mediaSliderFields }: Props) => {
   )
 }
 
-export default MediaSlider
+export default MediaGrid

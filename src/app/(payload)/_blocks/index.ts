@@ -17,7 +17,7 @@ import { Logos } from './Logos'
 import { MediaBlock } from './Media'
 import { MediaContent } from './MediaContent'
 import { MediaContentAccordion } from './MediaContentAccordion'
-import { MediaSlider } from './MediaSlider'
+import { MediaGrid } from './MediaGrid'
 import { Reuse } from './Reuse'
 import { Slider } from './Slider'
 import { Steps } from './Steps'
@@ -44,7 +44,7 @@ export default [
   MediaBlock,
   MediaContent,
   MediaContentAccordion,
-  MediaSlider,
+  MediaGrid,
   Reuse,
   Slider,
   Steps,

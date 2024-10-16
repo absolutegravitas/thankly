@@ -1,14 +1,14 @@
 import type { Block } from 'payload'
 import { blockFields } from '@cms/_fields/blockFields'
 
-export const MediaSlider: Block = {
-  slug: 'mediaSlider',
+export const MediaGrid: Block = {
+  slug: 'mediaGrid',
   fields: [
     blockFields({
-      name: 'mediaSliderFields',
+      name: 'mediaGridFields',
       fields: [
         {
-          name: 'slides',
+          name: 'items',
           type: 'array',
           admin: {
           },
@@ -17,7 +17,6 @@ export const MediaSlider: Block = {
             { name: 'text', type: 'text', required: false }
           ],
         },
-        { name: 'showArrows', type:'checkbox', label: 'Show left & right arrows?', defaultValue: false },
         {
           type: 'tabs',
           tabs: [

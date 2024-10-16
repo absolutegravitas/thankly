@@ -32,7 +32,7 @@ import { LogoGrid } from '@cms/_blocks/LogoGrid'
 import { MediaBlock } from '@cms/_blocks/Media'
 import { MediaContent } from '@cms/_blocks/MediaContent'
 import { MediaContentAccordion } from '@cms/_blocks/MediaContentAccordion'
-import { MediaSlider } from '@cms/_blocks/MediaSlider'
+import { MediaGrid} from '@/app/(payload)/_blocks/MediaGrid'
 import { ProductShowcase } from '@cms/_blocks/ProductShowcase'
 import { Reuse } from '@cms/_blocks/Reuse'
 import { Slider } from '@cms/_blocks/Slider'
@@ -67,7 +67,7 @@ export const layoutField: LayoutField = (
     'MediaBlock',
     'MediaContent',
     'MediaContentAccordion',
-    'MediaSlider',
+    'MediaGrid',
     'ProductShowcase',
     'Reuse',
     'Slider',
@@ -118,8 +118,8 @@ export const layoutField: LayoutField = (
           return MediaContent
         case 'MediaContentAccordion':
           return MediaContentAccordion
-        case 'MediaSlider':
-          return MediaSlider
+        case 'MediaGrid':
+          return MediaGrid
         case 'ProductShowcase':
           return ProductShowcase
         case 'Reuse':
