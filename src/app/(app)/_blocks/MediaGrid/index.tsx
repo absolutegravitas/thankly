@@ -7,11 +7,6 @@ export type Props = ExtractBlockProps<'mediaGrid'>
 export const MediaGrid = ({ mediaGridFields }: Props) => {
   const { colsMobile, colsMedium, colsLarge, colsXLarge, cols2XLarge } = mediaGridFields
 
-  const countToTailwind = (count: number) => {
-    if (count === 1) return 'full'
-    return `1/${count}`
-  }
-
   const columnSettings = `
     grid-cols-${colsMobile}
     md:grid-cols-${colsMedium}
