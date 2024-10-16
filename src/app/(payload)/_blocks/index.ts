@@ -20,6 +20,7 @@ import { MediaContent } from './MediaContent'
 import { MediaContentAccordion } from './MediaContentAccordion'
 import { MediaGrid } from './MediaGrid'
 import { Reuse } from './Reuse'
+import { ReviewShowcase } from './ReviewShowcase'
 import { Slider } from './Slider'
 import { Steps } from './Steps'
 import { StickyHighlights } from './StickyHighlights'
@@ -48,6 +49,7 @@ export default [
   MediaContentAccordion,
   MediaGrid,
   Reuse,
+  ReviewShowcase,
   Slider,
   Steps,
   StickyHighlights,

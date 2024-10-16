@@ -32,6 +32,7 @@ import { MediaContent } from '@app/_blocks/MediaContent'
 import { MediaContentAccordion } from '@app/_blocks/MediaContentAccordion'
 import { MediaGrid } from '@/app/(app)/_blocks/MediaGrid'
 import { ReusableContentBlock } from '@app/_blocks/Reusable'
+import { ReviewShowcase } from '@app/_blocks/ReviewShowcase'
 import { Slider } from '@app/_blocks/Slider'
 import { Steps } from '@app/_blocks/Steps'
 
@@ -65,6 +66,7 @@ export const blockComponents: any = {
   mediaContentAccordion: MediaContentAccordion,
   mediaGrid: MediaGrid,
   reusableContentBlock: ReusableContentBlock,
+  reviewShowcase: ReviewShowcase,
   slider: Slider,
   steps: Steps,
 }

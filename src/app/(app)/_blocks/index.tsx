@@ -37,6 +37,7 @@ const MediaContentAccordion = dynamic(() => import('./MediaContentAccordion'))
 const MediaGrid = dynamic(() => import('./MediaGrid'))
 const ProductShowcase = dynamic(() => import('./ProductShowcase'))
 const Reusable = dynamic(() => import('./Reusable'))
+const ReviewShowcase = dynamic(() => import('./ReviewShowcase'))
 const RichText = dynamic(() => import('./RichText'))
 const Slider = dynamic(() => import('./Slider'))
 const Steps = dynamic(() => import('./Steps'))
@@ -73,6 +74,7 @@ const blockComponents = {
   mediaGrid: MediaGrid,
   productShowcase: ProductShowcase,
   reuse: Reusable,
+  ReviewShowcase: ReviewShowcase,
   RichText: RichText,
   slider: Slider,
   steps: Steps,

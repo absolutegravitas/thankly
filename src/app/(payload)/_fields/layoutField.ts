@@ -36,6 +36,7 @@ import { MediaContentAccordion } from '@cms/_blocks/MediaContentAccordion'
 import { MediaGrid} from '@/app/(payload)/_blocks/MediaGrid'
 import { ProductShowcase } from '@cms/_blocks/ProductShowcase'
 import { Reuse } from '@cms/_blocks/Reuse'
+import { ReviewShowcase } from '@cms/_blocks/ReviewShowcase'
 import { Slider } from '@cms/_blocks/Slider'
 import { Steps } from '@cms/_blocks/Steps'
 import { StickyHighlights } from '@cms/_blocks/StickyHighlights'
@@ -72,6 +73,7 @@ export const layoutField: LayoutField = (
     'MediaGrid',
     'ProductShowcase',
     'Reuse',
+    'ReviewShowcase',
     'Slider',
     'Steps',
     'StickyHighlights',
@@ -128,6 +130,8 @@ export const layoutField: LayoutField = (
           return ProductShowcase
         case 'Reuse':
           return Reuse
+        case 'ReviewShowcase':
+          return ReviewShowcase
         case 'Slider':
           return Slider
         case 'Steps':
