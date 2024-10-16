@@ -4,8 +4,8 @@ const config = {
   darkMode: 'selector',
   safelist: [
     {
-      pattern: /^grid-cols-/,
-      variants: ['md', 'lg']
+      pattern: /^(grid-cols-|basis-)/,
+      variants: ['md', 'lg', 'xl', '2xl']
     }
   ],
   content: [
