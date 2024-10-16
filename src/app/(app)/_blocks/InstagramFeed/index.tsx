@@ -33,7 +33,7 @@ export function InstagramFeed({ totalImages = 10, visibleImages = 5 }: Instagram
   }
 
   return (
-    <Card className="w-full">
+    <Card className="w-full ">
       <CardContent className="p-4">
         <ScrollArea className="w-full h-[220px]">
           <div className="flex space-x-4">
