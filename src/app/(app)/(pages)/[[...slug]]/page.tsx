@@ -37,7 +37,7 @@ const fetchPage = cache(async (slug: string): Promise<Page | null> => {
   return page
 })
 
-const fetchPageSlugs = cache(async (): Promise<{ slug: string }[]> => {
+const fetchPageSlugs = async (): Promise<{ slug: string }[]> => {
   const config = await configPromise
   let payload: any = await getPayloadHMR({ config })
 
@@ -51,10 +51,6 @@ const fetchPageSlugs = cache(async (): Promise<{ slug: string }[]> => {
       },
     })
 
-    if (!docs || docs.length === 0) {
-      return []
-    }
-
     return docs
       .map((page: Page) => ({
         slug: page.slug || '',
@@ -64,11 +60,11 @@ const fetchPageSlugs = cache(async (): Promise<{ slug: string }[]> => {
     console.error('Error fetching pages:', error)
     return []
   }
-})
+}
 
-const Page = async ({ params: { slug = 'home' } }) => {
-  console.log('===SLUG===', slug)
-  const slugString = Array.isArray(slug) ? slug.join('/') : slug
+const Page = async ({ params: { slug } }) => {
+  console.log('===slug===', slug)
+  const slugString = getSlugString(slug)
   console.log('===slugstring===', slugString)
   const page: Page | null = await fetchPage(slugString)
   console.log('===page===', page)
@@ -88,12 +84,17 @@ export async function generateStaticParams() {
   }))
 }
 
-export async function generateMetadata({
-  params: { slug = 'home' },
-}: {
-  params: { slug?: string | string[] }
-}): Promise<Metadata> {
-  const slugString = Array.isArray(slug) ? slug.join('/') : slug
+const getSlugString = (slug: string | string[]) => {
+  //Consider '/' as a requset for 'home'
+  if (!slug || slug.length === 0) return 'home'
+  //Handle slug being a '/a/b/c' string
+  if (Array.isArray(slug)) return slug.join('/')
+  //otherwise just return the slug string
+  return slug
+}
+
+export async function generateMetadata({ params: { slug } }): Promise<Metadata> {
+  const slugString = getSlugString(slug)
 
   // Default metadata
   const defaultTitle = 'Thankly'
