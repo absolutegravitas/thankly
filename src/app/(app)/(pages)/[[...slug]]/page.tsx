@@ -1,11 +1,9 @@
 import React, { Suspense, cache } from 'react'
 import { Metadata } from 'next'
-import { draftMode } from 'next/headers'
 import { notFound } from 'next/navigation'
 import type { Page } from '@payload-types'
 import { getPayloadHMR } from '@payloadcms/next/utilities'
 import configPromise from '@payload-config'
-import { generateMeta } from '@/utilities/generateMeta'
 import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
 import Blocks from '@app/_blocks'
 
@@ -14,6 +12,15 @@ export const revalidate = (() => {
   const value = Number(process.env.PAGE_CACHE_REVALIDATE)
   return isNaN(value) ? 60 : value
 })()
+
+const getSlugString = (slug: string | string[]) => {
+  //Consider '/' as a requset for 'home'
+  if (!slug || slug.length === 0) return 'home'
+  //Handle slug being a '/a/b/c' string
+  if (Array.isArray(slug)) return slug.join('/')
+  //otherwise just return the slug string
+  return slug
+}
 
 const fetchPage = cache(async (slug: string): Promise<Page | null> => {
   const config = await configPromise
@@ -37,7 +44,7 @@ const fetchPage = cache(async (slug: string): Promise<Page | null> => {
   return page
 })
 
-const fetchPageSlugs = cache(async (): Promise<{ slug: string }[]> => {
+const fetchPageSlugs = async (): Promise<{ slug: string }[]> => {
   const config = await configPromise
   let payload: any = await getPayloadHMR({ config })
 
@@ -51,10 +58,6 @@ const fetchPageSlugs = cache(async (): Promise<{ slug: string }[]> => {
       },
     })
 
-    if (!docs || docs.length === 0) {
-      return []
-    }
-
     return docs
       .map((page: Page) => ({
         slug: page.slug || '',
@@ -64,12 +67,11 @@ const fetchPageSlugs = cache(async (): Promise<{ slug: string }[]> => {
     console.error('Error fetching pages:', error)
     return []
   }
-})
+}
 
-const Page = async ({ params: { slug = 'home' } }) => {
-  const slugString = Array.isArray(slug) ? slug.join('/') : slug
+const Page = async ({ params: { slug } }) => {
+  const slugString = getSlugString(slug)
   const page: Page | null = await fetchPage(slugString)
-  console.log('page', page)
   if (!page) return notFound()
 
   return <Blocks blocks={page?.layout?.root?.children} />
@@ -86,12 +88,8 @@ export async function generateStaticParams() {
   }))
 }
 
-export async function generateMetadata({
-  params: { slug = 'home' },
-}: {
-  params: { slug?: string | string[] }
-}): Promise<Metadata> {
-  const slugString = Array.isArray(slug) ? slug.join('/') : slug
+export async function generateMetadata({ params: { slug } }): Promise<Metadata> {
+  const slugString = getSlugString(slug)
 
   // Default metadata
   const defaultTitle = 'Thankly'
