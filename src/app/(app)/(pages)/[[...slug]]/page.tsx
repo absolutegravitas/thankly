@@ -1,11 +1,9 @@
 import React, { Suspense, cache } from 'react'
 import { Metadata } from 'next'
-import { draftMode } from 'next/headers'
 import { notFound } from 'next/navigation'
 import type { Page } from '@payload-types'
 import { getPayloadHMR } from '@payloadcms/next/utilities'
 import configPromise from '@payload-config'
-import { generateMeta } from '@/utilities/generateMeta'
 import { mergeOpenGraph } from '@/utilities/mergeOpenGraph'
 import Blocks from '@app/_blocks'
 
@@ -14,6 +12,15 @@ export const revalidate = (() => {
   const value = Number(process.env.PAGE_CACHE_REVALIDATE)
   return isNaN(value) ? 60 : value
 })()
+
+const getSlugString = (slug: string | string[]) => {
+  //Consider '/' as a requset for 'home'
+  if (!slug || slug.length === 0) return 'home'
+  //Handle slug being a '/a/b/c' string
+  if (Array.isArray(slug)) return slug.join('/')
+  //otherwise just return the slug string
+  return slug
+}
 
 const fetchPage = cache(async (slug: string): Promise<Page | null> => {
   const config = await configPromise
@@ -63,11 +70,8 @@ const fetchPageSlugs = async (): Promise<{ slug: string }[]> => {
 }
 
 const Page = async ({ params: { slug } }) => {
-  console.log('===slug===', slug)
   const slugString = getSlugString(slug)
-  console.log('===slugstring===', slugString)
   const page: Page | null = await fetchPage(slugString)
-  console.log('===page===', page)
   if (!page) return notFound()
 
   return <Blocks blocks={page?.layout?.root?.children} />
@@ -82,15 +86,6 @@ export async function generateStaticParams() {
   return pages.map(({ slug }) => ({
     slug: slug.split('/').filter(Boolean),
   }))
-}
-
-const getSlugString = (slug: string | string[]) => {
-  //Consider '/' as a requset for 'home'
-  if (!slug || slug.length === 0) return 'home'
-  //Handle slug being a '/a/b/c' string
-  if (Array.isArray(slug)) return slug.join('/')
-  //otherwise just return the slug string
-  return slug
 }
 
 export async function generateMetadata({ params: { slug } }): Promise<Metadata> {
